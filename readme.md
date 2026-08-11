@@ -1,6 +1,6 @@
-# AI Meeting Assistant
+# Intelligent Prompt search
 
-Automate the transcription and summarization of virtual meetings
+Improve and evaluate prompt generation for specific tasks
 
 ## 1. Introduction
 
@@ -12,13 +12,13 @@ TODO: Add development deployment link
 
 ## 2. Domain
 
-The product helps the users to automate the transcription and summarization of virtual meetings (Zoom, Google Meet, MS Teams), enabling users to focus on discussions rather than note-taking
+Promptomat is an intelligent prompt search, evaluation, and autocomplete system for AI coding tools.
 
 ## 3. Requirements
 
-- [NodeJS](https://nodejs.org/en) (22.x.x);
-- [npm](https://www.npmjs.com/) (10.x.x);
-- [PostgreSQL](https://www.postgresql.org/) (17.5)
+- [NodeJS](https://nodejs.org/en) (24.x.x);
+- [npm](https://www.npmjs.com/) (11.x.x);
+- [PostgreSQL](https://www.postgresql.org/) (18.4)
 
 ## 4. Database Schema
 
@@ -132,7 +132,7 @@ For the full list of types check [Conventional Commits](https://github.com/conve
 
 Examples:
 
-- `feat: add dashboard screen ml-123`
+- `feat: add dashboard screen pm-123`
 
 ### 7.2 Branch Flow
 
@@ -156,8 +156,8 @@ We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) to 
 
 Examples:
 
-- `feat: add dashboard component ml-45`
-- `fix: update dashboard card size ml-212`
+- `feat: add dashboard component pm-45`
+- `fix: update dashboard card size pm-212`
 
 ## 8. Deployment
 
