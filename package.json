@@ -1,0 +1,63 @@
+{
+	"name": "promptomat",
+	"version": "1.0.0",
+	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"engines": {
+		"node": "22.x.x",
+		"npm": "10.x.x"
+	},
+	"scripts": {
+		"git:hook:precommit": "lint-staged --cwd $PWD",
+		"git:hook:commit": "npx @commitlint/cli --edit",
+		"build:shared": "npm run build -w packages/shared",
+		"build:frontend": "npm run build -w apps/frontend",
+		"build:backend": "npm run build -w apps/backend",
+		"build": "npm run build:shared && npm run build:backend && npm run build:frontend",
+		"lint:editor": "editorconfig-checker",
+		"lint:fs": "ls-lint",
+		"lint:type": "npx tsc --noEmit",
+		"lint:js": "npx eslint . --max-warnings=0 --no-warn-ignored",
+		"lint:format": "prettier --check \"**/*.{ts,tsx,json,md,css,html}\"",
+		"lint:trash": "knip",
+		"format": "prettier --write \"**/*.{ts,tsx,json,md,css,html}\"",
+		"lint": "concurrently \"npm:lint:*\" && npm run lint --workspaces",
+		"ci:prepare": "simple-git-hooks"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "21.2.1",
+		"@commitlint/config-conventional": "21.2.0",
+		"@commitlint/types": "21.2.0",
+		"@eslint/js": "10.0.1",
+		"@ls-lint/ls-lint": "2.3.1",
+		"@typescript-eslint/eslint-plugin": "8.65.0",
+		"@typescript-eslint/parser": "8.65.0",
+		"concurrently": "10.0.4",
+		"danger": "13.0.10",
+		"editorconfig-checker": "6.1.1",
+		"eslint": "10.8.0",
+		"eslint-import-resolver-typescript": "4.4.5",
+		"eslint-plugin-import-x": "4.17.1",
+		"eslint-plugin-jsdoc": "63.3.2",
+		"eslint-plugin-perfectionist": "5.10.0",
+		"eslint-plugin-sonarjs": "4.2.0",
+		"eslint-plugin-unicorn": "72.0.0",
+		"globals": "17.8.0",
+		"knip": "6.31.0",
+		"lint-staged": "17.3.0",
+		"prettier": "3.9.6",
+		"simple-git-hooks": "2.13.1",
+		"stylelint": "17.14.1",
+		"stylelint-config-recess-order": "7.7.0",
+		"stylelint-config-standard": "40.0.0",
+		"tsc-alias": "1.9.1",
+		"typescript": "6.0.3"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "npm run lint:type && npm run git:hook:precommit",
+		"commit-msg": "npm run git:hook:commit"
+	}
+}
