@@ -1,0 +1,23 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Dependency versions are pinned explicitly, ranges are never written to package.json.
+saveExact: true
+
+# Fail fast when the local Node/pnpm version does not match "engines".
+engineStrict: true
+
+# Keep node_modules in sync when a script runs in a fresh worktree or after a branch switch.
+verifyDepsBeforeRun: install
+
+# Postinstall scripts are blocked by default, only these are allowed to run.
+allowBuilds:
+  # Builds the platform-specific binary used by vite.
+  esbuild: true
+  # Builds the native module resolver used by eslint-import-resolver-typescript.
+  unrs-resolver: true
+  # Installs the git hooks declared in package.json.
+  simple-git-hooks: true
+  # Prints a funding banner only.
+  core-js: false

@@ -19,24 +19,17 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Cache Dependencies
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            packages/**/build
-          key: ci-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ci-
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
   lint:
     name: Code Linting
@@ -45,24 +38,23 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Restore Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            packages/**/build
-          key: ci-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Code Linting
-        run: |
-          npm run lint
+        run: pnpm run lint
+
   build:
     name: Code Building
     needs: dependencies
@@ -70,21 +62,19 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Restore Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            packages/**/build
-          key: ci-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Code Building
-        run: |
-          npm run build
+        run: pnpm run build

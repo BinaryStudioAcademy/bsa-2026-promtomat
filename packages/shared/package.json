@@ -6,16 +6,16 @@
 	"types": "src/index.ts",
 	"engines": {
 		"node": "24.x.x",
-		"npm": "11.x.x"
+		"pnpm": "11.x.x"
 	},
 	"scripts": {
-		"postinstall": "npm run build",
-		"lint:type": "npx tsc --noEmit",
-		"lint:js": "npx eslint . --max-warnings=0 --no-warn-ignored",
-		"lint": "concurrently \"npm:lint:*\"",
+		"postinstall": "pnpm run build",
+		"lint:type": "tsc --noEmit",
+		"lint:js": "eslint . --max-warnings=0 --no-warn-ignored",
+		"lint": "concurrently \"pnpm:lint:*\"",
 		"build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"zod": "4.4.3"
 	}
 }

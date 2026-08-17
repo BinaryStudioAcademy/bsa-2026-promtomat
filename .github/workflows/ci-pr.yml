@@ -43,24 +43,17 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Cache Dependencies
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            packages/**/build
-          key: ci-pr-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ci-pr-
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
   ci-pr:
     permissions:
@@ -73,29 +66,27 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Install NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: Restore Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            packages/**/build
-          key: ci-pr-${{ hashFiles('**/package-lock.json') }}
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Lint Commits
-        run: |
-          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
       - name: Lint Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        run: |
-          npx danger ci --failOnErrors --text-only
+        run: pnpm exec danger ci --failOnErrors --text-only
