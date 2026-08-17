@@ -4,9 +4,8 @@ import {
 	type FieldErrors,
 	type FieldPath,
 	type FieldValues,
+	useController,
 } from "react-hook-form";
-
-import { useFormController } from "~/libs/hooks/hooks.js";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
@@ -25,7 +24,7 @@ const Input = <T extends FieldValues>({
 	placeholder = "",
 	type = "text",
 }: Properties<T>): React.JSX.Element => {
-	const { field } = useFormController({ control, name });
+	const { field } = useController({ control, name });
 
 	const error = errors[name]?.message;
 	const hasError = Boolean(error);

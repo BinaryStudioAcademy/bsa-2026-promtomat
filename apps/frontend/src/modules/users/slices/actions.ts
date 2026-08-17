@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { type AsyncThunkConfig } from "~/libs/types/types.js";
+import { type AsyncThunkConfig } from "~/libs/types/async-thunk-config.type.js";
 import { type UserGetAllResponseDto } from "~/modules/users/users.js";
 
 import { name as sliceName } from "./users.slice.js";

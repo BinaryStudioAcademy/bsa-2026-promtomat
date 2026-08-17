@@ -11,4 +11,3 @@ const authApi = new AuthApi({
 });
 
 export { authApi };
-export { actions, reducer } from "./slices/auth.js";

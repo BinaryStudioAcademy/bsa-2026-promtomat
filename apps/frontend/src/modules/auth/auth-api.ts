@@ -1,5 +1,5 @@
 import { APIPath, ContentType } from "~/libs/enums/enums.js";
-import { BaseHTTPApi } from "~/libs/modules/api/api.js";
+import { BaseHTTPApi } from "~/libs/modules/api/base-http-api.js";
 import { type HTTP } from "~/libs/modules/http/http.js";
 import { type Storage } from "~/libs/modules/storage/storage.js";
 import {

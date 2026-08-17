@@ -9,11 +9,9 @@ import {
 import { type Storage, StorageKey } from "~/libs/modules/storage/storage.js";
 import { type ServerErrorResponse, type ValueOf } from "~/libs/types/types.js";
 
-import {
-	type HTTPApi,
-	type HTTPApiOptions,
-	type HTTPApiResponse,
-} from "./libs/types/types.js";
+import { type HTTPApiOptions } from "./libs/types/http-api-options.type.js";
+import { type HTTPApiResponse } from "./libs/types/http-api-response.type.js";
+import { type HTTPApi } from "./libs/types/http-api.type.js";
 
 type Constructor = {
 	baseUrl: string;

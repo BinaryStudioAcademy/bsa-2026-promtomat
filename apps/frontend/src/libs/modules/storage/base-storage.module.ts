@@ -1,6 +1,6 @@
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { type StorageKey } from "./libs/enums/enums.js";
+import { type StorageKey } from "./libs/enums/storage-key.enum.js";
 import { type Storage } from "./libs/types/types.js";
 
 class BaseStorage implements Storage {

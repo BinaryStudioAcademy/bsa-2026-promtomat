@@ -1,4 +1,4 @@
-import { Button } from "~/libs/components/components.js";
+import { Button } from "~/libs/components/button/button.js";
 
 type Properties = {
 	onSubmit: () => void;

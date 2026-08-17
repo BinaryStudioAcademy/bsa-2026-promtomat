@@ -13,7 +13,7 @@ const initialState: State = {
 	dataStatus: DataStatus.IDLE,
 };
 
-const { actions, name, reducer } = createSlice({
+const { name, reducer } = createSlice({
 	extraReducers(builder) {
 		builder.addCase(signUp.pending, (state) => {
 			state.dataStatus = DataStatus.PENDING;
@@ -30,4 +30,4 @@ const { actions, name, reducer } = createSlice({
 	reducers: {},
 });
 
-export { actions, name, reducer };
+export { name, reducer };

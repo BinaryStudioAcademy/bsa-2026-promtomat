@@ -3,5 +3,5 @@ import { BaseStorage } from "./base-storage.module.js";
 const storage = new BaseStorage(localStorage);
 
 export { storage };
-export { StorageKey } from "./libs/enums/enums.js";
+export { StorageKey } from "./libs/enums/storage-key.enum.js";
 export { type Storage } from "./libs/types/types.js";

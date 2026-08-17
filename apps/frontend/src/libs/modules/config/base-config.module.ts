@@ -1,7 +1,8 @@
 import { type AppEnvironment } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
+import { type Config } from "./libs/types/config.type.js";
+import { type EnvironmentSchema } from "./libs/types/environment-schema.type.js";
 
 class BaseConfig implements Config {
 	public ENV: EnvironmentSchema;
