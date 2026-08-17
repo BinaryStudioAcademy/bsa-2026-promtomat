@@ -4,4 +4,3 @@ const storage = new BaseStorage(localStorage);
 
 export { storage };
 export { StorageKey } from "./libs/enums/storage-key.enum.js";
-export { type Storage } from "./libs/types/types.js";

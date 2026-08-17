@@ -44,6 +44,7 @@ TODO: add application schema
 
 1. [React](https://react.dev/) — a frontend library
 2. [Redux](https://redux.js.org/) + [Redux Toolkit](https://redux-toolkit.js.org/) — a state manager
+3. [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) — server state (fetching, caching, invalidation)
 
 #### 5.2.2 Folder Structure
 

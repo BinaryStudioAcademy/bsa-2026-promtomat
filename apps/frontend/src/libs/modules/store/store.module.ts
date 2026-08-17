@@ -1,59 +1,30 @@
-import {
-	configureStore,
-	type ThunkMiddleware,
-	type Tuple,
-	type UnknownAction,
-} from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 import { AppEnvironment } from "~/libs/enums/enums.js";
+import { baseApi } from "~/libs/modules/api/base-api.js";
 import { type Config } from "~/libs/modules/config/config.js";
-import { authApi } from "~/modules/auth/auth.js";
-import { reducer as authReducer } from "~/modules/auth/slices/auth.slice.js";
-import { reducer as usersReducer } from "~/modules/users/slices/users.slice.js";
-import { userApi } from "~/modules/users/users.js";
 
-type ExtraArguments = {
-	authApi: typeof authApi;
-	userApi: typeof userApi;
+const createStore = (config: Config) => {
+	const store = configureStore({
+		devTools: config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION,
+		middleware: (getDefaultMiddleware) => {
+			return getDefaultMiddleware().concat(baseApi.middleware);
+		},
+		reducer: {
+			[baseApi.reducerPath]: baseApi.reducer,
+		},
+	});
+
+	setupListeners(store.dispatch);
+
+	return store;
 };
 
-type RootReducer = {
-	auth: ReturnType<typeof authReducer>;
-	users: ReturnType<typeof usersReducer>;
-};
+type AppDispatch = AppStore["dispatch"];
 
-class Store {
-	public instance: ReturnType<
-		typeof configureStore<
-			RootReducer,
-			UnknownAction,
-			Tuple<[ThunkMiddleware<RootReducer, UnknownAction, ExtraArguments>]>
-		>
-	>;
+type AppStore = ReturnType<typeof createStore>;
 
-	public constructor(config: Config) {
-		this.instance = configureStore({
-			devTools: config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION,
-			middleware: (getDefaultMiddleware) => {
-				return getDefaultMiddleware({
-					thunk: {
-						extraArgument: this.extraArguments,
-					},
-				});
-			},
-			reducer: {
-				auth: authReducer,
-				users: usersReducer,
-			},
-		});
-	}
+type RootState = ReturnType<AppStore["getState"]>;
 
-	public get extraArguments(): ExtraArguments {
-		return {
-			authApi,
-			userApi,
-		};
-	}
-}
-
-export { Store };
+export { type AppDispatch, type RootState, createStore };

@@ -11,7 +11,7 @@ import { Auth } from "~/pages/auth/auth.jsx";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
-		<StoreProvider store={store.instance}>
+		<StoreProvider store={store}>
 			<RouterProvider
 				routes={[
 					{

@@ -1,19 +1,5 @@
-import { config } from "~/libs/modules/config/config.js";
-import { http } from "~/libs/modules/http/http.js";
-import { storage } from "~/libs/modules/storage/storage.js";
-
-import { UserApi } from "./users-api.js";
-
-const userApi = new UserApi({
-	baseUrl: config.ENV.API.ORIGIN_URL,
-	http,
-	storage,
-});
-
-export { userApi };
+export { UsersApiTag } from "./libs/enums/enums.js";
 export {
-	type UserGetAllItemResponseDto,
-	type UserGetAllResponseDto,
 	type UserSignUpRequestDto,
 	type UserSignUpResponseDto,
 } from "./libs/types/types.js";

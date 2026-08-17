@@ -1,8 +1,7 @@
 import { useSelector } from "react-redux";
 
-import { type store } from "~/libs/modules/store/store.js";
+import { type RootState } from "~/libs/modules/store/store.module.js";
 
-const useAppSelector =
-	useSelector.withTypes<ReturnType<typeof store.instance.getState>>();
+const useAppSelector = useSelector.withTypes<RootState>();
 
 export { useAppSelector };
