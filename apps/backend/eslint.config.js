@@ -1,4 +1,4 @@
-import baseConfig from "../../eslint.config.js";
+import baseConfig, { restrictedSyntaxOptions } from "../../eslint.config.js";
 
 /** @typedef {import("eslint").Linter.Config} */
 let Config;
@@ -34,18 +34,7 @@ const overridesConfigs = [
 		rules: {
 			"no-restricted-syntax": [
 				"error",
-				{
-					message: "Export/Import all (*) is forbidden.",
-					selector: "ExportAllDeclaration,ImportAllDeclaration",
-				},
-				{
-					message: "Exports should be at the end of the file.",
-					selector: "ExportNamedDeclaration[declaration!=null]",
-				},
-				{
-					message: "TS features are forbidden",
-					selector: "TSEnumDeclaration,ClassDeclaration[abstract=true]",
-				},
+				...restrictedSyntaxOptions,
 				{
 					message:
 						"Repository methods start with create, delete, find or update (findAll, findByEmail) - not get*, fetch* or persist*.",

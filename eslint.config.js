@@ -17,6 +17,25 @@ const JS_MAX_PARAMS_ALLOWED = 3;
 let Config;
 /** @typedef {import("eslint").Linter.ParserModule} */
 let ParserModule;
+/** @typedef {{ message: string, selector: string }} RestrictedSyntaxOption */
+
+// Shared across every workspace: packages extend this list instead of
+// re-declaring it, since ESLint replaces rule options rather than merging them.
+/** @type {RestrictedSyntaxOption[]} */
+const restrictedSyntaxOptions = [
+	{
+		message: "Export/Import all (*) is forbidden.",
+		selector: "ExportAllDeclaration,ImportAllDeclaration",
+	},
+	{
+		message: "Exports should be at the end of the file.",
+		selector: "ExportNamedDeclaration[declaration!=null]",
+	},
+	{
+		message: "TS features are forbidden",
+		selector: "TSEnumDeclaration,ClassDeclaration[abstract=true]",
+	},
+];
 
 /** @type {Config} */
 const filesConfig = {
@@ -49,21 +68,7 @@ const jsConfig = {
 				max: 1,
 			},
 		],
-		"no-restricted-syntax": [
-			"error",
-			{
-				message: "Export/Import all (*) is forbidden.",
-				selector: "ExportAllDeclaration,ImportAllDeclaration",
-			},
-			{
-				message: "Exports should be at the end of the file.",
-				selector: "ExportNamedDeclaration[declaration!=null]",
-			},
-			{
-				message: "TS features are forbidden",
-				selector: "TSEnumDeclaration,ClassDeclaration[abstract=true]",
-			},
-		],
+		"no-restricted-syntax": ["error", ...restrictedSyntaxOptions],
 		quotes: ["error", "double"],
 	},
 };
@@ -261,3 +266,4 @@ const config = [
 ];
 
 export default config;
+export { restrictedSyntaxOptions };
