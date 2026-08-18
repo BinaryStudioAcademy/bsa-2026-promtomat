@@ -36,32 +36,12 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: true
 
-  dependencies:
-    name: Install Dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: Code Checkout
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
   ci-pr:
     permissions:
       contents: read
       pull-requests: write
 
     name: PR Linting
-    needs: dependencies
     runs-on: ubuntu-latest
 
     steps:
@@ -70,17 +50,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Lint Commits
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
