@@ -3,5 +3,6 @@ export {
 	APIPath,
 	AppEnvironment,
 	HTTPHeader,
+	HTTPMethod,
 	ServerErrorType,
 } from "@promptomat/shared";

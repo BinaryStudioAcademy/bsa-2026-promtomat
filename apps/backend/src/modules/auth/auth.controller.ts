@@ -4,7 +4,7 @@ import {
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
-import { HTTPCode } from "~/libs/modules/http/http.js";
+import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
 	type UserSignUpRequestDto,
@@ -29,7 +29,7 @@ class AuthController extends BaseController {
 						body: UserSignUpRequestDto;
 					}>,
 				),
-			method: "POST",
+			method: HTTPMethod.POST,
 			path: AuthApiPath.SIGN_UP,
 			validation: {
 				body: userSignUpValidationSchema,

@@ -1,4 +1,4 @@
-import { APIPath } from "~/libs/enums/enums.js";
+import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import {
 	UsersApiTag,
@@ -16,7 +16,7 @@ const authApi = baseApi
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
 					body: payload,
-					method: "POST",
+					method: HTTPMethod.POST,
 					url: `${APIPath.AUTH}${AuthApiPath.SIGN_UP}`,
 				}),
 			}),
