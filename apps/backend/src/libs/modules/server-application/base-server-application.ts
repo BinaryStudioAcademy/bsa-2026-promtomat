@@ -25,6 +25,10 @@ import {
 
 const SHUTDOWN_SIGNALS = ["SIGINT", "SIGTERM"] as const;
 
+const SHUTDOWN_TIMEOUT_MS = 10_000;
+
+const SHUTDOWN_FAILURE_EXIT_CODE = 1;
+
 type Constructor = {
 	apis: ServerApplicationApi[];
 	config: Config;
@@ -147,19 +151,49 @@ class BaseServerApplication implements ServerApplication {
 		});
 	}
 
+	private logError(error: unknown): void {
+		if (error instanceof Error) {
+			this.logger.error(error.message, {
+				cause: error.cause,
+				stack: error.stack,
+			});
+
+			return;
+		}
+
+		this.logger.error("Unknown error", { error });
+	}
+
 	private async shutdown(signal: string): Promise<void> {
 		this.logger.info(`Received ${signal}, shutting down…`);
 
+		const timeout = this.terminateAfterTimeout();
+
 		try {
 			await this.app.close();
+
+			clearTimeout(timeout);
 		} catch (error) {
-			if (error instanceof Error) {
-				this.logger.error(error.message, {
-					cause: error.cause,
-					stack: error.stack,
-				});
-			}
+			clearTimeout(timeout);
+
+			this.logError(error);
+			this.logger.flush();
+
+			// eslint-disable-next-line unicorn/no-process-exit -- graceful shutdown must terminate the process
+			process.exit(SHUTDOWN_FAILURE_EXIT_CODE);
 		}
+	}
+
+	private terminateAfterTimeout(): ReturnType<typeof setTimeout> {
+		return setTimeout(() => {
+			this.logger.error(
+				`Shutdown did not complete within ${SHUTDOWN_TIMEOUT_MS.toString()}ms, forcing exit`,
+			);
+			this.logger.flush();
+
+			// eslint-disable-next-line unicorn/no-process-exit -- graceful shutdown must terminate the process
+			process.exit(SHUTDOWN_FAILURE_EXIT_CODE);
+		}, SHUTDOWN_TIMEOUT_MS).unref();
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
@@ -216,12 +250,7 @@ class BaseServerApplication implements ServerApplication {
 		} catch (error) {
 			await this.app.close();
 
-			if (error instanceof Error) {
-				this.logger.error(error.message, {
-					cause: error.cause,
-					stack: error.stack,
-				});
-			}
+			this.logError(error);
 
 			throw error;
 		}
