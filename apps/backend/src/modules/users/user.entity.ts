@@ -1,13 +1,11 @@
-import { type Entity } from "~/libs/types/types.js";
+class UserEntity {
+	private readonly email: string;
 
-class UserEntity implements Entity {
-	private email: string;
+	private readonly id: null | number;
 
-	private id: null | number;
+	private readonly passwordHash: string;
 
-	private passwordHash: string;
-
-	private passwordSalt: string;
+	private readonly passwordSalt: string;
 
 	private constructor({
 		email,
