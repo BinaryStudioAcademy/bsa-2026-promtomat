@@ -23,6 +23,8 @@ import {
 	type ServerApplicationRouteParameters,
 } from "./libs/types/types.js";
 
+const SHUTDOWN_SIGNALS = ["SIGINT", "SIGTERM"] as const;
+
 type Constructor = {
 	apis: ServerApplicationApi[];
 	config: Config;
@@ -57,6 +59,12 @@ class BaseServerApplication implements ServerApplication {
 	private initApp(): void {
 		this.app = Fastify({
 			ignoreTrailingSlash: true,
+		});
+	}
+
+	private initDatabaseLifecycle(): void {
+		this.app.addHook("onClose", async () => {
+			await this.database.disconnect();
 		});
 	}
 
@@ -123,12 +131,35 @@ class BaseServerApplication implements ServerApplication {
 		});
 	}
 
+	private initShutdown(): void {
+		for (let signal of SHUTDOWN_SIGNALS) {
+			process.once(signal, () => {
+				void this.shutdown(signal);
+			});
+		}
+	}
+
 	private initValidationCompiler(): void {
 		this.app.setValidatorCompiler<ValidationSchema>(({ schema }) => {
 			return <T, R = ReturnType<ValidationSchema["parse"]>>(data: T): R => {
 				return schema.parse(data) as R;
 			};
 		});
+	}
+
+	private async shutdown(signal: string): Promise<void> {
+		this.logger.info(`Received ${signal}, shutting down…`);
+
+		try {
+			await this.app.close();
+		} catch (error) {
+			if (error instanceof Error) {
+				this.logger.error(error.message, {
+					cause: error.cause,
+					stack: error.stack,
+				});
+			}
+		}
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
@@ -165,7 +196,11 @@ class BaseServerApplication implements ServerApplication {
 
 		this.initRoutes();
 
+		this.initDatabaseLifecycle();
+
 		this.database.connect();
+
+		this.initShutdown();
 
 		try {
 			await this.app.listen({
@@ -179,6 +214,8 @@ class BaseServerApplication implements ServerApplication {
 				}.`,
 			);
 		} catch (error) {
+			await this.app.close();
+
 			if (error instanceof Error) {
 				this.logger.error(error.message, {
 					cause: error.cause,
