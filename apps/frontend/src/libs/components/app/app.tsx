@@ -1,29 +1,20 @@
+import { Outlet as RouterOutlet, useLocation } from "react-router-dom";
+
 import reactLogo from "~/assets/img/react.svg";
-import { Link, RouterOutlet } from "~/libs/components/components.js";
+import { Link } from "~/libs/components/link/link.js";
 import { AppRoute } from "~/libs/enums/enums.js";
-import {
-	useAppDispatch,
-	useAppSelector,
-	useEffect,
-	useLocation,
-} from "~/libs/hooks/hooks.js";
-import { actions as userActions } from "~/modules/users/users.js";
+import { useGetUsersQuery } from "~/modules/users/users-api.js";
 
 const App: React.FC = () => {
 	const { pathname } = useLocation();
-	const dispatch = useAppDispatch();
-	const { dataStatus, users } = useAppSelector(({ users }) => ({
-		dataStatus: users.dataStatus,
-		users: users.users,
-	}));
 
 	const isRoot = pathname === AppRoute.ROOT;
 
-	useEffect(() => {
-		if (isRoot) {
-			void dispatch(userActions.loadAll());
-		}
-	}, [isRoot, dispatch]);
+	const {
+		data: users,
+		error,
+		isLoading,
+	} = useGetUsersQuery(undefined, { skip: !isRoot });
 
 	return (
 		<>
@@ -48,9 +39,10 @@ const App: React.FC = () => {
 			{isRoot && (
 				<>
 					<h2>Users:</h2>
-					<h3>Status: {dataStatus}</h3>
+					{isLoading && <p>Loading...</p>}
+					{error && <p>{error.message}</p>}
 					<ul>
-						{users.map((user) => (
+						{users?.items.map((user) => (
 							<li key={user.id}>{user.email}</li>
 						))}
 					</ul>

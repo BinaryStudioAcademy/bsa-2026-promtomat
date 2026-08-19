@@ -26,6 +26,10 @@ class BaseLogger implements Logger {
 		this.logger.error(parameters, message);
 	}
 
+	public flush(): ReturnType<Logger["flush"]> {
+		this.logger.flush();
+	}
+
 	public info(
 		message: string,
 		parameters: Record<string, unknown> = {},

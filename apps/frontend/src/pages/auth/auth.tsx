@@ -1,21 +1,17 @@
+import { useCallback } from "react";
+import { useLocation } from "react-router-dom";
+
 import { AppRoute } from "~/libs/enums/enums.js";
-import {
-	useAppDispatch,
-	useAppSelector,
-	useCallback,
-	useLocation,
-} from "~/libs/hooks/hooks.js";
-import { actions as authActions } from "~/modules/auth/auth.js";
+import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { useSignUpMutation } from "~/modules/auth/auth-api.js";
 import { type UserSignUpRequestDto } from "~/modules/users/users.js";
 
-import { SignInForm, SignUpForm } from "./components/components.js";
+import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
+import { SignUpForm } from "./components/sign-up-form/sign-up-form.js";
 
 const Auth: React.FC = () => {
-	const dispatch = useAppDispatch();
-	const { dataStatus } = useAppSelector(({ auth }) => ({
-		dataStatus: auth.dataStatus,
-	}));
 	const { pathname } = useLocation();
+	const [signUp, { error, isLoading }] = useSignUpMutation();
 
 	const handleSignInSubmit = useCallback((): void => {
 		// handle sign in
@@ -23,9 +19,9 @@ const Auth: React.FC = () => {
 
 	const handleSignUpSubmit = useCallback(
 		(payload: UserSignUpRequestDto): void => {
-			void dispatch(authActions.signUp(payload));
+			void signUp(payload);
 		},
-		[dispatch],
+		[signUp],
 	);
 
 	const getScreen = (screen: string): React.JSX.Element => {
@@ -38,7 +34,8 @@ const Auth: React.FC = () => {
 
 	return (
 		<>
-			state: {dataStatus}
+			{isLoading && <p>Loading...</p>}
+			{isServerError(error) && <p>{error.message}</p>}
 			{getScreen(pathname)}
 		</>
 	);

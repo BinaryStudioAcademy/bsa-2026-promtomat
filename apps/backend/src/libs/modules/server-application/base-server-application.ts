@@ -23,6 +23,12 @@ import {
 	type ServerApplicationRouteParameters,
 } from "./libs/types/types.js";
 
+const SHUTDOWN_SIGNALS = ["SIGINT", "SIGTERM"] as const;
+
+const SHUTDOWN_TIMEOUT_MS = 10_000;
+
+const SHUTDOWN_FAILURE_EXIT_CODE = 1;
+
 type Constructor = {
 	apis: ServerApplicationApi[];
 	config: Config;
@@ -57,6 +63,12 @@ class BaseServerApplication implements ServerApplication {
 	private initApp(): void {
 		this.app = Fastify({
 			ignoreTrailingSlash: true,
+		});
+	}
+
+	private initDatabaseLifecycle(): void {
+		this.app.addHook("onClose", async () => {
+			await this.database.disconnect();
 		});
 	}
 
@@ -123,12 +135,65 @@ class BaseServerApplication implements ServerApplication {
 		});
 	}
 
+	private initShutdown(): void {
+		for (let signal of SHUTDOWN_SIGNALS) {
+			process.once(signal, () => {
+				void this.shutdown(signal);
+			});
+		}
+	}
+
 	private initValidationCompiler(): void {
 		this.app.setValidatorCompiler<ValidationSchema>(({ schema }) => {
 			return <T, R = ReturnType<ValidationSchema["parse"]>>(data: T): R => {
 				return schema.parse(data) as R;
 			};
 		});
+	}
+
+	private logError(error: unknown): void {
+		if (error instanceof Error) {
+			this.logger.error(error.message, {
+				cause: error.cause,
+				stack: error.stack,
+			});
+
+			return;
+		}
+
+		this.logger.error("Unknown error", { error });
+	}
+
+	private async shutdown(signal: string): Promise<void> {
+		this.logger.info(`Received ${signal}, shutting down…`);
+
+		const timeout = this.terminateAfterTimeout();
+
+		try {
+			await this.app.close();
+
+			clearTimeout(timeout);
+		} catch (error) {
+			clearTimeout(timeout);
+
+			this.logError(error);
+			this.logger.flush();
+
+			// eslint-disable-next-line unicorn/no-process-exit -- graceful shutdown must terminate the process
+			process.exit(SHUTDOWN_FAILURE_EXIT_CODE);
+		}
+	}
+
+	private terminateAfterTimeout(): ReturnType<typeof setTimeout> {
+		return setTimeout(() => {
+			this.logger.error(
+				`Shutdown did not complete within ${SHUTDOWN_TIMEOUT_MS.toString()}ms, forcing exit`,
+			);
+			this.logger.flush();
+
+			// eslint-disable-next-line unicorn/no-process-exit -- graceful shutdown must terminate the process
+			process.exit(SHUTDOWN_FAILURE_EXIT_CODE);
+		}, SHUTDOWN_TIMEOUT_MS).unref();
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
@@ -165,7 +230,11 @@ class BaseServerApplication implements ServerApplication {
 
 		this.initRoutes();
 
+		this.initDatabaseLifecycle();
+
 		this.database.connect();
+
+		this.initShutdown();
 
 		try {
 			await this.app.listen({
@@ -179,12 +248,9 @@ class BaseServerApplication implements ServerApplication {
 				}.`,
 			);
 		} catch (error) {
-			if (error instanceof Error) {
-				this.logger.error(error.message, {
-					cause: error.cause,
-					stack: error.stack,
-				});
-			}
+			await this.app.close();
+
+			this.logError(error);
 
 			throw error;
 		}

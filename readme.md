@@ -17,8 +17,11 @@ Promptomat is an intelligent prompt search, evaluation, and autocomplete system 
 ## 3. Requirements
 
 - [NodeJS](https://nodejs.org/en) (24.x.x);
-- [npm](https://www.npmjs.com/) (11.x.x);
+- [pnpm](https://pnpm.io/) (11.x.x);
 - [PostgreSQL](https://www.postgresql.org/) (18.4)
+
+The pnpm version is pinned in the `packageManager` field, so `corepack enable pnpm` is enough to get the exact version
+the project expects.
 
 ## 4. Database Schema
 
@@ -33,7 +36,7 @@ TODO: add application schema
 #### 5.1.1 Technologies
 
 1. [Typescript](https://www.typescriptlang.org/)
-2. [npm workspaces](https://docs.npmjs.com/cli/v9/using-npm/workspaces)
+2. [pnpm workspaces](https://pnpm.io/workspaces)
 
 ### 5.2 Frontend
 
@@ -41,6 +44,7 @@ TODO: add application schema
 
 1. [React](https://react.dev/) — a frontend library
 2. [Redux](https://redux.js.org/) + [Redux Toolkit](https://redux-toolkit.js.org/) — a state manager
+3. [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) — server state (fetching, caching, invalidation)
 
 #### 5.2.2 Folder Structure
 
@@ -108,17 +112,36 @@ As we are already using js on both frontend and backend it would be useful to sh
 
 You should use .env.example files as a reference.
 
-1. Install dependencies: `npm install`.
+1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
+   commit.
 
-2. Install pre-commit hooks: `npx simple-git-hooks`. This hook is used to verify code style on commit.
+2. Run database. You can run it by installing postgres on your computer.
 
-3. Run database. You can run it by installing postgres on your computer.
+3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
-4. Apply migrations: `npm run migrate:dev -w backend`
+4. Run backend: `pnpm --filter @promptomat/backend start:dev`
 
-5. Run backend: `npm run start:dev -w backend`
+5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 
-6. Run frontend: `npm run start:dev -w frontend`
+Note that pnpm uses `--filter <package-name>` to target a single workspace, while `-w` is a shorthand for
+`--workspace-root` and runs the script of the root `package.json`.
+
+### 6.2 Worktrees
+
+`git worktree add` checks out tracked files only, so a new worktree starts without the `.env` files and without
+`node_modules`. Both are handled automatically:
+
+- a `post-checkout` hook copies the gitignored env files from the main working tree, and only when the checkout creates
+  a new working tree;
+- the first `pnpm` script installs the dependencies, because `verifyDepsBeforeRun` is enabled. Packages are hardlinked
+  from the global pnpm store, so nothing is downloaded again.
+
+The hook is installed by `pnpm install` together with the other git hooks, and lives in
+`scripts/git-hook-post-checkout.sh`.
+
+The env files are copied as they are, so every worktree shares one database and one backend port. Branches that add
+migrations therefore diverge from the shared schema, and two backends cannot run at once. Point a worktree at its own
+database and port by editing its copied `.env` when that becomes a problem.
 
 ## 7. Development Flow
 

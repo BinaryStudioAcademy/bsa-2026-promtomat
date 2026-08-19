@@ -11,11 +11,14 @@ import { type Database } from "./libs/types/types.js";
 class BaseDatabase implements Database {
 	private appConfig: Config;
 
+	private knexInstance: Knex | null;
+
 	private logger: Logger;
 
 	public constructor(config: Config, logger: Logger) {
 		this.appConfig = config;
 		this.logger = logger;
+		this.knexInstance = null;
 	}
 
 	private get environmentConfig(): Knex.Config {
@@ -62,7 +65,21 @@ class BaseDatabase implements Database {
 	public connect(): ReturnType<Database["connect"]> {
 		this.logger.info("Establish DB connection...");
 
-		Model.knex(knex.default(this.environmentConfig));
+		this.knexInstance = knex.default(this.environmentConfig);
+
+		Model.knex(this.knexInstance);
+	}
+
+	public async disconnect(): Promise<void> {
+		if (!this.knexInstance) {
+			return;
+		}
+
+		this.logger.info("Close DB connection...");
+
+		await this.knexInstance.destroy();
+
+		this.knexInstance = null;
 	}
 }
 

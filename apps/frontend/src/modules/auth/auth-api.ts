@@ -1,40 +1,28 @@
-import { APIPath, ContentType } from "~/libs/enums/enums.js";
-import { BaseHTTPApi } from "~/libs/modules/api/api.js";
-import { type HTTP } from "~/libs/modules/http/http.js";
-import { type Storage } from "~/libs/modules/storage/storage.js";
+import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import { baseApi } from "~/libs/modules/api/base-api.js";
 import {
+	UsersApiTag,
 	type UserSignUpRequestDto,
 	type UserSignUpResponseDto,
 } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 
-type Constructor = {
-	baseUrl: string;
-	http: HTTP;
-	storage: Storage;
-};
+const authApi = baseApi
+	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
+	.injectEndpoints({
+		endpoints: (builder) => ({
+			signUp: builder.mutation<UserSignUpResponseDto, UserSignUpRequestDto>({
+				invalidatesTags: [UsersApiTag.USER],
+				query: (payload) => ({
+					body: payload,
+					method: HTTPMethod.POST,
+					url: `${APIPath.AUTH}${AuthApiPath.SIGN_UP}`,
+				}),
+			}),
+		}),
+	});
 
-class AuthApi extends BaseHTTPApi {
-	public constructor({ baseUrl, http, storage }: Constructor) {
-		super({ baseUrl, http, path: APIPath.AUTH, storage });
-	}
+const { useSignUpMutation } = authApi;
 
-	public async signUp(
-		payload: UserSignUpRequestDto,
-	): Promise<UserSignUpResponseDto> {
-		const response = await this.load(
-			this.getFullEndpoint(AuthApiPath.SIGN_UP, {}),
-			{
-				contentType: ContentType.JSON,
-				hasAuth: false,
-				method: "POST",
-				payload: JSON.stringify(payload),
-			},
-		);
-
-		return await response.json<UserSignUpResponseDto>();
-	}
-}
-
-export { AuthApi };
+export { useSignUpMutation };

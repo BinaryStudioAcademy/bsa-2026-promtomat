@@ -5,6 +5,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 type Database = {
 	connect: () => void;
+	disconnect: () => Promise<void>;
 	environmentsConfig: Record<ValueOf<typeof AppEnvironment>, Knex.Config>;
 };
 
