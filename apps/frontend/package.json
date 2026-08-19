@@ -5,19 +5,19 @@
 	"type": "module",
 	"engines": {
 		"node": "24.x.x",
-		"npm": "11.x.x"
+		"pnpm": "11.x.x"
 	},
 	"scripts": {
-		"lint:css": "npx stylelint \"src/**/*.css\"",
-		"lint:js": "npx eslint . --max-warnings=0",
-		"lint:type": "npx tsc --noEmit",
-		"lint": "concurrently \"npm:lint:*\"",
+		"lint:css": "stylelint \"src/**/*.css\"",
+		"lint:js": "eslint . --max-warnings=0",
+		"lint:type": "tsc --noEmit",
+		"lint": "concurrently \"pnpm:lint:*\"",
 		"start:dev": "vite",
 		"build": "tsc -p tsconfig.build.json && vite build",
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@promptomat/shared": "*",
+		"@promptomat/shared": "workspace:*",
 		"@hookform/resolvers": "5.5.8",
 		"@reduxjs/toolkit": "2.12.0",
 		"react": "19.2.8",

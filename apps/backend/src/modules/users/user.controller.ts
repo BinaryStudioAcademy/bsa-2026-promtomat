@@ -3,7 +3,7 @@ import {
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
-import { HTTPCode } from "~/libs/modules/http/http.js";
+import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
@@ -33,7 +33,7 @@ class UserController extends BaseController {
 
 		this.addRoute({
 			handler: () => this.findAll(),
-			method: "GET",
+			method: HTTPMethod.GET,
 			path: UsersApiPath.ROOT,
 		});
 	}

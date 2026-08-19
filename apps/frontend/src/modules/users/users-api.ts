@@ -1,34 +1,20 @@
-import { APIPath, ContentType } from "~/libs/enums/enums.js";
-import { BaseHTTPApi } from "~/libs/modules/api/api.js";
-import { type HTTP } from "~/libs/modules/http/http.js";
-import { type Storage } from "~/libs/modules/storage/storage.js";
+import { APIPath } from "~/libs/enums/enums.js";
+import { baseApi } from "~/libs/modules/api/base-api.js";
 
-import { UsersApiPath } from "./libs/enums/enums.js";
+import { UsersApiPath, UsersApiTag } from "./libs/enums/enums.js";
 import { type UserGetAllResponseDto } from "./libs/types/types.js";
 
-type Constructor = {
-	baseUrl: string;
-	http: HTTP;
-	storage: Storage;
-};
+const usersApi = baseApi
+	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
+	.injectEndpoints({
+		endpoints: (builder) => ({
+			getUsers: builder.query<UserGetAllResponseDto, undefined>({
+				providesTags: [UsersApiTag.USER],
+				query: () => `${APIPath.USERS}${UsersApiPath.ROOT}`,
+			}),
+		}),
+	});
 
-class UserApi extends BaseHTTPApi {
-	public constructor({ baseUrl, http, storage }: Constructor) {
-		super({ baseUrl, http, path: APIPath.USERS, storage });
-	}
+const { useGetUsersQuery } = usersApi;
 
-	public async getAll(): Promise<UserGetAllResponseDto> {
-		const response = await this.load(
-			this.getFullEndpoint(UsersApiPath.ROOT, {}),
-			{
-				contentType: ContentType.JSON,
-				hasAuth: false,
-				method: "GET",
-			},
-		);
-
-		return await response.json<UserGetAllResponseDto>();
-	}
-}
-
-export { UserApi };
+export { useGetUsersQuery };

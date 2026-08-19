@@ -6,6 +6,7 @@ type LogFunction = (
 type Logger = {
 	debug: LogFunction;
 	error: LogFunction;
+	flush: () => void;
 	info: LogFunction;
 	warn: LogFunction;
 };

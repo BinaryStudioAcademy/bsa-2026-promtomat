@@ -2,29 +2,26 @@
 	"name": "promptomat",
 	"version": "1.0.0",
 	"type": "module",
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
+	"packageManager": "pnpm@11.13.1",
 	"engines": {
 		"node": "24.x.x",
-		"npm": "11.x.x"
+		"pnpm": "11.x.x"
 	},
 	"scripts": {
-		"git:hook:precommit": "lint-staged --cwd $PWD",
-		"git:hook:commit": "npx @commitlint/cli --edit",
-		"build:shared": "npm run build -w packages/shared",
-		"build:frontend": "npm run build -w apps/frontend",
-		"build:backend": "npm run build -w apps/backend",
-		"build": "npm run build:shared && npm run build:backend && npm run build:frontend",
+		"git:hook:precommit": "lint-staged",
+		"git:hook:commit": "pnpm exec commitlint --edit",
+		"build:shared": "pnpm --filter @promptomat/shared run build",
+		"build:frontend": "pnpm --filter @promptomat/frontend run build",
+		"build:backend": "pnpm --filter @promptomat/backend run build",
+		"build": "pnpm --recursive run build",
 		"lint:editor": "editorconfig-checker",
 		"lint:fs": "ls-lint",
-		"lint:type": "npx tsc --noEmit",
-		"lint:js": "npx eslint . --max-warnings=0 --no-warn-ignored",
+		"lint:type": "tsc --noEmit",
+		"lint:js": "eslint . --max-warnings=0 --no-warn-ignored",
 		"lint:format": "prettier --check \"**/*.{ts,tsx,json,md,css,html}\"",
 		"lint:trash": "knip",
 		"format": "prettier --write \"**/*.{ts,tsx,json,md,css,html}\"",
-		"lint": "concurrently \"npm:lint:*\" && npm run lint --workspaces",
+		"lint": "concurrently \"pnpm:lint:*\" && pnpm --recursive run lint",
 		"ci:prepare": "simple-git-hooks"
 	},
 	"devDependencies": {
@@ -57,7 +54,8 @@
 		"typescript": "6.0.3"
 	},
 	"simple-git-hooks": {
-		"pre-commit": "npm run lint:type && npm run git:hook:precommit",
-		"commit-msg": "npm run git:hook:commit"
+		"pre-commit": "pnpm run lint:type && pnpm run git:hook:precommit",
+		"commit-msg": "pnpm run git:hook:commit",
+		"post-checkout": "script=\"$(git rev-parse --git-common-dir)/../scripts/git-hook-post-checkout.sh\"; if [ -f \"$script\" ]; then sh \"$script\" \"$@\"; fi"
 	}
 }
