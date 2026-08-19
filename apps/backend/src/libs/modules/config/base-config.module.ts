@@ -51,16 +51,28 @@ class BaseConfig implements Config {
 				},
 			},
 			DB: {
-				CONNECTION_STRING: {
-					default: null,
-					doc: "Database connection string",
-					env: "DB_CONNECTION_STRING",
-					format: String,
-				},
 				DIALECT: {
 					default: null,
 					doc: "Database dialect",
 					env: "DB_DIALECT",
+					format: String,
+				},
+				HOST: {
+					default: null,
+					doc: "Database host",
+					env: "DB_HOST",
+					format: String,
+				},
+				NAME: {
+					default: null,
+					doc: "Database dialect",
+					env: "DB_DIALECT",
+					format: String,
+				},
+				PASSWORD: {
+					default: null,
+					doc: "Database password",
+					env: "DB_PASSWORD",
 					format: String,
 				},
 				POOL_MAX: {
@@ -74,6 +86,18 @@ class BaseConfig implements Config {
 					doc: "Database pool min count",
 					env: "DB_POOL_MIN",
 					format: Number,
+				},
+				PORT: {
+					default: null,
+					doc: "Database port",
+					env: "DB_PORT",
+					format: Number,
+				},
+				USERNAME: {
+					default: null,
+					doc: "Database username",
+					env: "DB_USERNAME",
+					format: String,
 				},
 			},
 		});
