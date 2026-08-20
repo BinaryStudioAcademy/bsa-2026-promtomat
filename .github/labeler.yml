@@ -34,3 +34,8 @@ config:
   - changed-files:
       - any-glob-to-any-file:
           - ".platform/**/*"
+
+infra:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "infra/**/*"
