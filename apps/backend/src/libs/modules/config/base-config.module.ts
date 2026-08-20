@@ -65,8 +65,8 @@ class BaseConfig implements Config {
 				},
 				NAME: {
 					default: null,
-					doc: "Database dialect",
-					env: "DB_DIALECT",
+					doc: "Database name",
+					env: "DB_NAME",
 					format: String,
 				},
 				PASSWORD: {

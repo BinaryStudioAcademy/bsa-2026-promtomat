@@ -7,14 +7,18 @@ ENV VITE_APP_API_ORIGIN_URL=$VITE_APP_API_ORIGIN_URL
 ARG VITE_APP_PROXY_SERVER_URL
 ENV VITE_APP_PROXY_SERVER_URL=$VITE_APP_PROXY_SERVER_URL
 
+RUN corepack enable
+
 WORKDIR /app
-COPY package*.json tsconfig.json packages.d.ts ./
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json packages.d.ts ./
 COPY packages/shared/ ./packages/shared/
 COPY apps/frontend/package.json ./apps/frontend/
-RUN npm ci
+COPY apps/backend/package.json ./apps/backend/
+RUN pnpm install --frozen-lockfile
 
 COPY apps/frontend/ ./apps/frontend/
-RUN npm run build:frontend
+RUN pnpm run build:frontend
 
 FROM nginx:1.31.3-alpine
 
