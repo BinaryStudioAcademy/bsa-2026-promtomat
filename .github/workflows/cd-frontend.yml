@@ -1,0 +1,89 @@
+name: Continuous Delivery Frontend
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - apps/frontend/**/*.*
+      - packages/shared/**/*.*
+      - .github/workflows/cd-frontend.yml
+
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  deployments: write
+  statuses: write
+
+jobs:
+  cd-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment-url: http://app-lb-879573406.eu-central-1.elb.amazonaws.com/
+          environment: development-frontend
+
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2.1.7
+        with:
+          mask-password: true
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./
+          file: ./apps/frontend/Dockerfile
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/promptomat/frontend:${{ github.sha }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
+
+      - name: Fetch current task definition
+        run: |
+          aws ecs describe-task-definition --task-definition promptomat_frontend \
+            --query taskDefinition > task-definition.json
+
+      - name: Update task definition with new image
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        id: render
+        with:
+          task-definition: task-definition.json
+          container-name: frontend
+          image: ${{ steps.ecr.outputs.registry }}/promptomat/frontend:${{ github.sha }}
+
+      - name: Deploy task definition to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: promptomat-frontend
+          cluster: Fargate
+          wait-for-service-stability: true
+
+      - name: Update Deployment Status
+        if: ${{ always() }}
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          environment-url: ${{ steps.deployment.outputs.environment_url }}
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          state: ${{ job.status }}
