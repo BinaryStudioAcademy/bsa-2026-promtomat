@@ -69,7 +69,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: frontend
-          image: ${{ steps.ecr.outputs.registry }}/promptomat/frontend:${{ github.sha }}
+          image: ${{ steps.login-ecr.outputs.registry }}/promptomat/frontend:${{ github.sha }}
 
       - name: Deploy task definition to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
