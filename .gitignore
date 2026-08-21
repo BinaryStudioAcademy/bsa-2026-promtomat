@@ -11,3 +11,33 @@ build
 # misc
 .DS_Store
 .env
+
+# Local directory for downloaded plugins and modules (NEVER commit this)
+.terraform/
+
+# Hide workspace states
+.terraform.workspace
+
+# Local state files (if you are not using a remote backend like S3)
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Sensitive variable files (contains passwords, keys, etc.)
+*.tfvars
+*.tfvars.json
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+lambda.zip

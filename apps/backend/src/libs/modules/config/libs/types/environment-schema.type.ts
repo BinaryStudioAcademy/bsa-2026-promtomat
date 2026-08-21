@@ -8,10 +8,14 @@ type EnvironmentSchema = {
 		PORT: number;
 	};
 	DB: {
-		CONNECTION_STRING: string;
 		DIALECT: string;
+		HOST: string;
+		NAME: string;
+		PASSWORD: string;
 		POOL_MAX: number;
 		POOL_MIN: number;
+		PORT: number;
+		USERNAME: string;
 	};
 };
 

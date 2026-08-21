@@ -24,6 +24,7 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export { AuthApiPath } from "./modules/auth/auth.js";
+export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type UserGetAllItemResponseDto,
 	type UserGetAllResponseDto,
