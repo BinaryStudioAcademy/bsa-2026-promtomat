@@ -37,12 +37,13 @@ class BaseController implements Controller {
 	}
 
 	private mapRequest(request: FastifyRequest): APIHandlerOptions {
-		const { body, params, query } = request;
+		const { body, params, query, user } = request;
 
 		return {
 			body,
 			params,
 			query,
+			user,
 		};
 	}
 

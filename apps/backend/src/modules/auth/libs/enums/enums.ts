@@ -1,1 +1,1 @@
-export { AuthApiPath } from "@promptomat/shared";
+export { AuthApiPath, ExceptionMessage } from "@promptomat/shared";

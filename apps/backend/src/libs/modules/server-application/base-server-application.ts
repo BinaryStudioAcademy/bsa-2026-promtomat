@@ -17,6 +17,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
+import { injectUser } from "./libs/plugins/plugins.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -257,6 +258,8 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public async initMiddlewares(): Promise<void> {
+		injectUser(this.app);
+
 		await Promise.all(
 			this.apis.map(async (api) => {
 				this.logger.info(

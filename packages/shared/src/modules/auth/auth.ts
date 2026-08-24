@@ -1,1 +1,1 @@
-export { AuthApiPath } from "./libs/enums/enums.js";
+export { AuthApiPath, ExceptionMessage } from "./libs/enums/enums.js";

@@ -28,6 +28,11 @@ class UserService {
 		return user.toObject();
 	}
 
+	public async find(id: number): Promise<null | UserSignUpResponseDto> {
+		const user = await this.userRepository.find(id);
+		return user ? user.toObject() : null;
+	}
+
 	public async findAll(): Promise<UserGetAllResponseDto> {
 		const users = await this.userRepository.findAll();
 
