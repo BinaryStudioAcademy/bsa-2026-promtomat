@@ -1,0 +1,22 @@
+import { z } from "zod";
+
+import { UserValidationMessage, UserValidationRule } from "../enums/enums.js";
+
+const userSignIn = z
+	.object({
+		email: z
+			.string()
+			.trim()
+			.min(UserValidationRule.EMAIL_MINIMUM_LENGTH, {
+				error: UserValidationMessage.EMAIL_REQUIRE,
+			})
+			.pipe(
+				z.email({
+					error: UserValidationMessage.EMAIL_WRONG,
+				}),
+			),
+		password: z.string().trim(),
+	})
+	.required();
+
+export { userSignIn };
