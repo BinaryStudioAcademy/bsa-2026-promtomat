@@ -5,6 +5,7 @@ import { type APIHandler } from "./api-handler.type.js";
 
 type ControllerRouteParameters = {
 	handler: APIHandler;
+	isProtected?: boolean;
 	method: ValueOf<typeof HTTPMethod>;
 	path: string;
 	validation?: {
