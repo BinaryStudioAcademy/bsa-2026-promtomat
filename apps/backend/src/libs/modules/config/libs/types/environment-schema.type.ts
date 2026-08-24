@@ -17,6 +17,10 @@ type EnvironmentSchema = {
 		PORT: number;
 		USERNAME: string;
 	};
+	JWT: {
+		EXPIRES_IN: string;
+		SECRET: string;
+	};
 };
 
 export { type EnvironmentSchema };
