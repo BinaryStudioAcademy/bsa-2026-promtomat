@@ -16,7 +16,7 @@ class UserService {
 
 	public async create(
 		payload: UserSignUpRequestDto,
-	): Promise<UserSignUpResponseDto> {
+	): Promise<Omit<UserSignUpResponseDto, "token">> {
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({
 				email: payload.email,
