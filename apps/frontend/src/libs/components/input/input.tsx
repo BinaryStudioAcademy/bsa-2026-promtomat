@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import {
 	type Control,
 	type FieldErrors,
@@ -25,6 +25,7 @@ const Input = <T extends FieldValues>({
 	type = "text",
 }: Properties<T>): React.JSX.Element => {
 	const { field } = useController({ control, name });
+	const errorId = useId();
 
 	const error = errors[name]?.message;
 	const hasError = Boolean(error);
@@ -32,8 +33,14 @@ const Input = <T extends FieldValues>({
 	return (
 		<label>
 			<span>{label}</span>
-			<input {...field} placeholder={placeholder} type={type} />
-			{hasError && <span>{error as string}</span>}
+			<input
+				{...field}
+				aria-describedby={hasError ? errorId : undefined}
+				aria-invalid={hasError || undefined}
+				placeholder={placeholder}
+				type={type}
+			/>
+			{hasError && <span id={errorId}>{error as string}</span>}
 		</label>
 	);
 };
