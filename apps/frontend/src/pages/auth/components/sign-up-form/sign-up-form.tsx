@@ -30,7 +30,7 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 	return (
 		<>
 			<h3>Sign Up</h3>
-			<form onSubmit={handleFormSubmit}>
+			<form noValidate onSubmit={handleFormSubmit}>
 				<p>
 					<Input
 						control={control}
@@ -38,7 +38,7 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 						label="Email"
 						name="email"
 						placeholder="Enter your email"
-						type="text"
+						type="email"
 					/>
 				</p>
 				<p>
@@ -48,7 +48,7 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 						label="Password"
 						name="password"
 						placeholder="Enter your password"
-						type="text"
+						type="password"
 					/>
 				</p>
 				<Button label="Sign up" type="submit" />
