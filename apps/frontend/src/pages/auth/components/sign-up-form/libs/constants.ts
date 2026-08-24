@@ -1,6 +1,6 @@
-import { type UserSignUpRequestDto } from "~/modules/users/users.js";
+import { type SignUpRequestDto } from "~/modules/auth/auth.js";
 
-const DEFAULT_SIGN_UP_PAYLOAD: UserSignUpRequestDto = {
+const DEFAULT_SIGN_UP_PAYLOAD: SignUpRequestDto = {
 	email: "",
 	password: "",
 };
