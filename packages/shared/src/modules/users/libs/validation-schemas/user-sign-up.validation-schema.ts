@@ -15,12 +15,7 @@ const userSignUp = z
 					error: UserValidationMessage.EMAIL_WRONG,
 				}),
 			),
-		password: z
-			.string()
-			.trim()
-			.min(UserValidationRule.PASSWORD_SIGN_IN_MINIMUM_LENGTH, {
-				error: UserValidationMessage.PASSWORD_REQUIRE,
-			}),
+		password: z.string().trim(),
 	})
 	.required();
 
