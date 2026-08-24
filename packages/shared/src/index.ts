@@ -28,8 +28,11 @@ export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type UserGetAllItemResponseDto,
 	type UserGetAllResponseDto,
+	type UserSignInRequestDto,
+	type UserSignInResponseDto,
 	type UserSignUpRequestDto,
 	type UserSignUpResponseDto,
 	UsersApiPath,
+	userSignInValidationSchema,
 	userSignUpValidationSchema,
 } from "./modules/users/users.js";
