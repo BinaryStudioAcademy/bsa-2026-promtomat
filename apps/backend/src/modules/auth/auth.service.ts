@@ -1,5 +1,6 @@
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type UserDto } from "~/modules/users/libs/types/types.js";
+import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { ExceptionMessage } from "./libs/enums/enums.js";
@@ -8,13 +9,12 @@ import {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 
-// TODO: replace with a token issued by the token module — pm-23
-const TOKEN_PLACEHOLDER = "token-placeholder";
-
 class AuthService {
+	private tokenService: TokenService;
 	private userService: UserService;
 
-	public constructor(userService: UserService) {
+	public constructor(userService: UserService, tokenService: TokenService) {
+		this.tokenService = tokenService;
 		this.userService = userService;
 	}
 
@@ -36,8 +36,12 @@ class AuthService {
 	): Promise<SignUpResponseDto> {
 		const user = await this.userService.create(signUpRequestDto);
 
+		const token = await this.tokenService.create({
+			userId: user.id,
+		});
+
 		return {
-			token: TOKEN_PLACEHOLDER,
+			token,
 			user,
 		};
 	}
