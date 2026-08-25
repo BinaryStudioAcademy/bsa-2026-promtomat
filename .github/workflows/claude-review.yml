@@ -44,10 +44,10 @@ jobs:
             REPO: ${{ github.repository }}
             PR: ${{ github.event.pull_request.number }}
 
-            First run `gh pr view` with `--comments`. If you have already
-            reviewed this pull request, review only the commits pushed since
-            then, and never re-post a finding your earlier comments already
-            made — a repeated comment is worse than a missed one.
+            First run `gh pr view` with `--comments`. Review the whole diff
+            every time — you need the full picture — but never re-post a
+            finding your earlier comments already made. A repeated comment is
+            worse than a missed one.
 
             `pnpm lint` and `pnpm build` run on this pull request in the
             Continuous Integration workflow. Check `gh pr checks`; if one has
@@ -104,8 +104,6 @@ jobs:
               `mcp__github_inline_comment__create_inline_comment`: one sentence
               on what is wrong, one on why it matters. Add a suggestion block
               only when committing it fixes the issue completely.
-            - At most 10 inline comments. If there are more, post the 10 that
-              matter most.
             - Then post one summary comment with `gh pr comment`: a single
               line per finding, or "No issues found." if there are none. If you
               posted a summary on an earlier run, update that one with
@@ -117,5 +115,5 @@ jobs:
 
           claude_args: |
             --model claude-haiku-4-5
-            --max-turns 50
+            --max-turns 100
             --allowedTools "WebFetch,WebSearch,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr checks:*)"
