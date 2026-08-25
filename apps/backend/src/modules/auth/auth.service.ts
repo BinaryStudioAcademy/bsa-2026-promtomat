@@ -10,10 +10,6 @@ import {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 
-const DUMMY_HASH =
-	"8a1c481148b859b836b49fd577ba54c29fb16dbf44a48bc462d60f5e2709fe6a4cbe36f8e01d0b02fb63a77dced76e53a6771365bffc4b441fa4a4a51cb6023b";
-const DUMMY_SALT = "0f5cf02c0465b914d3036158f58dce4e";
-
 // TODO: replace with a token issued by the token module — pm-23
 const TOKEN_PLACEHOLDER = "token-placeholder";
 
@@ -43,12 +39,7 @@ class AuthService {
 				salt: userAuth.passwordSalt,
 			});
 		} else {
-			// dummy hash to waste the same CPU time
-			await this.hashing.verify({
-				data: userRequestDto.password,
-				hash: DUMMY_HASH,
-				salt: DUMMY_SALT,
-			});
+			await this.hashing.hash(userRequestDto.password);
 		}
 
 		if (!userEntity || !isValidPassword) {
