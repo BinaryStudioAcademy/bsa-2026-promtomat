@@ -1,7 +1,8 @@
-import { jwtVerify, SignJWT } from "jose";
+import { errors, jwtVerify, SignJWT } from "jose";
 
 import { type Config } from "~/libs/modules/config/config.js";
 
+import { TokenError } from "./libs/exceptions/exceptions.js";
 import { type TokenPayload, type TokenService } from "./libs/types/types.js";
 
 class JwtTokenService implements TokenService {
@@ -21,9 +22,21 @@ class JwtTokenService implements TokenService {
 	}
 
 	public async verify(token: string): Promise<TokenPayload> {
-		const { payload } = await jwtVerify(token, this.secret);
+		try {
+			const { payload } = await jwtVerify(token, this.secret);
 
-		return payload as TokenPayload;
+			return payload as TokenPayload;
+		} catch (error) {
+			if (error instanceof errors.JWTExpired) {
+				throw new TokenError("Token has expired", error);
+			}
+
+			if (error instanceof errors.JWSSignatureVerificationFailed) {
+				throw new TokenError("Invalid token signature", error);
+			}
+
+			throw new TokenError("Invalid token", error);
+		}
 	}
 }
 
