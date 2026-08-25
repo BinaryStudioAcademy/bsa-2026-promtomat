@@ -1,5 +1,5 @@
 type TokenPayload = {
-	id: number;
+	userId: number;
 };
 
 export { type TokenPayload };

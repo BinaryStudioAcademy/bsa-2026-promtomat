@@ -4,21 +4,12 @@ import { config } from "dotenv";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
+import {
+	validateJwtAlg,
+	validateJwtExpiresIn,
+	validateJwtSecret,
+} from "./libs/helpers/helpers.js";
 import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
-
-const validateJwtExpiresIn = (value: unknown): void => {
-	if (typeof value !== "string" || !/^\d+[smhdwy]?$/.test(value)) {
-		throw new Error(
-			"JWT_EXPIRES_IN must be a valid duration string (e.g., '24h').",
-		);
-	}
-};
-
-const validateJwtSecret = (value: unknown): void => {
-	if (typeof value !== "string" || value.trim() === "") {
-		throw new Error("JWT_SECRET must be a non-empty string.");
-	}
-};
 
 class BaseConfig implements Config {
 	private logger: Logger;
@@ -119,6 +110,12 @@ class BaseConfig implements Config {
 				},
 			},
 			JWT: {
+				ALG: {
+					default: null,
+					doc: "Algorithm for JWT signing",
+					env: "JWT_ALG",
+					format: validateJwtAlg,
+				},
 				EXPIRES_IN: {
 					default: null,
 					doc: "JWT expiration time",

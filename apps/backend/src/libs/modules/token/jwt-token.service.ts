@@ -1,22 +1,29 @@
 import { errors, jwtVerify, SignJWT } from "jose";
 
-import { type Config } from "~/libs/modules/config/config.js";
-
+import { TokenErrorMessage } from "./libs/enums/enums.js";
 import { TokenError } from "./libs/exceptions/exceptions.js";
 import { type TokenPayload, type TokenService } from "./libs/types/types.js";
 
+type Constructor = {
+	alg: string;
+	expiresIn: string;
+	secret: Uint8Array;
+};
+
 class JwtTokenService implements TokenService {
+	private alg: string;
 	private expiresIn: string;
 	private secret: Uint8Array;
 
-	public constructor(config: Config) {
-		this.secret = new TextEncoder().encode(config.ENV.JWT.SECRET);
-		this.expiresIn = config.ENV.JWT.EXPIRES_IN;
+	public constructor({ alg, expiresIn, secret }: Constructor) {
+		this.alg = alg;
+		this.expiresIn = expiresIn;
+		this.secret = secret;
 	}
 
 	public async create(payload: TokenPayload): Promise<string> {
 		return await new SignJWT(payload)
-			.setProtectedHeader({ alg: "HS256" })
+			.setProtectedHeader({ alg: this.alg })
 			.setExpirationTime(this.expiresIn)
 			.sign(this.secret);
 	}
@@ -28,14 +35,14 @@ class JwtTokenService implements TokenService {
 			return payload as TokenPayload;
 		} catch (error) {
 			if (error instanceof errors.JWTExpired) {
-				throw new TokenError("Token has expired", error);
+				throw new TokenError(TokenErrorMessage.TOKEN_HAS_EXPIRED, error);
 			}
 
 			if (error instanceof errors.JWSSignatureVerificationFailed) {
-				throw new TokenError("Invalid token signature", error);
+				throw new TokenError(TokenErrorMessage.INVALID_TOKEN_SIGNATURE, error);
 			}
 
-			throw new TokenError("Invalid token", error);
+			throw new TokenError(TokenErrorMessage.INVALID_TOKEN, error);
 		}
 	}
 }

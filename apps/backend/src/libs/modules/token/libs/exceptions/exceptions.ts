@@ -1,1 +1,1 @@
-export { TokenError } from "./token.error.js";
+export { TokenError } from "./token-error.exception.js";

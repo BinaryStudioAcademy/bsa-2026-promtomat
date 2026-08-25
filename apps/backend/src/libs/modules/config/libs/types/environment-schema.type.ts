@@ -18,6 +18,7 @@ type EnvironmentSchema = {
 		USERNAME: string;
 	};
 	JWT: {
+		ALG: string;
 		EXPIRES_IN: string;
 		SECRET: string;
 	};
