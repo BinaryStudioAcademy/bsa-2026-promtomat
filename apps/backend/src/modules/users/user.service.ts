@@ -53,6 +53,11 @@ class UserService {
 			items: users.map((user) => user.toObject()),
 		};
 	}
+
+	public async findByEmail(email: string): Promise<null | UserEntity> {
+		const user = await this.userRepository.findByEmail(email);
+		return user || null;
+	}
 }
 
 export { UserService };
