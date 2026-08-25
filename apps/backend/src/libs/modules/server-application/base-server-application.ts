@@ -1,7 +1,11 @@
 import fastifyStatic from "@fastify/static";
 import swagger, { type StaticDocumentSpec } from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
+import Fastify, {
+	type FastifyError,
+	type FastifyInstance,
+	type FastifyRequest,
+} from "fastify";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +21,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
+import { AuthGuard } from "../auth-guard/auth-guard.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -29,8 +34,14 @@ const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 const SHUTDOWN_FAILURE_EXIT_CODE = 1;
 
+//TODO: delete following declaration and import AuthPayload type AFTER merging issue #9
+type AuthPayload = {
+	id: number;
+};
+
 type Constructor = {
 	apis: ServerApplicationApi[];
+	authGuard: AuthGuard;
 	config: Config;
 	database: Database;
 	logger: Logger;
@@ -42,6 +53,8 @@ class BaseServerApplication implements ServerApplication {
 
 	private app!: FastifyInstance;
 
+	private authGuard: AuthGuard;
+
 	private config: Config;
 
 	private database: Database;
@@ -50,8 +63,16 @@ class BaseServerApplication implements ServerApplication {
 
 	private title: string;
 
-	public constructor({ apis, config, database, logger, title }: Constructor) {
+	public constructor({
+		apis,
+		authGuard,
+		config,
+		database,
+		logger,
+		title,
+	}: Constructor) {
 		this.title = title;
+		this.authGuard = authGuard;
 		this.config = config;
 		this.logger = logger;
 		this.database = database;
@@ -64,6 +85,7 @@ class BaseServerApplication implements ServerApplication {
 		this.app = Fastify({
 			ignoreTrailingSlash: true,
 		});
+		this.app.decorateRequest("user", null);
 	}
 
 	private initDatabaseLifecycle(): void {
@@ -197,7 +219,7 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
-		const { handler, method, path, validation } = parameters;
+		const { handler, isProtected, method, path, validation } = parameters;
 
 		this.app.route({
 			handler,
@@ -206,6 +228,13 @@ class BaseServerApplication implements ServerApplication {
 				body: validation?.body,
 			},
 			url: path,
+			...(isProtected && {
+				preHandler: async (request: FastifyRequest) => {
+					request.user = await this.authGuard.resolveUser(
+						request.headers.authorization,
+					);
+				},
+			}),
 		});
 
 		this.logger.info(`Route: ${method} ${path} is registered`);
@@ -283,6 +312,13 @@ class BaseServerApplication implements ServerApplication {
 		const routers = this.apis.flatMap((api) => api.routes);
 
 		this.addRoutes(routers);
+	}
+}
+
+//TODO: replace on another level, to be discussed with issue #9
+declare module "fastify" {
+	interface FastifyRequest {
+		user: AuthPayload | null;
 	}
 }
 
