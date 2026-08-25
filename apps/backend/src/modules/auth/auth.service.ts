@@ -54,7 +54,7 @@ class AuthService {
 		if (!userEntity || !isValidPassword) {
 			throw new HTTPError({
 				message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
-				status: HTTPCode.UNPROCESSED_ENTITY,
+				status: HTTPCode.UNAUTHORIZED,
 			});
 		}
 
