@@ -1,10 +1,10 @@
+import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserRepository } from "~/modules/users/user.repository.js";
 
 import {
+	type UserDto,
 	type UserGetAllResponseDto,
-	type UserSignUpRequestDto,
-	type UserSignUpResponseDto,
 } from "./libs/types/types.js";
 
 class UserService {
@@ -14,9 +14,7 @@ class UserService {
 		this.userRepository = userRepository;
 	}
 
-	public async create(
-		payload: UserSignUpRequestDto,
-	): Promise<Omit<UserSignUpResponseDto, "token">> {
+	public async create(payload: SignUpRequestDto): Promise<UserDto> {
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({
 				email: payload.email,
