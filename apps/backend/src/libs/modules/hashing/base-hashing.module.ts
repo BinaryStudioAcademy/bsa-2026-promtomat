@@ -20,8 +20,8 @@ class BaseHashing implements Hashing {
 		this.saltLength = saltLength;
 	}
 
-	private deriveKey(data: string, salt: string): Promise<Buffer> {
-		return scryptAsync(data, salt, DERIVED_KEY_LENGTH);
+	private async deriveKey(data: string, salt: string): Promise<Buffer> {
+		return await scryptAsync(data, salt, DERIVED_KEY_LENGTH);
 	}
 
 	public async hash(data: string): Promise<HashResult> {
