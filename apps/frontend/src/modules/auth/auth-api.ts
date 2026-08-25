@@ -1,7 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
-import { UsersApiTag } from "~/modules/users/users.js";
+import { type UserDto, UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
@@ -13,13 +13,22 @@ const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
-				async onQueryStarted(payload, { queryFulfilled }) {
+				async onQueryStarted(payload, { dispatch, queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
 						await storage.set(StorageKey.TOKEN, data.token);
-						// TODO: seed the authenticated-user cache entry with data.user via upsertQueryData (pm-9)
+						await dispatch(
+							authApi.util.upsertQueryData(
+								"getAuthenticatedUser",
+								undefined,
+								data.user,
+							),
+						);
 					} catch {
 						// The failure is exposed through the mutation error state and rendered by the caller.
 					}
