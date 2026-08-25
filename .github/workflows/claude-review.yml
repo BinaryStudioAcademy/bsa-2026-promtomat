@@ -42,11 +42,6 @@ jobs:
             Check this pull request against the conventions in AGENTS.md at the
             repository root:
 
-            - Exports at end of file, no default exports, no `export *` / `import * as`.
-            - Relative imports keep the `.js` extension; cross-tree imports use the `~/*` alias.
-            - No TypeScript `enum`, no abstract classes, no magic numbers, no `console`.
-            - At most three parameters per function; beyond that, an options object.
-            - No abbreviations (`properties` not `props`, `request`/`response` not `req`/`res`).
             - File and directory names are kebab-case with the correct role suffix
               (`*.type.ts`, `*.service.ts`, `*.controller.ts`, etc.).
             - No inline functions passed to JSX props on the frontend.
