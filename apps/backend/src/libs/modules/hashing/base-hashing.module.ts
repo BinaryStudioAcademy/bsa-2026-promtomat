@@ -1,5 +1,6 @@
 import { Buffer } from "node:buffer";
 import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
+import { promisify } from "node:util";
 
 import {
 	type Hashing,
@@ -8,26 +9,23 @@ import {
 } from "./libs/types/types.js";
 
 const DERIVED_KEY_LENGTH = 64;
-const SALT_LENGTH = 16;
 const STRING_ENCODING = "hex";
 
+const scryptAsync = promisify<string, string, number, Buffer>(scrypt);
+
 class BaseHashing implements Hashing {
+	private saltLength: number;
+
+	public constructor(saltLength: number) {
+		this.saltLength = saltLength;
+	}
+
 	private deriveKey(data: string, salt: string): Promise<Buffer> {
-		return new Promise((resolve, reject) => {
-			scrypt(data, salt, DERIVED_KEY_LENGTH, (error, derivedKey) => {
-				if (error) {
-					reject(error);
-
-					return;
-				}
-
-				resolve(derivedKey);
-			});
-		});
+		return scryptAsync(data, salt, DERIVED_KEY_LENGTH);
 	}
 
 	public async hash(data: string): Promise<HashResult> {
-		const salt = randomBytes(SALT_LENGTH).toString(STRING_ENCODING);
+		const salt = randomBytes(this.saltLength).toString(STRING_ENCODING);
 		const derivedKey = await this.deriveKey(data, salt);
 
 		return {
