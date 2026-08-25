@@ -1,8 +1,12 @@
-import {
-	type UserSignUpRequestDto,
-	type UserSignUpResponseDto,
-} from "~/modules/users/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
+
+import {
+	type SignUpRequestDto,
+	type SignUpResponseDto,
+} from "./libs/types/types.js";
+
+// TODO: replace with a token issued by the token module — pm-23
+const TOKEN_PLACEHOLDER = "token-placeholder";
 
 class AuthService {
 	private userService: UserService;
@@ -11,10 +15,15 @@ class AuthService {
 		this.userService = userService;
 	}
 
-	public signUp(
-		userRequestDto: UserSignUpRequestDto,
-	): Promise<UserSignUpResponseDto> {
-		return this.userService.create(userRequestDto);
+	public async signUp(
+		signUpRequestDto: SignUpRequestDto,
+	): Promise<SignUpResponseDto> {
+		const user = await this.userService.create(signUpRequestDto);
+
+		return {
+			token: TOKEN_PLACEHOLDER,
+			user,
+		};
 	}
 }
 

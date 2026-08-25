@@ -23,13 +23,15 @@ export {
 	type ValidationSchema,
 	type ValueOf,
 } from "./libs/types/types.js";
-export { AuthApiPath } from "./modules/auth/auth.js";
+export {
+	type SignUpRequestDto,
+	type SignUpResponseDto,
+	AuthApiPath,
+	signUpValidationSchema,
+} from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
-	type UserGetAllItemResponseDto,
+	type UserDto,
 	type UserGetAllResponseDto,
-	type UserSignUpRequestDto,
-	type UserSignUpResponseDto,
 	UsersApiPath,
-	userSignUpValidationSchema,
 } from "./modules/users/users.js";
