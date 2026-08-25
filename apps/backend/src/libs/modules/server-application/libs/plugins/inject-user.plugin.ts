@@ -1,6 +1,7 @@
 import { type FastifyInstance, type FastifyRequest } from "fastify";
 
 import { HTTPHeader } from "~/libs/modules/http/http.js";
+import { token, TokenError } from "~/libs/modules/token/token.js";
 
 import { type AuthPayload } from "../types/auth-payload.type.js";
 
@@ -25,20 +26,26 @@ const getBearerToken = (request: FastifyRequest): null | string => {
 const injectUser = (app: FastifyInstance): void => {
 	app.decorateRequest("user", null);
 
-	app.addHook("onRequest", (request, _reply, done) => {
+	app.addHook("onRequest", async (request) => {
 		request.user = null;
 
-		const token = getBearerToken(request);
+		const bearerToken = getBearerToken(request);
 
-		if (token === null) {
-			done();
-
+		if (bearerToken === null) {
 			return;
 		}
 
-		// TODO: verify token via token module (#23) and set request.user = { id }
+		try {
+			const payload = await token.verify(bearerToken);
 
-		done();
+			request.user = {
+				id: payload.userId,
+			};
+		} catch (error) {
+			if (!(error instanceof TokenError)) {
+				throw error;
+			}
+		}
 	});
 };
 

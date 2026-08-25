@@ -1,6 +1,6 @@
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
-import { type UserDto } from "~/modules/users/libs/types/types.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
+import { type UserDto } from "~/modules/users/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { ExceptionMessage } from "./libs/enums/enums.js";
