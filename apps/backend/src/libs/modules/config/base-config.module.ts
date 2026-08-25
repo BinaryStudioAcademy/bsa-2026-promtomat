@@ -102,16 +102,16 @@ class BaseConfig implements Config {
 			},
 			JWT: {
 				EXPIRES_IN: {
-					default: "24h",
-					doc: "Time after which the JWT token expires",
+					default: null,
+					doc: "JWT expiration time",
 					env: "JWT_EXPIRES_IN",
-					format: String,
+					format: /^\d+[smhdwy]?$/,
 				},
 				SECRET: {
 					default: null,
-					doc: "Secret key for JWT token generation",
+					doc: "Secret for JWT signing",
 					env: "JWT_SECRET",
-					format: String,
+					format: /.+/,
 				},
 			},
 		});
