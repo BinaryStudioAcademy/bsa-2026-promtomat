@@ -6,6 +6,20 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
 
+const validateJwtExpiresIn = (value: unknown): void => {
+	if (typeof value !== "string" || !/^\d+[smhdwy]?$/.test(value)) {
+		throw new Error(
+			"JWT_EXPIRES_IN must be a valid duration string (e.g., '24h').",
+		);
+	}
+};
+
+const validateJwtSecret = (value: unknown): void => {
+	if (typeof value !== "string" || value.trim() === "") {
+		throw new Error("JWT_SECRET must be a non-empty string.");
+	}
+};
+
 class BaseConfig implements Config {
 	private logger: Logger;
 
@@ -15,6 +29,10 @@ class BaseConfig implements Config {
 		this.logger = logger;
 
 		config();
+
+		if (!process.env["NODE_ENV"]) {
+			config({ path: "apps/backend/.env" });
+		}
 
 		this.envSchema.load({});
 		this.envSchema.validate({
@@ -105,13 +123,13 @@ class BaseConfig implements Config {
 					default: null,
 					doc: "JWT expiration time",
 					env: "JWT_EXPIRES_IN",
-					format: /^\d+[smhdwy]?$/,
+					format: validateJwtExpiresIn,
 				},
 				SECRET: {
 					default: null,
 					doc: "Secret for JWT signing",
 					env: "JWT_SECRET",
-					format: /.+/,
+					format: validateJwtSecret,
 				},
 			},
 		});
