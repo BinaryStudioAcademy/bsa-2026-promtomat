@@ -37,8 +37,10 @@ jobs:
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Review this pull request against the conventions in AGENTS.md at the
-            repository root. In particular check:
+            Fetch https://github.com/BinaryStudioAcademy/quality-criteria/blob/production/src/javascript.md once with WebFetch and apply it as the primary style reference for this review.
+
+            Check this pull request against the conventions in AGENTS.md at the
+            repository root:
 
             - Exports at end of file, no default exports, no `export *` / `import * as`.
             - Relative imports keep the `.js` extension; cross-tree imports use the `~/*` alias.
@@ -50,9 +52,24 @@ jobs:
             - No inline functions passed to JSX props on the frontend.
             - Duplicated string literals or deep nesting sonarjs would flag.
 
+            Backend (apps/backend, Fastify via the project's base-controller):
+
+            - Every new/changed route has a matching request/response schema in that module's `validation-schemas.ts` — do not accept an unvalidated body, params, or query.
+            - Errors are thrown as the project's own exception classes from
+              `libs/exceptions`, not raw `Error` or an unhandled rejection.
+            - No blocking/sync work (sync file or crypto calls) inside a handler.
+
+            Frontend (apps/frontend, React) — accessibility issues ESLint's
+            `jsx-a11y` rules do not catch:
+
+            - Focus management: dialogs/modals move focus in on open and restore it on close; no keyboard traps.
+            - Dynamic content (form submit results, async errors, loading states) is announced via `aria-live`, not shown only as a visual change.
+            - Custom interactive widgets (anything not a native `<button>`/`<a>`/`<input>`) are keyboard-operable with the expected keys (Enter/Space/Escape/arrows).
+            - No color-only cues for state (error, required, selected).
+
             Flag ordinary correctness and security issues you notice.
 
-            Leave inline comments on specific lines; use a top-level summary comment for anything general. Do not comment on formatting/sorting issues that `pnpm format` and ESLint auto-fix handles.
+            Leave inline comments on specific lines; use a top-level summary comment for anything general. Do not comment on formatting/sorting issues that `pnpm format` and ESLint auto-fix handles, and do not repeat a rule above under a different name.
 
           claude_args: |
-            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --allowedTools "WebFetch,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
