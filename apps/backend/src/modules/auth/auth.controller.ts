@@ -6,13 +6,11 @@ import {
 } from "~/libs/modules/controller/controller.js";
 import { HTTPCode, HTTPError, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
-import {
-	type UserSignUpRequestDto,
-	userSignUpValidationSchema,
-} from "~/modules/users/users.js";
 
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath, ExceptionMessage } from "./libs/enums/enums.js";
+import { type SignUpRequestDto } from "./libs/types/types.js";
+import { signUpValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
 class AuthController extends BaseController {
 	private authService: AuthService;
@@ -32,13 +30,13 @@ class AuthController extends BaseController {
 			handler: (options) =>
 				this.signUp(
 					options as APIHandlerOptions<{
-						body: UserSignUpRequestDto;
+						body: SignUpRequestDto;
 					}>,
 				),
 			method: HTTPMethod.POST,
 			path: AuthApiPath.SIGN_UP,
 			validation: {
-				body: userSignUpValidationSchema,
+				body: signUpValidationSchema,
 			},
 		});
 	}
@@ -102,13 +100,14 @@ class AuthController extends BaseController {
 	 *              schema:
 	 *                type: object
 	 *                properties:
-	 *                  message:
-	 *                    type: object
+	 *                  token:
+	 *                    type: string
+	 *                  user:
 	 *                    $ref: "#/components/schemas/User"
 	 */
 	private async signUp(
 		options: APIHandlerOptions<{
-			body: UserSignUpRequestDto;
+			body: SignUpRequestDto;
 		}>,
 	): Promise<APIHandlerResponse> {
 		return {
