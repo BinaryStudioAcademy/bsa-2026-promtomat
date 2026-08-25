@@ -4,24 +4,24 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
-	type UserSignInRequestDto,
-	userSignInValidationSchema,
-} from "~/modules/users/users.js";
+	type SignInRequestDto,
+	signInValidationSchema,
+} from "~/modules/auth/auth.js";
 
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
 	isLoading: boolean;
-	onSubmit: (payload: UserSignInRequestDto) => void;
+	onSubmit: (payload: SignInRequestDto) => void;
 };
 
 const SignInForm: React.FC<Properties> = ({
 	isLoading,
 	onSubmit,
 }: Properties) => {
-	const { control, errors, handleSubmit } = useAppForm<UserSignInRequestDto>({
+	const { control, errors, handleSubmit } = useAppForm<SignInRequestDto>({
 		defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
-		validationSchema: userSignInValidationSchema,
+		validationSchema: signInValidationSchema,
 	});
 
 	const handleFormSubmit = useCallback(

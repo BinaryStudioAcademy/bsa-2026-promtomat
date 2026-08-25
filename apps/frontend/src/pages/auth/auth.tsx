@@ -8,9 +8,9 @@ import {
 	useSignUpMutation,
 } from "~/modules/auth/auth-api.js";
 import {
-	type UserSignInRequestDto,
-	type UserSignUpRequestDto,
-} from "~/modules/users/users.js";
+	type SignInRequestDto,
+	type SignUpRequestDto,
+} from "~/modules/auth/auth.js";
 
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
 import { SignUpForm } from "./components/sign-up-form/sign-up-form.js";
@@ -21,12 +21,12 @@ const Auth: React.FC = () => {
 	const [signIn, { isLoading: isSignInLoading }] = useSignInMutation();
 
 	const handleSignInSubmit = useCallback(
-		(payload: UserSignInRequestDto): void => void signIn(payload),
+		(payload: SignInRequestDto): void => void signIn(payload),
 		[signIn],
 	);
 
 	const handleSignUpSubmit = useCallback(
-		(payload: UserSignUpRequestDto): void => {
+		(payload: SignUpRequestDto): void => {
 			void signUp(payload);
 		},
 		[signUp],
@@ -34,7 +34,7 @@ const Auth: React.FC = () => {
 
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {
-			return <SignUpForm isLoading={isLoading} onSubmit={handleSignUpSubmit} />;
+			return <SignUpForm onSubmit={handleSignUpSubmit} />;
 		}
 
 		return (

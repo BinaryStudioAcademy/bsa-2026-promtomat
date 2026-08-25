@@ -1,20 +1,20 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
-import {
-	UsersApiTag,
-	type UserSignInRequestDto,
-	type UserSignInResponseDto,
-	type UserSignUpRequestDto,
-	type UserSignUpResponseDto,
-} from "~/modules/users/users.js";
+import { UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
+import {
+	SignInRequestDto,
+	SignInResponseDto,
+	type SignUpRequestDto,
+	type SignUpResponseDto,
+} from "./libs/types/types.js";
 
 const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
-			signIn: builder.mutation<UserSignInResponseDto, UserSignInRequestDto>({
+			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
 					body: payload,
@@ -22,7 +22,7 @@ const authApi = baseApi
 					url: `${APIPath.AUTH}${AuthApiPath.SIGN_IN}`,
 				}),
 			}),
-			signUp: builder.mutation<UserSignUpResponseDto, UserSignUpRequestDto>({
+			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
 					body: payload,
