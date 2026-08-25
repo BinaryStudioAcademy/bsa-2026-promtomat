@@ -13,7 +13,7 @@ import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 type Properties = {
 	errorMessage: null | string;
 	isLoading: boolean;
-	onSubmit: (payload: SignUpRequestDto) => void;
+	onSubmit: (payload: SignUpRequestDto) => Promise<void>;
 };
 
 const SignUpForm: React.FC<Properties> = ({
