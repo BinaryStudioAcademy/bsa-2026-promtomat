@@ -34,7 +34,7 @@ const Auth: React.FC = () => {
 
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {
-			return <SignUpForm onSubmit={handleSignUpSubmit} />;
+			return <SignUpForm isLoading={isLoading} onSubmit={handleSignUpSubmit} />;
 		}
 
 		return (

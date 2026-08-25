@@ -1,15 +1,15 @@
 type Properties = {
-	disabled?: boolean;
+	isDisabled?: boolean;
 	label: string;
 	type?: "button" | "submit";
 };
 
 const Button: React.FC<Properties> = ({
-	disabled = false,
+	isDisabled = false,
 	label,
 	type = "button",
 }: Properties) => (
-	<button disabled={disabled} type={type}>
+	<button disabled={isDisabled} type={type}>
 		{label}
 	</button>
 );

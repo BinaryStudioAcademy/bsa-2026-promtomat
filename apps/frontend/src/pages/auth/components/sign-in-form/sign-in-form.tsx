@@ -55,7 +55,7 @@ const SignInForm: React.FC<Properties> = ({
 						type="text"
 					/>
 				</p>
-				<Button disabled={isLoading} label="Sign in" type="submit" />
+				<Button isDisabled={isLoading} label="Sign in" type="submit" />
 			</form>
 		</>
 	);
