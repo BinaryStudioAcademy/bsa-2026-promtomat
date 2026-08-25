@@ -1,6 +1,6 @@
-import { errors, jwtVerify, SignJWT } from "jose";
+import { errors, type JWTPayload, jwtVerify, SignJWT } from "jose";
 
-import { type JwtAlgorithm } from "~/libs/modules/config/libs/enums/enums.js";
+import { type JwtAlgorithm } from "~/libs/modules/config/config.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { TokenErrorMessage } from "./libs/enums/enums.js";
@@ -24,28 +24,13 @@ class JwtTokenService implements TokenService {
 		this.secret = secret;
 	}
 
-	public async create(payload: TokenPayload): Promise<string> {
-		return await new SignJWT(payload)
-			.setProtectedHeader({ alg: this.alg })
-			.setIssuedAt()
-			.setExpirationTime(this.expiresIn)
-			.sign(this.secret);
-	}
-
-	public async verify(token: string): Promise<TokenPayload> {
+	private async decode(token: string): Promise<JWTPayload> {
 		try {
 			const { payload } = await jwtVerify(token, this.secret, {
 				algorithms: [this.alg],
 			});
 
-			if (typeof payload["userId"] !== "number") {
-				throw new TokenError(
-					TokenErrorMessage.INVALID_TOKEN,
-					new Error("Missing or invalid userId claim"),
-				);
-			}
-
-			return payload as TokenPayload;
+			return payload;
 		} catch (error) {
 			if (error instanceof errors.JWTExpired) {
 				throw new TokenError(TokenErrorMessage.TOKEN_HAS_EXPIRED, error);
@@ -57,6 +42,26 @@ class JwtTokenService implements TokenService {
 
 			throw new TokenError(TokenErrorMessage.INVALID_TOKEN, error);
 		}
+	}
+
+	public async create(payload: TokenPayload): Promise<string> {
+		return await new SignJWT(payload)
+			.setProtectedHeader({ alg: this.alg })
+			.setIssuedAt()
+			.setExpirationTime(this.expiresIn)
+			.sign(this.secret);
+	}
+
+	public async verify(token: string): Promise<TokenPayload> {
+		const payload = await this.decode(token);
+
+		if (typeof payload["userId"] !== "number") {
+			throw new TokenError(TokenErrorMessage.INVALID_TOKEN_PAYLOAD);
+		}
+
+		return {
+			userId: payload["userId"],
+		};
 	}
 }
 
