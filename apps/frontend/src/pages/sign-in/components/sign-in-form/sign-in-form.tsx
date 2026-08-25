@@ -52,7 +52,7 @@ const SignInForm: React.FC<Properties> = ({
 						label="Password"
 						name="password"
 						placeholder="Enter your password"
-						type="text"
+						type="password"
 					/>
 				</p>
 				<Button isDisabled={isLoading} label="Sign in" type="submit" />

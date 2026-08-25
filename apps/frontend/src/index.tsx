@@ -4,10 +4,6 @@ import { Provider as StoreProvider } from "react-redux";
 
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
-import {
-	requireAuthLoader,
-	requireGuestLoader,
-} from "~/libs/components/router-provider/libs/helpers/route-loaders.helper.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
@@ -23,17 +19,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 						children: [
 							{
 								element: "Root",
-								loader: requireAuthLoader,
 								path: AppRoute.ROOT,
 							},
 							{
 								element: <SignIn />,
-								loader: requireGuestLoader,
 								path: AppRoute.SIGN_IN,
 							},
 							{
 								element: <SignUp />,
-								loader: requireGuestLoader,
 								path: AppRoute.SIGN_UP,
 							},
 						],
