@@ -4,8 +4,8 @@ import { config } from "dotenv";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
+import { JwtAlgorithm } from "./libs/enums/enums.js";
 import {
-	validateJwtAlg,
 	validateJwtExpiresIn,
 	validateJwtSecret,
 } from "./libs/helpers/helpers.js";
@@ -110,7 +110,7 @@ class BaseConfig implements Config {
 					default: null,
 					doc: "Algorithm for JWT signing",
 					env: "JWT_ALG",
-					format: validateJwtAlg,
+					format: Object.values(JwtAlgorithm),
 				},
 				EXPIRES_IN: {
 					default: null,
