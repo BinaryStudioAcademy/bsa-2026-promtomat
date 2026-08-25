@@ -1,4 +1,4 @@
-name: Claude Code Review
+name: Claude Auto Review
 
 on:
   pull_request:
@@ -10,18 +10,16 @@ on:
       - edited
 
 concurrency:
-  group: claude-review-${{ github.ref }}
+  group: review-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  claude-review:
+  review:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
       id-token: write
-
-    runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
@@ -52,20 +50,28 @@ jobs:
             - No inline functions passed to JSX props on the frontend.
             - Duplicated string literals or deep nesting sonarjs would flag.
 
-            Backend (apps/backend, Fastify via the project's base-controller):
+            Backend (apps/backend, Fastify via the project's base-controller) —
+            maintainability and correctness ESLint cannot check:
 
             - Every new/changed route has a matching request/response schema in that module's `validation-schemas.ts` — do not accept an unvalidated body, params, or query.
             - Errors are thrown as the project's own exception classes from
               `libs/exceptions`, not raw `Error` or an unhandled rejection.
             - No blocking/sync work (sync file or crypto calls) inside a handler.
+            - Layering: `*.controller.ts` only wires request → service call → response shape. Business logic, branching, or data shaping belongs in `*.service.ts`; direct DB/query access belongs in `*.repository.ts`, not the service.
+            - No floating promises (an async call started but not awaited or returned).
 
-            Frontend (apps/frontend, React) — accessibility issues ESLint's
-            `jsx-a11y` rules do not catch:
+            Frontend (apps/frontend, React) — maintainability and accessibility
+            issues ESLint's `jsx-a11y` rules do not catch (this repo has no
+            `eslint-plugin-react-hooks`, so hook dependency bugs are not lint-caught either):
 
             - Focus management: dialogs/modals move focus in on open and restore it on close; no keyboard traps.
             - Dynamic content (form submit results, async errors, loading states) is announced via `aria-live`, not shown only as a visual change.
             - Custom interactive widgets (anything not a native `<button>`/`<a>`/`<input>`) are keyboard-operable with the expected keys (Enter/Space/Escape/arrows).
             - No color-only cues for state (error, required, selected).
+            - `useEffect`/`useCallback`/`useMemo` dependency arrays are complete and correct — flag a missing dependency or one that causes a stale closure.
+            - Fetching/mutation logic and non-trivial state live in a hook or the RTK Query API slice (`*-api.ts`), not inline in the component body.
+            - A component handling more than one concern (data fetching + form state + presentation, for example) should be split; flag components growing past that.
+            - No prop drilling of state through more than one intermediate component that doesn't itself use it.
 
             Flag ordinary correctness and security issues you notice.
 
