@@ -33,6 +33,12 @@ class UserService {
 			items: users.map((user) => user.toObject()),
 		};
 	}
+
+	public async findById(id: number): Promise<null | UserDto> {
+		const user = await this.userRepository.findById(id);
+
+		return user ? user.toObject() : null;
+	}
 }
 
 export { UserService };
