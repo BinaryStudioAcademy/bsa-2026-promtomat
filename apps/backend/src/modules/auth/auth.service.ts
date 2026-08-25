@@ -1,5 +1,5 @@
+import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
-import { PasswordHasher } from "~/libs/modules/password-hasher/password-hasher.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { UserErrorMessage } from "../users/libs/enums/enums.js";
@@ -18,13 +18,13 @@ const DUMMY_SALT = "0f5cf02c0465b914d3036158f58dce4e";
 const TOKEN_PLACEHOLDER = "token-placeholder";
 
 class AuthService {
-	private passwordHasher: PasswordHasher;
+	private hashing: Hashing;
 
 	private userService: UserService;
 
-	public constructor(passwordHasher: PasswordHasher, userService: UserService) {
+	public constructor(hashing: Hashing, userService: UserService) {
 		this.userService = userService;
-		this.passwordHasher = passwordHasher;
+		this.hashing = hashing;
 	}
 
 	public async signIn(
@@ -37,16 +37,16 @@ class AuthService {
 		if (userEntity) {
 			const userAuth = userEntity.toAuthObject();
 
-			isValidPassword = await this.passwordHasher.verify({
+			isValidPassword = await this.hashing.verify({
+				data: userRequestDto.password,
 				hash: userAuth.passwordHash,
-				password: userRequestDto.password,
 				salt: userAuth.passwordSalt,
 			});
 		} else {
 			// dummy hash to waste the same CPU time
-			await this.passwordHasher.verify({
+			await this.hashing.verify({
+				data: userRequestDto.password,
 				hash: DUMMY_HASH,
-				password: userRequestDto.password,
 				salt: DUMMY_SALT,
 			});
 		}
