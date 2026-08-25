@@ -21,10 +21,6 @@ class BaseConfig implements Config {
 
 		config();
 
-		if (!process.env["NODE_ENV"]) {
-			config({ path: "apps/backend/.env" });
-		}
-
 		this.envSchema.load({});
 		this.envSchema.validate({
 			allowed: "strict",
