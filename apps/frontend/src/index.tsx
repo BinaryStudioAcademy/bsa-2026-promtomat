@@ -7,7 +7,8 @@ import { App } from "~/libs/components/app/app.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
-import { Auth } from "~/pages/auth/auth.jsx";
+import { SignIn } from "~/pages/sign-in/sign-in.jsx";
+import { SignUp } from "~/pages/sign-up/sign-up.jsx";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -21,11 +22,11 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.ROOT,
 							},
 							{
-								element: <Auth />,
+								element: <SignIn />,
 								path: AppRoute.SIGN_IN,
 							},
 							{
-								element: <Auth />,
+								element: <SignUp />,
 								path: AppRoute.SIGN_UP,
 							},
 						],
