@@ -28,9 +28,9 @@ class AuthService {
 	}
 
 	public async signIn(
-		userRequesDto: SignInRequestDto,
+		userRequestDto: SignInRequestDto,
 	): Promise<SignInResponseDto> {
-		const userEntity = await this.userService.findByEmail(userRequesDto.email);
+		const userEntity = await this.userService.findByEmail(userRequestDto.email);
 
 		let isValidPassword = false;
 
@@ -39,14 +39,14 @@ class AuthService {
 
 			isValidPassword = await this.passwordHasher.verify({
 				hash: userAuth.passwordHash,
-				password: userRequesDto.password,
+				password: userRequestDto.password,
 				salt: userAuth.passwordSalt,
 			});
 		} else {
 			// dummy hash to waste the same CPU time
 			await this.passwordHasher.verify({
 				hash: DUMMY_HASH,
-				password: userRequesDto.password,
+				password: userRequestDto.password,
 				salt: DUMMY_SALT,
 			});
 		}
