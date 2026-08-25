@@ -1,3 +1,4 @@
 export { type ServerApplicationApi } from "../types/server-application-api.type.js";
+export { type AuthPayload } from "./auth-payload.type.js";
 export { type ServerApplicationRouteParameters } from "./server-application-route-parameters.type.js";
 export { type ServerApplication } from "./server-application.type.js";

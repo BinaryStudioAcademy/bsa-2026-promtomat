@@ -27,6 +27,7 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	ExceptionMessage,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";

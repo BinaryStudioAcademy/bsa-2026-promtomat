@@ -4,6 +4,11 @@ import { config } from "dotenv";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
+import { JwtAlgorithm } from "./libs/enums/enums.js";
+import {
+	validateJwtExpiresIn,
+	validateJwtSecret,
+} from "./libs/helpers/helpers.js";
 import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
 
 class BaseConfig implements Config {
@@ -98,6 +103,26 @@ class BaseConfig implements Config {
 					doc: "Database username",
 					env: "DB_USERNAME",
 					format: String,
+				},
+			},
+			JWT: {
+				ALG: {
+					default: null,
+					doc: "Algorithm for JWT signing",
+					env: "JWT_ALG",
+					format: Object.values(JwtAlgorithm),
+				},
+				EXPIRES_IN: {
+					default: null,
+					doc: "JWT expiration time",
+					env: "JWT_EXPIRES_IN",
+					format: validateJwtExpiresIn,
+				},
+				SECRET: {
+					default: null,
+					doc: "Secret for JWT signing",
+					env: "JWT_SECRET",
+					format: validateJwtSecret,
 				},
 			},
 		});

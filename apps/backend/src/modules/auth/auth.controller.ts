@@ -4,11 +4,11 @@ import {
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
-import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
+import { HTTPCode, HTTPError, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type AuthService } from "./auth.service.js";
-import { AuthApiPath } from "./libs/enums/enums.js";
+import { AuthApiPath, ExceptionMessage } from "./libs/enums/enums.js";
 import { type SignUpRequestDto } from "./libs/types/types.js";
 import { signUpValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
@@ -19,6 +19,12 @@ class AuthController extends BaseController {
 		super(logger, APIPath.AUTH);
 
 		this.authService = authService;
+
+		this.addRoute({
+			handler: (options) => this.getAuthenticatedUser(options),
+			method: HTTPMethod.GET,
+			path: AuthApiPath.AUTHENTICATED_USER,
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -33,6 +39,39 @@ class AuthController extends BaseController {
 				body: signUpValidationSchema,
 			},
 		});
+	}
+
+	/**
+	 * @swagger
+	 * /auth/authenticated-user:
+	 *    get:
+	 *      description: Returns the authenticated user
+	 *      security:
+	 *        - bearerAuth: []
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/User"
+	 *        401:
+	 *          description: Unauthorized
+	 */
+	private async getAuthenticatedUser(
+		options: APIHandlerOptions,
+	): Promise<APIHandlerResponse> {
+		if (options.user === null) {
+			throw new HTTPError({
+				message: ExceptionMessage.UNAUTHORIZED,
+				status: HTTPCode.UNAUTHORIZED,
+			});
+		}
+
+		return {
+			payload: await this.authService.getAuthenticatedUser(options.user.id),
+			status: HTTPCode.OK,
+		};
 	}
 
 	/**

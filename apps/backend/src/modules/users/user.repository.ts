@@ -24,6 +24,14 @@ class UserRepository {
 		return UserEntity.initialize(user);
 	}
 
+	public async find(id: number): Promise<null | UserEntity> {
+		const user = await this.userModel.query().findById(id);
+		if (!user) {
+			return null;
+		}
+		return UserEntity.initialize(user);
+	}
+
 	public async findAll(): Promise<UserEntity[]> {
 		const users = await this.userModel.query().execute();
 
