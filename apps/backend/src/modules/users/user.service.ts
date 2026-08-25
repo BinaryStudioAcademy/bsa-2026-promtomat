@@ -1,25 +1,45 @@
+import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
+import { type PasswordHasher } from "~/libs/modules/password-hasher/password-hasher.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserRepository } from "~/modules/users/user.repository.js";
 
+import { UserErrorMessage } from "./libs/enums/enums.js";
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
 } from "./libs/types/types.js";
 
 class UserService {
+	private passwordHasher: PasswordHasher;
+
 	private userRepository: UserRepository;
 
-	public constructor(userRepository: UserRepository) {
+	public constructor(
+		passwordHasher: PasswordHasher,
+		userRepository: UserRepository,
+	) {
+		this.passwordHasher = passwordHasher;
 		this.userRepository = userRepository;
 	}
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
+		const existingUser = await this.userRepository.findByEmail(payload.email);
+
+		if (existingUser) {
+			throw new HTTPError({
+				message: UserErrorMessage.EMAIL_ALREADY_EXISTS,
+				status: HTTPCode.CONFLICT,
+			});
+		}
+
+		const { hash, salt } = await this.passwordHasher.hash(payload.password);
+
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({
 				email: payload.email,
-				passwordHash: "HASH", // TODO
-				passwordSalt: "SALT", // TODO
+				passwordHash: hash,
+				passwordSalt: salt,
 			}),
 		);
 
