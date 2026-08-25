@@ -1,5 +1,5 @@
+import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
-import { type PasswordHasher } from "~/libs/modules/password-hasher/password-hasher.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserRepository } from "~/modules/users/user.repository.js";
@@ -11,15 +11,12 @@ import {
 } from "./libs/types/types.js";
 
 class UserService {
-	private passwordHasher: PasswordHasher;
+	private hashing: Hashing;
 
 	private userRepository: UserRepository;
 
-	public constructor(
-		passwordHasher: PasswordHasher,
-		userRepository: UserRepository,
-	) {
-		this.passwordHasher = passwordHasher;
+	public constructor(hashing: Hashing, userRepository: UserRepository) {
+		this.hashing = hashing;
 		this.userRepository = userRepository;
 	}
 
@@ -33,7 +30,7 @@ class UserService {
 			});
 		}
 
-		const { hash, salt } = await this.passwordHasher.hash(payload.password);
+		const { hash, salt } = await this.hashing.hash(payload.password);
 
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({

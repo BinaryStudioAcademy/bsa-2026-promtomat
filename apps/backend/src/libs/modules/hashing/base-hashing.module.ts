@@ -2,19 +2,19 @@ import { Buffer } from "node:buffer";
 import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 
 import {
-	type HashedPassword,
-	type PasswordHasher,
-	type PasswordVerificationOptions,
+	type Hashing,
+	type HashResult,
+	type HashVerificationOptions,
 } from "./libs/types/types.js";
 
 const DERIVED_KEY_LENGTH = 64;
 const SALT_LENGTH = 16;
 const STRING_ENCODING = "hex";
 
-class BasePasswordHasher implements PasswordHasher {
-	private deriveKey(password: string, salt: string): Promise<Buffer> {
+class BaseHashing implements Hashing {
+	private deriveKey(data: string, salt: string): Promise<Buffer> {
 		return new Promise((resolve, reject) => {
-			scrypt(password, salt, DERIVED_KEY_LENGTH, (error, derivedKey) => {
+			scrypt(data, salt, DERIVED_KEY_LENGTH, (error, derivedKey) => {
 				if (error) {
 					reject(error);
 
@@ -26,9 +26,9 @@ class BasePasswordHasher implements PasswordHasher {
 		});
 	}
 
-	public async hash(password: string): Promise<HashedPassword> {
+	public async hash(data: string): Promise<HashResult> {
 		const salt = randomBytes(SALT_LENGTH).toString(STRING_ENCODING);
-		const derivedKey = await this.deriveKey(password, salt);
+		const derivedKey = await this.deriveKey(data, salt);
 
 		return {
 			hash: derivedKey.toString(STRING_ENCODING),
@@ -37,11 +37,11 @@ class BasePasswordHasher implements PasswordHasher {
 	}
 
 	public async verify({
+		data,
 		hash,
-		password,
 		salt,
-	}: PasswordVerificationOptions): Promise<boolean> {
-		const derivedKey = await this.deriveKey(password, salt);
+	}: HashVerificationOptions): Promise<boolean> {
+		const derivedKey = await this.deriveKey(data, salt);
 		const storedHash = Buffer.from(hash, STRING_ENCODING);
 
 		return (
@@ -51,4 +51,4 @@ class BasePasswordHasher implements PasswordHasher {
 	}
 }
 
-export { BasePasswordHasher };
+export { BaseHashing };
