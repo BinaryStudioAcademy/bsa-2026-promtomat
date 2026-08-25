@@ -4,7 +4,7 @@ import {
 	fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { HTTPHeader } from "~/libs/enums/enums.js";
+import { HTTPCode, HTTPHeader } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
 
@@ -32,7 +32,17 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 	const result = await fetchQuery(arguments_, api, extraOptions);
 
 	if (result.error) {
-		return { error: toServerError(result.error) };
+		const error = toServerError(result.error);
+
+		if (error.status === HTTPCode.FORBIDDEN) {
+			// TOOD: navigate to AppRoute.No_Access <-- need router
+		}
+
+		// TODO task #22 : if(errir status === HTTPCode.UNAUTHORIZE (401)){
+		// clean session + redirect sign-in
+		// remaining status code
+		//}
+		return { error };
 	}
 
 	return result;
