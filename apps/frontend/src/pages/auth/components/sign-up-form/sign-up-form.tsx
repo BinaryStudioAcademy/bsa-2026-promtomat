@@ -11,11 +11,13 @@ import {
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
+	errorMessage: null | string;
 	isLoading: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
 const SignUpForm: React.FC<Properties> = ({
+	errorMessage,
 	isLoading,
 	onSubmit,
 }: Properties) => {
@@ -55,6 +57,7 @@ const SignUpForm: React.FC<Properties> = ({
 						type="password"
 					/>
 				</p>
+				{errorMessage && <p role="alert">{errorMessage}</p>}
 				<Button isDisabled={isLoading} label="Sign up" type="submit" />
 			</form>
 		</>

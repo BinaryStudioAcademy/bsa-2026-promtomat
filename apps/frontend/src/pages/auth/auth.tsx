@@ -13,6 +13,8 @@ const Auth: React.FC = () => {
 	const { pathname } = useLocation();
 	const [signUp, { error, isLoading }] = useSignUpMutation();
 
+	const errorMessage = isServerError(error) ? error.message : null;
+
 	const handleSignInSubmit = useCallback((): void => {
 		// handle sign in
 	}, []);
@@ -26,7 +28,13 @@ const Auth: React.FC = () => {
 
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {
-			return <SignUpForm isLoading={isLoading} onSubmit={handleSignUpSubmit} />;
+			return (
+				<SignUpForm
+					errorMessage={errorMessage}
+					isLoading={isLoading}
+					onSubmit={handleSignUpSubmit}
+				/>
+			);
 		}
 
 		return <SignInForm onSubmit={handleSignInSubmit} />;
@@ -35,7 +43,6 @@ const Auth: React.FC = () => {
 	return (
 		<>
 			{isLoading && <p>Loading...</p>}
-			{isServerError(error) && <p>{error.message}</p>}
 			{getScreen(pathname)}
 		</>
 	);
