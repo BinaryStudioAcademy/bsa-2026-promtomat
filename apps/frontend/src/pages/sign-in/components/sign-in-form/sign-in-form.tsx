@@ -1,11 +1,8 @@
-import { type SerializedError } from "@reduxjs/toolkit";
 import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
-import { type ServerError } from "~/libs/modules/api/libs/types/server-error.type.js";
 import {
 	type SignInRequestDto,
 	signInValidationSchema,
@@ -14,13 +11,11 @@ import {
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
-	error: SerializedError | ServerError | undefined;
 	isLoading: boolean;
 	onSubmit: (payload: SignInRequestDto) => void;
 };
 
 const SignInForm: React.FC<Properties> = ({
-	error,
 	isLoading,
 	onSubmit,
 }: Properties) => {
@@ -39,7 +34,6 @@ const SignInForm: React.FC<Properties> = ({
 	return (
 		<>
 			<h1>Sign In</h1>
-			{isServerError(error) && <p>{error.message}</p>}
 			{isLoading && <p>Loading...</p>}
 			<form onSubmit={handleFormSubmit}>
 				<p>

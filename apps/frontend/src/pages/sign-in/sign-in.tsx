@@ -9,7 +9,7 @@ import { type SignInRequestDto } from "~/modules/auth/auth.js";
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
 
 const SignIn: React.FC = () => {
-	const [signIn, { error, isLoading, status }] = useSignInMutation();
+	const [signIn, { isLoading, status }] = useSignInMutation();
 
 	const handleSignInSubmit = useCallback(
 		(payload: SignInRequestDto): void => void signIn(payload),
@@ -18,11 +18,7 @@ const SignIn: React.FC = () => {
 
 	return (
 		<>
-			<SignInForm
-				error={error}
-				isLoading={isLoading}
-				onSubmit={handleSignInSubmit}
-			/>
+			<SignInForm isLoading={isLoading} onSubmit={handleSignInSubmit} />
 			{status === QueryStatus.fulfilled && (
 				<Navigate replace to={AppRoute.ROOT} />
 			)}
