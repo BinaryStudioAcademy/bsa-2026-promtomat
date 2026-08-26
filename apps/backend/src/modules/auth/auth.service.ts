@@ -1,5 +1,5 @@
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
@@ -48,9 +48,8 @@ class AuthService {
 		}
 
 		if (!userEntity || !isValidPassword) {
-			throw new HTTPError({
+			throw new AuthError({
 				message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
-				status: HTTPCode.UNAUTHORIZED,
 			});
 		}
 
