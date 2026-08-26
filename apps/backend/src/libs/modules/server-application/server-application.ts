@@ -6,20 +6,9 @@ import { healthController } from "~/modules/health/health.js";
 import { userController, userService } from "~/modules/users/users.js";
 
 import { AuthGuard } from "../auth-guard/auth-guard.js";
+import { token } from "../token/token.js";
 import { BaseServerApplicationApi } from "./base-server-application-api.js";
 import { BaseServerApplication } from "./base-server-application.js";
-
-//TODO: import type Token AFTER merging issue #23
-type Token = {
-	verify: <T>(token: string) => Promise<T>;
-};
-
-//TODO: import token AFTER merging #23
-const token: Token = {
-	verify: <T>(): Promise<T> => {
-		throw new Error("Token module not yet available — mock");
-	},
-};
 
 const authGuard = new AuthGuard(token, userService);
 
