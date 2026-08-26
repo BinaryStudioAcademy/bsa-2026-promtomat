@@ -282,7 +282,7 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public async initMiddlewares(): Promise<void> {
-		injectUser(this.app);
+		await this.app.register(injectUser);
 
 		await Promise.all(
 			this.apis.map(async (api) => {
