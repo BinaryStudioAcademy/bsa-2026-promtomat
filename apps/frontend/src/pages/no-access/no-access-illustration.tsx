@@ -6,7 +6,7 @@ type Properties = {
 // TODO: will standarize the svg using svgr when icon issue already exist
 
 const NoAccessIllustration: React.FC<Properties> = ({
-	className = "",
+	className,
 }: Properties) => (
 	<svg
 		aria-hidden="true"
