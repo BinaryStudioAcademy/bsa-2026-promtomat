@@ -3,15 +3,9 @@ import { Navigate } from "react-router-dom";
 
 import { AppRoute } from "~/libs/enums/app-route.enum.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
-import {
-	type SignInRequestDto,
-	type SignInResponseDto,
-} from "~/modules/auth/auth.js";
+import { type SignInRequestDto } from "~/modules/auth/auth.js";
 
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
-
-const isUserLoaded = (data: SignInResponseDto | undefined) =>
-	data !== undefined && "user" in data;
 
 const SignIn: React.FC = () => {
 	const [signIn, { data, isError, isLoading }] = useSignInMutation();
@@ -21,7 +15,7 @@ const SignIn: React.FC = () => {
 		[signIn],
 	);
 
-	if (!isError && isUserLoaded(data)) {
+	if (!isError && Boolean(data?.user)) {
 		return <Navigate replace to={AppRoute.ROOT} />;
 	}
 

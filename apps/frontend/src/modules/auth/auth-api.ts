@@ -1,5 +1,3 @@
-import { UserDto } from "@promptomat/shared";
-
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
@@ -11,6 +9,7 @@ import {
 	SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
+	type UserDto,
 } from "./libs/types/types.js";
 
 const authApi = baseApi
