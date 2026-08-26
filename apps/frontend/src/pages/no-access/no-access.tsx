@@ -1,25 +1,29 @@
+import noAccessIllustration from "~/assets/img/no-access.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
 import { AppRoute } from "~/libs/enums/app-route.enum.js";
+
+import styles from "./no-access.module.css";
 
 const NoAccessPage: React.FC = () => (
 	<main>
 		<FallbackScreen
 			actions={[
 				{
-					label: "Refresh the page",
-					onClick() {
-						location.reload();
-					},
+					label: "Back Home",
+					to: AppRoute.ROOT,
 					variant: "primary",
 				},
-				{
-					label: "Go to Previous Page",
-					to: AppRoute.ROOT,
-					variant: "secondary",
-				},
 			]}
-			message="If you see this screen, the component rendered."
-			title="A Fallback Screen"
+			code="403"
+			illustration={
+				<img
+					alt="lock-illustration"
+					className={styles["illustration"]}
+					src={noAccessIllustration}
+				/>
+			}
+			message="Sorry, you are not allowed to access this page."
+			title="Forbidden"
 		/>
 	</main>
 );

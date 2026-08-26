@@ -1,0 +1,8 @@
+/** TODO: this is temporary styling, will change when design system is official */
+
+.illustration {
+	display: block;
+	width: var(--fallback-image);
+	height: auto;
+	margin-bottom: calc(var(--fallback-step) * 1.5);
+}
