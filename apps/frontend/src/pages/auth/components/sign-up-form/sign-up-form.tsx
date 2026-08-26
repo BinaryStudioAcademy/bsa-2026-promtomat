@@ -11,10 +11,14 @@ import {
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
+	isLoading?: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
-const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
+const SignUpForm: React.FC<Properties> = ({
+	isLoading = false,
+	onSubmit,
+}: Properties) => {
 	const { control, errors, handleSubmit } = useAppForm<SignUpRequestDto>({
 		defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
 		validationSchema: signUpValidationSchema,
@@ -51,7 +55,7 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 						type="text"
 					/>
 				</p>
-				<Button label="Sign up" type="submit" />
+				<Button isLoading={isLoading} label="Sign up" type="submit" />
 			</form>
 		</>
 	);
