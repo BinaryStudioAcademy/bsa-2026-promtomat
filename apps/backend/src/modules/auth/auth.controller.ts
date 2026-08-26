@@ -9,7 +9,10 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
-import { SignInRequestDto, type SignUpRequestDto } from "./libs/types/types.js";
+import {
+	type SignInRequestDto,
+	type SignUpRequestDto,
+} from "./libs/types/types.js";
 import {
 	signInValidationSchema,
 	signUpValidationSchema,
