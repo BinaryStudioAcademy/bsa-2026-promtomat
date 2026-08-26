@@ -1,11 +1,10 @@
 import { APIPath } from "~/libs/enums/enums.js";
-import { AuthError } from "~/libs/exceptions/exceptions.js";
 import {
 	type APIHandlerOptions,
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
-import { HTTPCode, HTTPError, HTTPMethod } from "~/libs/modules/http/http.js";
+import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type AuthService } from "./auth.service.js";
@@ -123,21 +122,10 @@ class AuthController extends BaseController {
 	private async signIn(
 		options: APIHandlerOptions<{ body: SignInRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		try {
-			return {
-				payload: await this.authService.signIn(options.body),
-				status: HTTPCode.OK,
-			};
-		} catch (error) {
-			if (error instanceof AuthError) {
-				throw new HTTPError({
-					message: error.message,
-					status: HTTPCode.UNAUTHORIZED,
-				});
-			}
-
-			throw error;
-		}
+		return {
+			payload: await this.authService.signIn(options.body),
+			status: HTTPCode.OK,
+		};
 	}
 
 	/**

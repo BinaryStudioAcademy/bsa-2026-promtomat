@@ -1,13 +1,16 @@
-import { ApplicationError } from "../application-error/application-error.exception.js";
+import { HTTPCode } from "../../modules/http/http.js";
+import { ValueOf } from "../../types/value-of.type.js";
+import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
 	cause?: unknown;
 	message: string;
+	status: ValueOf<typeof HTTPCode>;
 };
 
-class AuthError extends ApplicationError {
-	public constructor({ cause, message }: Constructor) {
-		super({ cause, message });
+class AuthError extends HTTPError {
+	public constructor({ cause, message, status }: Constructor) {
+		super({ cause, message, status });
 	}
 }
 
