@@ -2,26 +2,18 @@ import { HTTPCode, HTTPError } from "@promptomat/shared";
 
 import type { UserService } from "~/modules/users/user.service.js";
 
-//TODO: import token with verify method AFTER merging issue #23
+import type { AuthPayload } from "../server-application/libs/types/types.js";
+import type { TokenService } from "../token/libs/types/types.js";
 
 const BEARER = "Bearer ";
 
-//TODO: delete following declaration and import AuthPayload type AFTER merging issue #9/#7
-type AuthPayload = {
-	id: number;
-};
-//TODO: import type Token AFTER merging issue #23
-type Token = {
-	verify: <T>(token: string) => Promise<T>;
-};
-
 class AuthGuard {
-	private token: Token;
+	private tokenService: TokenService;
 
 	private userService: UserService;
 
-	public constructor(token: Token, userService: UserService) {
-		this.token = token;
+	public constructor(tokenService: TokenService, userService: UserService) {
+		this.tokenService = tokenService;
 		this.userService = userService;
 	}
 
@@ -40,7 +32,7 @@ class AuthGuard {
 
 	private async verifyToken(token: string): Promise<AuthPayload> {
 		try {
-			return await this.token.verify<AuthPayload>(token);
+			return await this.tokenService.verify<AuthPayload>(token);
 		} catch {
 			this.throwUnauthorized("Token is invalid or expired.");
 		}
