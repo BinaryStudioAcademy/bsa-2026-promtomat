@@ -6,6 +6,11 @@ import type { AuthPayload } from "../server-application/libs/types/types.js";
 import type { TokenService } from "../token/libs/types/types.js";
 
 const BEARER = "Bearer ";
+const AUTH_ERROR_MESSAGES = {
+	INVALID_TOKEN: "Token is invalid or expired.",
+	MISSING_TOKEN: "Missing bearer token.",
+	USER_NOT_FOUND: "User no longer exists.",
+} as const;
 
 class AuthGuard {
 	private tokenService: TokenService;
@@ -34,7 +39,7 @@ class AuthGuard {
 		try {
 			return await this.tokenService.verify<AuthPayload>(token);
 		} catch {
-			this.throwUnauthorized("Token is invalid or expired.");
+			this.throwUnauthorized(AUTH_ERROR_MESSAGES.INVALID_TOKEN);
 		}
 	}
 
@@ -44,7 +49,7 @@ class AuthGuard {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
-			this.throwUnauthorized("Missing bearer token.");
+			this.throwUnauthorized(AUTH_ERROR_MESSAGES.MISSING_TOKEN);
 		}
 
 		const payload = await this.verifyToken(token);
@@ -52,7 +57,7 @@ class AuthGuard {
 		const user = await this.userService.findById(payload.id);
 
 		if (!user) {
-			this.throwUnauthorized("User no longer exists.");
+			this.throwUnauthorized(AUTH_ERROR_MESSAGES.USER_NOT_FOUND);
 		}
 
 		return payload;
