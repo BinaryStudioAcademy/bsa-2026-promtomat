@@ -35,7 +35,7 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 		const error = toServerError(result.error);
 
 		if (error.status === HTTPCode.FORBIDDEN) {
-			// TOOD: navigate to AppRoute.No_Access <-- need router
+			// TODO: navigate to AppRoute.NO_ACCESS <-- need router
 		}
 
 		// TODO task #22 : if(error.status === HTTPCode.UNAUTHORIZED (401)){
