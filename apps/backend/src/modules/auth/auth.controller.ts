@@ -69,7 +69,7 @@ class AuthController extends BaseController {
 		}
 
 		return {
-			payload: await this.authService.getAuthenticatedUser(options.user.id),
+			payload: await this.authService.getAuthenticatedUser(options.user.userId),
 			status: HTTPCode.OK,
 		};
 	}
@@ -104,6 +104,39 @@ class AuthController extends BaseController {
 	 *                    type: string
 	 *                  user:
 	 *                    $ref: "#/components/schemas/User"
+	 *        409:
+	 *          description: User with this email already exists
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  details:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        message:
+	 *                          type: string
+	 *                        path:
+	 *                          type: array
+	 *                          items:
+	 *                            type: string
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
 	 */
 	private async signUp(
 		options: APIHandlerOptions<{

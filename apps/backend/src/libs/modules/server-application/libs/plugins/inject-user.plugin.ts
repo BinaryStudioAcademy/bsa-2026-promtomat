@@ -24,8 +24,6 @@ const getBearerToken = (request: FastifyRequest): null | string => {
 };
 
 const injectUser = (app: FastifyInstance): void => {
-	app.decorateRequest("user", null);
-
 	app.addHook("onRequest", async (request) => {
 		request.user = null;
 
@@ -36,10 +34,10 @@ const injectUser = (app: FastifyInstance): void => {
 		}
 
 		try {
-			const payload = await token.verify(bearerToken);
+			const payload = await token.verify<AuthPayload>(bearerToken);
 
 			request.user = {
-				id: payload.userId,
+				userId: payload.userId,
 			};
 		} catch (error) {
 			if (!(error instanceof TokenError)) {

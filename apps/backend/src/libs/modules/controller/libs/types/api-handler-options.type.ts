@@ -1,4 +1,4 @@
-import { type AuthPayload } from "~/libs/modules/server-application/libs/types/auth-payload.type.js";
+import { type AuthPayload } from "~/libs/modules/server-application/libs/types/types.js";
 
 type APIHandlerOptions<
 	T extends DefaultApiHandlerOptions = DefaultApiHandlerOptions,

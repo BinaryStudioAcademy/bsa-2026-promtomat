@@ -44,7 +44,9 @@ class JwtTokenService implements TokenService {
 		}
 	}
 
-	public async create(payload: TokenPayload): Promise<string> {
+	public async create<T extends Record<string, unknown>>(
+		payload: T,
+	): Promise<string> {
 		return await new SignJWT(payload)
 			.setProtectedHeader({ alg: this.alg })
 			.setIssuedAt()
@@ -52,16 +54,12 @@ class JwtTokenService implements TokenService {
 			.sign(this.secret);
 	}
 
-	public async verify(token: string): Promise<TokenPayload> {
+	public async verify<T extends Record<string, unknown>>(
+		token: string,
+	): Promise<T> {
 		const payload = await this.decode(token);
 
-		if (typeof payload["userId"] !== "number") {
-			throw new TokenError(TokenErrorMessage.INVALID_TOKEN_PAYLOAD);
-		}
-
-		return {
-			userId: payload["userId"],
-		};
+		return payload as T;
 	}
 }
 

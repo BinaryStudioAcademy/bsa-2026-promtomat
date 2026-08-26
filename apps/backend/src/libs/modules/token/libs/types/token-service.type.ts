@@ -1,8 +1,6 @@
-import { type TokenPayload } from "./token-payload.type.js";
-
 type TokenService = {
-	create(payload: TokenPayload): Promise<string>;
-	verify(token: string): Promise<TokenPayload>;
+	create<T extends Record<string, unknown>>(payload: T): Promise<string>;
+	verify<T extends Record<string, unknown>>(token: string): Promise<T>;
 };
 
 export { type TokenService };

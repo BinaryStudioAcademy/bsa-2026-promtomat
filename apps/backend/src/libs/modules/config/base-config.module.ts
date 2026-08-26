@@ -105,6 +105,14 @@ class BaseConfig implements Config {
 					format: String,
 				},
 			},
+			HASHING: {
+				SALT_LENGTH: {
+					default: null,
+					doc: "Salt length in bytes for hashing",
+					env: "SALT_LENGTH",
+					format: Number,
+				},
+			},
 			JWT: {
 				ALG: {
 					default: null,

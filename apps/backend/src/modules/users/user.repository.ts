@@ -24,18 +24,22 @@ class UserRepository {
 		return UserEntity.initialize(user);
 	}
 
-	public async find(id: number): Promise<null | UserEntity> {
-		const user = await this.userModel.query().findById(id);
-		if (!user) {
-			return null;
-		}
-		return UserEntity.initialize(user);
-	}
-
 	public async findAll(): Promise<UserEntity[]> {
 		const users = await this.userModel.query().execute();
 
 		return users.map((user) => UserEntity.initialize(user));
+	}
+
+	public async findByEmail(email: string): Promise<null | UserEntity> {
+		const user = await this.userModel.query().findOne({ email }).execute();
+
+		return user ? UserEntity.initialize(user) : null;
+	}
+
+	public async findById(id: number): Promise<null | UserEntity> {
+		const user = await this.userModel.query().findById(id);
+
+		return user ? UserEntity.initialize(user) : null;
 	}
 }
 

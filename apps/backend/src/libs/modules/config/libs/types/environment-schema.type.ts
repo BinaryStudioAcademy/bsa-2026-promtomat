@@ -19,6 +19,9 @@ type EnvironmentSchema = {
 		PORT: number;
 		USERNAME: string;
 	};
+	HASHING: {
+		SALT_LENGTH: number;
+	};
 	JWT: {
 		ALG: ValueOf<typeof JwtAlgorithm>;
 		EXPIRES_IN: string;
