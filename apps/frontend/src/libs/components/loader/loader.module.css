@@ -10,6 +10,11 @@
 	padding: 24px 0;
 }
 
+.inline {
+	display: inline-flex;
+	gap: 8px;
+}
+
 .spinner {
 	box-sizing: border-box;
 	flex-shrink: 0;
