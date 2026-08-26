@@ -1,1 +1,1 @@
-export { UsersApiPath } from "@promptomat/shared";
+export { UserErrorMessage, UsersApiPath } from "@promptomat/shared";

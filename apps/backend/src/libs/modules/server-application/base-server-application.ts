@@ -145,8 +145,8 @@ class BaseServerApplication implements ServerApplication {
 
 	private initValidationCompiler(): void {
 		this.app.setValidatorCompiler<ValidationSchema>(({ schema }) => {
-			return <T, R = ReturnType<ValidationSchema["parse"]>>(data: T): R => {
-				return schema.parse(data) as R;
+			return <T>(data: T): { value: ReturnType<ValidationSchema["parse"]> } => {
+				return { value: schema.parse(data) };
 			};
 		});
 	}
@@ -273,7 +273,7 @@ class BaseServerApplication implements ServerApplication {
 				});
 
 				await this.app.register(swaggerUi, {
-					routePrefix: `${api.version}/documentation`,
+					routePrefix: `/${api.version}/documentation`,
 				});
 			}),
 		);
