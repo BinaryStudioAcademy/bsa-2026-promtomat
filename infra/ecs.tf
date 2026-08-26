@@ -60,6 +60,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "DB_POOL_MAX", value = tostring(var.db_pool_max) },
         { name = "JWT_EXPIRES_IN", value = var.jwt_expires_in },
         { name = "JWT_ALG", value = var.jwt_alg },
+        { name = "SALT_LENGTH", value = tostring(var.salt_length) },
       ]
 
       secrets = [
