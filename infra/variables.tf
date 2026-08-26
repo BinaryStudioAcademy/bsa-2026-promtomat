@@ -92,3 +92,8 @@ variable "jwt_alg" {
   type = string
   default = "HS256"
 }
+
+variable "salt_length" {
+  type = number
+  default = 16
+}
