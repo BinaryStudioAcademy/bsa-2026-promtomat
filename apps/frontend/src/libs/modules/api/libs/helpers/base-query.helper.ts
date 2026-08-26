@@ -1,3 +1,4 @@
+import { HTTPCode } from "@promptomat/shared";
 import {
 	type BaseQueryFn,
 	type FetchArgs,
@@ -32,6 +33,10 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 	const result = await fetchQuery(arguments_, api, extraOptions);
 
 	if (result.error) {
+		if (result.error.status === HTTPCode.UNAUTHORIZED) {
+			void storage.drop(StorageKey.TOKEN);
+		}
+
 		return { error: toServerError(result.error) };
 	}
 
