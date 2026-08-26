@@ -4,7 +4,6 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { type Config } from "~/libs/modules/config/config.js";
-import { authReducer } from "~/modules/auth/auth-slice.js";
 
 const createStore = (config: Config) => {
 	const store = configureStore({
@@ -13,7 +12,6 @@ const createStore = (config: Config) => {
 			return getDefaultMiddleware().concat(baseApi.middleware);
 		},
 		reducer: {
-			auth: authReducer,
 			[baseApi.reducerPath]: baseApi.reducer,
 		},
 	});

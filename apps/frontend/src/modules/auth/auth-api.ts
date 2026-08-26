@@ -45,6 +45,4 @@ const authApi = baseApi
 
 const { useSignInMutation, useSignUpMutation } = authApi;
 
-const { signIn } = authApi.endpoints;
-
-export { signIn, useSignInMutation, useSignUpMutation };
+export { useSignInMutation, useSignUpMutation };
