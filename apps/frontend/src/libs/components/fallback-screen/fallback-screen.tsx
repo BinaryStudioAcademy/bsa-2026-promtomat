@@ -57,13 +57,12 @@ const FallbackScreen: React.FC<Properties> = ({
 	title,
 }: Properties) => {
 	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
-	const illustrationClassName = styles["illustration"] || "illustration";
 
 	return (
 		<div className={styles["screen"]}>
 			<div className={styles["layout"]}>
 				{illustration ?? (
-					<NoAccessIllustration className={illustrationClassName} />
+					<NoAccessIllustration className={styles["illustration"]} />
 				)}
 
 				<h1 className={styles["heading"]}>{title}</h1>

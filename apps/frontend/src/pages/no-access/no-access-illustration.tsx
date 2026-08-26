@@ -1,7 +1,7 @@
 import styles from "./no-access-illustration.module.css";
 
 type Properties = {
-	className?: string;
+	className?: string | undefined;
 };
 // TODO: will standarize the svg using svgr when icon issue already exist
 
