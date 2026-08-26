@@ -33,6 +33,12 @@ class UserRepository {
 	public async findById(id: number): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findById(id);
 
+    return user ? UserEntity.initialize(user) : null;
+	}
+  
+	public async findByEmail(email: string): Promise<null | UserEntity> {
+		const user = await this.userModel.query().findOne({ email }).execute();
+
 		return user ? UserEntity.initialize(user) : null;
 	}
 }
