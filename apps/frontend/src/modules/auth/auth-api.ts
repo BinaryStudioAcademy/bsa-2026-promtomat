@@ -12,6 +12,10 @@ const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getAuthenticatedUser: builder.query<SignUpResponseDto, undefined>({
+				providesTags: [UsersApiTag.USER],
+				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
@@ -23,6 +27,6 @@ const authApi = baseApi
 		}),
 	});
 
-const { useSignUpMutation } = authApi;
+const { useGetAuthenticatedUserQuery, useSignUpMutation } = authApi;
 
-export { useSignUpMutation };
+export { useGetAuthenticatedUserQuery, useSignUpMutation };
