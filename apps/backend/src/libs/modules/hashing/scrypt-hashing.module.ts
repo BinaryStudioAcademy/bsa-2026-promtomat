@@ -13,7 +13,7 @@ const STRING_ENCODING = "hex";
 
 const scryptAsync = promisify<string, string, number, Buffer>(scrypt);
 
-class BaseHashing implements Hashing {
+class ScryptHashing implements Hashing {
 	private saltLength: number;
 
 	public constructor(saltLength: number) {
@@ -49,4 +49,4 @@ class BaseHashing implements Hashing {
 	}
 }
 
-export { BaseHashing };
+export { ScryptHashing };
