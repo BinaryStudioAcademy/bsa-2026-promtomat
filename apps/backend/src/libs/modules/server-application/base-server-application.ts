@@ -34,11 +34,6 @@ const SHUTDOWN_TIMEOUT_MS = 10_000;
 
 const SHUTDOWN_FAILURE_EXIT_CODE = 1;
 
-//TODO: delete following declaration and import AuthPayload type AFTER merging issue #9
-type AuthPayload = {
-	id: number;
-};
-
 type Constructor = {
 	apis: ServerApplicationApi[];
 	authGuard: AuthGuard;
@@ -312,13 +307,6 @@ class BaseServerApplication implements ServerApplication {
 		const routers = this.apis.flatMap((api) => api.routes);
 
 		this.addRoutes(routers);
-	}
-}
-
-//TODO: replace on another level, to be discussed with issue #9
-declare module "fastify" {
-	interface FastifyRequest {
-		user: AuthPayload | null;
 	}
 }
 
