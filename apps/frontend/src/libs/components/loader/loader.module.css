@@ -1,16 +1,16 @@
-.Loader {
+.loader {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.Loader-section {
+.section {
 	display: flex;
 	width: 100%;
 	padding: 24px 0;
 }
 
-.Loader-spinner {
+.spinner {
 	box-sizing: border-box;
 	flex-shrink: 0;
 	border-color: currentcolor transparent currentcolor currentcolor;
@@ -18,34 +18,34 @@
 	border-radius: 50%;
 }
 
-.Loader-small .Loader-spinner {
+.small .spinner {
 	width: 16px;
 	height: 16px;
 	border-width: 2px;
 }
 
-.Loader-medium .Loader-spinner {
+.medium .spinner {
 	width: 24px;
 	height: 24px;
 	border-width: 3px;
 }
 
-.Loader-large .Loader-spinner {
+.large .spinner {
 	width: 48px;
 	height: 48px;
 	border-width: 4px;
 }
 
-.Loader-primary {
+.primary {
 	color: #2563eb;
 }
 
-.Loader-neutral {
+.neutral {
 	color: #6b7280;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.Loader-spinner {
+	.spinner {
 		animation: loader-spin 0.8s linear infinite;
 	}
 }

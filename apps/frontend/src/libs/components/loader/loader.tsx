@@ -1,7 +1,8 @@
+import { getValidClasses } from "~/libs/helpers/get-valid-classes.helper.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { LoaderColor, LoaderSize, LoaderVariant } from "./libs/enums/enums.js";
-import "./loader.css";
+import styles from "./loader.module.css";
 
 type Properties = {
 	color?: ValueOf<typeof LoaderColor>;
@@ -18,10 +19,15 @@ const Loader: React.FC<Properties> = ({
 }: Properties) => (
 	<div
 		aria-live="polite"
-		className={`Loader Loader-${variant} Loader-${size} Loader-${color}`}
+		className={getValidClasses(
+			styles["loader"],
+			styles[variant],
+			styles[size],
+			styles[color],
+		)}
 		role="status"
 	>
-		<span className="Loader-spinner" />
+		<span className={styles["spinner"]} />
 		<span className="visually-hidden">{label}</span>
 	</div>
 );
