@@ -78,6 +78,17 @@ class AuthController extends BaseController {
 	 *                    type: string
 	 *                  user:
 	 *                    $ref: "#/components/schemas/User"
+	 *        401:
+	 *          description: Invalid email or password
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
 	 *        422:
 	 *          description: Validation failed
 	 *          content:
