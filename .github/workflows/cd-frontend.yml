@@ -8,6 +8,7 @@ on:
       - apps/frontend/**/*.*
       - packages/shared/**/*.*
       - .github/workflows/cd-frontend.yml
+      - infra/**/*.*
 
   workflow_dispatch:
 

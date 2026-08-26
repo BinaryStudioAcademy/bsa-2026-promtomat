@@ -1,4 +1,4 @@
-export { UsersApiPath } from "./libs/enums/enums.js";
+export { UserErrorMessage, UsersApiPath } from "./libs/enums/enums.js";
 export {
 	type UserDto,
 	type UserGetAllResponseDto,

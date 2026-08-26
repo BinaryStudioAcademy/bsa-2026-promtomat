@@ -9,7 +9,10 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
-import { SignInRequestDto, type SignUpRequestDto } from "./libs/types/types.js";
+import {
+	type SignInRequestDto,
+	type SignUpRequestDto,
+} from "./libs/types/types.js";
 import {
 	signInValidationSchema,
 	signUpValidationSchema,
@@ -78,6 +81,17 @@ class AuthController extends BaseController {
 	 *                    type: string
 	 *                  user:
 	 *                    $ref: "#/components/schemas/User"
+	 *        401:
+	 *          description: Invalid email or password
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
 	 *        422:
 	 *          description: Validation failed
 	 *          content:

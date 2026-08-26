@@ -12,6 +12,25 @@ resource "aws_ecs_cluster" "fargate" {
   name = "Fargate"
 }
 
+resource "aws_secretsmanager_secret" "jwt" {
+  name = "jwt_secret"
+}
+
+data "aws_secretsmanager_random_password" "jwt" {
+  password_length = 64
+}
+
+resource "aws_secretsmanager_secret_version" "jwt_secret" {
+  secret_id = aws_secretsmanager_secret.jwt.id
+  secret_string = jsonencode({
+    secret = data.aws_secretsmanager_random_password.jwt.random_password
+  })
+
+  lifecycle {
+    ignore_changes = [ secret_string ]
+  }
+}
+
 resource "aws_ecs_task_definition" "fargate_backend" {
   family = "promptomat_backend"
 
@@ -39,10 +58,14 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "DB_DIALECT", value = var.db_dialect },
         { name = "DB_POOL_MIN", value = tostring(var.db_pool_min) },
         { name = "DB_POOL_MAX", value = tostring(var.db_pool_max) },
+        { name = "JWT_EXPIRES_IN", value = var.jwt_expires_in },
+        { name = "JWT_ALG", value = var.jwt_alg },
+        { name = "SALT_LENGTH", value = tostring(var.salt_length) },
       ]
 
       secrets = [
-        { name = "DB_PASSWORD", valueFrom = "${local.db_secret_arn}:password::"}
+        { name = "DB_PASSWORD", valueFrom = "${local.db_secret_arn}:password::"},
+        { name = "JWT_SECRET", valueFrom = "${aws_secretsmanager_secret.jwt.arn}:secret::"}
       ]
 
       logConfiguration = {
