@@ -1,10 +1,10 @@
 import { type AppRoute } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
-import { NoAccessIllustration } from "~/pages/no-access/no-access-illustration.js";
 
 import { Button } from "../button/button.js";
 import { Link } from "../link/link.js";
 import styles from "./fallback-screen.module.css";
+import { NoAccessIllustration } from "./no-access-illustration.js";
 
 const EMPTY_ACTIONS_COUNT = 0;
 
