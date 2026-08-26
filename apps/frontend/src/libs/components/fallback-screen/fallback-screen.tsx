@@ -4,7 +4,6 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { Button } from "../button/button.js";
 import { Link } from "../link/link.js";
 import styles from "./fallback-screen.module.css";
-import { NoAccessIllustration } from "./no-access-illustration.js";
 
 const EMPTY_ACTIONS_COUNT = 0;
 
@@ -19,6 +18,7 @@ type FallbackActionVariant = "primary" | "secondary";
 type Properties = {
 	actions?: FallbackAction[];
 	children?: React.ReactNode;
+	code?: string;
 	illustration?: React.ReactNode;
 	message: React.ReactNode;
 	title: string;
@@ -52,6 +52,7 @@ const renderAction = (action: FallbackAction): React.JSX.Element => {
 const FallbackScreen: React.FC<Properties> = ({
 	actions = [],
 	children,
+	code,
 	illustration,
 	message,
 	title,
@@ -61,9 +62,9 @@ const FallbackScreen: React.FC<Properties> = ({
 	return (
 		<div className={styles["screen"]}>
 			<div className={styles["layout"]}>
-				{illustration ?? (
-					<NoAccessIllustration className={styles["illustration"]} />
-				)}
+				{illustration}
+
+				{code ? <p className={styles["code"]}>{code}</p> : null}
 
 				<h1 className={styles["heading"]}>{title}</h1>
 

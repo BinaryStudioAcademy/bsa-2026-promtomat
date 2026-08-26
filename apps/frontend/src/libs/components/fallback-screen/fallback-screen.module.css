@@ -1,14 +1,16 @@
 /** TODO: this is temporary styling, will change when design system is official */
 
 .screen {
-	--fallback-surface: #fcfcfd;
-	--fallback-ink: #14161b;
-	--fallback-muted: #5c6674;
-	--fallback-hairline: #e4e7ec;
-	--fallback-tone: #a8321e;
+	--fallback-surface: #1f1f1f;
+	--fallback-ink: #ffffff;
+	--fallback-muted: #a6a6a6;
+	--fallback-hairline: #303030;
+	--fallback-tone: #e02427;
+	--fallback-accent: #2b7fff;
+	--fallback-accent-hover: #1667e8;
 	--fallback-step: 16px;
-	--fallback-display: "Archivo", "Inter", system-ui, sans-serif;
 	--fallback-body: "Inter", system-ui, sans-serif;
+	--fallback-image: 300px;
 
 	box-sizing: border-box;
 	display: flex;
@@ -23,43 +25,35 @@
 }
 
 .layout {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	width: 100%;
 	max-width: 512px;
+	text-align: center;
 	animation: enter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.illustration {
-	display: block;
-	width: 144px;
-	height: auto;
-	margin-bottom: calc(var(--fallback-step) * 1.5);
+.code {
+	margin: 0;
+	font-size: 56px;
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -1px;
 }
 
 .heading {
-	position: relative;
-	padding-top: calc(var(--fallback-step) * 1.75);
 	margin: 0;
-	font-family: var(--fallback-display);
-	font-size: clamp(30px, 20px + 2.5vw, 44px);
-	font-weight: 650;
-	line-height: 1.08;
-	letter-spacing: -0.4px;
+	margin-top: var(--fallback-step);
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.3;
 	text-wrap: balance;
 }
 
-.heading::before {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 48px;
-	height: 2px;
-	content: "";
-	background-color: var(--fallback-tone);
-}
-
 .message {
-	max-width: 480px;
-	margin-top: var(--fallback-step);
+	max-width: 420px;
+	margin-top: calc(var(--fallback-step) * 0.75);
 	font-size: 17px;
 	line-height: 1.6;
 	color: var(--fallback-muted);
@@ -67,9 +61,9 @@
 }
 
 .details {
-	max-width: 480px;
+	max-width: 420px;
 	padding-top: calc(var(--fallback-step) * 1.25);
-	margin-top: calc(var(--fallback-step) * 2);
+	margin-top: calc(var(--fallback-step) * 1.5);
 	font-size: 15px;
 	line-height: 1.6;
 	color: var(--fallback-muted);
@@ -79,54 +73,50 @@
 .actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: calc(var(--fallback-step) * 1.5);
+	gap: var(--fallback-step);
 	align-items: center;
-	margin-top: calc(var(--fallback-step) * 2.5);
+	justify-content: center;
+	margin-top: calc(var(--fallback-step) * 2);
 }
 
 .action {
 	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 26px;
 	font: inherit;
-	font-size: 15px;
-	font-weight: 550;
+	font-size: 16px;
+	font-weight: 600;
 	text-decoration: none;
 	cursor: pointer;
 	border: none;
-	border-radius: 2px;
+	border-radius: 6px;
 	transition:
 		background-color 140ms ease,
 		color 140ms ease;
 }
 
 .action:focus-visible {
-	outline: 2px solid var(--fallback-tone);
+	outline: 2px solid var(--fallback-accent);
 	outline-offset: 3px;
 }
 
 .actionPrimary {
-	padding: 11px 20px;
-	color: var(--fallback-surface);
-	background-color: var(--fallback-ink);
+	color: #ffffff;
+	background-color: var(--fallback-accent);
 }
 
 .actionPrimary:hover {
-	background-color: #343941;
+	background-color: var(--fallback-accent-hover);
 }
 
-/*  Secondary is a text link, not an outlined button */
 .actionSecondary {
-	padding: 11px 0;
 	color: var(--fallback-muted);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-decoration-color: var(--fallback-hairline);
-	text-underline-offset: 4px;
 	background-color: transparent;
 }
 
 .actionSecondary:hover {
 	color: var(--fallback-ink);
-	text-decoration-color: currentcolor;
 }
 
 @keyframes enter {
@@ -137,19 +127,13 @@
 }
 
 @media (width <= 480px) {
+	.code {
+		font-size: 44px;
+	}
+
 	.actions {
 		flex-direction: column;
-		gap: var(--fallback-step);
 		align-items: stretch;
-	}
-
-	.actionPrimary {
-		justify-content: center;
-	}
-
-	.actionSecondary {
-		justify-content: center;
-		padding: 4px 0;
 	}
 }
 

@@ -4,6 +4,7 @@ import { ProjectPrefix } from "./project.config.js";
 
 const config: UserConfig = {
 	extends: ["@commitlint/config-conventional"],
+	ignores: [(message) => message.startsWith("Apply suggestion from")],
 	parserPreset: {
 		parserOpts: {
 			issuePrefixes: ProjectPrefix.ISSUE_PREFIXES.map((prefix) => `${prefix}-`),
