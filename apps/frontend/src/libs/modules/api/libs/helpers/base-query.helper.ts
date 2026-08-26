@@ -38,7 +38,7 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 			// TOOD: navigate to AppRoute.No_Access <-- need router
 		}
 
-		// TODO task #22 : if(errir status === HTTPCode.UNAUTHORIZE (401)){
+		// TODO task #22 : if(error.status === HTTPCode.UNAUTHORIZED (401)){
 		// clean session + redirect sign-in
 		// remaining status code
 		//}
