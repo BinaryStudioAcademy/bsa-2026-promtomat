@@ -62,7 +62,7 @@ const FallbackScreen: React.FC<Properties> = ({
 		<div className={styles["screen"]}>
 			<div className={styles["layout"]}>
 				{illustration ?? (
-					<NoAccessIllustration className={styles["illustration"] ?? ""} />
+<NoAccessIllustration className={styles["illustration"]} />
 				)}
 
 				<h1 className={styles["heading"]}>{title}</h1>
