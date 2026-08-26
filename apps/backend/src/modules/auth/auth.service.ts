@@ -33,21 +33,21 @@ class AuthService {
 	): Promise<SignInResponseDto> {
 		const userEntity = await this.userService.findByEmail(userRequestDto.email);
 
-		let isValidPassword = false;
-
-		if (userEntity) {
-			const userAuth = userEntity.toAuthObject();
-
-			isValidPassword = await this.hashing.verify({
-				data: userRequestDto.password,
-				hash: userAuth.passwordHash,
-				salt: userAuth.passwordSalt,
-			});
-		} else {
+		if (!userEntity) {
 			await this.hashing.hash(userRequestDto.password);
+			throw new AuthError({
+				message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
+			});
 		}
 
-		if (!userEntity || !isValidPassword) {
+		const userAuth = userEntity.toAuthObject();
+		const isValidPassword = await this.hashing.verify({
+			data: userRequestDto.password,
+			hash: userAuth.passwordHash,
+			salt: userAuth.passwordSalt,
+		});
+
+		if (!isValidPassword) {
 			throw new AuthError({
 				message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
 			});
