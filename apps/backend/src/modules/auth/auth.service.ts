@@ -1,5 +1,6 @@
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
+import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { UserErrorMessage } from "../users/libs/enums/enums.js";
@@ -10,17 +11,21 @@ import {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 
-// TODO: replace with a token issued by the token module — pm-23
-const TOKEN_PLACEHOLDER = "token-placeholder";
-
 class AuthService {
 	private hashing: Hashing;
 
+	private tokenService: TokenService;
+
 	private userService: UserService;
 
-	public constructor(hashing: Hashing, userService: UserService) {
-		this.userService = userService;
+	public constructor(
+		hashing: Hashing,
+		tokenService: TokenService,
+		userService: UserService,
+	) {
 		this.hashing = hashing;
+		this.tokenService = tokenService;
+		this.userService = userService;
 	}
 
 	public async signIn(
@@ -49,7 +54,16 @@ class AuthService {
 			});
 		}
 
-		return { token: TOKEN_PLACEHOLDER, user: userEntity.toObject() };
+		const user = userEntity.toObject();
+
+		const token = await this.tokenService.create({
+			userId: user.id,
+		});
+
+		return {
+			token,
+			user,
+		};
 	}
 
 	public async signUp(
@@ -57,8 +71,12 @@ class AuthService {
 	): Promise<SignUpResponseDto> {
 		const user = await this.userService.create(signUpRequestDto);
 
+		const token = await this.tokenService.create({
+			userId: user.id,
+		});
+
 		return {
-			token: TOKEN_PLACEHOLDER,
+			token,
 			user,
 		};
 	}

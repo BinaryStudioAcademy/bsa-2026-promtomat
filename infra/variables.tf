@@ -82,3 +82,13 @@ variable "image_tag" {
   type    = string
   default = "seed"
 }
+
+variable "jwt_expires_in" {
+  type = string
+  default = "24h"
+}
+
+variable "jwt_alg" {
+  type = string
+  default = "HS256"
+}
