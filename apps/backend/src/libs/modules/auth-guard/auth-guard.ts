@@ -54,7 +54,7 @@ class AuthGuard {
 
 		const payload = await this.verifyToken(token);
 
-		const user = await this.userService.findById(payload.id);
+		const user = await this.userService.findById(payload.userId);
 
 		if (!user) {
 			this.throwUnauthorized(AUTH_ERROR_MESSAGES.USER_NOT_FOUND);
