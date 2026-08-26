@@ -33,6 +33,7 @@ class UserController extends BaseController {
 
 		this.addRoute({
 			handler: () => this.findAll(),
+			isProtected: true,
 			method: HTTPMethod.GET,
 			path: UsersApiPath.ROOT,
 		});
@@ -43,6 +44,8 @@ class UserController extends BaseController {
 	 * /users:
 	 *    get:
 	 *      description: Returns an array of users
+	 *      security:
+	 *        - bearerAuth: []
 	 *      responses:
 	 *        200:
 	 *          description: Successful operation

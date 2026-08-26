@@ -19,7 +19,7 @@ class AuthService {
 	}
 
 	public async getAuthenticatedUser(id: number): Promise<UserDto> {
-		const user = await this.userService.find(id);
+		const user = await this.userService.findById(id);
 
 		if (user === null) {
 			throw new HTTPError({

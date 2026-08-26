@@ -9,5 +9,4 @@ const token = new JwtTokenService({
 });
 
 export { token };
-export { TokenError } from "./libs/exceptions/exceptions.js";
 export { type TokenService } from "./libs/types/types.js";
