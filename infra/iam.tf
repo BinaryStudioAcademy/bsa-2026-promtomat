@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "backend_secret" {
     Statement = [{
       Effect   = "Allow"
       Action   = ["secretsmanager:GetSecretValue"]
-      Resource = [local.db_secret_arn]
+      Resource = [local.db_secret_arn, aws_secretsmanager_secret.jwt.arn]
     }]
   })
 }
