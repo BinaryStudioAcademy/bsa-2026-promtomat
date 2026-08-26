@@ -13,9 +13,9 @@ const AUTH_ERROR_MESSAGES = {
 } as const;
 
 class AuthGuard {
-	private tokenService: TokenService;
+	private readonly tokenService: TokenService;
 
-	private userService: UserService;
+	private readonly userService: UserService;
 
 	public constructor(tokenService: TokenService, userService: UserService) {
 		this.tokenService = tokenService;
