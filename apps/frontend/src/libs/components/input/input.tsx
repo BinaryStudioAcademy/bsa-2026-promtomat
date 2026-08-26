@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 
 type Properties<T extends FieldValues> = {
+	autocomplite?: string;
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
 	label: string;
@@ -17,6 +18,7 @@ type Properties<T extends FieldValues> = {
 };
 
 const Input = <T extends FieldValues>({
+	autocomplite,
 	control,
 	errors,
 	label,
@@ -37,10 +39,13 @@ const Input = <T extends FieldValues>({
 				{...field}
 				aria-describedby={hasError ? errorId : undefined}
 				aria-invalid={hasError || undefined}
+				autoComplete={autocomplite}
 				placeholder={placeholder}
 				type={type}
 			/>
-			{hasError && <span id={errorId}>{error as string}</span>}
+			<span id={errorId} role="alert">
+				{hasError ? (error as string) : ""}
+			</span>
 		</label>
 	);
 };

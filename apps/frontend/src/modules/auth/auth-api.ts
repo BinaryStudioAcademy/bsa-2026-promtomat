@@ -1,3 +1,5 @@
+import { UserDto } from "@promptomat/shared";
+
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
@@ -15,13 +17,22 @@ const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
-				async onQueryStarted(_, { queryFulfilled }) {
+				async onQueryStarted(_, { dispatch, queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
 						await storage.set(StorageKey.TOKEN, data.token);
-						// TODO: seed the authenticated-user cache entry with data.user via upsertQueryData (pm-9)
+						await dispatch(
+							authApi.util.upsertQueryData(
+								"getAuthenticatedUser",
+								undefined,
+								data.user,
+							),
+						);
 					} catch {
 						// The failure is exposed through the mutation error state and rendered by the caller.
 					}

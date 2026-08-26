@@ -43,7 +43,7 @@ const SignInForm: React.FC<Properties> = ({
 						label="Email"
 						name="email"
 						placeholder="Enter your email"
-						type="text"
+						type="email"
 					/>
 				</p>
 				<p>
