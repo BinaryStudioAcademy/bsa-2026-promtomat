@@ -1,5 +1,6 @@
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
+import { HTTPCode } from "~/libs/modules/http/http.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserRepository } from "~/modules/users/user.repository.js";
@@ -24,7 +25,7 @@ class UserService {
 		const existingUser = await this.userRepository.findByEmail(payload.email);
 
 		if (existingUser) {
-			throw new HTTPError({
+			throw new AuthError({
 				message: UserErrorMessage.EMAIL_ALREADY_EXISTS,
 				status: HTTPCode.CONFLICT,
 			});
