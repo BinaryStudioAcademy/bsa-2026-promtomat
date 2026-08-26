@@ -2,6 +2,7 @@ import { type AppRoute } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { NoAccessIllustration } from "~/pages/no-access/no-access-illustration.js";
 
+import { Button } from "../button/button.js";
 import { Link } from "../link/link.js";
 import styles from "./fallback-screen.module.css";
 
@@ -38,14 +39,13 @@ const renderAction = (action: FallbackAction): React.JSX.Element => {
 			{action.label}
 		</Link>
 	) : (
-		<button
+		<Button
 			className={className}
 			key={action.label}
+			label={action.label}
 			onClick={action.onClick}
 			type="button"
-		>
-			{action.label}
-		</button>
+		/>
 	);
 };
 

@@ -15,6 +15,7 @@ const NoAccessPage: React.FC = () => (
 				{
 					label: "Go to Previous Page",
 					to: AppRoute.ROOT,
+					variant: "secondary",
 				},
 			]}
 			message="If you see this screen, the component rendered."
