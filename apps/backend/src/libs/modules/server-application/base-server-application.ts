@@ -22,7 +22,6 @@ import {
 } from "~/libs/types/types.js";
 
 import { AuthGuard } from "../auth-guard/auth-guard.js";
-import { injectUser } from "./libs/plugins/plugins.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -282,8 +281,6 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public async initMiddlewares(): Promise<void> {
-		await this.app.register(injectUser);
-
 		await Promise.all(
 			this.apis.map(async (api) => {
 				this.logger.info(

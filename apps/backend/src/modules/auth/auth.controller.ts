@@ -22,6 +22,7 @@ class AuthController extends BaseController {
 
 		this.addRoute({
 			handler: (options) => this.getAuthenticatedUser(options),
+			isProtected: true,
 			method: HTTPMethod.GET,
 			path: AuthApiPath.AUTHENTICATED_USER,
 		});
@@ -61,7 +62,9 @@ class AuthController extends BaseController {
 	private async getAuthenticatedUser(
 		options: APIHandlerOptions,
 	): Promise<APIHandlerResponse> {
-		if (options.user === null) {
+		const { user } = options;
+
+		if (user === null) {
 			throw new HTTPError({
 				message: ExceptionMessage.UNAUTHORIZED,
 				status: HTTPCode.UNAUTHORIZED,
@@ -69,7 +72,7 @@ class AuthController extends BaseController {
 		}
 
 		return {
-			payload: await this.authService.getAuthenticatedUser(options.user.userId),
+			payload: await this.authService.getAuthenticatedUser(user.userId),
 			status: HTTPCode.OK,
 		};
 	}

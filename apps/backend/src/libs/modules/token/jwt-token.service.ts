@@ -5,7 +5,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 import { TokenErrorMessage } from "./libs/enums/enums.js";
 import { TokenError } from "./libs/exceptions/exceptions.js";
-import { type TokenPayload, type TokenService } from "./libs/types/types.js";
+import { type TokenService } from "./libs/types/types.js";
 
 type Constructor = {
 	alg: ValueOf<typeof JwtAlgorithm>;

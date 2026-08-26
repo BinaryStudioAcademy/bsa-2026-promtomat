@@ -1,1 +1,1 @@
-export { HTTPCode, HTTPHeader, HTTPMethod } from "@promptomat/shared";
+export { HTTPCode, HTTPMethod } from "@promptomat/shared";
