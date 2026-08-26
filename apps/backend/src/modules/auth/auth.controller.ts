@@ -4,11 +4,12 @@ import {
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
-import { HTTPCode, HTTPError, HTTPMethod } from "~/libs/modules/http/http.js";
+import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type AuthPayload } from "~/libs/modules/server-application/libs/types/types.js";
 
 import { type AuthService } from "./auth.service.js";
-import { AuthApiPath, ExceptionMessage } from "./libs/enums/enums.js";
+import { AuthApiPath } from "./libs/enums/enums.js";
 import { type SignUpRequestDto } from "./libs/types/types.js";
 import { signUpValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
@@ -62,17 +63,10 @@ class AuthController extends BaseController {
 	private async getAuthenticatedUser(
 		options: APIHandlerOptions,
 	): Promise<APIHandlerResponse> {
-		const { user } = options;
-
-		if (user === null) {
-			throw new HTTPError({
-				message: ExceptionMessage.UNAUTHORIZED,
-				status: HTTPCode.UNAUTHORIZED,
-			});
-		}
-
 		return {
-			payload: await this.authService.getAuthenticatedUser(user.userId),
+			payload: await this.authService.getAuthenticatedUser(
+				(options.user as AuthPayload).userId,
+			),
 			status: HTTPCode.OK,
 		};
 	}
