@@ -113,6 +113,9 @@ importers:
       fastify:
         specifier: 5.11.0
         version: 5.11.0
+      jose:
+        specifier: 6.2.10
+        version: 6.2.10
       knex:
         specifier: 3.3.0
         version: 3.3.0(pg@8.22.0)
@@ -2730,6 +2733,9 @@ packages:
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
+
+  jose@6.2.10:
+    resolution: {integrity: sha512-iiW7J9qRFlGxvCOIBDBDxFePQSn7ZMAnrYGhrrOo6siO/MIqwfyilLR27pkfDgUk+raLuzADS8A3S/KLBisc0g==}
 
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
@@ -6625,6 +6631,8 @@ snapshots:
   jiti@2.6.1: {}
 
   jiti@2.7.0: {}
+
+  jose@6.2.10: {}
 
   joycon@3.1.1: {}
 
