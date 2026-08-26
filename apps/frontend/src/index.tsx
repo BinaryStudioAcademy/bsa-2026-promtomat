@@ -8,7 +8,7 @@ import { RouterProvider } from "~/libs/components/router-provider/router-provide
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
-import { NoAccess } from "~/pages/no-access/no-access.js";
+import { NoAccessPage } from "~/pages/no-access/no-access.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -30,7 +30,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.SIGN_UP,
 							},
 							{
-								element: <NoAccess />,
+								element: <NoAccessPage />,
 								path: AppRoute.NO_ACCESS,
 							},
 						],
