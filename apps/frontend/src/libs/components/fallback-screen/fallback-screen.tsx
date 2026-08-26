@@ -3,13 +3,17 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { NoAccessIllustration } from "~/pages/no-access/no-access-illustration.js";
 
 import { Link } from "../link/link.js";
-import "./fallback-screen.css";
+import styles from "./fallback-screen.module.css";
 
 const EMPTY_ACTIONS_COUNT = 0;
 
 type FallbackAction =
-	| { className: string; label: string; onClick: () => void } // TODO: after button develop, user type of property here
-	| { label: string; to: ValueOf<typeof AppRoute> };
+	| { label: string; onClick: () => void; variant?: FallbackActionVariant }
+	| { label: string; to: FallbackActionRoute; variant?: FallbackActionVariant };
+
+type FallbackActionRoute = ValueOf<typeof AppRoute>;
+
+type FallbackActionVariant = "primary" | "secondary";
 
 type Properties = {
 	actions?: FallbackAction[];
@@ -19,21 +23,31 @@ type Properties = {
 	title: string;
 };
 
-const renderAction = (action: FallbackAction): React.JSX.Element =>
-	"to" in action ? (
-		<Link key={action.label} to={action.to}>
+const getActionClassName = (variant: FallbackActionVariant): string => {
+	const variantClassName =
+		variant === "primary" ? styles["actionPrimary"] : styles["actionSecondary"];
+
+	return [styles["action"], variantClassName].join(" ");
+};
+
+const renderAction = (action: FallbackAction): React.JSX.Element => {
+	const className = getActionClassName(action.variant ?? "secondary");
+
+	return "to" in action ? (
+		<Link className={className} key={action.label} to={action.to}>
 			{action.label}
 		</Link>
 	) : (
-		// TODO: will change button using developed component when it is ready
 		<button
-			className={action.className}
+			className={className}
 			key={action.label}
 			onClick={action.onClick}
+			type="button"
 		>
 			{action.label}
 		</button>
 	);
+};
 
 const FallbackScreen: React.FC<Properties> = ({
 	actions = [],
@@ -45,29 +59,20 @@ const FallbackScreen: React.FC<Properties> = ({
 	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
 
 	return (
-		<div className="fallback-screen-component">
-			<div className="fallback-screen-layout">
-				<div className="fallback-screen-ilustration">
-					{illustration || (
-						// TODO; temporary untill we fixed the placeholder svg assets
-						<NoAccessIllustration className="fallback-screen-illustration" />
-					)}
-				</div>
+		<div className={styles["screen"]}>
+			<div className={styles["layout"]}>
+				{illustration ?? (
+					<NoAccessIllustration className={styles["illustration"] ?? ""} />
+				)}
 
-				<h1 className="fallback-screen-heading" id={`title-header-${title}`}>
-					{title}
-				</h1>
+				<h1 className={styles["heading"]}>{title}</h1>
 
-				<div className="fallback-screen-message" id={`message-${title}`}>
-					{message}
-				</div>
+				<div className={styles["message"]}>{message}</div>
 
-				{children ? (
-					<div className="fallback-screen-details">{children}</div>
-				) : null}
+				{children ? <div className={styles["details"]}>{children}</div> : null}
 
 				{hasActions ? (
-					<div className="fallback-screen-actions">
+					<div className={styles["actions"]}>
 						{actions.map((action) => renderAction(action))}
 					</div>
 				) : null}
