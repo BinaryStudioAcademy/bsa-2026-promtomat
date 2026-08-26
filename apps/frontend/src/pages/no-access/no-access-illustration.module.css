@@ -1,0 +1,47 @@
+/** TODO: this is temporary styling, will change when design system is official */
+
+.backdrop {
+	opacity: 0.55;
+	fill: var(--fallback-hairline);
+}
+
+.fleck {
+	fill: var(--fallback-hairline);
+}
+
+.fleckMark {
+	fill: none;
+	stroke: var(--fallback-hairline);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+}
+
+.shackle {
+	fill: none;
+	stroke: var(--fallback-ink);
+	stroke-width: 12;
+	stroke-linecap: round;
+}
+
+.body {
+	fill: var(--fallback-ink);
+}
+
+.keyhole {
+	fill: var(--fallback-surface);
+}
+
+.badgeRing {
+	fill: var(--fallback-surface);
+}
+
+.badge {
+	fill: var(--fallback-tone);
+}
+
+.badgeMark {
+	fill: none;
+	stroke: var(--fallback-surface);
+	stroke-width: 3.5;
+	stroke-linecap: round;
+}
