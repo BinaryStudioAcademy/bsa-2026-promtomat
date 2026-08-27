@@ -1,8 +1,7 @@
-import { HTTPCode, HTTPError } from "@promptomat/shared";
+import { HTTPCode, HTTPError, type UserDto } from "@promptomat/shared";
 
 import type { UserService } from "~/modules/users/user.service.js";
 
-import type { AuthPayload } from "../server-application/libs/types/types.js";
 import type { TokenService } from "../token/libs/types/types.js";
 
 import { AuthErrorMesssage, BEARER } from "./libs/enums/enums.js";
@@ -30,17 +29,15 @@ class AuthGuard {
 		});
 	}
 
-	private async verifyToken(token: string): Promise<AuthPayload> {
+	private async verifyToken(token: string): Promise<UserDto> {
 		try {
-			return await this.tokenService.verify<AuthPayload>(token);
+			return await this.tokenService.verify<UserDto>(token);
 		} catch {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
 	}
 
-	public async resolveUser(
-		authHeader: string | undefined,
-	): Promise<AuthPayload> {
+	public async resolveUser(authHeader: string | undefined): Promise<UserDto> {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
@@ -49,7 +46,7 @@ class AuthGuard {
 
 		const payload = await this.verifyToken(token);
 
-		const user = await this.userService.findById(payload.userId);
+		const user = await this.userService.findById(payload.id);
 
 		if (!user) {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
