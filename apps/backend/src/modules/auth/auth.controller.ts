@@ -59,9 +59,7 @@ class AuthController extends BaseController {
 	 *        401:
 	 *          description: Unauthorized
 	 */
-	private getAuthenticatedUser(
-		options: APIHandlerOptions,
-	): APIHandlerResponse {
+	private getAuthenticatedUser(options: APIHandlerOptions): APIHandlerResponse {
 		return {
 			payload: options.user,
 			status: HTTPCode.OK,
