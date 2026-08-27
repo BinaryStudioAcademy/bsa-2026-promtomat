@@ -114,7 +114,7 @@
 		font-size: 44px;
 	}
 
-	.actions {
+	.action-container {
 		flex-direction: column;
 		align-items: stretch;
 	}
