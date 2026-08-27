@@ -15,7 +15,7 @@ import { SignUpForm } from "./components/sign-up-form/sign-up-form.js";
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
 	const [signUp, { error, isLoading }] = useSignUpMutation();
-	const { data: user, isLoading: authIsLoading } =
+	const { data: user, isLoading: isAuthLoading } =
 		useGetAuthenticatedUserQuery(undefined);
 
 	const handleSignInSubmit = useCallback((): void => {
@@ -29,6 +29,14 @@ const Auth: React.FC = () => {
 		[signUp],
 	);
 
+	if (isLoading || isAuthLoading) {
+		return <p>Loading...</p>;
+	}
+
+	if (user) {
+		return <Navigate to={AppRoute.ROOT} />;
+	}
+
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {
 			return <SignUpForm onSubmit={handleSignUpSubmit} />;
@@ -37,20 +45,10 @@ const Auth: React.FC = () => {
 		return <SignInForm onSubmit={handleSignInSubmit} />;
 	};
 
-	let content: React.ReactNode;
-
-	if (isLoading || authIsLoading) {
-		content = <p>Loading...</p>;
-	} else if (user) {
-		content = <Navigate to={AppRoute.ROOT} />;
-	} else {
-		content = getScreen(pathname);
-	}
-
 	return (
 		<>
 			{isServerError(error) && <p>{error.message}</p>}
-			{content}
+			{getScreen(pathname)}
 		</>
 	);
 };

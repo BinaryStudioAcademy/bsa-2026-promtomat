@@ -34,7 +34,7 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 
 	if (result.error) {
 		if (result.error.status === HTTPCode.UNAUTHORIZED) {
-			void storage.drop(StorageKey.TOKEN);
+			await storage.drop(StorageKey.TOKEN);
 		}
 
 		return { error: toServerError(result.error) };
