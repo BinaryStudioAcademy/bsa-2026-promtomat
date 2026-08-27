@@ -1,6 +1,6 @@
 import { UserErrorMessage } from "../../../modules/users/users.js";
 import { HTTPCode } from "../../modules/http/http.js";
-import { ValueOf } from "../../types/value-of.type.js";
+import { type ValueOf } from "../../types/value-of.type.js";
 import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
