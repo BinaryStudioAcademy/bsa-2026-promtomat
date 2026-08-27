@@ -5,6 +5,8 @@ import { AppEnvironment } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { type Config } from "~/libs/modules/config/config.js";
 
+import { navigationReducer } from "../navigation/navigation.slice.js";
+
 const createStore = (config: Config) => {
 	const store = configureStore({
 		devTools: config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION,
@@ -13,6 +15,7 @@ const createStore = (config: Config) => {
 		},
 		reducer: {
 			[baseApi.reducerPath]: baseApi.reducer,
+			navigation: navigationReducer,
 		},
 	});
 
