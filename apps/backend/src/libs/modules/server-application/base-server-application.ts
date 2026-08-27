@@ -17,8 +17,8 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
-import { AuthGuard } from "../auth-guard/auth-guard.js";
-import { authGuardPlugin } from "../auth-guard/auth-guard.plugin.js";
+import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
+import { AuthError } from "../auth-guard/libs/exceptions/exceptions.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -110,6 +110,19 @@ class BaseServerApplication implements ServerApplication {
 				if (error instanceof HTTPError) {
 					this.logger.error(
 						`[HTTP Error]: ${error.status.toString()} – ${error.message}`,
+					);
+
+					const response: ServerCommonErrorResponse = {
+						errorType: ServerErrorType.COMMON,
+						message: error.message,
+					};
+
+					return reply.status(error.status).send(response);
+				}
+
+				if (error instanceof AuthError) {
+					this.logger.error(
+						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
 					);
 
 					const response: ServerCommonErrorResponse = {
