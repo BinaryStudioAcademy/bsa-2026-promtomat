@@ -5,7 +5,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 type Properties = {
 	children: React.ReactNode;
-	className?: string;
+	className?: string | undefined;
 	to: ValueOf<typeof AppRoute>;
 };
 

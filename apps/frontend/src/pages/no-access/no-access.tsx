@@ -7,13 +7,7 @@ import styles from "./no-access.module.css";
 const NoAccessPage: React.FC = () => (
 	<main>
 		<FallbackScreen
-			actions={[
-				{
-					label: "Back Home",
-					to: AppRoute.ROOT,
-					variant: "primary",
-				},
-			]}
+			action={{ label: "Back Home", url: AppRoute.ROOT }}
 			code="403"
 			illustration={
 				<img

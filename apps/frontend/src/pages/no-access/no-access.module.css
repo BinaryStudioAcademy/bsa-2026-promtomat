@@ -1,6 +1,6 @@
 .illustration {
 	display: block;
-	width: var(--fallback-image);
+	width: 180px;
 	height: auto;
-	margin-bottom: calc(var(--fallback-step) * 1.5);
+	margin-bottom: var(--space-16);
 }
