@@ -42,7 +42,6 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 		}
 
 		return {
-			code: data.code,
 			errorType: ServerErrorType.COMMON,
 			message: data.message,
 			status: error.status,

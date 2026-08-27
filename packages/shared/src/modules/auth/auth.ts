@@ -1,4 +1,4 @@
-export { AuthApiPath, AuthErrorCode } from "./libs/enums/enums.js";
+export { AuthApiPath } from "./libs/enums/enums.js";
 export {
 	type SignInRequestDto,
 	type SignInResponseDto,
