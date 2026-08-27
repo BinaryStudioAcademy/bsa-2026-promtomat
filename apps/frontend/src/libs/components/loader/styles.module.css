@@ -23,16 +23,28 @@
 	border-radius: 50%;
 }
 
+/* stylelint-disable-next-line block-no-empty -- exports the class name, size is set on .spinner below */
+.small {
+}
+
 .small .spinner {
 	width: 16px;
 	height: 16px;
 	border-width: 2px;
 }
 
+/* stylelint-disable-next-line block-no-empty -- exports the class name, size is set on .spinner below */
+.medium {
+}
+
 .medium .spinner {
 	width: 24px;
 	height: 24px;
 	border-width: 3px;
+}
+
+/* stylelint-disable-next-line block-no-empty -- exports the class name, size is set on .spinner below */
+.large {
 }
 
 .large .spinner {
