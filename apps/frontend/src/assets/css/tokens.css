@@ -1,0 +1,50 @@
+/**
+ * PROVISIONAL TOKENS — OWNED BY #15 (feat: Add base styles and theme tokens).
+ *
+ * This file is a temporary bridge so the common components (#54) can render and
+ * be consumed by the sign-in / sign-up forms before #15 lands. Every raw colour
+ * in the frontend lives ONLY here. When #15 is merged, replace this file with the
+ * real token layer; the components reference these custom properties by name and
+ * need no change. Values below follow the design-system facts stated in #54
+ * (accent #E6E9EE on canvas #0A0D12) and the 24/32/40 control-height scale.
+ */
+
+:root {
+	/* Surfaces */
+	--surface-canvas: #0a0d12;
+	--surface-card: #12161d;
+	--surface-inset: #1b212b;
+	--surface-accent: #e6e9ee;
+	--surface-accent-hover: #f2f4f7;
+	--surface-accent-active: #cdd2da;
+	--surface-danger: #d64545;
+	--surface-danger-hover: #e05a5a;
+	--surface-danger-active: #b83a3a;
+
+	/* Borders */
+	--border-default: #2a313c;
+	--border-accent: #e6e9ee;
+	--border-focus: #7aa7ff;
+
+	/* Foreground / text */
+	--text-primary: #e6e9ee;
+	--text-muted: #9aa4b2;
+	--text-accent: #e6e9ee;
+	--text-on-accent: #0a0d12;
+	--fg-danger: #ff6b6b;
+
+	/* Translucent state tints (compose over a surface) */
+	--state-hover-tint: rgb(230 233 238 / 8%);
+	--state-disabled-tint: rgb(230 233 238 / 4%);
+
+	/* Control heights */
+	--size-control-h-sm: 24px;
+	--size-control-h-md: 32px;
+	--size-control-h-lg: 40px;
+
+	/* Radius */
+	--radius-control: 8px;
+
+	/* Focus ring width */
+	--border-focus-width: 2px;
+}
