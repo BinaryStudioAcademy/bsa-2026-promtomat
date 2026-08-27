@@ -8,6 +8,8 @@ import { RouterProvider } from "~/libs/components/router-provider/router-provide
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
+import { ErrorPage } from "~/pages/error/error.js";
+import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -28,8 +30,13 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								element: <Auth />,
 								path: AppRoute.SIGN_UP,
 							},
+							{
+								element: <NotFoundPage />,
+								path: AppRoute.ANY,
+							},
 						],
 						element: <App />,
+						errorElement: <ErrorPage />,
 						path: AppRoute.ROOT,
 					},
 				]}

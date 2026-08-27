@@ -1,0 +1,121 @@
+.screen {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: var(--space-48) var(--space-24);
+}
+
+.layout {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	text-align: center;
+}
+
+.illustration {
+	display: flex;
+	justify-content: center;
+	max-width: 100%;
+}
+
+.code {
+	margin: 0;
+	font-size: 56px;
+	font-weight: 800;
+	line-height: 1.1;
+	color: var(--text-strong);
+	letter-spacing: -1px;
+}
+
+.illustration + .code {
+	margin-top: var(--space-16);
+}
+
+.heading {
+	margin: 0;
+	margin-top: var(--space-16);
+	font-size: var(--typography-heading-3-size);
+	font-weight: 700;
+	line-height: var(--typography-heading-3-line-height);
+	color: var(--text-strong);
+	text-wrap: balance;
+}
+
+.message {
+	max-width: 420px;
+	margin-top: var(--space-12);
+	font-size: var(--typography-body-large-size);
+	line-height: var(--typography-body-large-line-height);
+	color: var(--text-muted);
+	text-wrap: pretty;
+}
+
+.details {
+	max-width: 100%;
+	padding-top: var(--space-20);
+	margin-top: var(--space-24);
+	font-size: var(--typography-body-regular-size);
+	line-height: var(--typography-body-regular-line-height);
+	color: var(--text-faint);
+	border-top: var(--border-width-hairline) solid var(--border-subtle);
+}
+
+.action-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-16);
+	align-items: center;
+	justify-content: center;
+	margin-top: var(--space-32);
+}
+
+.action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--size-control-lg);
+	padding: 0 var(--space-24);
+	font: inherit;
+	font-size: var(--typography-body-large-size);
+	font-weight: 600;
+	color: var(--text-on-accent);
+	text-decoration: none;
+	cursor: pointer;
+	background-color: var(--surface-inverse);
+	border: var(--border-width-hairline) solid var(--border-accent);
+	border-radius: var(--radius-md);
+	transition:
+		background-color 140ms ease,
+		border-color 140ms ease,
+		color 140ms ease;
+}
+
+.action:hover {
+	background-color: var(--surface-accent-hover);
+	border-color: var(--border-focus);
+}
+
+.action:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: 3px;
+}
+
+@media (width <= 480px) {
+	.action-container {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.code {
+		font-size: 44px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.action {
+		transition: none;
+	}
+}
