@@ -1,4 +1,4 @@
-import type { UserDto } from "@promptomat/shared";
+import { type UserDto } from "@promptomat/shared";
 
 declare module "fastify" {
 	interface FastifyRequest {
