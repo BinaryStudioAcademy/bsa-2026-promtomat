@@ -1,4 +1,57 @@
-<svg fill="none" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
-	<circle cx="46" cy="40" r="30" stroke="#e02427" stroke-width="7" />
-	<rect fill="#e02427" height="26" rx="4" width="18" x="88" y="27" />
+<svg
+	fill="none"
+	height="200"
+	viewBox="0 0 200 200"
+	width="200"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<defs>
+		<radialGradient cx="50%" cy="50%" id="no-access-glow" r="50%">
+			<stop offset="0%" stop-color="#c63b3b" stop-opacity="0.45" />
+			<stop offset="55%" stop-color="#c63b3b" stop-opacity="0.12" />
+			<stop offset="100%" stop-color="#c63b3b" stop-opacity="0" />
+		</radialGradient>
+		<linearGradient id="no-access-body" x1="0" x2="0" y1="0" y2="1">
+			<stop offset="0%" stop-color="#f4575c" />
+			<stop offset="100%" stop-color="#d63a3f" />
+		</linearGradient>
+	</defs>
+
+	<circle cx="100" cy="100" fill="url(#no-access-glow)" r="100" />
+
+	<circle
+		cx="100"
+		cy="100"
+		r="78"
+		stroke="#e2484d"
+		stroke-opacity="0.16"
+		stroke-width="2"
+	/>
+	<circle
+		cx="100"
+		cy="100"
+		r="60"
+		stroke="#e2484d"
+		stroke-opacity="0.34"
+		stroke-width="2"
+	/>
+
+	<path
+		d="M79 86V70a21 21 0 0 1 42 0v16"
+		stroke="url(#no-access-body)"
+		stroke-linecap="round"
+		stroke-width="12"
+	/>
+
+	<rect
+		fill="url(#no-access-body)"
+		height="54"
+		rx="13"
+		width="66"
+		x="67"
+		y="86"
+	/>
+
+	<circle cx="100" cy="107" fill="#2a0d10" r="7" />
+	<rect fill="#2a0d10" height="15" rx="3" width="6" x="97" y="111" />
 </svg>
