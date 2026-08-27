@@ -23,6 +23,7 @@ const SignUpForm: React.FC<Properties> = ({
 }: Properties) => {
 	const { control, errors, handleSubmit } = useAppForm<SignUpRequestDto>({
 		defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
+		isDisabled: isLoading,
 		validationSchema: signUpValidationSchema,
 	});
 
