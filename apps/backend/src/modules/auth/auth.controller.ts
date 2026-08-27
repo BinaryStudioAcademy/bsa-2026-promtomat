@@ -6,7 +6,6 @@ import {
 } from "~/libs/modules/controller/controller.js";
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
-import { type AuthPayload } from "~/libs/modules/server-application/libs/types/types.js";
 
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
@@ -60,13 +59,11 @@ class AuthController extends BaseController {
 	 *        401:
 	 *          description: Unauthorized
 	 */
-	private async getAuthenticatedUser(
+	private getAuthenticatedUser(
 		options: APIHandlerOptions,
-	): Promise<APIHandlerResponse> {
+	): APIHandlerResponse {
 		return {
-			payload: await this.authService.getAuthenticatedUser(
-				(options.user as AuthPayload).userId,
-			),
+			payload: options.user,
 			status: HTTPCode.OK,
 		};
 	}

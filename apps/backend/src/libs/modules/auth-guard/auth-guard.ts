@@ -1,5 +1,6 @@
 import { HTTPCode, HTTPError } from "@promptomat/shared";
 
+import type { UserDto } from "~/modules/users/libs/types/types.js";
 import type { UserService } from "~/modules/users/user.service.js";
 
 import type { AuthPayload } from "../server-application/libs/types/types.js";
@@ -38,9 +39,7 @@ class AuthGuard {
 		}
 	}
 
-	public async resolveUser(
-		authHeader: string | undefined,
-	): Promise<AuthPayload> {
+	public async resolveUser(authHeader: string | undefined): Promise<UserDto> {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
@@ -55,7 +54,7 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
-		return payload;
+		return user;
 	}
 }
 

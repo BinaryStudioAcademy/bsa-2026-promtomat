@@ -1,9 +1,6 @@
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
-import { type UserDto } from "~/modules/users/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
-import { ExceptionMessage } from "./libs/enums/enums.js";
 import {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
@@ -16,19 +13,6 @@ class AuthService {
 	public constructor(userService: UserService, tokenService: TokenService) {
 		this.tokenService = tokenService;
 		this.userService = userService;
-	}
-
-	public async getAuthenticatedUser(id: number): Promise<UserDto> {
-		const user = await this.userService.findById(id);
-
-		if (user === null) {
-			throw new HTTPError({
-				message: ExceptionMessage.UNAUTHORIZED,
-				status: HTTPCode.UNAUTHORIZED,
-			});
-		}
-
-		return user;
 	}
 
 	public async signUp(

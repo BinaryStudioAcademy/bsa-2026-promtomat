@@ -1,8 +1,8 @@
-import { type AuthPayload } from "./auth-payload.type.js";
+import { type UserDto } from "@promptomat/shared";
 
 declare module "fastify" {
 	interface FastifyRequest {
-		user: AuthPayload | null;
+		user: null | UserDto;
 	}
 }
 
