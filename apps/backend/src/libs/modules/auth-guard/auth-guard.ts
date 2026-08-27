@@ -3,6 +3,7 @@ import { HTTPCode, HTTPError, type UserDto } from "@promptomat/shared";
 import type { UserService } from "~/modules/users/user.service.js";
 
 import type { TokenService } from "../token/libs/types/types.js";
+import type { AuthPayload } from "./libs/types/types.js";
 
 import { AuthErrorMesssage, BEARER } from "./libs/enums/enums.js";
 
@@ -29,9 +30,9 @@ class AuthGuard {
 		});
 	}
 
-	private async verifyToken(token: string): Promise<UserDto> {
+	private async verifyToken(token: string): Promise<AuthPayload> {
 		try {
-			return await this.tokenService.verify<UserDto>(token);
+			return await this.tokenService.verify<AuthPayload>(token);
 		} catch {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
@@ -52,7 +53,7 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
-		return payload;
+		return user;
 	}
 }
 
