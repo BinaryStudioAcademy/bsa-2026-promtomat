@@ -8,7 +8,6 @@ type ServerApplicationRouteParameters = {
 		request: FastifyRequest,
 		reply: FastifyReply,
 	) => Promise<void> | void;
-	isProtected?: boolean;
 	method: ValueOf<typeof HTTPMethod>;
 	path: string;
 	validation?: {
