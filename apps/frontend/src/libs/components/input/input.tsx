@@ -18,7 +18,7 @@ type Properties<T extends FieldValues> = {
 	errors: FieldErrors<T>;
 	isDisabled?: boolean;
 	label: string;
-	name: FieldPath<T>;
+	name: Extract<keyof T, string>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	type?: "email" | "text";
@@ -34,7 +34,10 @@ const Input = <T extends FieldValues>({
 	size = "md",
 	type = "text",
 }: Properties<T>): React.JSX.Element => {
-	const { field } = useController({ control, name });
+	const { field } = useController({
+		control,
+		name: name as unknown as FieldPath<T>,
+	});
 
 	const error = errors[name]?.message;
 	const hasError = Boolean(error);
