@@ -21,7 +21,7 @@ class AuthService {
 		const user = await this.userService.create(signUpRequestDto);
 
 		const token = await this.tokenService.create({
-			id: user.id,
+			userId: user.id,
 		});
 
 		return {
