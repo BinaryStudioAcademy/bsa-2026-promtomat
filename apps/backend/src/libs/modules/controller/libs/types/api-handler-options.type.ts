@@ -1,4 +1,4 @@
-import { type UserDto } from "@promptomat/shared";
+import { type UserDto } from "~/modules/users/libs/types/types.js";
 
 type APIHandlerOptions<
 	T extends DefaultApiHandlerOptions = DefaultApiHandlerOptions,
