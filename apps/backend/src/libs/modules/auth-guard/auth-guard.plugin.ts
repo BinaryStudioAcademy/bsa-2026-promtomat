@@ -1,10 +1,11 @@
-import type { FastifyInstance, FastifyRequest } from "fastify";
-
+import { type FastifyInstance, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
-import type { AuthGuard } from "./auth-guard.js";
+import { FastifyHook } from "~/libs/enums/enums.js";
 
-import { PUBLIC_ROUTES } from "./libs/enums/enums.js";
+import { type AuthGuard } from "./auth-guard.module.js";
+import { isPublicRoute } from "./libs/helpers/helpers.js";
+import { type HttpMethodValue } from "./libs/types/types.js";
 
 type PluginOptions = {
 	authGuard: AuthGuard;
@@ -16,8 +17,11 @@ const authGuardPlugin = fp<PluginOptions>(
 
 		fastify.decorateRequest("user", null);
 
-		fastify.addHook("onRequest", async (request: FastifyRequest) => {
-			if (PUBLIC_ROUTES.some((prefix) => request.url.startsWith(prefix))) {
+		fastify.addHook(FastifyHook.ON_REQUEST, async (request: FastifyRequest) => {
+			const lookupPath = request.routeOptions.url ?? request.url;
+			const currentMethod = request.method.toUpperCase() as HttpMethodValue;
+
+			if (isPublicRoute(lookupPath, currentMethod)) {
 				return;
 			}
 
