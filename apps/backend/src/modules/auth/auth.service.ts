@@ -34,7 +34,7 @@ class AuthService {
 
 		if (!userEntity) {
 			await this.hashing.hash(userRequestDto.password);
-			throw AuthError.createInvalidCredentials();
+			throw AuthError.invalidCredentials();
 		}
 
 		const userAuth = userEntity.toAuthObject();
@@ -45,7 +45,7 @@ class AuthService {
 		});
 
 		if (!isValidPassword) {
-			throw AuthError.createInvalidCredentials();
+			throw AuthError.invalidCredentials();
 		}
 
 		const user = userEntity.toObject();

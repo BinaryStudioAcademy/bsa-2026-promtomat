@@ -23,7 +23,7 @@ class UserService {
 		const existingUser = await this.userRepository.findByEmail(payload.email);
 
 		if (existingUser) {
-			throw AuthError.createEmailAlreadyExists();
+			throw AuthError.emailAlreadyExists();
 		}
 
 		const { hash, salt } = await this.hashing.hash(payload.password);
