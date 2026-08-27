@@ -1,11 +1,7 @@
 import fastifyStatic from "@fastify/static";
 import swagger, { type StaticDocumentSpec } from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import Fastify, {
-	type FastifyError,
-	type FastifyInstance,
-	type FastifyRequest,
-} from "fastify";
+import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,6 +18,7 @@ import {
 } from "~/libs/types/types.js";
 
 import { AuthGuard } from "../auth-guard/auth-guard.js";
+import { authGuardPlugin } from "../auth-guard/auth-guard.plugin.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -80,7 +77,6 @@ class BaseServerApplication implements ServerApplication {
 		this.app = Fastify({
 			ignoreTrailingSlash: true,
 		});
-		this.app.decorateRequest("user", null);
 	}
 
 	private initDatabaseLifecycle(): void {
@@ -214,7 +210,7 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
-		const { handler, isProtected, method, path, validation } = parameters;
+		const { handler, method, path, validation } = parameters;
 
 		this.app.route({
 			handler,
@@ -223,13 +219,6 @@ class BaseServerApplication implements ServerApplication {
 				body: validation?.body,
 			},
 			url: path,
-			...(isProtected && {
-				preHandler: async (request: FastifyRequest) => {
-					request.user = await this.authGuard.resolveUser(
-						request.headers.authorization,
-					);
-				},
-			}),
 		});
 
 		this.logger.info(`Route: ${method} ${path} is registered`);
@@ -247,6 +236,8 @@ class BaseServerApplication implements ServerApplication {
 		await this.initServe();
 
 		await this.initMiddlewares();
+
+		await this.app.register(authGuardPlugin, { authGuard: this.authGuard });
 
 		this.initValidationCompiler();
 

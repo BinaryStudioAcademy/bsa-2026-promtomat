@@ -1,10 +1,10 @@
-import { HTTPCode, HTTPError } from "@promptomat/shared";
+import { HTTPCode, HTTPError, type UserDto } from "@promptomat/shared";
 
 import type { UserDto } from "~/modules/users/libs/types/types.js";
 import type { UserService } from "~/modules/users/user.service.js";
 
-import type { AuthPayload } from "../server-application/libs/types/types.js";
 import type { TokenService } from "../token/libs/types/types.js";
+import type { AuthPayload } from "./libs/types/types.js";
 
 import { AuthErrorMesssage, BEARER } from "./libs/enums/enums.js";
 
@@ -48,7 +48,7 @@ class AuthGuard {
 
 		const payload = await this.verifyToken(token);
 
-		const user = await this.userService.findById(payload.userId);
+		const user = await this.userService.findById(payload.id);
 
 		if (!user) {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);

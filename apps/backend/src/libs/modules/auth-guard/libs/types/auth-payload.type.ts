@@ -1,5 +1,5 @@
 type AuthPayload = {
-	userId: number;
+	id: number;
 };
 
 export { type AuthPayload };
