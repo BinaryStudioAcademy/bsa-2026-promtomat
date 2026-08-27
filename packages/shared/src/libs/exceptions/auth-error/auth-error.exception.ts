@@ -14,14 +14,14 @@ class AuthError extends HTTPError {
 		super({ cause, message, status });
 	}
 
-	public static createEmailAlreadyExists(): AuthError {
+	public static emailAlreadyExists(): AuthError {
 		return new AuthError({
 			message: UserErrorMessage.EMAIL_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});
 	}
 
-	public static createInvalidCredentials(): AuthError {
+	public static invalidCredentials(): AuthError {
 		return new AuthError({
 			message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
 			status: HTTPCode.UNAUTHORIZED,
