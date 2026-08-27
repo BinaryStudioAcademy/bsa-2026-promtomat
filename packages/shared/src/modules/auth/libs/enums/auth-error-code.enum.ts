@@ -1,0 +1,6 @@
+const AuthErrorCode = {
+	EMAIL_ALREADY_EXISTS: "AUTH_EMAIL_ALREADY_EXISTS",
+	INVALID_CREDENTIALS: "AUTH_INVALID_CREDENTIALS",
+} as const;
+
+export { AuthErrorCode };

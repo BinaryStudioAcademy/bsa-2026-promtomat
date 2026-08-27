@@ -4,19 +4,23 @@ import { ApplicationError } from "../application-error/application-error.excepti
 
 type Constructor = {
 	cause?: unknown;
+	code?: string;
 	message: string;
 	status: ValueOf<typeof HTTPCode>;
 };
 
 class HTTPError extends ApplicationError {
+	public code: string | undefined;
+
 	public status: ValueOf<typeof HTTPCode>;
 
-	public constructor({ cause, message, status }: Constructor) {
+	public constructor({ cause, code, message, status }: Constructor) {
 		super({
 			cause,
 			message,
 		});
 
+		this.code = code;
 		this.status = status;
 	}
 }

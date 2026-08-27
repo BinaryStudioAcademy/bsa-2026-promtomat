@@ -100,6 +100,7 @@ class BaseServerApplication implements ServerApplication {
 					);
 
 					const response: ServerCommonErrorResponse = {
+						code: error.code,
 						errorType: ServerErrorType.COMMON,
 						message: error.message,
 					};
