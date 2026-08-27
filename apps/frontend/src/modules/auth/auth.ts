@@ -1,6 +1,5 @@
 export {
 	type SignInRequestDto,
-	type SignInResponseDto,
 	type SignUpRequestDto,
 } from "./libs/types/types.js";
 export {

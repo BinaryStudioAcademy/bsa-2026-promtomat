@@ -5,8 +5,8 @@ import { UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
-	SignInRequestDto,
-	SignInResponseDto,
+	type SignInRequestDto,
+	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	type UserDto,
