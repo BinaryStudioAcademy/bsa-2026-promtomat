@@ -53,6 +53,10 @@
 	--font-size-body-sm: 13px;
 	--font-size-label-sm: 12px;
 	--font-size-meta: 11px;
-	--motion-duration-fast: 0.15s;
-	--motion-easing-standard: ease;
+	--motion-duration-fast: 110ms;
+	--motion-duration-med: 180ms;
+	--motion-duration-slow: 280ms;
+	--motion-ease-standard: cubic-bezier(0.2, 0.6, 0.25, 1);
+	--motion-ease-out: cubic-bezier(0, 0.55, 0.45, 1);
+	--motion-ease-in: cubic-bezier(0.55, 0, 1, 0.45);
 }

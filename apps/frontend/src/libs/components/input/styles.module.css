@@ -20,8 +20,8 @@
 	border: 1px solid var(--border-subtle);
 	border-radius: var(--radius-md);
 	transition:
-		border-color var(--motion-duration-fast) var(--motion-easing-standard),
-		background-color var(--motion-duration-fast) var(--motion-easing-standard);
+		border-color var(--motion-duration-fast) var(--motion-ease-standard),
+		background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .input::placeholder {

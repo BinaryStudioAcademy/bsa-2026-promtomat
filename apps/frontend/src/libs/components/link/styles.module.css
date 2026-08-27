@@ -1,7 +1,7 @@
 .link {
 	color: var(--text-accent);
 	text-underline-offset: 2px;
-	transition: color var(--motion-duration-fast) var(--motion-easing-standard);
+	transition: color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .link:hover {
