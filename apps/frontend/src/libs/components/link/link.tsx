@@ -1,11 +1,11 @@
+import clsx from "clsx";
 import { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 
 import { type AppRoute } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import styles from "./link.module.css";
+import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
@@ -20,7 +20,7 @@ const Link: React.FC<Properties> = ({
 }: Properties) => {
 	const getLinkClassName = useCallback(
 		({ isActive }: { isActive: boolean }): string =>
-			getValidClasses(styles["link"], isActive && styles["active"], className),
+			clsx(styles["link"], isActive && styles["active"], className),
 		[className],
 	);
 

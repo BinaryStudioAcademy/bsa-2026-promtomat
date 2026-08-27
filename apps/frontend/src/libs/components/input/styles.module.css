@@ -7,7 +7,7 @@
 .label {
 	font-size: 13px;
 	font-weight: 500;
-	color: var(--text-primary);
+	color: var(--text-body);
 }
 
 .input {
@@ -15,23 +15,23 @@
 	padding: 0 12px;
 	font-family: inherit;
 	font-size: 14px;
-	color: var(--text-primary);
-	background-color: var(--surface-card);
-	border: 1px solid var(--border-default);
-	border-radius: var(--radius-control);
+	color: var(--text-strong);
+	background-color: var(--surface-inset);
+	border: 1px solid var(--border-subtle);
+	border-radius: var(--radius-md);
 	transition:
-		border-color 0.15s ease,
-		background-color 0.15s ease;
+		border-color var(--motion-duration-fast) var(--motion-easing-standard),
+		background-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .input::placeholder {
-	color: var(--text-muted);
+	color: var(--text-faint);
 }
 
 .input:focus-visible {
-	outline: var(--border-focus-width) solid var(--border-focus);
-	outline-offset: var(--border-focus-width);
-	border-color: var(--border-accent);
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-color: var(--border-focus);
 }
 
 .input:disabled {
@@ -53,7 +53,7 @@
 }
 
 .error {
-	border-color: var(--fg-danger);
+	border-color: var(--surface-danger);
 }
 
 .message {

@@ -1,0 +1,21 @@
+.link {
+	color: var(--text-accent);
+	text-underline-offset: 2px;
+	transition: color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.link:hover {
+	color: var(--text-strong);
+}
+
+.link:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-radius: 2px;
+}
+
+.active {
+	font-weight: 600;
+	color: var(--text-strong);
+	text-decoration: none;
+}

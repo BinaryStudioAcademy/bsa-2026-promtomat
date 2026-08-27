@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 import {
 	type Control,
@@ -8,10 +9,9 @@ import {
 } from "react-hook-form";
 
 import { type ControlSize } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import styles from "./input.module.css";
+import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
@@ -44,7 +44,7 @@ const Input = <T extends FieldValues>({
 			<span className={styles["label"]}>{label}</span>
 			<input
 				{...field}
-				className={getValidClasses(
+				className={clsx(
 					styles["input"],
 					styles[size],
 					hasError && styles["error"],

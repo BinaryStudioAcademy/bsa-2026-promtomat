@@ -10,16 +10,16 @@
 	white-space: nowrap;
 	cursor: pointer;
 	border: 1px solid transparent;
-	border-radius: var(--radius-control);
+	border-radius: var(--radius-md);
 	transition:
-		background-color 0.15s ease,
-		border-color 0.15s ease,
-		color 0.15s ease;
+		background-color var(--motion-duration-fast) var(--motion-easing-standard),
+		border-color var(--motion-duration-fast) var(--motion-easing-standard),
+		color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
 .button:focus-visible {
-	outline: var(--border-focus-width) solid var(--border-focus);
-	outline-offset: var(--border-focus-width);
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
 }
 
 .button:disabled {
@@ -55,7 +55,7 @@
 }
 
 .secondary {
-	color: var(--text-primary);
+	color: var(--text-strong);
 	background-color: var(--surface-card);
 	border-color: var(--border-default);
 }
@@ -70,12 +70,15 @@
 }
 
 .danger {
-	color: var(--text-on-accent);
+	color: var(--text-strong);
 	background-color: var(--surface-danger);
 }
 
 .danger:hover:not(:disabled) {
-	background-color: var(--surface-danger-hover);
+	background-image: linear-gradient(
+		var(--state-hover-tint),
+		var(--state-hover-tint)
+	);
 }
 
 .danger:active:not(:disabled) {
