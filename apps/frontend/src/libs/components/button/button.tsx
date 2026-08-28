@@ -1,6 +1,5 @@
-import clsx from "clsx";
-
 import { type ButtonVariant, type ControlSize } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import styles from "./styles.module.css";
@@ -25,7 +24,12 @@ const Button: React.FC<Properties> = ({
 	variant = "primary",
 }: Properties) => (
 	<button
-		className={clsx(styles["button"], styles[variant], styles[size], className)}
+		className={getValidClasses(
+			styles["button"],
+			styles[variant],
+			styles[size],
+			className,
+		)}
 		disabled={isDisabled}
 		onClick={onClick}
 		type={type}
