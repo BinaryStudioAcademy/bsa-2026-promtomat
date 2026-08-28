@@ -2,7 +2,7 @@ import { type AppRoute } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { Link } from "../link/link.js";
-import styles from "./fallback-screen.module.css";
+import styles from "./style.module.css";
 
 type FallbackAction = { label: string; url: ValueOf<typeof AppRoute> };
 

@@ -2,7 +2,7 @@ import noAccessIllustration from "~/assets/img/no-access.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
 import { AppRoute } from "~/libs/enums/app-route.enum.js";
 
-import styles from "./no-access.module.css";
+import styles from "./style.module.css";
 
 const NoAccessPage: React.FC = () => (
 	<main>
