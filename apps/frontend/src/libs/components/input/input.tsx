@@ -22,7 +22,7 @@ type Properties<T extends FieldValues> = {
 	name: Extract<keyof T, string>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
-	type?: "email" | "text";
+	type?: "email" | "password" | "text";
 };
 
 const Input = <T extends FieldValues>({

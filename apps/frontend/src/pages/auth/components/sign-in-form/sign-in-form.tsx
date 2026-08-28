@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { Link } from "~/libs/components/link/link.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
@@ -12,6 +13,7 @@ import {
 } from "~/modules/auth/auth.js";
 
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
+import styles from "./styles.module.css";
 
 const SignInForm: React.FC = () => {
 	const [signIn, { data, isError, isLoading }] = useSignInMutation();
@@ -35,10 +37,10 @@ const SignInForm: React.FC = () => {
 	}
 
 	return (
-		<>
-			<h1>Sign In</h1>
-			<form onSubmit={handleFormSubmit}>
-				<p>
+		<div className={styles["container"]}>
+			<div className={styles["card"]}>
+				<h1 className={styles["heading"]}>Sign In</h1>
+				<form className={styles["form"]} onSubmit={handleFormSubmit}>
 					<Input
 						control={control}
 						errors={errors}
@@ -47,20 +49,22 @@ const SignInForm: React.FC = () => {
 						placeholder="Enter your email"
 						type="email"
 					/>
-				</p>
-				<p>
 					<Input
 						control={control}
 						errors={errors}
 						label="Password"
 						name="password"
 						placeholder="Enter your password"
-						type="text"
+						type="password"
 					/>
-				</p>
-				<Button isDisabled={isLoading} label="Sign in" type="submit" />
-			</form>
-		</>
+					<Button isDisabled={isLoading} label="Sign in" type="submit" />
+					<div className={styles["sign-up"]}>
+						<span>Don&apos;t have an account</span>
+						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
+					</div>
+				</form>
+			</div>
+		</div>
 	);
 };
 

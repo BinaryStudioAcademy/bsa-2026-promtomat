@@ -1,0 +1,35 @@
+.container {
+	display: flex;
+	justify-content: center;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+	max-width: 420px;
+	padding: 40px;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-lg);
+}
+
+.heading {
+	margin: 0;
+	font-size: var(--font-size-title-2);
+	color: var(--text-strong);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.sign-up {
+	display: flex;
+	gap: 5px;
+	align-self: center;
+	color: var(--text-muted);
+}
