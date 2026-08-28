@@ -2,7 +2,8 @@ import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
-import { AuthErrorMesssage, BEARER } from "./libs/enums/enums.js";
+import { BEARER } from "./libs/constants/constants.js";
+import { AuthErrorMesssage } from "./libs/enums/enums.js";
 import { AuthError } from "./libs/exceptions/exceptions.js";
 import { type AuthPayload, type UserDto } from "./libs/types/types.js";
 
