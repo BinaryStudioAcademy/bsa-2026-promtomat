@@ -52,11 +52,6 @@
 	text-wrap: balance;
 }
 
-.heading:focus-visible {
-	outline: var(--border-width-focus, 2px) solid var(--border-focus, #d6ae75);
-	outline-offset: 3px;
-}
-
 .message {
 	max-width: var(--screen-measure);
 	margin: var(--space-12, 12px) 0 0;
