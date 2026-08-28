@@ -11,7 +11,7 @@
 .link:focus-visible {
 	outline: var(--border-width-focus) solid var(--border-focus);
 	outline-offset: var(--border-width-focus);
-	border-radius: 2px;
+	border-radius: var(--radius-xs);
 }
 
 .active {

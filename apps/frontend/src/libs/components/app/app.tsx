@@ -3,10 +3,13 @@ import { Outlet as RouterOutlet, useLocation } from "react-router-dom";
 import reactLogo from "~/assets/img/react.svg";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute } from "~/libs/enums/enums.js";
+import { useRedirect } from "~/libs/hooks/use-redirect/use-redirect.hook.js";
 import { useGetUsersQuery } from "~/modules/users/users-api.js";
 
 const App: React.FC = () => {
 	const { pathname } = useLocation();
+
+	useRedirect();
 
 	const isRoot = pathname === AppRoute.ROOT;
 

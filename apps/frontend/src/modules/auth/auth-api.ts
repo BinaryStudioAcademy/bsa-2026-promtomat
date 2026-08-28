@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { UsersApiTag } from "~/modules/users/users.js";
+import { type UserDto } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
@@ -12,6 +13,10 @@ const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				providesTags: [UsersApiTag.USER],
+				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
@@ -23,6 +28,6 @@ const authApi = baseApi
 		}),
 	});
 
-const { useSignUpMutation } = authApi;
+const { useGetAuthenticatedUserQuery, useSignUpMutation } = authApi;
 
-export { useSignUpMutation };
+export { useGetAuthenticatedUserQuery, useSignUpMutation };

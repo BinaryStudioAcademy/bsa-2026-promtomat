@@ -4,6 +4,7 @@ export { ControlSize } from "./control-size.enum.js";
 export {
 	APIPath,
 	AppEnvironment,
+	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,
 	ServerErrorType,
