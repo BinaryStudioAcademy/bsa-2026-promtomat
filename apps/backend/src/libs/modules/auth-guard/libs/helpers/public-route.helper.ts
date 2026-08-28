@@ -17,7 +17,10 @@ function isPublicRoute(
 	}
 
 	const isPublicPrefix = sortedPublicPaths.some((path) => {
-		if (lookupPath.startsWith(path)) {
+		if (
+			lookupPath.startsWith(path) &&
+			(lookupPath[path.length] === "/" || lookupPath.length === path.length)
+		) {
 			const methods = PUBLIC_ROUTES[path];
 			return methods?.includes(currentMethod);
 		}
