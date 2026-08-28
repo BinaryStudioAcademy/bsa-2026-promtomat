@@ -1,0 +1,13 @@
+.overlay-host {
+	position: fixed;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.overlay-host-blocking,
+.overlay-host-notifications {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
