@@ -52,7 +52,7 @@ const SignUpForm: React.FC<Properties> = ({
 						label="Password"
 						name="password"
 						placeholder="Enter your password"
-						type="password"
+						type="text"
 					/>
 				</p>
 				<Button isDisabled={isLoading} label="Sign up" type="submit" />

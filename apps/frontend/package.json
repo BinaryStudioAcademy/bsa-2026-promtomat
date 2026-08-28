@@ -17,9 +17,10 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@promptomat/shared": "workspace:*",
 		"@hookform/resolvers": "5.5.8",
+		"@promptomat/shared": "workspace:*",
 		"@reduxjs/toolkit": "2.12.0",
+		"clsx": "2.1.1",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
 		"react-hook-form": "7.84.0",
