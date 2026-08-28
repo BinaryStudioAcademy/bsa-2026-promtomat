@@ -126,7 +126,9 @@ const unicornConfig = {
 		"unicorn/consistent-boolean-name": [
 			"error",
 			{
-				ignorePatterns: ["^check"],
+				prefixes: {
+					check: true,
+				},
 			},
 		],
 		// Class member order is already governed by the project's explicit
