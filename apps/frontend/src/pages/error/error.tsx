@@ -1,17 +1,13 @@
-import { useCallback } from "react";
-import {
-	isRouteErrorResponse,
-	useLocation,
-	useNavigate,
-	useRouteError,
-} from "react-router-dom";
+import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
 import errorIllustration from "~/assets/img/error-state.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
-import { AppEnvironment, AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
+import { AppEnvironment, AppRoute } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
 
 import styles from "./styles.module.css";
+
+const errorAction = { label: "Back Home", url: AppRoute.ROOT };
 
 const getErrorDetails = (error: unknown): string => {
 	if (isRouteErrorResponse(error)) {
@@ -27,25 +23,12 @@ const getErrorDetails = (error: unknown): string => {
 
 const ErrorPage: React.FC = () => {
 	const error = useRouteError();
-	const { pathname } = useLocation();
-	const navigate = useNavigate();
-
-	const handleRetry = useCallback(() => {
-		void navigate(pathname, { replace: true });
-	}, [navigate, pathname]);
 
 	const hasDetails = config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION;
 
 	return (
 		<FallbackScreen
-			actions={[
-				{ label: "Try Again", onClick: handleRetry },
-				{
-					label: "Back Home",
-					to: AppRoute.ROOT,
-					variant: ButtonVariant.SECONDARY,
-				},
-			]}
+			action={errorAction}
 			className={styles["screen"]}
 			illustrationUrl={errorIllustration}
 			message="An unexpected error occurred."

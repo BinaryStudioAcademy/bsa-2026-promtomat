@@ -1,31 +1,22 @@
-import {
-	type AppRoute,
-	ButtonVariant,
-	type HTTPCode,
-} from "~/libs/enums/enums.js";
+import { type AppRoute, type HTTPCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { Button } from "../button/button.js";
 import { Link } from "../link/link.js";
 import styles from "./styles.module.css";
 
-const EMPTY_ACTIONS_COUNT = 0;
-
-type FallbackAction =
-	| { label: string; onClick: () => void; variant?: FallbackActionVariant }
-	| { label: string; to: FallbackActionRoute; variant?: FallbackActionVariant };
+type FallbackAction = {
+	label: string;
+	url: FallbackActionRoute;
+};
 
 type FallbackActionRoute = Exclude<
 	ValueOf<typeof AppRoute>,
 	typeof AppRoute.ANY
 >;
 
-type FallbackActionVariant =
-	typeof ButtonVariant.PRIMARY | typeof ButtonVariant.SECONDARY;
-
 type Properties = {
-	actions?: FallbackAction[];
+	action: FallbackAction;
 	children?: React.ReactNode;
 	className?: string | undefined;
 	code?: ValueOf<typeof HTTPCode>;
@@ -34,70 +25,46 @@ type Properties = {
 	title: string;
 };
 
-const getActionClassName = (variant: FallbackActionVariant): string =>
-	getValidClasses(
-		styles["action"],
-		variant === ButtonVariant.PRIMARY
-			? styles["action-primary"]
-			: styles["action-secondary"],
-	);
-
-const renderAction = (action: FallbackAction): React.JSX.Element => {
-	const className = getActionClassName(action.variant ?? ButtonVariant.PRIMARY);
-
-	return "to" in action ? (
-		<Link className={className} key={action.label} to={action.to}>
-			{action.label}
-		</Link>
-	) : (
-		<Button
-			className={className}
-			key={action.label}
-			label={action.label}
-			onClick={action.onClick}
-			type="button"
-		/>
-	);
-};
-
 const FallbackScreen: React.FC<Properties> = ({
-	actions = [],
+	action,
 	children,
 	className,
 	code,
 	illustrationUrl,
 	message,
 	title,
-}: Properties) => {
-	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
-
-	return (
-		<main className={getValidClasses(styles["screen"], className)}>
-			<div className={styles["layout"]}>
-				{illustrationUrl ? (
+}: Properties) => (
+	<main
+		className={getValidClasses(
+			styles["screen"],
+			!illustrationUrl && styles["screen-glow"],
+			className,
+		)}
+	>
+		<div className={styles["layout"]}>
+			{illustrationUrl ? (
+				<div className={styles["illustration"]}>
 					<img
 						alt={title}
-						className={styles["illustration"]}
+						className={styles["illustration-image"]}
 						src={illustrationUrl}
 					/>
-				) : null}
+				</div>
+			) : null}
 
-				{code ? <span className={styles["code"]}>{code}</span> : null}
+			{code ? <span className={styles["code"]}>{code}</span> : null}
 
-				<h1 className={styles["heading"]}>{title}</h1>
+			<h1 className={styles["heading"]}>{title}</h1>
 
-				<p className={styles["message"]}>{message}</p>
+			<p className={styles["message"]}>{message}</p>
 
-				{children ? <div className={styles["details"]}>{children}</div> : null}
+			{children ? <div className={styles["details"]}>{children}</div> : null}
 
-				{hasActions ? (
-					<div className={styles["action-container"]}>
-						{actions.map((action) => renderAction(action))}
-					</div>
-				) : null}
-			</div>
-		</main>
-	);
-};
+			<Link className={styles["action"]} to={action.url}>
+				{action.label}
+			</Link>
+		</div>
+	</main>
+);
 
 export { FallbackScreen };

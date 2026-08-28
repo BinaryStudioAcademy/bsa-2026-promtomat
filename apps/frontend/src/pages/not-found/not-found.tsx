@@ -4,11 +4,11 @@ import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 
 import styles from "./styles.module.css";
 
-const notFoundActions = [{ label: "Back Home", to: AppRoute.ROOT }];
+const notFoundAction = { label: "Back Home", url: AppRoute.ROOT };
 
 const NotFoundPage: React.FC = () => (
 	<FallbackScreen
-		actions={notFoundActions}
+		action={notFoundAction}
 		className={styles["screen"]}
 		code={HTTPCode.NOT_FOUND}
 		illustrationUrl={notFoundIllustration}
