@@ -1,5 +1,8 @@
+import { APIPath } from "~/libs/enums/enums.js";
+import { HTTPMethod } from "~/libs/modules/http/http.js";
+import { AuthApiPath } from "~/modules/auth/libs/enums/enums.js";
+
 import { type PublicRoutes } from "../types/types.js";
-import { APIPath, AuthApiPath, HTTPMethod } from "./enums.js";
 
 const API_VERSION_PREFIX = "/api/v1";
 const SWAGGER_DOCS_PREFIX = "/v1/documentation";

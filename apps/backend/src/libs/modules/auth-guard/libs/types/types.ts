@@ -3,4 +3,4 @@ export {
 	type HttpMethodValue,
 	type PublicRoutes,
 } from "./public-routes.type.js";
-export { type HTTPMethod, type UserDto } from "@promptomat/shared";
+export { type UserDto } from "@promptomat/shared";
