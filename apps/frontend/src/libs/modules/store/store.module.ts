@@ -4,8 +4,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { type Config } from "~/libs/modules/config/config.js";
-
-import { navigationReducer } from "../navigation/navigation.slice.js";
+import { navigationReducer } from "~/libs/modules/navigation/navigation.slice.js";
 
 const createStore = (config: Config) => {
 	const store = configureStore({
