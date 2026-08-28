@@ -24,7 +24,11 @@ const FallbackScreen: React.FC<Properties> = ({
 	<main className={styles["screen"]}>
 		<div className={styles["layout"]}>
 			{illustrationUrl ? (
-				<img alt="" className={styles["illustration"]} src={illustrationUrl} />
+				<img
+					alt={title}
+					className={styles["illustration"]}
+					src={illustrationUrl}
+				/>
 			) : null}
 
 			{code ? <span className={styles["code"]}>{code}</span> : null}
