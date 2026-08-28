@@ -1,13 +1,4 @@
+/* Glow color comes from the illustration artwork, not the theme tokens. */
 .screen {
-	background-image: radial-gradient(
-		circle at 50% 38%,
-		rgb(99 102 241 / 18%),
-		transparent 30%
-	);
-}
-
-.illustration {
-	display: block;
-	width: 120px;
-	height: auto;
+	--screen-glow-color: rgb(99 102 241 / 18%);
 }

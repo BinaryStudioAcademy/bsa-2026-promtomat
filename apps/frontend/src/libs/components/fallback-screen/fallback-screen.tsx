@@ -1,7 +1,6 @@
 import { clsx } from "clsx";
-import { useEffect, useRef } from "react";
 
-import { type AppRoute } from "~/libs/enums/enums.js";
+import { type AppRoute, type HTTPCode } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { Button } from "../button/button.js";
@@ -9,7 +8,6 @@ import { Link } from "../link/link.js";
 import styles from "./styles.module.css";
 
 const EMPTY_ACTIONS_COUNT = 0;
-const HEADING_TAB_INDEX = -1;
 
 type FallbackAction =
 	| { label: string; onClick: () => void; variant?: FallbackActionVariant }
@@ -26,8 +24,8 @@ type Properties = {
 	actions?: FallbackAction[];
 	children?: React.ReactNode;
 	className?: string | undefined;
-	code?: number;
-	illustration?: React.ReactNode;
+	code?: ValueOf<typeof HTTPCode>;
+	illustrationUrl?: string;
 	message: string;
 	title: string;
 };
@@ -63,38 +61,28 @@ const FallbackScreen: React.FC<Properties> = ({
 	children,
 	className,
 	code,
-	illustration,
+	illustrationUrl,
 	message,
 	title,
 }: Properties) => {
-	const headingReference = useRef<HTMLHeadingElement | null>(null);
-
-	useEffect(() => {
-		headingReference.current?.focus();
-	}, []);
-
 	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
 
 	return (
 		<main className={clsx(styles["screen"], className)}>
 			<div className={styles["layout"]}>
-				{illustration ? (
-					<div aria-hidden="true" className={styles["illustration"]}>
-						{illustration}
-					</div>
+				{illustrationUrl ? (
+					<img
+						alt={title}
+						className={styles["illustration"]}
+						src={illustrationUrl}
+					/>
 				) : null}
 
-				{code ? <p className={styles["code"]}>{code}</p> : null}
+				{code ? <span className={styles["code"]}>{code}</span> : null}
 
-				<h1
-					className={styles["heading"]}
-					ref={headingReference}
-					tabIndex={HEADING_TAB_INDEX}
-				>
-					{title}
-				</h1>
+				<h1 className={styles["heading"]}>{title}</h1>
 
-				<div className={styles["message"]}>{message}</div>
+				<p className={styles["message"]}>{message}</p>
 
 				{children ? <div className={styles["details"]}>{children}</div> : null}
 

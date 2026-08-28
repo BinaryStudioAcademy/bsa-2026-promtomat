@@ -4,11 +4,13 @@ import { Provider as StoreProvider } from "react-redux";
 
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
+import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
+import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
@@ -19,8 +21,12 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 					{
 						children: [
 							{
-								element: "Root",
-								path: AppRoute.ROOT,
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										Root
+									</PrivateRoute>
+								),
+								index: true,
 							},
 							{
 								element: <Auth />,
@@ -29,6 +35,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: <Auth />,
 								path: AppRoute.SIGN_UP,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<NoAccessPage />
+									</PrivateRoute>
+								),
+								path: AppRoute.NO_ACCESS,
 							},
 							{
 								element: <NotFoundPage />,

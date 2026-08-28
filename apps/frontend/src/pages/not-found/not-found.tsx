@@ -11,13 +11,7 @@ const NotFoundPage: React.FC = () => (
 		actions={notFoundActions}
 		className={styles["screen"]}
 		code={HTTPCode.NOT_FOUND}
-		illustration={
-			<img
-				alt=""
-				className={styles["illustration"]}
-				src={notFoundIllustration}
-			/>
-		}
+		illustrationUrl={notFoundIllustration}
 		message="The page you are looking for does not exist or has been moved."
 		title="Page not found"
 	/>

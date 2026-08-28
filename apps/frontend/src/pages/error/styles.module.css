@@ -1,29 +1,13 @@
+/* Glow color comes from the illustration artwork, not the theme tokens. */
 .screen {
-	background-image: radial-gradient(
-		circle at 50% 38%,
-		rgb(245 158 11 / 18%),
-		transparent 30%
-	);
-}
-
-.container {
-	display: flex;
-	width: 100%;
-	min-height: 100dvh;
-	background-color: var(--surface-canvas);
-}
-
-.illustration {
-	display: block;
-	width: 144px;
-	height: auto;
+	--screen-glow-color: rgb(245 158 11 / 18%);
 }
 
 .details {
 	max-width: 100%;
 	margin: 0;
 	overflow-x: auto;
-	font-size: var(--font-size-label-sm);
+	font-size: var(--font-size-label-sm, 12px);
 	text-align: left;
 	white-space: pre-wrap;
 }

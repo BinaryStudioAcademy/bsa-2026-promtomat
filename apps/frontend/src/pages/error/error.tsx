@@ -37,28 +37,20 @@ const ErrorPage: React.FC = () => {
 	const hasDetails = config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION;
 
 	return (
-		<div className={styles["container"]}>
-			<FallbackScreen
-				actions={[
-					{ label: "Try Again", onClick: handleRetry },
-					{ label: "Back Home", to: AppRoute.ROOT, variant: "secondary" },
-				]}
-				className={styles["screen"]}
-				illustration={
-					<img
-						alt=""
-						className={styles["illustration"]}
-						src={errorIllustration}
-					/>
-				}
-				message="An unexpected error occurred."
-				title="Something went wrong"
-			>
-				{hasDetails ? (
-					<pre className={styles["details"]}>{getErrorDetails(error)}</pre>
-				) : null}
-			</FallbackScreen>
-		</div>
+		<FallbackScreen
+			actions={[
+				{ label: "Try Again", onClick: handleRetry },
+				{ label: "Back Home", to: AppRoute.ROOT, variant: "secondary" },
+			]}
+			className={styles["screen"]}
+			illustrationUrl={errorIllustration}
+			message="An unexpected error occurred."
+			title="Something went wrong"
+		>
+			{hasDetails ? (
+				<pre className={styles["details"]}>{getErrorDetails(error)}</pre>
+			) : null}
+		</FallbackScreen>
 	);
 };
 
