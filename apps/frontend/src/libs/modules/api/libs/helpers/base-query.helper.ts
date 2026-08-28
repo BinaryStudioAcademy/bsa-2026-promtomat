@@ -31,21 +31,20 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 	extraOptions,
 ) => {
 	const result = await fetchQuery(arguments_, api, extraOptions);
-  
+
 	if (result.error) {
 		const error = toServerError(result.error);
 
 		if (error.status === HTTPCode.UNAUTHORIZED) {
 			await storage.drop(StorageKey.TOKEN);
-    // TODO task #22: redirect to sign-in after clearing the session,
-		// plus the remaining status codes.
+			// TODO task #22: redirect to sign-in after clearing the session,
+			// plus the remaining status codes.
 		}
 
 		if (error.status === HTTPCode.FORBIDDEN) {
 			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
 		}
 
-		
 		return { error };
 	}
 
