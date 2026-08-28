@@ -1,12 +1,3 @@
-/**
- * Token names come from the Figma design system and are defined by pm-15.
- * Each var() carries a literal fallback so this screen renders correctly
- * before that lands; the fallbacks become inert once the tokens exist.
- *
- * The --screen-* values below are local to this component, not design tokens:
- * the system has no equivalent for them.
- */
-
 .screen {
 	--screen-illustration-size: 200px;
 	--screen-measure: 420px;
@@ -45,8 +36,6 @@
 
 .code {
 	margin: var(--space-16, 16px) 0 0;
-
-	/* The scale stops at heading-1 (38px); the status code has no token. */
 	font-size: 56px;
 	font-weight: 800;
 	line-height: 1.1;
