@@ -109,9 +109,9 @@ class BaseServerApplication implements ServerApplication {
 					return reply.status(HTTPCode.UNPROCESSED_ENTITY).send(response);
 				}
 
-				if (error instanceof HTTPError) {
+				if (error instanceof AuthError) {
 					this.logger.error(
-						`[HTTP Error]: ${error.status.toString()} – ${error.message}`,
+						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
 					);
 
 					const response: ServerCommonErrorResponse = {
@@ -122,9 +122,9 @@ class BaseServerApplication implements ServerApplication {
 					return reply.status(error.status).send(response);
 				}
 
-				if (error instanceof AuthError) {
+				if (error instanceof HTTPError) {
 					this.logger.error(
-						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
+						`[HTTP Error]: ${error.status.toString()} – ${error.message}`,
 					);
 
 					const response: ServerCommonErrorResponse = {
