@@ -14,9 +14,22 @@
 	);
 }
 
+.illustration {
+	width: var(--fallback-image);
+	max-width: 100%;
+	margin-bottom: calc(var(--fallback-step) * 1.5);
+}
+
+.illustration img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
 .layout {
 	display: flex;
 	flex-direction: column;
+	gap: var(--space-16);
 	align-items: center;
 	width: 100%;
 	text-align: center;
@@ -25,6 +38,7 @@
 
 .code {
 	margin: 0;
+	margin-top: var(--space-16);
 	font-size: 56px;
 	font-weight: 800;
 	line-height: 1.1;

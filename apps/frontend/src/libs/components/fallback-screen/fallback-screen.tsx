@@ -24,9 +24,13 @@ const FallbackScreen: React.FC<Properties> = ({
 	title,
 }: Properties) => {
 	return (
-		<div className={styles["screen"]}>
+		<main className={styles["screen"]}>
 			<div className={styles["layout"]}>
-				{illustration}
+				{illustration ? (
+					<div aria-hidden="true" className={styles["illustration"]}>
+						{illustration}
+					</div>
+				) : null}
 
 				{code ? <p className={styles["code"]}>{code}</p> : null}
 
@@ -42,7 +46,7 @@ const FallbackScreen: React.FC<Properties> = ({
 					</Link>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 };
 
