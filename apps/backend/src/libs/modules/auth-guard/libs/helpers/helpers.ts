@@ -1,1 +1,1 @@
-export { isPublicRoute } from "./public-route.helper.js";
+export { checkIsPublicRoute } from "./public-route.helper.js";

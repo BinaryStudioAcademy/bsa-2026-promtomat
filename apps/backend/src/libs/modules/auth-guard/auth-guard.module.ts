@@ -1,11 +1,13 @@
+import type { UserDto } from "~/libs/types/types.js";
+
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
 import { BEARER } from "./libs/constants/constants.js";
 import { AuthErrorMesssage } from "./libs/enums/enums.js";
-import { AuthError } from "./libs/exceptions/exceptions.js";
-import { type AuthPayload, type UserDto } from "./libs/types/types.js";
+import { type AuthPayload } from "./libs/types/types.js";
 
 class AuthGuard {
 	private readonly tokenService: TokenService;

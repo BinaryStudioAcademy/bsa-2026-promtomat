@@ -6,7 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ValidationError } from "~/libs/exceptions/exceptions.js";
+import {
+	AuthError,
+	type ValidationError,
+} from "~/libs/exceptions/exceptions.js";
 import { type Config } from "~/libs/modules/config/config.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
@@ -18,7 +21,6 @@ import {
 } from "~/libs/types/types.js";
 
 import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
-import { AuthError } from "../auth-guard/libs/exceptions/exceptions.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
