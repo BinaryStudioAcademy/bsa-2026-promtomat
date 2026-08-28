@@ -1,6 +1,8 @@
 .screen {
 	--screen-illustration-size: 200px;
 	--screen-measure: 420px;
+	--screen-code-size: 56px;
+	--screen-code-size-compact: 44px;
 	--screen-motion-enter: 340ms;
 	--screen-motion-state: 140ms;
 
@@ -36,7 +38,7 @@
 
 .code {
 	margin: var(--space-16, 16px) 0 0;
-	font-size: 56px;
+	font-size: var(--screen-code-size);
 	font-weight: 800;
 	line-height: 1.1;
 	color: var(--text-strong, #f3f4f6);
@@ -75,11 +77,9 @@
 	text-decoration: none;
 	cursor: pointer;
 	background-color: var(--surface-accent, #e6e9ee);
-	border: var(--border-width-hairline, 1px) solid transparent;
 	border-radius: var(--radius-md, 6px);
 	transition:
 		background-color var(--screen-motion-state) ease,
-		border-color var(--screen-motion-state) ease,
 		color var(--screen-motion-state) ease;
 }
 
@@ -105,7 +105,7 @@
 
 @media (width <= 480px) {
 	.code {
-		font-size: 44px;
+		font-size: var(--screen-code-size-compact);
 	}
 
 	.action {
