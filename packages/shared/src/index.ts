@@ -28,9 +28,12 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export {
+	type SignInRequestDto,
+	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
