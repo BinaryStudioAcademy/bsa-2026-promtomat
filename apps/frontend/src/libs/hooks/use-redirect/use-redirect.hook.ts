@@ -16,7 +16,10 @@ const useRedirect = (): void => {
 			return;
 		}
 
-		void navigate(redirectTo);
+		if (redirectTo !== location.pathname) {
+			void navigate(redirectTo);
+		}
+
 		dispatch(clearRedirect());
 	}, [redirectTo, navigate, dispatch]);
 };

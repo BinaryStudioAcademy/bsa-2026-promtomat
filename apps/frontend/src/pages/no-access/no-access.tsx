@@ -6,9 +6,7 @@ const NoAccessPage: React.FC = () => (
 	<FallbackScreen
 		action={{ label: "Back Home", url: AppRoute.ROOT }}
 		code={HTTPCode.FORBIDDEN}
-		illustration={
-			<img alt="" className={"illustration"} src={noAccessIllustration} />
-		}
+		illustration={noAccessIllustration}
 		message="Sorry, you are not allowed to access this page."
 		title="Forbidden"
 	/>
