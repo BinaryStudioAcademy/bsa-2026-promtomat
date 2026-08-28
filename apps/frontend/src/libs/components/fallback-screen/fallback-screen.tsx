@@ -9,9 +9,9 @@ type FallbackAction = { label: string; url: ValueOf<typeof AppRoute> };
 type Properties = {
 	action: FallbackAction;
 	children?: React.ReactNode;
-	code?: string;
+	code?: number;
 	illustration?: React.ReactNode;
-	message: React.ReactNode;
+	message: string;
 	title: string;
 };
 
