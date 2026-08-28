@@ -1,0 +1,124 @@
+.screen {
+	--screen-illustration-size: 200px;
+	--screen-measure: 420px;
+	--screen-code-size: 56px;
+	--screen-code-size-compact: 44px;
+	--screen-motion-enter: 340ms;
+	--screen-motion-state: 140ms;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 100dvh;
+	padding: var(--space-48, 48px) var(--space-24, 24px);
+	background-color: var(--surface-canvas, #0a0d12);
+	background-image: radial-gradient(
+		circle at 50% 38%,
+		color-mix(in srgb, var(--surface-danger, #c63b3b) 14%, transparent),
+		transparent 60%
+	);
+}
+
+.illustration {
+	display: block;
+	width: var(--screen-illustration-size);
+	max-width: 100%;
+	height: auto;
+}
+
+.layout {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	text-align: center;
+	animation: enter var(--screen-motion-enter) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.code {
+	margin: var(--space-16, 16px) 0 0;
+	font-size: var(--screen-code-size);
+	font-weight: 800;
+	line-height: 1.1;
+	color: var(--text-strong, #f3f4f6);
+	letter-spacing: -1px;
+}
+
+.heading {
+	margin: var(--space-16, 16px) 0 0;
+	font-size: var(--typography-heading-3-size, 24px);
+	font-weight: 700;
+	line-height: var(--typography-heading-3-line-height, 32px);
+	color: var(--text-strong, #f3f4f6);
+	text-wrap: balance;
+}
+
+.message {
+	max-width: var(--screen-measure);
+	margin: var(--space-12, 12px) 0 0;
+	font-size: var(--typography-body-large-size, 16px);
+	line-height: var(--typography-body-large-line-height, 24px);
+	color: var(--text-muted, #9ca3af);
+	text-wrap: pretty;
+}
+
+.action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--size-control-lg, 40px);
+	padding: 0 var(--space-24, 24px);
+	margin-top: var(--space-32, 32px);
+	font: inherit;
+	font-size: var(--typography-body-large-size, 16px);
+	font-weight: 600;
+	color: var(--text-on-accent, #0a0d12);
+	text-decoration: none;
+	cursor: pointer;
+	background-color: var(--surface-accent, #e6e9ee);
+	border-radius: var(--radius-md, 6px);
+	transition:
+		background-color var(--screen-motion-state) ease,
+		color var(--screen-motion-state) ease;
+}
+
+.action:focus-visible {
+	outline: var(--border-width-focus, 2px) solid var(--border-focus, #d6ae75);
+	outline-offset: 3px;
+}
+
+.action:hover {
+	background-color: var(--surface-accent-hover, #ffffff);
+}
+
+.action:active {
+	background-color: var(--surface-accent-active, #b9bec7);
+}
+
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+}
+
+@media (width <= 480px) {
+	.code {
+		font-size: var(--screen-code-size-compact);
+	}
+
+	.action {
+		align-self: stretch;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.layout {
+		animation: none;
+	}
+
+	.action {
+		transition: none;
+	}
+}
