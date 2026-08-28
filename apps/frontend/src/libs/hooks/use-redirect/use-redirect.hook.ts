@@ -17,7 +17,6 @@ const useRedirect = (): void => {
 		}
 
 		void navigate(redirectTo);
-		//A one-shot event stored as state must be cleared. Skip the clear and the user is trapped on a loop
 		dispatch(clearRedirect());
 	}, [redirectTo, navigate, dispatch]);
 };
