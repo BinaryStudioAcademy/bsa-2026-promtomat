@@ -1,2 +1,2 @@
 export { AuthGuard } from "./auth-guard.module.js";
-export { authGuardPlugin } from "./auth-guard.plugin.js";
+export { authGuardPlugin } from "./libs/plugins/plugins.js";

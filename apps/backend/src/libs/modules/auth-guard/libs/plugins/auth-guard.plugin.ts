@@ -3,9 +3,9 @@ import fp from "fastify-plugin";
 
 import { FastifyHook } from "~/libs/enums/enums.js";
 
-import { type AuthGuard } from "./auth-guard.module.js";
-import { isPublicRoute } from "./libs/helpers/helpers.js";
-import { type HttpMethodValue } from "./libs/types/types.js";
+import { type AuthGuard } from "../../auth-guard.module.js";
+import { isPublicRoute } from "../helpers/helpers.js";
+import { type HttpMethodValue } from "../types/types.js";
 
 type PluginOptions = {
 	authGuard: AuthGuard;
