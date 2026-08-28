@@ -6,10 +6,10 @@ const sortedPublicPaths = [...publicPaths].toSorted(
 	(a, b) => b.length - a.length,
 );
 
-function isPublicRoute(
+const checkIsPublicRoute = (
 	lookupPath: string,
 	currentMethod: HttpMethodValue,
-): boolean {
+): boolean => {
 	const exactMatchRoute = PUBLIC_ROUTES[lookupPath];
 
 	if (exactMatchRoute?.includes(currentMethod)) {
@@ -28,6 +28,6 @@ function isPublicRoute(
 	});
 
 	return isPublicPrefix;
-}
+};
 
-export { isPublicRoute };
+export { checkIsPublicRoute };

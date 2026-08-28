@@ -4,7 +4,7 @@ import fp from "fastify-plugin";
 import { FastifyHook } from "~/libs/enums/enums.js";
 
 import { type AuthGuard } from "../../auth-guard.module.js";
-import { isPublicRoute } from "../helpers/helpers.js";
+import { checkIsPublicRoute } from "../helpers/helpers.js";
 import { type HttpMethodValue } from "../types/types.js";
 
 type PluginOptions = {
@@ -21,7 +21,7 @@ const authGuardPlugin = fp<PluginOptions>(
 			const lookupPath = request.routeOptions.url ?? request.url;
 			const currentMethod = request.method.toUpperCase() as HttpMethodValue;
 
-			if (isPublicRoute(lookupPath, currentMethod)) {
+			if (checkIsPublicRoute(lookupPath, currentMethod)) {
 				return;
 			}
 
