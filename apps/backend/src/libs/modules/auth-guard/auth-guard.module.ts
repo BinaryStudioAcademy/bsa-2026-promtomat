@@ -33,17 +33,18 @@ class AuthGuard {
 	}
 
 	private async verifyToken(token: string): Promise<AuthPayload> {
+		let payload: AuthPayload;
 		try {
-			const payload = await this.tokenService.verify<AuthPayload>(token);
-
-			if (typeof payload.userId !== "number") {
-				this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
-			}
-
-			return payload;
+			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
+
+		if (typeof payload.userId !== "number") {
+			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+		}
+
+		return payload;
 	}
 
 	public async resolveUser(authHeader: string | undefined): Promise<UserDto> {
