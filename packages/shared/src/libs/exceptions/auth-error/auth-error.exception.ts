@@ -1,7 +1,7 @@
 import { HTTPCode } from "../../../libs/modules/http/http.js";
 import { type ValueOf } from "../../../libs/types/value-of.type.js";
-import { HTTPError } from "../http-error/http-error.exception.js";
 import { UserErrorMessage } from "../../../modules/users/users.js";
+import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
 	cause?: unknown;
@@ -20,6 +20,7 @@ class AuthError extends HTTPError {
 		});
 
 		this.status = status;
+	}
 
 	public static emailAlreadyExists(): AuthError {
 		return new AuthError({
