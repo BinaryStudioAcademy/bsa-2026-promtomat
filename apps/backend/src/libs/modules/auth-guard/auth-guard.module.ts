@@ -1,7 +1,6 @@
-import { HTTPCode } from "@promptomat/shared";
-
 import { type UserService } from "~/modules/users/user.service.js";
 
+import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
 import { AuthErrorMesssage, BEARER } from "./libs/enums/enums.js";
 import { AuthError } from "./libs/exceptions/exceptions.js";
