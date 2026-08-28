@@ -7,11 +7,7 @@ const NoAccessPage: React.FC = () => (
 		action={{ label: "Back Home", url: AppRoute.ROOT }}
 		code={HTTPCode.FORBIDDEN}
 		illustration={
-			<img
-				alt="lock-illustration"
-				className={"illustration"}
-				src={noAccessIllustration}
-			/>
+			<img alt="" className={"illustration"} src={noAccessIllustration} />
 		}
 		message="Sorry, you are not allowed to access this page."
 		title="Forbidden"
