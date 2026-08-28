@@ -1,6 +1,6 @@
 import noAccessIllustration from "~/assets/img/no-access.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
-import { AppRoute } from "~/libs/enums/app-route.enum.js";
+import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 
 import styles from "./style.module.css";
 
@@ -8,7 +8,7 @@ const NoAccessPage: React.FC = () => (
 	<main>
 		<FallbackScreen
 			action={{ label: "Back Home", url: AppRoute.ROOT }}
-			code="403"
+			code={HTTPCode.FORBIDDEN}
 			illustration={
 				<img
 					alt="lock-illustration"
