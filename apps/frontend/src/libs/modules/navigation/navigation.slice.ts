@@ -1,7 +1,7 @@
-import { type ValueOf } from "@promptomat/shared";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { AppRoute } from "~/libs/enums/app-route.enum.js";
+import { type ValueOf } from "~/libs/types/types.js";
 
 type NavigationState = {
 	redirectTo: null | ValueOf<typeof AppRoute>;
