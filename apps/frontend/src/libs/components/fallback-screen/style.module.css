@@ -2,11 +2,18 @@
  * Token names come from the Figma design system and are defined by pm-15.
  * Each var() carries a literal fallback so this screen renders correctly
  * before that lands; the fallbacks become inert once the tokens exist.
+ *
+ * The --screen-* values below are local to this component, not design tokens:
+ * the system has no equivalent for them.
  */
 
 .screen {
+	--screen-illustration-size: 200px;
+	--screen-measure: 420px;
+	--screen-motion-enter: 340ms;
+	--screen-motion-state: 140ms;
+
 	display: flex;
-	flex-grow: 1;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
@@ -22,7 +29,7 @@
 
 .illustration {
 	display: block;
-	width: 200px;
+	width: var(--screen-illustration-size);
 	max-width: 100%;
 	height: auto;
 }
@@ -33,7 +40,7 @@
 	align-items: center;
 	width: 100%;
 	text-align: center;
-	animation: enter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation: enter var(--screen-motion-enter) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .code {
@@ -62,7 +69,7 @@
 }
 
 .message {
-	max-width: 420px;
+	max-width: var(--screen-measure);
 	margin: var(--space-12, 12px) 0 0;
 	font-size: var(--typography-body-large-size, 16px);
 	line-height: var(--typography-body-large-line-height, 24px);
@@ -87,9 +94,9 @@
 	border: var(--border-width-hairline, 1px) solid transparent;
 	border-radius: var(--radius-md, 6px);
 	transition:
-		background-color 140ms ease,
-		border-color 140ms ease,
-		color 140ms ease;
+		background-color var(--screen-motion-state) ease,
+		border-color var(--screen-motion-state) ease,
+		color var(--screen-motion-state) ease;
 }
 
 .action:focus-visible {

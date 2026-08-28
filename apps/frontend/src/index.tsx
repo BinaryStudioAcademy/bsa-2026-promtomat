@@ -35,7 +35,11 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.SIGN_UP,
 							},
 							{
-								element: <NoAccessPage />,
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<NoAccessPage />
+									</PrivateRoute>
+								),
 								path: AppRoute.NO_ACCESS,
 							},
 						],
