@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { useEffect, useRef } from "react";
 
 import { type AppRoute } from "~/libs/enums/enums.js";
@@ -11,41 +12,56 @@ const EMPTY_ACTIONS_COUNT = 0;
 const HEADING_TAB_INDEX = -1;
 
 type FallbackAction =
-	| { label: string; onClick: () => void }
-	| { label: string; to: FallbackActionRoute };
+	| { label: string; onClick: () => void; variant?: FallbackActionVariant }
+	| { label: string; to: FallbackActionRoute; variant?: FallbackActionVariant };
 
 type FallbackActionRoute = Exclude<
 	ValueOf<typeof AppRoute>,
 	typeof AppRoute.ANY
 >;
 
+type FallbackActionVariant = "primary" | "secondary";
+
 type Properties = {
 	actions?: FallbackAction[];
 	children?: React.ReactNode;
+	className?: string | undefined;
 	code?: number;
 	illustration?: React.ReactNode;
 	message: string;
 	title: string;
 };
 
-const renderAction = (action: FallbackAction): React.JSX.Element =>
-	"to" in action ? (
-		<Link className={styles["action"]} key={action.label} to={action.to}>
+const getActionClassName = (variant: FallbackActionVariant): string =>
+	clsx(
+		styles["action"],
+		variant === "primary"
+			? styles["action-primary"]
+			: styles["action-secondary"],
+	);
+
+const renderAction = (action: FallbackAction): React.JSX.Element => {
+	const className = getActionClassName(action.variant ?? "primary");
+
+	return "to" in action ? (
+		<Link className={className} key={action.label} to={action.to}>
 			{action.label}
 		</Link>
 	) : (
 		<Button
-			className={styles["action"]}
+			className={className}
 			key={action.label}
 			label={action.label}
 			onClick={action.onClick}
 			type="button"
 		/>
 	);
+};
 
 const FallbackScreen: React.FC<Properties> = ({
 	actions = [],
 	children,
+	className,
 	code,
 	illustration,
 	message,
@@ -60,7 +76,7 @@ const FallbackScreen: React.FC<Properties> = ({
 	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
 
 	return (
-		<main className={styles["screen"]}>
+		<main className={clsx(styles["screen"], className)}>
 			<div className={styles["layout"]}>
 				{illustration ? (
 					<div aria-hidden="true" className={styles["illustration"]}>

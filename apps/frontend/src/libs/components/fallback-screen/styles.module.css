@@ -30,10 +30,6 @@
 	letter-spacing: -1px;
 }
 
-.illustration + .code {
-	margin-top: var(--space-16);
-}
-
 .heading {
 	margin: 0;
 	margin-top: var(--space-16);
@@ -44,8 +40,17 @@
 	text-wrap: balance;
 }
 
+.heading:focus {
+	outline: none;
+}
+
+.illustration + .code,
+.illustration + .heading {
+	margin-top: var(--space-24);
+}
+
 .message {
-	max-width: 420px;
+	max-width: 324px;
 	margin-top: var(--space-12);
 	font-size: var(--font-size-body-xl);
 	line-height: 1.6;
@@ -81,22 +86,37 @@
 	font: inherit;
 	font-size: var(--font-size-body-xl);
 	font-weight: 600;
-	color: var(--text-on-accent);
 	text-decoration: none;
 	cursor: pointer;
-	background-color: var(--surface-accent);
-	border: none;
+	border: var(--border-width-hairline) solid transparent;
 	border-radius: var(--radius-md);
-	transition: background-color var(--duration-fast) var(--ease-standard);
-}
-
-.action:hover {
-	background-color: var(--surface-accent-hover);
+	transition:
+		background-color var(--duration-fast) var(--ease-standard),
+		border-color var(--duration-fast) var(--ease-standard);
 }
 
 .action:focus-visible {
 	outline: var(--border-width-focus) solid var(--border-focus);
 	outline-offset: var(--border-width-focus);
+}
+
+.action-primary {
+	color: var(--text-on-accent);
+	background-color: var(--surface-accent);
+}
+
+.action-primary:hover {
+	background-color: var(--surface-accent-hover);
+}
+
+.action-secondary {
+	color: var(--text-strong);
+	background-color: var(--surface-card);
+	border-color: var(--border-default);
+}
+
+.action-secondary:hover {
+	border-color: var(--border-accent);
 }
 
 @media (width <= 480px) {

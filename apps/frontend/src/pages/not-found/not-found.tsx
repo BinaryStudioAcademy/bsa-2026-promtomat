@@ -9,6 +9,7 @@ const notFoundActions = [{ label: "Back Home", to: AppRoute.ROOT }];
 const NotFoundPage: React.FC = () => (
 	<FallbackScreen
 		actions={notFoundActions}
+		className={styles["screen"]}
 		code={HTTPCode.NOT_FOUND}
 		illustration={
 			<img

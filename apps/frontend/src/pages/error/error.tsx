@@ -41,8 +41,9 @@ const ErrorPage: React.FC = () => {
 			<FallbackScreen
 				actions={[
 					{ label: "Try Again", onClick: handleRetry },
-					{ label: "Back Home", to: AppRoute.ROOT },
+					{ label: "Back Home", to: AppRoute.ROOT, variant: "secondary" },
 				]}
+				className={styles["screen"]}
 				illustration={
 					<img
 						alt=""
