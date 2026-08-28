@@ -10,8 +10,6 @@ type Constructor = {
 };
 
 class AuthError extends HTTPError {
-	public status: ValueOf<typeof HTTPCode>;
-
 	public constructor({ cause, message, status }: Constructor) {
 		super({
 			cause,
