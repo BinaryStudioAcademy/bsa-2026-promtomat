@@ -28,7 +28,11 @@ class AuthController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
-				this.signIn(options as APIHandlerOptions<{ body: SignInRequestDto }>),
+				this.signIn(
+					options as APIHandlerOptions<{
+						body: SignInRequestDto;
+					}>,
+				),
 			method: HTTPMethod.POST,
 			path: AuthApiPath.SIGN_IN,
 			validation: {

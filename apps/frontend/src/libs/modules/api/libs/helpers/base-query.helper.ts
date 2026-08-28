@@ -4,8 +4,9 @@ import {
 	fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { HTTPHeader } from "~/libs/enums/enums.js";
+import { AppRoute, HTTPCode, HTTPHeader } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
+import { setRedirect } from "~/libs/modules/navigation/navigation.slice.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
 
 import { type ServerError } from "../types/server-error.type.js";
@@ -32,7 +33,19 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 	const result = await fetchQuery(arguments_, api, extraOptions);
 
 	if (result.error) {
-		return { error: toServerError(result.error) };
+		const error = toServerError(result.error);
+
+		if (error.status === HTTPCode.UNAUTHORIZED) {
+			await storage.drop(StorageKey.TOKEN);
+			// TODO task #22: redirect to sign-in after clearing the session,
+			// plus the remaining status codes.
+		}
+
+		if (error.status === HTTPCode.FORBIDDEN) {
+			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
+		}
+
+		return { error };
 	}
 
 	return result;

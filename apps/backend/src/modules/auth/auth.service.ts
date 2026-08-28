@@ -1,9 +1,8 @@
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
-import { UserErrorMessage } from "../users/libs/enums/enums.js";
 import {
 	type SignInRequestDto,
 	type SignInResponseDto,
@@ -33,25 +32,20 @@ class AuthService {
 	): Promise<SignInResponseDto> {
 		const userEntity = await this.userService.findByEmail(userRequestDto.email);
 
-		let isValidPassword = false;
-
-		if (userEntity) {
-			const userAuth = userEntity.toAuthObject();
-
-			isValidPassword = await this.hashing.verify({
-				data: userRequestDto.password,
-				hash: userAuth.passwordHash,
-				salt: userAuth.passwordSalt,
-			});
-		} else {
+		if (!userEntity) {
 			await this.hashing.hash(userRequestDto.password);
+			throw AuthError.invalidCredentials();
 		}
 
-		if (!userEntity || !isValidPassword) {
-			throw new HTTPError({
-				message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
-				status: HTTPCode.UNAUTHORIZED,
-			});
+		const userAuth = userEntity.toAuthObject();
+		const isValidPassword = await this.hashing.verify({
+			data: userRequestDto.password,
+			hash: userAuth.passwordHash,
+			salt: userAuth.passwordSalt,
+		});
+
+		if (!isValidPassword) {
+			throw AuthError.invalidCredentials();
 		}
 
 		const user = userEntity.toObject();

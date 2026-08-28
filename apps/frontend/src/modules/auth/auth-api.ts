@@ -1,7 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
-import { UsersApiTag } from "~/modules/users/users.js";
+import { type UserDto, UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
@@ -9,7 +9,6 @@ import {
 	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
-	type UserDto,
 } from "./libs/types/types.js";
 
 const authApi = baseApi
@@ -17,6 +16,7 @@ const authApi = baseApi
 	.injectEndpoints({
 		endpoints: (builder) => ({
 			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
 			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
