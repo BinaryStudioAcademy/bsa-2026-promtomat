@@ -50,7 +50,7 @@ const FallbackScreen: React.FC<Properties> = ({
 
 				<p className={styles["message"]}>{message}</p>
 
-				<Link className={styles["action"]} to={action.url}>
+				<Link className={styles["action"] ?? ""} to={action.url}>
 					{action.label}
 				</Link>
 			</div>
