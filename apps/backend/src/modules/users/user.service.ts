@@ -47,16 +47,14 @@ class UserService {
 		};
 	}
 
+	public async findByEmail(email: string): Promise<null | UserEntity> {
+		return await this.userRepository.findByEmail(email);
+	}
+
 	public async findById(id: number): Promise<null | UserDto> {
 		const user = await this.userRepository.findById(id);
 
 		return user ? user.toObject() : null;
-}
-  
-	public async findByEmail(email: string): Promise<null | UserEntity> {
-		const user =  await this.userRepository.findByEmail(email);
-
-    return user ? user.toObject() : null;
 	}
 }
 
