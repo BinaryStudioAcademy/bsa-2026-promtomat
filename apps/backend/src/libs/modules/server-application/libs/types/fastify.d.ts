@@ -1,4 +1,4 @@
-import { type UserDto } from "./types.js";
+import { type UserDto } from "~/libs/types/types.js";
 
 declare module "fastify" {
 	interface FastifyRequest {
