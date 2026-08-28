@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
 	signInValidationSchema,
@@ -10,15 +11,9 @@ import {
 
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
 
-type Properties = {
-	isLoading: boolean;
-	onSubmit: (payload: SignInRequestDto) => void;
-};
+const SignInForm: React.FC = () => {
+	const [signIn, { isLoading }] = useSignInMutation();
 
-const SignInForm: React.FC<Properties> = ({
-	isLoading,
-	onSubmit,
-}: Properties) => {
 	const { control, errors, handleSubmit } = useAppForm<SignInRequestDto>({
 		defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
 		validationSchema: signInValidationSchema,
@@ -26,15 +21,16 @@ const SignInForm: React.FC<Properties> = ({
 
 	const handleFormSubmit = useCallback(
 		(event_: React.BaseSyntheticEvent): void => {
-			void handleSubmit(onSubmit)(event_);
+			void handleSubmit((payload: SignInRequestDto) => void signIn(payload))(
+				event_,
+			);
 		},
-		[handleSubmit, onSubmit],
+		[handleSubmit, signIn],
 	);
 
 	return (
 		<>
 			<h1>Sign In</h1>
-			{isLoading && <p>Loading...</p>}
 			<form onSubmit={handleFormSubmit}>
 				<p>
 					<Input

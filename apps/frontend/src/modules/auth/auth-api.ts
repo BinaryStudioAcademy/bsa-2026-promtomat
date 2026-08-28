@@ -53,6 +53,7 @@ const authApi = baseApi
 		}),
 	});
 
-const { useSignInMutation, useSignUpMutation } = authApi;
+const { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation } =
+	authApi;
 
-export { useSignInMutation, useSignUpMutation };
+export { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation };
