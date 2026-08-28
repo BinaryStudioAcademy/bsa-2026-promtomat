@@ -31,7 +31,13 @@ class AuthGuard {
 
 	private async verifyToken(token: string): Promise<AuthPayload> {
 		try {
-			return await this.tokenService.verify<AuthPayload>(token);
+			const payload = await this.tokenService.verify<AuthPayload>(token);
+
+			if (typeof payload.userId !== "number") {
+				this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+			}
+
+			return payload;
 		} catch {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
