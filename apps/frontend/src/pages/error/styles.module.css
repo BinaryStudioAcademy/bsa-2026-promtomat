@@ -1,6 +1,9 @@
-/* Glow color comes from the illustration artwork, not the theme tokens. */
 .screen {
-	--screen-glow-color: rgb(245 158 11 / 18%);
+	--screen-glow-color: color-mix(
+		in srgb,
+		var(--fg-warning, #fbbf24) 18%,
+		transparent
+	);
 }
 
 .details {
@@ -8,6 +11,7 @@
 	margin: 0;
 	overflow-x: auto;
 	font-size: var(--font-size-label-sm, 12px);
+	line-height: 20px;
 	text-align: left;
 	white-space: pre-wrap;
 }

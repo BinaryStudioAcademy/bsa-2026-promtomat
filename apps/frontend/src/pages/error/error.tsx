@@ -8,7 +8,7 @@ import {
 
 import errorIllustration from "~/assets/img/error-state.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
-import { AppEnvironment, AppRoute } from "~/libs/enums/enums.js";
+import { AppEnvironment, AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
 
 import styles from "./styles.module.css";
@@ -40,7 +40,11 @@ const ErrorPage: React.FC = () => {
 		<FallbackScreen
 			actions={[
 				{ label: "Try Again", onClick: handleRetry },
-				{ label: "Back Home", to: AppRoute.ROOT, variant: "secondary" },
+				{
+					label: "Back Home",
+					to: AppRoute.ROOT,
+					variant: ButtonVariant.SECONDARY,
+				},
 			]}
 			className={styles["screen"]}
 			illustrationUrl={errorIllustration}

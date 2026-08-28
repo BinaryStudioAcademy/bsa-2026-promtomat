@@ -1,6 +1,9 @@
-import { clsx } from "clsx";
-
-import { type AppRoute, type HTTPCode } from "~/libs/enums/enums.js";
+import {
+	type AppRoute,
+	ButtonVariant,
+	type HTTPCode,
+} from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { Button } from "../button/button.js";
@@ -18,7 +21,8 @@ type FallbackActionRoute = Exclude<
 	typeof AppRoute.ANY
 >;
 
-type FallbackActionVariant = "primary" | "secondary";
+type FallbackActionVariant =
+	typeof ButtonVariant.PRIMARY | typeof ButtonVariant.SECONDARY;
 
 type Properties = {
 	actions?: FallbackAction[];
@@ -31,15 +35,15 @@ type Properties = {
 };
 
 const getActionClassName = (variant: FallbackActionVariant): string =>
-	clsx(
+	getValidClasses(
 		styles["action"],
-		variant === "primary"
+		variant === ButtonVariant.PRIMARY
 			? styles["action-primary"]
 			: styles["action-secondary"],
 	);
 
 const renderAction = (action: FallbackAction): React.JSX.Element => {
-	const className = getActionClassName(action.variant ?? "primary");
+	const className = getActionClassName(action.variant ?? ButtonVariant.PRIMARY);
 
 	return "to" in action ? (
 		<Link className={className} key={action.label} to={action.to}>
@@ -68,7 +72,7 @@ const FallbackScreen: React.FC<Properties> = ({
 	const hasActions = actions.length > EMPTY_ACTIONS_COUNT;
 
 	return (
-		<main className={clsx(styles["screen"], className)}>
+		<main className={getValidClasses(styles["screen"], className)}>
 			<div className={styles["layout"]}>
 				{illustrationUrl ? (
 					<img

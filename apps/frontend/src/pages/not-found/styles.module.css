@@ -1,4 +1,5 @@
 /* Glow color comes from the illustration artwork, not the theme tokens. */
 .screen {
 	--screen-glow-color: rgb(99 102 241 / 18%);
+	--screen-measure: 324px;
 }

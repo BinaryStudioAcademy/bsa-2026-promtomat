@@ -1,4 +1,5 @@
 export { AppRoute } from "./app-route.enum.js";
+export { ButtonVariant } from "./button-variant.enum.js";
 export {
 	APIPath,
 	AppEnvironment,
