@@ -5,8 +5,8 @@ const DEBUG_ENVIRONMENTS: ReadonlySet<ValueOf<typeof AppEnvironment>> = new Set(
 	[AppEnvironment.DEVELOPMENT, AppEnvironment.LOCAL],
 );
 
-const isDebugEnvironment = (
+const checkIsDebugEnvironment = (
 	environment: ValueOf<typeof AppEnvironment>,
 ): boolean => DEBUG_ENVIRONMENTS.has(environment);
 
-export { isDebugEnvironment };
+export { checkIsDebugEnvironment };
