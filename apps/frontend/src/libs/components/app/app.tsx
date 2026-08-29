@@ -6,7 +6,7 @@ import { AppRoute } from "~/libs/enums/enums.js";
 import { useRedirect } from "~/libs/hooks/use-redirect/use-redirect.hook.js";
 import { useGetUsersQuery } from "~/modules/users/users-api.js";
 
-import styles from "./app.module.css";
+import styles from "./styles.module.css";
 
 const App: React.FC = () => {
 	const { pathname } = useLocation();
