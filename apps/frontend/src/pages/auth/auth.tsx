@@ -8,6 +8,7 @@ import { type SignUpRequestDto } from "~/modules/auth/auth.js";
 
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
 import { SignUpForm } from "./components/sign-up-form/sign-up-form.js";
+import styles from "./styles.module.css";
 
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
@@ -47,10 +48,12 @@ const Auth: React.FC = () => {
 	};
 
 	return (
-		<>
-			{isLoading && <p>Loading...</p>}
-			{getScreen(pathname)}
-		</>
+		<main className={styles["container"]}>
+			<div className={styles["card"]}>
+				{isLoading && <p>Loading...</p>}
+				{getScreen(pathname)}
+			</div>
+		</main>
 	);
 };
 

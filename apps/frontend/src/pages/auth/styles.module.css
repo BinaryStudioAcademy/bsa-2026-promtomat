@@ -1,0 +1,45 @@
+.container {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	padding: 16px;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+	max-width: 420px;
+	padding: 40px;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-lg);
+}
+
+.heading {
+	margin: 0;
+	font-size: var(--font-size-title-2);
+	color: var(--text-strong);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 36px;
+}
+
+.input-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.footer {
+	display: flex;
+	gap: 5px;
+	align-self: center;
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
