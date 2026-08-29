@@ -10,6 +10,12 @@ import {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 
+type EstablishAuthenticatedSessionOptions = {
+	dispatch: AppDispatch;
+	token: string;
+	user: UserDto;
+};
+
 const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
@@ -34,17 +40,10 @@ const authApi = baseApi
 					const data = result.data as SignUpResponseDto;
 
 					try {
-						await startSession({
-							cacheAuthenticatedUser: async () => {
-								await appDispatch(
-									authApi.util.upsertQueryData(
-										"getAuthenticatedUser",
-										undefined,
-										data.user,
-									),
-								).unwrap();
-							},
+						await establishAuthenticatedSession({
+							dispatch: appDispatch,
 							token: data.token,
+							user: data.user,
 						});
 					} catch {
 						return {
@@ -60,6 +59,26 @@ const authApi = baseApi
 			}),
 		}),
 	});
+
+const updateAuthenticatedUserCache = async (
+	dispatch: AppDispatch,
+	user: UserDto,
+): Promise<void> => {
+	await dispatch(
+		authApi.util.upsertQueryData("getAuthenticatedUser", undefined, user),
+	).unwrap();
+};
+
+const establishAuthenticatedSession = async ({
+	dispatch,
+	token,
+	user,
+}: EstablishAuthenticatedSessionOptions): Promise<void> => {
+	await startSession({
+		cacheAuthenticatedUser: () => updateAuthenticatedUserCache(dispatch, user),
+		token,
+	});
+};
 
 const { useSignUpMutation } = authApi;
 
