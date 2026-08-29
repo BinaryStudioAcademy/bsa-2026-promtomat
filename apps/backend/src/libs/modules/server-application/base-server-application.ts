@@ -1,16 +1,15 @@
 import fastifyStatic from "@fastify/static";
 import swagger, { type StaticDocumentSpec } from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import Fastify, {
-	type FastifyError,
-	type FastifyInstance,
-	type FastifyRequest,
-} from "fastify";
+import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ValidationError } from "~/libs/exceptions/exceptions.js";
+import {
+	AuthError,
+	type ValidationError,
+} from "~/libs/exceptions/exceptions.js";
 import { type Config } from "~/libs/modules/config/config.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
@@ -21,7 +20,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
-import { AuthGuard } from "../auth-guard/auth-guard.js";
+import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -80,7 +79,6 @@ class BaseServerApplication implements ServerApplication {
 		this.app = Fastify({
 			ignoreTrailingSlash: true,
 		});
-		this.app.decorateRequest("user", null);
 	}
 
 	private initDatabaseLifecycle(): void {
@@ -109,6 +107,19 @@ class BaseServerApplication implements ServerApplication {
 					};
 
 					return reply.status(HTTPCode.UNPROCESSED_ENTITY).send(response);
+				}
+
+				if (error instanceof AuthError) {
+					this.logger.error(
+						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
+					);
+
+					const response: ServerCommonErrorResponse = {
+						errorType: ServerErrorType.COMMON,
+						message: error.message,
+					};
+
+					return reply.status(error.status).send(response);
 				}
 
 				if (error instanceof HTTPError) {
@@ -214,7 +225,7 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
-		const { handler, isProtected, method, path, validation } = parameters;
+		const { handler, method, path, validation } = parameters;
 
 		this.app.route({
 			handler,
@@ -223,13 +234,6 @@ class BaseServerApplication implements ServerApplication {
 				body: validation?.body,
 			},
 			url: path,
-			...(isProtected && {
-				preHandler: async (request: FastifyRequest) => {
-					request.user = await this.authGuard.resolveUser(
-						request.headers.authorization,
-					);
-				},
-			}),
 		});
 
 		this.logger.info(`Route: ${method} ${path} is registered`);
@@ -247,6 +251,8 @@ class BaseServerApplication implements ServerApplication {
 		await this.initServe();
 
 		await this.initMiddlewares();
+
+		await this.app.register(authGuardPlugin, { authGuard: this.authGuard });
 
 		this.initValidationCompiler();
 

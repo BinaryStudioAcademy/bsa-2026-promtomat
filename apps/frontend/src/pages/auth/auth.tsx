@@ -3,7 +3,10 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
-import { useSignUpMutation } from "~/modules/auth/auth-api.js";
+import {
+	useGetAuthenticatedUserQuery,
+	useSignUpMutation,
+} from "~/modules/auth/auth-api.js";
 import { type SignUpRequestDto } from "~/modules/auth/auth.js";
 
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
@@ -12,7 +15,9 @@ import styles from "./styles.module.css";
 
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
-	const [signUp, { data, error, isLoading }] = useSignUpMutation();
+	const [signUp, { error, isLoading }] = useSignUpMutation();
+	const { data: user, isLoading: isAuthLoading } =
+		useGetAuthenticatedUserQuery(undefined);
 
 	const errorMessage = isServerError(error) ? error.message : null;
 	const hasConflictError =
@@ -29,7 +34,11 @@ const Auth: React.FC = () => {
 		[signUp],
 	);
 
-	if (data?.user) {
+	if (isAuthLoading) {
+		return <p>Loading...</p>;
+	}
+
+	if (user) {
 		return <Navigate replace to={AppRoute.ROOT} />;
 	}
 
@@ -50,10 +59,7 @@ const Auth: React.FC = () => {
 
 	return (
 		<main className={styles["container"]}>
-			<div className={styles["card"]}>
-				{isLoading && <p>Loading...</p>}
-				{getScreen(pathname)}
-			</div>
+			<div className={styles["card"]}>{getScreen(pathname)}</div>
 		</main>
 	);
 };

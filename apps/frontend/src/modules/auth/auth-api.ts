@@ -21,6 +21,7 @@ const authApi = baseApi
 	.injectEndpoints({
 		endpoints: (builder) => ({
 			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
 			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
@@ -80,6 +81,6 @@ const establishAuthenticatedSession = async ({
 	});
 };
 
-const { useSignUpMutation } = authApi;
+const { useGetAuthenticatedUserQuery, useSignUpMutation } = authApi;
 
-export { useSignUpMutation };
+export { useGetAuthenticatedUserQuery, useSignUpMutation };

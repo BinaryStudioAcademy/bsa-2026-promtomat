@@ -1,0 +1,37 @@
+name: terraform-apply
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - infra/**
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.TF_APPLY_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.0
+
+      - run: terraform init
+      - run: terraform apply -auto-approve -input=false

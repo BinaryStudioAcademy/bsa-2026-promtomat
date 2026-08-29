@@ -1,34 +1,63 @@
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
+import { AuthError } from "~/libs/exceptions/exceptions.js";
+import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
-import { type UserDto } from "~/modules/users/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
-import { ExceptionMessage } from "./libs/enums/enums.js";
 import {
+	type SignInRequestDto,
+	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 
 class AuthService {
+	private hashing: Hashing;
+
 	private tokenService: TokenService;
+
 	private userService: UserService;
 
-	public constructor(userService: UserService, tokenService: TokenService) {
+	public constructor(
+		hashing: Hashing,
+		tokenService: TokenService,
+		userService: UserService,
+	) {
+		this.hashing = hashing;
 		this.tokenService = tokenService;
 		this.userService = userService;
 	}
 
-	public async getAuthenticatedUser(id: number): Promise<UserDto> {
-		const user = await this.userService.findById(id);
+	public async signIn(
+		userRequestDto: SignInRequestDto,
+	): Promise<SignInResponseDto> {
+		const userEntity = await this.userService.findByEmail(userRequestDto.email);
 
-		if (user === null) {
-			throw new HTTPError({
-				message: ExceptionMessage.UNAUTHORIZED,
-				status: HTTPCode.UNAUTHORIZED,
-			});
+		if (!userEntity) {
+			await this.hashing.hash(userRequestDto.password);
+			throw AuthError.invalidCredentials();
 		}
 
-		return user;
+		const userAuth = userEntity.toAuthObject();
+		const isValidPassword = await this.hashing.verify({
+			data: userRequestDto.password,
+			hash: userAuth.passwordHash,
+			salt: userAuth.passwordSalt,
+		});
+
+		if (!isValidPassword) {
+			throw AuthError.invalidCredentials();
+		}
+
+		const user = userEntity.toObject();
+
+		const token = await this.tokenService.create({
+			userId: user.id,
+		});
+
+		return {
+			token,
+			user,
+		};
 	}
 
 	public async signUp(

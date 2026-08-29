@@ -1,4 +1,4 @@
-import { type AuthPayload } from "~/libs/modules/server-application/libs/types/types.js";
+import { type UserDto } from "~/modules/users/libs/types/types.js";
 
 type APIHandlerOptions<
 	T extends DefaultApiHandlerOptions = DefaultApiHandlerOptions,
@@ -6,7 +6,7 @@ type APIHandlerOptions<
 	body: T["body"];
 	params: T["params"];
 	query: T["query"];
-	user: AuthPayload | null;
+	user: null | UserDto;
 };
 
 type DefaultApiHandlerOptions = {

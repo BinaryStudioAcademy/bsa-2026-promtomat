@@ -1,8 +1,8 @@
-import { type AuthPayload } from "./auth-payload.type.js";
+import { type UserDto } from "~/libs/types/types.js";
 
 declare module "fastify" {
 	interface FastifyRequest {
-		user: AuthPayload | null;
+		user: null | UserDto;
 	}
 }
 
