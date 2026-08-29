@@ -1,3 +1,3 @@
-import { database } from "./src/libs/modules/database/database.js";
+import { database } from "~/libs/modules/database/database.js";
 
 export default database.environmentsConfig;

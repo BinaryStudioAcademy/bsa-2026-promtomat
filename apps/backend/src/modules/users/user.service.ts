@@ -21,9 +21,16 @@ class UserService {
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmail(payload.email);
+		const existingUserByNickname = await this.userRepository.findByNickname(
+			payload.nickname,
+		);
 
 		if (existingUser) {
 			throw AuthError.emailAlreadyExists();
+		}
+
+		if (existingUserByNickname) {
+			throw AuthError.nicknameAlreadyTaken();
 		}
 
 		const { hash, salt } = await this.hashing.hash(payload.password);
@@ -31,6 +38,7 @@ class UserService {
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({
 				email: payload.email,
+				nickname: payload.nickname,
 				passwordHash: hash,
 				passwordSalt: salt,
 			}),
@@ -53,6 +61,12 @@ class UserService {
 
 	public async findById(id: number): Promise<null | UserDto> {
 		const user = await this.userRepository.findById(id);
+
+		return user ? user.toObject() : null;
+	}
+
+	public async findByNickname(nickname: string): Promise<null | UserDto> {
+		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
 	}
