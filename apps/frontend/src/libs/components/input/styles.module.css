@@ -30,8 +30,6 @@
 
 .input:focus-visible {
 	outline: var(--border-width-focus) solid var(--border-focus);
-	outline-offset: var(--border-width-focus);
-	border-color: var(--border-focus);
 }
 
 .input:disabled {
