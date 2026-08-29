@@ -13,6 +13,7 @@ import {
 } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
+import { FormAlert } from "../form-alert/form-alert.js";
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
 
 const SignInForm: React.FC = () => {
@@ -40,6 +41,11 @@ const SignInForm: React.FC = () => {
 		<>
 			<h1 className={styles["heading"]}>Sign In</h1>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+				{isError && (
+					<FormAlert
+						message={"Coundn't Sign In: email or password is not valid"}
+					/>
+				)}
 				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}
