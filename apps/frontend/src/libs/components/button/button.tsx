@@ -1,4 +1,4 @@
-import { type ButtonVariant, type ControlSize } from "~/libs/enums/enums.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -19,9 +19,9 @@ const Button: React.FC<Properties> = ({
 	isDisabled = false,
 	label,
 	onClick,
-	size = "md",
+	size = ControlSize.MD,
 	type = "button",
-	variant = "primary",
+	variant = ButtonVariant.PRIMARY,
 }: Properties) => (
 	<button
 		className={getValidClasses(

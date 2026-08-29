@@ -4,12 +4,12 @@
 	justify-content: center;
 	padding: 0 16px;
 	font-family: inherit;
-	font-size: 14px;
+	font-size: var(--font-size-body-base);
 	font-weight: 600;
 	line-height: 1;
 	white-space: nowrap;
 	cursor: pointer;
-	border: 1px solid transparent;
+	border: var(--border-width-hairline) solid transparent;
 	border-radius: var(--radius-md);
 	transition:
 		background-color var(--motion-duration-fast) var(--motion-ease-standard),

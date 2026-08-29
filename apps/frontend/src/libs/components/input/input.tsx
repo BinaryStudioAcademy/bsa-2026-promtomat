@@ -7,7 +7,7 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { type ControlSize } from "~/libs/enums/enums.js";
+import { ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -33,7 +33,7 @@ const Input = <T extends FieldValues>({
 	label,
 	name,
 	placeholder = "",
-	size = "md",
+	size = ControlSize.MD,
 	type = "text",
 }: Properties<T>): React.JSX.Element => {
 	const { field } = useController({
