@@ -14,7 +14,6 @@ import { type ValueOf } from "~/libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
-	autocomplite?: string;
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
 	isDisabled?: boolean;
