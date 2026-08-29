@@ -43,3 +43,9 @@
 	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
 }
+
+.password-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}

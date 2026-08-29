@@ -15,6 +15,7 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
+	descriptionId?: string;
 	errors: FieldErrors<T>;
 	isDisabled?: boolean;
 	label: string;
@@ -26,6 +27,7 @@ type Properties<T extends FieldValues> = {
 
 const Input = <T extends FieldValues>({
 	control,
+	descriptionId,
 	errors,
 	isDisabled = false,
 	label,
@@ -40,16 +42,19 @@ const Input = <T extends FieldValues>({
 		name: name as unknown as FieldPath<T>,
 	});
 
-	const errorId = useId();
-	const error = errors[name]?.message;
-	const hasError = Boolean(error);
+	const errorMessageId = useId();
+	const fieldError = errors[name];
+	const hasError = fieldError !== undefined;
+	const errorMessage = fieldError?.message;
+	const describedById =
+		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
 
 	return (
 		<label className={styles["field"]}>
 			<span className={styles["label"]}>{label}</span>
 			<input
 				{...field}
-				aria-describedby={hasError ? errorId : undefined}
+				aria-describedby={describedById}
 				aria-invalid={hasError || undefined}
 				className={getValidClasses(
 					styles["input"],
@@ -59,9 +64,9 @@ const Input = <T extends FieldValues>({
 				placeholder={placeholder}
 				type={type}
 			/>
-			{hasError && (
-				<span className={styles["message"]} id={errorId}>
-					{error as string}
+			{errorMessage !== undefined && descriptionId === undefined && (
+				<span className={styles["message"]} id={errorMessageId}>
+					{errorMessage as string}
 				</span>
 			)}
 		</label>

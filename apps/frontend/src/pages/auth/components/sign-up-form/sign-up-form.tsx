@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
+import { useFormState, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
@@ -11,24 +12,39 @@ import {
 } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
+import { FormAlert } from "../form-alert/form-alert.js";
+import { PasswordRules } from "../password-rules/password-rules.js";
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
 	errorMessage: null | string;
+	hasConflictError: boolean;
 	isLoading: boolean;
 	onSubmit: (payload: SignUpRequestDto) => Promise<void>;
 };
 
 const SignUpForm: React.FC<Properties> = ({
 	errorMessage,
+	hasConflictError,
 	isLoading,
 	onSubmit,
 }: Properties) => {
-	const { control, errors, handleSubmit } = useAppForm<SignUpRequestDto>({
-		defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
-		isDisabled: isLoading,
-		validationSchema: signUpValidationSchema,
-	});
+	const { control, errors, handleSubmit, setError } =
+		useAppForm<SignUpRequestDto>({
+			defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
+			isDisabled: isLoading,
+			mode: "onTouched",
+			validationSchema: signUpValidationSchema,
+		});
+
+	const passwordRulesId = useId();
+	const [hasPasswordBeenFocused, setHasPasswordBeenFocused] = useState(false);
+	const password = useWatch({ control, name: "password" });
+	const { isSubmitted } = useFormState({ control });
+
+	const handlePasswordFocus = useCallback((): void => {
+		setHasPasswordBeenFocused(true);
+	}, []);
 
 	const handleFormSubmit = useCallback(
 		(event_: React.BaseSyntheticEvent): void => {
@@ -37,9 +53,16 @@ const SignUpForm: React.FC<Properties> = ({
 		[handleSubmit, onSubmit],
 	);
 
+	useEffect(() => {
+		if (hasConflictError) {
+			setError("email", { type: "server" });
+		}
+	}, [hasConflictError, setError]);
+
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign up</h1>
+			{errorMessage && <FormAlert message={errorMessage} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input
@@ -50,16 +73,28 @@ const SignUpForm: React.FC<Properties> = ({
 						placeholder="Enter your email"
 						type="email"
 					/>
-					<Input
-						control={control}
-						errors={errors}
-						label="Password"
-						name="password"
-						placeholder="Enter your password"
-						type="password"
-					/>
+					<div
+						className={styles["password-field"]}
+						onFocus={handlePasswordFocus}
+					>
+						<Input
+							control={control}
+							descriptionId={passwordRulesId}
+							errors={errors}
+							label="Password"
+							name="password"
+							placeholder="Enter your password"
+							type="password"
+						/>
+						{(hasPasswordBeenFocused || isSubmitted) && (
+							<PasswordRules
+								id={passwordRulesId}
+								isSubmitted={isSubmitted}
+								password={password}
+							/>
+						)}
+					</div>
 				</div>
-				{errorMessage && <p role="alert">{errorMessage}</p>}
 				<Button
 					isDisabled={isLoading}
 					label="Create Developer Account"

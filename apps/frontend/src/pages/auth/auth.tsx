@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { AppRoute } from "~/libs/enums/enums.js";
+import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { useSignUpMutation } from "~/modules/auth/auth-api.js";
 import { type SignUpRequestDto } from "~/modules/auth/auth.js";
@@ -16,6 +16,8 @@ const Auth: React.FC = () => {
 	const [signUp, { error, isLoading }] = useSignUpMutation();
 
 	const errorMessage = isServerError(error) ? error.message : null;
+	const hasConflictError =
+		isServerError(error) && error.status === HTTPCode.CONFLICT;
 
 	const handleSignInSubmit = useCallback((): void => {
 		// handle sign in
@@ -38,6 +40,7 @@ const Auth: React.FC = () => {
 			return (
 				<SignUpForm
 					errorMessage={errorMessage}
+					hasConflictError={hasConflictError}
 					isLoading={isLoading}
 					onSubmit={handleSignUpSubmit}
 				/>

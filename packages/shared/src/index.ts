@@ -27,6 +27,7 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	AuthValidationRule,
 	ExceptionMessage,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";

@@ -1,4 +1,8 @@
-export { AuthApiPath, ExceptionMessage } from "./libs/enums/enums.js";
+export {
+	AuthApiPath,
+	AuthValidationRule,
+	ExceptionMessage,
+} from "./libs/enums/enums.js";
 export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
