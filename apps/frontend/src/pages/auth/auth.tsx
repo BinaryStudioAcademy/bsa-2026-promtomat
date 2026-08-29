@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AppRoute } from "~/libs/enums/enums.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	useGetAuthenticatedUserQuery,
 	useSignUpMutation,
@@ -11,10 +10,11 @@ import { type SignUpRequestDto } from "~/modules/auth/auth.js";
 
 import { SignInForm } from "./components/sign-in-form/sign-in-form.js";
 import { SignUpForm } from "./components/sign-up-form/sign-up-form.js";
+import styles from "./styles.module.css";
 
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
-	const [signUp, { error, isLoading }] = useSignUpMutation();
+	const [signUp, { isLoading }] = useSignUpMutation();
 	const { data: user, isLoading: isAuthLoading } =
 		useGetAuthenticatedUserQuery(undefined);
 
@@ -42,10 +42,9 @@ const Auth: React.FC = () => {
 	};
 
 	return (
-		<>
-			{isServerError(error) && <p>{error.message}</p>}
-			{getScreen(pathname)}
-		</>
+		<main className={styles["container"]}>
+			<div className={styles["card"]}>{getScreen(pathname)}</div>
+		</main>
 	);
 };
 

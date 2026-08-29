@@ -1,6 +1,8 @@
 .container {
 	display: flex;
 	justify-content: center;
+	width: 100%;
+	padding: 16px;
 }
 
 .card {
@@ -11,7 +13,7 @@
 	max-width: 420px;
 	padding: 40px;
 	background-color: var(--surface-card);
-	border: var(--border-width-hairline) solid var(--border-default);
+	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-lg);
 }
 
@@ -24,12 +26,26 @@
 .form {
 	display: flex;
 	flex-direction: column;
+	gap: 36px;
+}
+
+.input-wrapper {
+	display: flex;
+	flex-direction: column;
 	gap: 16px;
 }
 
-.sign-up {
+.footer {
 	display: flex;
 	gap: 5px;
 	align-self: center;
+	margin: 0;
+	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
+}
+
+.password-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }

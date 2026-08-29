@@ -12,8 +12,8 @@ import {
 	signInValidationSchema,
 } from "~/modules/auth/auth.js";
 
+import styles from "../../styles.module.css";
 import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
-import styles from "./styles.module.css";
 
 const SignInForm: React.FC = () => {
 	const [signIn, { data, isError, isLoading }] = useSignInMutation();
@@ -37,10 +37,10 @@ const SignInForm: React.FC = () => {
 	}
 
 	return (
-		<div className={styles["container"]}>
-			<div className={styles["card"]}>
-				<h1 className={styles["heading"]}>Sign In</h1>
-				<form className={styles["form"]} onSubmit={handleFormSubmit}>
+		<>
+			<h1 className={styles["heading"]}>Sign In</h1>
+			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}
 						errors={errors}
@@ -57,14 +57,13 @@ const SignInForm: React.FC = () => {
 						placeholder="Enter your password"
 						type="password"
 					/>
-					<Button isDisabled={isLoading} label="Sign in" type="submit" />
-					<div className={styles["sign-up"]}>
-						<span>Don&apos;t have an account</span>
-						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
-					</div>
-				</form>
-			</div>
-		</div>
+				</div>
+				<Button isDisabled={isLoading} label="Sign in" type="submit" />
+			</form>
+			<p className={styles["footer"]}>
+				Don&apos;t have an account? <Link to={AppRoute.SIGN_UP}>Sign up</Link>
+			</p>
+		</>
 	);
 };
 
