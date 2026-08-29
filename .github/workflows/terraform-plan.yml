@@ -1,0 +1,54 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    paths:
+      - infra/**
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.TF_PLAN_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.0
+
+      - run: terraform fmt -check -recursive
+      - run: terraform init
+      - run: terraform validate
+
+      - id: plan
+        run: terraform plan -no-color -input=false -out=tfplan
+        continue-on-error: true
+
+      - uses: actions/github-script@v7
+        env:
+          PLAN: ${{ steps.plan.outputs.stdout }}
+          PLAN_ERR: ${{ steps.plan.outputs.stderr }}
+        with:
+          script: |
+            const body = (process.env.PLAN || process.env.PLAN_ERR || '(no output)').slice(0, 60000);
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `#### Terraform Plan\n\`\`\`terraform\n${body}\n\`\`\``
+            });
+
+      - if: steps.plan.outcome == 'failure'
+        run: exit 1

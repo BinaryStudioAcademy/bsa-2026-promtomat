@@ -6,7 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ValidationError } from "~/libs/exceptions/exceptions.js";
+import {
+	AuthError,
+	type ValidationError,
+} from "~/libs/exceptions/exceptions.js";
 import { type Config } from "~/libs/modules/config/config.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
@@ -17,8 +20,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
-import { AuthGuard } from "../auth-guard/auth-guard.js";
-import { authGuardPlugin } from "../auth-guard/auth-guard.plugin.js";
+import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -105,6 +107,19 @@ class BaseServerApplication implements ServerApplication {
 					};
 
 					return reply.status(HTTPCode.UNPROCESSED_ENTITY).send(response);
+				}
+
+				if (error instanceof AuthError) {
+					this.logger.error(
+						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
+					);
+
+					const response: ServerCommonErrorResponse = {
+						errorType: ServerErrorType.COMMON,
+						message: error.message,
+					};
+
+					return reply.status(error.status).send(response);
 				}
 
 				if (error instanceof HTTPError) {
