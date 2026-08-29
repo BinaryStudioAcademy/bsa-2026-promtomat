@@ -33,6 +33,7 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	ExceptionMessage,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
