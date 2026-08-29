@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
@@ -12,8 +12,7 @@ import styles from "./styles.module.css";
 
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
-	const navigate = useNavigate();
-	const [signUp, { error, isLoading }] = useSignUpMutation();
+	const [signUp, { data, error, isLoading }] = useSignUpMutation();
 
 	const errorMessage = isServerError(error) ? error.message : null;
 	const hasConflictError =
@@ -24,16 +23,15 @@ const Auth: React.FC = () => {
 	}, []);
 
 	const handleSignUpSubmit = useCallback(
-		async (payload: SignUpRequestDto): Promise<void> => {
-			try {
-				await signUp(payload).unwrap();
-				await navigate(AppRoute.ROOT, { replace: true });
-			} catch {
-				// No navigation on failure: the user stays on the form, where the mutation error is already shown
-			}
+		(payload: SignUpRequestDto): void => {
+			void signUp(payload);
 		},
-		[signUp, navigate],
+		[signUp],
 	);
+
+	if (data?.user) {
+		return <Navigate replace to={AppRoute.ROOT} />;
+	}
 
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {

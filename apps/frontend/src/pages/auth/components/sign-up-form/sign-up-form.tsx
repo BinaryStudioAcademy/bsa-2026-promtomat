@@ -20,7 +20,7 @@ type Properties = {
 	errorMessage: null | string;
 	hasConflictError: boolean;
 	isLoading: boolean;
-	onSubmit: (payload: SignUpRequestDto) => Promise<void>;
+	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
 const SignUpForm: React.FC<Properties> = ({
