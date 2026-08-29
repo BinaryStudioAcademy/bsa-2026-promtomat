@@ -5,7 +5,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	className?: string;
+	className?: string | undefined;
 	isDisabled?: boolean;
 	label: string;
 	onClick?: () => void;
