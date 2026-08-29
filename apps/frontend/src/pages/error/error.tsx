@@ -2,7 +2,8 @@ import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
 import errorIllustration from "~/assets/img/error-state.svg";
 import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-screen.js";
-import { AppEnvironment, AppRoute } from "~/libs/enums/enums.js";
+import { AppRoute } from "~/libs/enums/enums.js";
+import { isDebugEnvironment } from "~/libs/helpers/helpers.js";
 import { config } from "~/libs/modules/config/config.js";
 
 import styles from "./styles.module.css";
@@ -24,7 +25,7 @@ const getErrorDetails = (error: unknown): string => {
 const ErrorPage: React.FC = () => {
 	const error = useRouteError();
 
-	const hasDetails = config.ENV.APP.ENVIRONMENT !== AppEnvironment.PRODUCTION;
+	const hasDetails = isDebugEnvironment(config.ENV.APP.ENVIRONMENT);
 
 	return (
 		<FallbackScreen

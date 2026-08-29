@@ -1,19 +1,14 @@
-import { type AppRoute, type HTTPCode } from "~/libs/enums/enums.js";
+import { type HTTPCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { type ValueOf } from "~/libs/types/types.js";
+import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
 
 import { Link } from "../link/link.js";
 import styles from "./styles.module.css";
 
 type FallbackAction = {
 	label: string;
-	url: FallbackActionRoute;
+	url: NavigableRoute;
 };
-
-type FallbackActionRoute = Exclude<
-	ValueOf<typeof AppRoute>,
-	typeof AppRoute.ANY
->;
 
 type Properties = {
 	action: FallbackAction;
