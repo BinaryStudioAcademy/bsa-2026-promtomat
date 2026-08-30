@@ -14,12 +14,16 @@ import {
 import styles from "../../styles.module.css";
 import { FormAlert } from "../form-alert/form-alert.js";
 import { PasswordRules } from "../password-rules/password-rules.js";
-import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
+import {
+	DEFAULT_SIGN_UP_PAYLOAD,
+	SIGN_UP_SUCCESS_MESSAGE,
+} from "./libs/constants.js";
 
 type Properties = {
 	errorMessage: null | string;
 	hasConflictError: boolean;
 	isLoading: boolean;
+	isSuccess: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
@@ -27,12 +31,14 @@ const SignUpForm: React.FC<Properties> = ({
 	errorMessage,
 	hasConflictError,
 	isLoading,
+	isSuccess,
 	onSubmit,
 }: Properties) => {
+	const isDisabled = isLoading || isSuccess;
 	const { control, errors, handleSubmit, setError } =
 		useAppForm<SignUpRequestDto>({
 			defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
-			isDisabled: isLoading,
+			isDisabled,
 			mode: "onTouched",
 			validationSchema: signUpValidationSchema,
 		});
@@ -63,6 +69,9 @@ const SignUpForm: React.FC<Properties> = ({
 		<>
 			<h1 className={styles["heading"]}>Sign up</h1>
 			{errorMessage && <FormAlert message={errorMessage} />}
+			{isSuccess ? (
+				<FormAlert message={SIGN_UP_SUCCESS_MESSAGE} variant="success" />
+			) : null}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input
@@ -96,7 +105,7 @@ const SignUpForm: React.FC<Properties> = ({
 					</div>
 				</div>
 				<Button
-					isDisabled={isLoading}
+					isDisabled={isDisabled}
 					label="Create Developer Account"
 					size={ControlSize.LG}
 					type="submit"

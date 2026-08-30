@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
@@ -15,13 +15,19 @@ import styles from "./styles.module.css";
 
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
-	const [signUp, { error, isLoading }] = useSignUpMutation();
+	const [signUp, { error, isLoading, isSuccess, reset }] = useSignUpMutation();
 	const { data: user, isLoading: isAuthLoading } =
 		useGetAuthenticatedUserQuery(undefined);
 
 	const errorMessage = isServerError(error) ? error.message : null;
 	const hasConflictError =
 		isServerError(error) && error.status === HTTPCode.CONFLICT;
+
+	useEffect(() => {
+		if (pathname !== AppRoute.SIGN_UP) {
+			reset();
+		}
+	}, [pathname, reset]);
 
 	const handleSignInSubmit = useCallback((): void => {
 		// handle sign in
@@ -49,6 +55,7 @@ const Auth: React.FC = () => {
 					errorMessage={errorMessage}
 					hasConflictError={hasConflictError}
 					isLoading={isLoading}
+					isSuccess={isSuccess}
 					onSubmit={handleSignUpSubmit}
 				/>
 			);
