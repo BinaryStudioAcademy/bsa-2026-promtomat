@@ -38,13 +38,12 @@ const SignUpForm: React.FC<Properties> = ({
 	onSubmit,
 }: Properties) => {
 	const isDisabled = isLoading || isSuccess;
-	const { control, errors, handleSubmit, setError } =
-		useAppForm<SignUpRequestDto>({
-			defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
-			isDisabled,
-			mode: "onTouched",
-			validationSchema: signUpValidationSchema,
-		});
+	const { control, handleSubmit, setError } = useAppForm<SignUpRequestDto>({
+		defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
+		isDisabled,
+		mode: "onTouched",
+		validationSchema: signUpValidationSchema,
+	});
 
 	const passwordRulesId = useId();
 	const [hasPasswordBeenFocused, setHasPasswordBeenFocused] = useState(false);
@@ -79,7 +78,6 @@ const SignUpForm: React.FC<Properties> = ({
 				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}
-						errors={errors}
 						label="Email"
 						name="email"
 						placeholder="Enter your email"
@@ -92,7 +90,6 @@ const SignUpForm: React.FC<Properties> = ({
 						<Input
 							control={control}
 							descriptionId={passwordRulesId}
-							errors={errors}
 							label="Password"
 							name="password"
 							placeholder="Enter your password"

@@ -1,13 +1,12 @@
 import React, { useCallback, useId, useState } from "react";
 import {
 	type Control,
-	type FieldErrors,
 	type FieldPath,
 	type FieldValues,
 	useController,
 } from "react-hook-form";
 
-import { ControlSize } from "~/libs/enums/enums.js";
+import { ControlSize, InputType } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -17,20 +16,18 @@ type Properties<T extends FieldValues> = {
 	autoComplete?: React.HTMLInputAutoCompleteAttribute;
 	control: Control<T, null>;
 	descriptionId?: string;
-	errors: FieldErrors<T>;
 	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
-	type?: "email" | "password" | "text";
+	type?: ValueOf<typeof InputType>;
 };
 
 const Input = <T extends FieldValues>({
 	autoComplete,
 	control,
 	descriptionId,
-	errors,
 	isDisabled = false,
 	label,
 	name,
@@ -38,23 +35,27 @@ const Input = <T extends FieldValues>({
 	size = ControlSize.MD,
 	type = "text",
 }: Properties<T>): React.JSX.Element => {
-	const { field } = useController({
+	const {
+		field,
+		fieldState: { error },
+	} = useController({
 		control,
 		disabled: isDisabled,
 		name: name,
 	});
 
 	const errorMessageId = useId();
-	const fieldError = errors[name];
-	const hasError = fieldError !== undefined;
-	const errorMessage = fieldError?.message;
-	const describedById =
-		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const isPasswordField = type === "password";
-	const inputType = isPasswordField && isPasswordVisible ? "text" : type;
+	const hasError = Boolean(error);
+	const errorMessage = error?.message;
+	const describedById =
+		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
+
+	const isPasswordField = type === InputType.PASSWORD;
+	const inputType =
+		isPasswordField && isPasswordVisible ? InputType.TEXT : type;
 
 	const handleVisibilityToggle = useCallback((): void => {
 		setIsPasswordVisible((previous) => !previous);
@@ -105,9 +106,7 @@ const Input = <T extends FieldValues>({
 				)}
 			</div>
 			{descriptionId === undefined && (
-				<span className={styles["message"]} id={errorMessageId}>
-					{hasError && (errorMessage as string)}
-				</span>
+				<span className={styles["message"]} id={errorMessageId}></span>
 			)}
 		</div>
 	);
