@@ -18,7 +18,7 @@ type Properties<T extends FieldValues> = {
 	errors: FieldErrors<T>;
 	isDisabled?: boolean;
 	label: string;
-	name: Extract<keyof T, string>;
+	name: FieldPath<T>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	type?: "email" | "text";
@@ -37,7 +37,7 @@ const Input = <T extends FieldValues>({
 	const { field } = useController({
 		control,
 		disabled: isDisabled,
-		name: name as unknown as FieldPath<T>,
+		name,
 	});
 
 	const error = errors[name]?.message;
