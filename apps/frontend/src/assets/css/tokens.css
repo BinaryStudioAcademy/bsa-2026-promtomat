@@ -46,6 +46,10 @@
 	--border-width-hairline: 1px;
 	--border-width-emphasis: 2px;
 	--border-width-focus: 2px;
+	--font-family-base: "Archivo", arial, sans-serif;
+	--font-family-mono: "IBM Plex Mono", "Courier New", monospace;
+	--font-size-display-1: 34px;
+	--font-size-display-2: 28px;
 	--font-size-title-2: 24px;
 	--font-size-title-3: 18px;
 	--font-size-body-xl: 16px;
