@@ -1,7 +1,6 @@
 import React from "react";
 import {
 	type Control,
-	type FieldErrors,
 	type FieldPath,
 	type FieldValues,
 	useController,
@@ -15,7 +14,6 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
-	errors: FieldErrors<T>;
 	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
@@ -26,7 +24,6 @@ type Properties<T extends FieldValues> = {
 
 const Input = <T extends FieldValues>({
 	control,
-	errors,
 	isDisabled = false,
 	label,
 	name,
@@ -34,13 +31,15 @@ const Input = <T extends FieldValues>({
 	size = ControlSize.MD,
 	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
-	const { field } = useController({
+	const {
+		field,
+		fieldState: { error },
+	} = useController({
 		control,
 		disabled: isDisabled,
 		name,
 	});
 
-	const error = errors[name]?.message;
 	const hasError = Boolean(error);
 
 	return (
@@ -56,7 +55,9 @@ const Input = <T extends FieldValues>({
 				placeholder={placeholder}
 				type={type}
 			/>
-			{hasError && <span className={styles["message"]}>{error as string}</span>}
+			{error ? (
+				<span className={styles["message"]}>{error.message}</span>
+			) : null}
 		</label>
 	);
 };
