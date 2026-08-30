@@ -49,6 +49,7 @@
 
 .lg {
 	height: var(--size-control-h-lg);
+	font-size: var(--font-size-body-xl);
 }
 
 .error {
@@ -56,6 +57,66 @@
 }
 
 .message {
+	min-height: 18px;
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
+}
+
+.control {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.with-toggle {
+	padding-right: 40px;
+}
+
+.toggle {
+	position: absolute;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	color: var(--text-muted);
+	cursor: pointer;
+	background-color: transparent;
+	border: 0;
+	border-radius: var(--radius-sm);
+	transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.toggle:disabled {
+	cursor: not-allowed;
+}
+
+.toggle:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.toggle:hover:not(:disabled) {
+	color: var(--text-strong);
+}
+
+.toggle-icon {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentcolor;
+	stroke-width: 1.25px;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.toggle-icon-filled {
+	fill: currentcolor;
+	stroke: none;
+}
+
+.toggle-icon-filled .pupil {
+	fill: var(--surface-inset);
 }

@@ -5,6 +5,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
 	type SignUpRequestDto,
@@ -16,6 +17,8 @@ import { FormAlert } from "../form-alert/form-alert.js";
 import { PasswordRules } from "../password-rules/password-rules.js";
 import {
 	DEFAULT_SIGN_UP_PAYLOAD,
+	SIGN_UP_SUBMIT_LABEL,
+	SIGN_UP_SUBMITTING_LABEL,
 	SIGN_UP_SUCCESS_MESSAGE,
 } from "./libs/constants.js";
 
@@ -95,18 +98,26 @@ const SignUpForm: React.FC<Properties> = ({
 							placeholder="Enter your password"
 							type="password"
 						/>
-						{(hasPasswordBeenFocused || isSubmitted) && (
-							<PasswordRules
-								id={passwordRulesId}
-								isSubmitted={isSubmitted}
-								password={password}
-							/>
-						)}
+						<div
+							className={getValidClasses(
+								styles["rules"],
+								(hasPasswordBeenFocused || isSubmitted) &&
+									styles["rules-shown"],
+							)}
+						>
+							<div className={styles["rules-inner"]}>
+								<PasswordRules
+									id={passwordRulesId}
+									isSubmitted={isSubmitted}
+									password={password}
+								/>
+							</div>
+						</div>
 					</div>
 				</div>
 				<Button
 					isDisabled={isDisabled}
-					label="Create Developer Account"
+					label={isLoading ? SIGN_UP_SUBMITTING_LABEL : SIGN_UP_SUBMIT_LABEL}
 					size={ControlSize.LG}
 					type="submit"
 				/>

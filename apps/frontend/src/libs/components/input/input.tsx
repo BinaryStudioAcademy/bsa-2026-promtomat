@@ -1,4 +1,4 @@
-import React, { useId } from "react";
+import React, { useCallback, useId, useState } from "react";
 import {
 	type Control,
 	type FieldErrors,
@@ -14,6 +14,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
+	autoComplete?: React.HTMLInputAutoCompleteAttribute;
 	control: Control<T, null>;
 	descriptionId?: string;
 	errors: FieldErrors<T>;
@@ -26,6 +27,7 @@ type Properties<T extends FieldValues> = {
 };
 
 const Input = <T extends FieldValues>({
+	autoComplete,
 	control,
 	descriptionId,
 	errors,
@@ -48,28 +50,66 @@ const Input = <T extends FieldValues>({
 	const errorMessage = fieldError?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
+	const inputId = useId();
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+	const isPasswordField = type === "password";
+	const inputType = isPasswordField && isPasswordVisible ? "text" : type;
+
+	const handleVisibilityToggle = useCallback((): void => {
+		setIsPasswordVisible((previous) => !previous);
+	}, []);
 
 	return (
-		<label className={styles["field"]}>
-			<span className={styles["label"]}>{label}</span>
-			<input
-				{...field}
-				aria-describedby={describedById}
-				aria-invalid={hasError || undefined}
-				className={getValidClasses(
-					styles["input"],
-					styles[size],
-					hasError && styles["error"],
+		<div className={styles["field"]}>
+			<label className={styles["label"]} htmlFor={inputId}>
+				{label}
+			</label>
+			<div className={styles["control"]}>
+				<input
+					{...field}
+					aria-describedby={describedById}
+					aria-invalid={hasError || undefined}
+					autoComplete={autoComplete}
+					className={getValidClasses(
+						styles["input"],
+						styles[size],
+						hasError && styles["error"],
+						isPasswordField && styles["with-toggle"],
+					)}
+					id={inputId}
+					placeholder={placeholder}
+					type={inputType}
+				/>
+				{isPasswordField && (
+					<button
+						aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+						aria-pressed={isPasswordVisible}
+						className={styles["toggle"]}
+						disabled={field.disabled}
+						onClick={handleVisibilityToggle}
+						type="button"
+					>
+						<svg
+							aria-hidden="true"
+							className={getValidClasses(
+								styles["toggle-icon"],
+								!isPasswordVisible && styles["toggle-icon-filled"],
+							)}
+							viewBox="0 0 16 16"
+						>
+							<path d="M1 8s2.5-4.5 7-4.5 7 4.5 7 4.5-2.5 4.5-7 4.5S1 8 1 8Z" />
+							<circle className={styles["pupil"]} cx="8" cy="8" r="2" />
+						</svg>
+					</button>
 				)}
-				placeholder={placeholder}
-				type={type}
-			/>
-			{errorMessage !== undefined && descriptionId === undefined && (
+			</div>
+			{descriptionId === undefined && (
 				<span className={styles["message"]} id={errorMessageId}>
-					{errorMessage as string}
+					{hasError && (errorMessage as string)}
 				</span>
 			)}
-		</label>
+		</div>
 	);
 };
 

@@ -1,4 +1,5 @@
 :root {
+	--layout-page-max-width: 1440px;
 	--surface-canvas: #0a0d12;
 	--surface-sunken: #070910;
 	--surface-card: #121721;
