@@ -1,16 +1,15 @@
 import { useCallback } from "react";
 import { NavLink } from "react-router-dom";
 
-import { type AppRoute } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { type ValueOf } from "~/libs/types/types.js";
+import { type NavigableRoute } from "~/libs/types/types.js";
 
 import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
-	className?: string;
-	to: ValueOf<typeof AppRoute>;
+	className?: string | undefined;
+	to: NavigableRoute;
 };
 
 const Link: React.FC<Properties> = ({
