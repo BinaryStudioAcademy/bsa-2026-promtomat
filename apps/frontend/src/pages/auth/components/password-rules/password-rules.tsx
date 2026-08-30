@@ -1,10 +1,14 @@
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { AuthValidationRule } from "~/modules/auth/auth.js";
+import {
+	AuthValidationMessage,
+	AuthValidationRule,
+	passwordFieldValidationSchema,
+} from "~/modules/auth/auth.js";
 
 import styles from "./styles.module.css";
 
 type PasswordRule = {
-	check: (password: string) => boolean;
+	hasValidationIssue: boolean;
 	label: string;
 };
 
@@ -14,54 +18,64 @@ type Properties = {
 	password: string;
 };
 
-const PASSWORD_RULES: PasswordRule[] = [
-	{
-		check: (password: string): boolean =>
-			password.length >= AuthValidationRule.PASSWORD_MINIMUM_LENGTH &&
-			password.length <= AuthValidationRule.PASSWORD_MAXIMUM_LENGTH,
-		label: `Between ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} and ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
-	},
-	{
-		check: (password: string): boolean => password === password.trim(),
-		label: "No spaces at the start or end",
-	},
-];
-
 const PasswordRules: React.FC<Properties> = ({
 	id,
 	isSubmitted,
 	password,
-}: Properties) => (
-	<ul className={styles["list"]} id={id}>
-		{PASSWORD_RULES.map(({ check, label }) => {
-			const isRuleMet = password !== "" && check(password);
-			const hasFailed = isSubmitted && !isRuleMet;
+}: Properties) => {
+	const validationResult = passwordFieldValidationSchema.safeParse(password);
+	const validationIssues = validationResult.success
+		? []
+		: validationResult.error.issues;
 
-			return (
-				<li
-					className={getValidClasses(
-						styles["rule"],
-						isRuleMet && styles["met"],
-						hasFailed && styles["failed"],
-					)}
-					key={label}
-				>
-					<svg
-						aria-hidden="true"
-						className={styles["icon"]}
-						viewBox="0 0 12 12"
-					>
-						{isRuleMet ? (
-							<polyline points="2.5 6.5 5 9 9.5 3.5" />
-						) : (
-							<circle cx="6" cy="6" r="5" />
+	const passwordRules: PasswordRule[] = [
+		{
+			hasValidationIssue: validationIssues.some(
+				({ code }) => code === "too_small" || code === "too_big",
+			),
+			label: `Between ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} and ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
+		},
+		{
+			hasValidationIssue: validationIssues.some(
+				({ code, message }) =>
+					code === "custom" &&
+					message ===
+						AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
+			),
+			label: AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
+		},
+	];
+	return (
+		<ul className={styles["list"]} id={id}>
+			{passwordRules.map(({ hasValidationIssue, label }) => {
+				const isRuleMet = password !== "" && !hasValidationIssue;
+				const hasFailed = isSubmitted && !isRuleMet;
+				return (
+					<li
+						className={getValidClasses(
+							styles["rule"],
+							isRuleMet && styles["met"],
+							hasFailed && styles["failed"],
 						)}
-					</svg>
-					{label}
-				</li>
-			);
-		})}
-	</ul>
-);
+						key={label}
+					>
+						<svg
+							aria-hidden="true"
+							className={styles["icon"]}
+							viewBox="0 0 12 12"
+						>
+							{isRuleMet ? (
+								<polyline points="2.5 6.5 5 9 9.5 3.5" />
+							) : (
+								<circle cx="6" cy="6" r="5" />
+							)}
+						</svg>
+						{label}
+					</li>
+				);
+			})}
+		</ul>
+	);
+};
 
 export { PasswordRules };

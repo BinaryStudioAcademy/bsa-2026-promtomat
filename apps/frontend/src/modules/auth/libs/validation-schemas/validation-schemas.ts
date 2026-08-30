@@ -1,1 +1,4 @@
-export { signUpValidationSchema } from "@promptomat/shared";
+export {
+	passwordFieldValidationSchema,
+	signUpValidationSchema,
+} from "@promptomat/shared";

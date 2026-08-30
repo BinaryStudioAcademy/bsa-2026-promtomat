@@ -1,2 +1,6 @@
 export { AuthErrorMessage } from "./auth-error-message.enum.js";
-export { AuthApiPath, AuthValidationRule } from "@promptomat/shared";
+export {
+	AuthApiPath,
+	AuthValidationMessage,
+	AuthValidationRule,
+} from "@promptomat/shared";
