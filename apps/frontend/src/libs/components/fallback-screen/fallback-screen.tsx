@@ -1,13 +1,19 @@
-import { type AppRoute, HTTPCode } from "~/libs/enums/enums.js";
-import { type ValueOf } from "~/libs/types/types.js";
+import { type HTTPCode } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
 
 import { Link } from "../link/link.js";
-import styles from "./style.module.css";
+import styles from "./styles.module.css";
 
-type FallbackAction = { label: string; url: ValueOf<typeof AppRoute> };
+type FallbackAction = {
+	label: string;
+	url: NavigableRoute;
+};
 
 type Properties = {
 	action: FallbackAction;
+	children?: React.ReactNode;
+	className?: string | undefined;
 	code?: ValueOf<typeof HTTPCode>;
 	illustrationUrl?: string;
 	message: string;
@@ -16,19 +22,29 @@ type Properties = {
 
 const FallbackScreen: React.FC<Properties> = ({
 	action,
+	children,
+	className,
 	code,
 	illustrationUrl,
 	message,
 	title,
 }: Properties) => (
-	<main className={styles["screen"]}>
+	<main
+		className={getValidClasses(
+			styles["screen"],
+			!illustrationUrl && styles["screen-glow"],
+			className,
+		)}
+	>
 		<div className={styles["layout"]}>
 			{illustrationUrl ? (
-				<img
-					alt={title}
-					className={styles["illustration"]}
-					src={illustrationUrl}
-				/>
+				<div className={styles["illustration"]}>
+					<img
+						alt={title}
+						className={styles["illustration-image"]}
+						src={illustrationUrl}
+					/>
+				</div>
 			) : null}
 
 			{code ? <span className={styles["code"]}>{code}</span> : null}
@@ -37,7 +53,9 @@ const FallbackScreen: React.FC<Properties> = ({
 
 			<p className={styles["message"]}>{message}</p>
 
-			<Link className={styles["action"] as string} to={action.url}>
+			{children ? <div className={styles["details"]}>{children}</div> : null}
+
+			<Link className={styles["action"]} to={action.url}>
 				{action.label}
 			</Link>
 		</div>
