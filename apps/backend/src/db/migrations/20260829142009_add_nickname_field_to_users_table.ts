@@ -4,7 +4,7 @@ Safe migration which added a "nickname" field to a "users" table
 "nickname" field is required, so we need to migrate in a few steps:
 The first step is adding a new column that is not required;
 The second step is setting up a "nickname" column with values generated from
-email in order not to get db errors;
+user id in order not to get db errors;
 The third step is making the "nickname" column required to
 correspond task requirements;
 */
