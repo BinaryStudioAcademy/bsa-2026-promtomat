@@ -25,9 +25,9 @@ const SignInForm: React.FC = () => {
 	});
 
 	const handleFormSubmit = useCallback(
-		(event_: React.BaseSyntheticEvent): void => {
+		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit((payload: SignInRequestDto) => void signIn(payload))(
-				event_,
+				event,
 			);
 		},
 		[handleSubmit, signIn],
