@@ -1,39 +1,63 @@
 import React from "react";
 import {
 	type Control,
-	type FieldErrors,
 	type FieldPath,
 	type FieldValues,
 	useController,
 } from "react-hook-form";
 
+import { ControlSize, InputType } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { type ValueOf } from "~/libs/types/types.js";
+
+import styles from "./styles.module.css";
+
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
-	errors: FieldErrors<T>;
+	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	placeholder?: string;
-	type?: "email" | "text";
+	size?: ValueOf<typeof ControlSize>;
+	type?: ValueOf<typeof InputType>;
 };
 
 const Input = <T extends FieldValues>({
 	control,
-	errors,
+	isDisabled = false,
 	label,
 	name,
 	placeholder = "",
-	type = "text",
+	size = ControlSize.MD,
+	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
-	const { field } = useController({ control, name });
+	const {
+		field,
+		fieldState: { error },
+	} = useController({
+		control,
+		disabled: isDisabled,
+		name,
+	});
 
-	const error = errors[name]?.message;
 	const hasError = Boolean(error);
 
 	return (
-		<label>
-			<span>{label}</span>
-			<input {...field} placeholder={placeholder} type={type} />
-			{hasError && <span>{error as string}</span>}
+		<label className={styles["field"]}>
+			<span className={styles["label"]}>{label}</span>
+			<input
+				{...field}
+				className={getValidClasses(
+					styles["input"],
+					styles[size],
+					hasError && styles["error"],
+				)}
+				placeholder={placeholder}
+				type={type}
+			/>
+			{error ? (
+				<span className={styles["message"]}>{error.message}</span>
+			) : null}
 		</label>
 	);
 };

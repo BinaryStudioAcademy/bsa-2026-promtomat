@@ -113,8 +113,8 @@
 	cursor: pointer;
 	background-color: var(--surface-accent, #e6e9ee);
 	border-radius: var(--radius-md, 6px);
-	transition: background-color var(--duration-fast, 110ms)
-		var(--ease-standard, ease);
+	transition: background-color var(--motion-duration-fast, 110ms)
+		var(--motion-ease-standard, ease);
 }
 
 .action:hover {

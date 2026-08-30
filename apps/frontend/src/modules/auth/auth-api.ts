@@ -1,7 +1,6 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
-import { UsersApiTag } from "~/modules/users/users.js";
-import { type UserDto } from "~/modules/users/users.js";
+import { type UserDto, UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
