@@ -1,1 +1,1 @@
-export { APIPath, AppEnvironment, ServerErrorType } from "@promptomat/shared";
+export { APIPath, AppEnvironment, ErrorCode } from "@promptomat/shared";
