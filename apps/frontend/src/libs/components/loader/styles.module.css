@@ -1,4 +1,8 @@
 .loader {
+	--loader-small-size: 16px;
+	--loader-medium-size: 24px;
+	--loader-large-size: 48px;
+
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -24,21 +28,21 @@
 }
 
 .small .spinner {
-	width: 16px;
-	height: 16px;
-	border-width: 2px;
+	width: var(--loader-small-size);
+	height: var(--loader-small-size);
+	border-width: var(--border-width-emphasis);
 }
 
 .medium .spinner {
-	width: 24px;
-	height: 24px;
+	width: var(--loader-medium-size);
+	height: var(--loader-medium-size);
 	border-width: 3px;
 }
 
 .large .spinner {
-	width: 48px;
-	height: 48px;
-	border-width: 4px;
+	width: var(--loader-large-size);
+	height: var(--loader-large-size);
+	border-width: var(--border-width-thick);
 }
 
 .primary {
