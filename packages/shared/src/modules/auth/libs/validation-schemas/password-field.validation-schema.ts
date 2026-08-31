@@ -1,17 +1,8 @@
 import { z } from "zod";
 
-import { AuthValidationMessage, AuthValidationRule } from "../enums/enums.js";
+import { passwordBoundarySpaces } from "./password-boundary-spaces.validation-schema.js";
+import { passwordLength } from "./password-length.validation-schema.js";
 
-const passwordField = z
-	.string()
-	.min(AuthValidationRule.PASSWORD_MINIMUM_LENGTH, {
-		error: AuthValidationMessage.PASSWORD_TOO_SHORT,
-	})
-	.max(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH, {
-		error: AuthValidationMessage.PASSWORD_TOO_LONG,
-	})
-	.refine((value) => value === value.trim(), {
-		error: AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
-	});
+const passwordField = z.intersection(passwordLength, passwordBoundarySpaces);
 
 export { passwordField };

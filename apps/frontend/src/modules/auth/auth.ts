@@ -7,7 +7,8 @@ export {
 	type SignUpRequestDto,
 } from "./libs/types/types.js";
 export {
-	passwordFieldValidationSchema,
+	passwordBoundarySpacesValidationSchema,
+	passwordLengthValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

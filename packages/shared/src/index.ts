@@ -36,7 +36,9 @@ export {
 	AuthValidationMessage,
 	AuthValidationRule,
 	ExceptionMessage,
+	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
+	passwordLengthValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";

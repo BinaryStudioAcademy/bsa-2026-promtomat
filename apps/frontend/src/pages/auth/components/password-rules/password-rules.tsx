@@ -2,15 +2,11 @@ import { getValidClasses } from "~/libs/helpers/helpers.js";
 import {
 	AuthValidationMessage,
 	AuthValidationRule,
-	passwordFieldValidationSchema,
+	passwordBoundarySpacesValidationSchema,
+	passwordLengthValidationSchema,
 } from "~/modules/auth/auth.js";
 
 import styles from "./styles.module.css";
-
-type PasswordRule = {
-	hasValidationIssue: boolean;
-	label: string;
-};
 
 type Properties = {
 	id: string;
@@ -18,37 +14,27 @@ type Properties = {
 	password: string;
 };
 
+const passwordRules = [
+	{
+		label: `Between ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} and ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
+		validationSchema: passwordLengthValidationSchema,
+	},
+	{
+		label: AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
+		validationSchema: passwordBoundarySpacesValidationSchema,
+	},
+];
+
 const PasswordRules: React.FC<Properties> = ({
 	id,
 	isSubmitted,
 	password,
 }: Properties) => {
-	const validationResult = passwordFieldValidationSchema.safeParse(password);
-	const validationIssues = validationResult.success
-		? []
-		: validationResult.error.issues;
-
-	const passwordRules: PasswordRule[] = [
-		{
-			hasValidationIssue: validationIssues.some(
-				({ code }) => code === "too_small" || code === "too_big",
-			),
-			label: `Between ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} and ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
-		},
-		{
-			hasValidationIssue: validationIssues.some(
-				({ code, message }) =>
-					code === "custom" &&
-					message ===
-						AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
-			),
-			label: AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
-		},
-	];
 	return (
 		<ul className={styles["list"]} id={id}>
-			{passwordRules.map(({ hasValidationIssue, label }) => {
-				const isRuleMet = password !== "" && !hasValidationIssue;
+			{passwordRules.map(({ label, validationSchema }) => {
+				const isRuleMet =
+					password !== "" && validationSchema.safeParse(password).success;
 				const hasFailed = isSubmitted && !isRuleMet;
 				return (
 					<li

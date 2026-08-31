@@ -11,7 +11,9 @@ export {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 export {
+	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
+	passwordLengthValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
