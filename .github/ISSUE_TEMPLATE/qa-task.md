@@ -7,12 +7,8 @@ labels: qa-task
 
 **Description**
 
-
 **What was done**
-
 
 **Related links**
 
-
 **Notes**
-

@@ -7,26 +7,19 @@ labels: bug
 
 **Summary**
 
-
 **Preconditions**
 
-
-**Steps to reproduce**
-1.
-2.
-3.
+**Steps to reproduce** 1. 2. 3.
 
 **Expected result**
 
-
 **Actual result**
 
-
 **Environment**
+
 - Browser/OS:
 - Environment: staging / production
 
 **Severity / priority**
-
 
 **Screenshots or logs**

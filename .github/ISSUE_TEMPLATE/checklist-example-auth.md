@@ -20,6 +20,7 @@ labels: qa-checklist, auth
   **Test data:** password = `Test1234!`
   **Expected:** red border on the email field + "Email is required"
   </details>
+
 - [ ] Empty password shows a validation error
 - [ ] Correct credentials log the user in
 - [ ] Wrong password shows an error, doesn't log in
