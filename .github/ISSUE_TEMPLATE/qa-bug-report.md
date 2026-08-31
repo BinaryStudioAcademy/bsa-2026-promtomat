@@ -9,7 +9,11 @@ labels: bug
 
 **Preconditions**
 
-**Steps to reproduce** 1. 2. 3.
+**Steps to reproduce**
+
+1. Step one
+2. Step two
+3. Step three
 
 **Expected result**
 
