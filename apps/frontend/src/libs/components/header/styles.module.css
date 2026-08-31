@@ -1,0 +1,20 @@
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12) var(--space-16);
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--space-12) var(--space-16);
+	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+}
+
+.navigation {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+	justify-content: flex-end;
+	padding: var(--space-0);
+	margin: var(--space-0);
+	list-style: none;
+}
