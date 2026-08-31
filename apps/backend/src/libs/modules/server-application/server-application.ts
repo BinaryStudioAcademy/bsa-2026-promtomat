@@ -3,6 +3,7 @@ import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { authController } from "~/modules/auth/auth.js";
 import { healthController } from "~/modules/health/health.js";
+import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
 
 import { AuthGuard } from "../auth-guard/auth-guard.js";
@@ -18,6 +19,7 @@ const apiV1 = new BaseServerApplicationApi(
 	...authController.routes,
 	...healthController.routes,
 	...userController.routes,
+	...promptController.routes,
 );
 const serverApplication = new BaseServerApplication({
 	apis: [apiV1],
