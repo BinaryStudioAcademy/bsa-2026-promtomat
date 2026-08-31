@@ -70,7 +70,7 @@ const Auth: React.FC = () => {
 						<Logo size={ControlSize.MD} />
 
 						<div className={styles["intro-copy"]}>
-							<p className={styles["headline"]} id="auth-intro-heading">
+							<p className={styles["headline"]}>
 								Find the prompt that already works.
 							</p>
 
