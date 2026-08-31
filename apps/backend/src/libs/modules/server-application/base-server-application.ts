@@ -17,6 +17,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
+import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -31,6 +32,7 @@ const SHUTDOWN_FAILURE_EXIT_CODE = 1;
 
 type Constructor = {
 	apis: ServerApplicationApi[];
+	authGuard: AuthGuard;
 	config: Config;
 	database: Database;
 	logger: Logger;
@@ -42,6 +44,8 @@ class BaseServerApplication implements ServerApplication {
 
 	private app!: FastifyInstance;
 
+	private authGuard: AuthGuard;
+
 	private config: Config;
 
 	private database: Database;
@@ -50,8 +54,16 @@ class BaseServerApplication implements ServerApplication {
 
 	private title: string;
 
-	public constructor({ apis, config, database, logger, title }: Constructor) {
+	public constructor({
+		apis,
+		authGuard,
+		config,
+		database,
+		logger,
+		title,
+	}: Constructor) {
 		this.title = title;
+		this.authGuard = authGuard;
 		this.config = config;
 		this.logger = logger;
 		this.database = database;
@@ -223,6 +235,8 @@ class BaseServerApplication implements ServerApplication {
 		await this.initServe();
 
 		await this.initMiddlewares();
+
+		await this.app.register(authGuardPlugin, { authGuard: this.authGuard });
 
 		this.initValidationCompiler();
 
