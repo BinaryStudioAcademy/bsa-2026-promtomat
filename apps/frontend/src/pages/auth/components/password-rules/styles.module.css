@@ -19,16 +19,15 @@
 	flex-shrink: 0;
 	width: 12px;
 	height: 12px;
-	fill: none;
-	stroke: var(--border-strong);
-	stroke-width: 1px;
+	background-color: var(--text-muted);
+	mask-image: url("../../../../assets/img/check.svg");
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: 12px 12px;
 }
 
 .met .icon {
-	stroke: var(--fg-success);
-	stroke-width: 1.5px;
-	stroke-linecap: round;
-	stroke-linejoin: round;
+	background-color: var(--fg-success);
 }
 
 .failed {
@@ -36,5 +35,5 @@
 }
 
 .failed .icon {
-	stroke: var(--fg-danger);
+	background-color: var(--fg-danger);
 }

@@ -1,11 +1,6 @@
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import {
-	AuthValidationMessage,
-	AuthValidationRule,
-	passwordBoundarySpacesValidationSchema,
-	passwordLengthValidationSchema,
-} from "~/modules/auth/auth.js";
 
+import { PASSWORD_RULES } from "./libs/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -14,17 +9,6 @@ type Properties = {
 	password: string;
 };
 
-const passwordRules = [
-	{
-		label: `Between ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} and ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
-		validationSchema: passwordLengthValidationSchema,
-	},
-	{
-		label: AuthValidationMessage.PASSWORD_HAS_LEADING_OR_TRAILING_SPACES,
-		validationSchema: passwordBoundarySpacesValidationSchema,
-	},
-];
-
 const PasswordRules: React.FC<Properties> = ({
 	id,
 	isSubmitted,
@@ -32,7 +16,7 @@ const PasswordRules: React.FC<Properties> = ({
 }: Properties) => {
 	return (
 		<ul className={styles["list"]} id={id}>
-			{passwordRules.map(({ label, validationSchema }) => {
+			{PASSWORD_RULES.map(({ label, validationSchema }) => {
 				const isRuleMet =
 					password !== "" && validationSchema.safeParse(password).success;
 				const hasFailed = isSubmitted && !isRuleMet;
@@ -45,17 +29,7 @@ const PasswordRules: React.FC<Properties> = ({
 						)}
 						key={label}
 					>
-						<svg
-							aria-hidden="true"
-							className={styles["icon"]}
-							viewBox="0 0 12 12"
-						>
-							{isRuleMet ? (
-								<polyline points="2.5 6.5 5 9 9.5 3.5" />
-							) : (
-								<circle cx="6" cy="6" r="5" />
-							)}
-						</svg>
+						<span className={styles["icon"]} />
 						{label}
 					</li>
 				);
