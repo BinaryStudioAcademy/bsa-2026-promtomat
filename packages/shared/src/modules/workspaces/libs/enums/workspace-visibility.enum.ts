@@ -1,6 +1,6 @@
 const WorkspaceVisibility = {
-	PRIVATE: "Private",
-	PUBLIC: "Public",
+	PRIVATE: "private",
+	PUBLIC: "public",
 } as const;
 
 export { WorkspaceVisibility };
