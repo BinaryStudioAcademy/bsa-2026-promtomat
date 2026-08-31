@@ -51,7 +51,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 	switch (error.code) {
 		case ErrorCode.FORBIDDEN: {
-			toast.error(message, { id: error.code });
+			toast.error(message, error.code);
 			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
 
 			return { error };
@@ -63,7 +63,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			await storage.drop(StorageKey.TOKEN);
 
 			if (isExpiredToken) {
-				toast.error(message, { id: error.code });
+				toast.error(message, error.code);
 			}
 
 			api.dispatch(setRedirect(AppRoute.SIGN_IN));
@@ -77,7 +77,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 		default: {
 			if (extraOptions?.suppressToast !== true) {
-				toast.error(message, { id: error.code });
+				toast.error(message, error.code);
 			}
 
 			return { error };
