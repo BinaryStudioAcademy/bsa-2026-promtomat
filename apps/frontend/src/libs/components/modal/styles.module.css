@@ -1,0 +1,66 @@
+.modal-layer {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.modal-backdrop {
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	pointer-events: auto;
+	background-color: var(--overlay-scrim);
+	border: 0;
+}
+
+.modal-backdrop-static {
+	cursor: default;
+}
+
+.modal {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+	width: 100%;
+	max-width: 400px;
+	max-height: 90%;
+	padding: var(--space-24);
+	overflow: auto;
+	color: var(--text-body);
+	pointer-events: auto;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-lg);
+}
+
+.modal-header {
+	display: flex;
+	gap: var(--space-12);
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.modal-title {
+	margin: 0;
+	font-size: var(--font-size-body-xl);
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.modal-close {
+	padding: 0;
+	font: inherit;
+	color: var(--text-muted);
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+}
+
+.modal-close:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
