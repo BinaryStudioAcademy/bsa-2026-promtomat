@@ -18,6 +18,8 @@
 .spinner {
 	box-sizing: border-box;
 	flex-shrink: 0;
+	width: var(--loader-size);
+	height: var(--loader-size);
 	border-color: currentcolor transparent currentcolor currentcolor;
 	border-style: solid;
 	border-radius: 50%;
@@ -28,19 +30,16 @@
 }
 
 .small .spinner {
-	width: var(--loader-size);
-	height: var(--loader-size);
 	border-width: var(--border-width-emphasis);
 }
 
 .medium {
+	--loader-border-width: 3px;
 	--loader-size: 24px;
 }
 
 .medium .spinner {
-	width: var(--loader-size);
-	height: var(--loader-size);
-	border-width: 3px;
+	border-width: var(--loader-border-width);
 }
 
 .large {
@@ -48,8 +47,6 @@
 }
 
 .large .spinner {
-	width: var(--loader-size);
-	height: var(--loader-size);
 	border-width: var(--border-width-thick);
 }
 

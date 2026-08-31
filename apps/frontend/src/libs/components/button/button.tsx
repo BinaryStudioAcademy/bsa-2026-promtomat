@@ -16,7 +16,7 @@ type Properties = {
 	label: string;
 	onClick?: () => void;
 	size?: ValueOf<typeof ControlSize>;
-	type?: "button" | "submit";
+	type: "button" | "submit";
 	variant?: ValueOf<typeof ButtonVariant>;
 };
 
@@ -27,7 +27,7 @@ const Button: React.FC<Properties> = ({
 	label,
 	onClick,
 	size = ControlSize.MD,
-	type = "button",
+	type,
 	variant = ButtonVariant.PRIMARY,
 }: Properties) => (
 	<button
