@@ -5,10 +5,10 @@ title: "[QA TASK] short description"
 labels: qa-task
 ---
 
-**Description**
+**Objective**
 
-**What was done**
+**Work Completed**
 
-**Related links**
+**Deliverables**
 
-**Notes**
+**Next Steps**
