@@ -12,6 +12,7 @@ const Messages: Record<ValueOf<typeof ErrorCode>, string> = {
 	[ErrorCode.NETWORK_ERROR]: ErrorMessage.NETWORK,
 	[ErrorCode.NOT_FOUND]: ErrorMessage.NOT_FOUND,
 	[ErrorCode.UNAUTHENTICATED]: ErrorMessage.SESSION_EXPIRED,
+	[ErrorCode.UNAUTHORIZED]: ErrorMessage.UNAUTHORIZED,
 	[ErrorCode.VALIDATION_FAILED]: ErrorMessage.VALIDATION,
 };
 

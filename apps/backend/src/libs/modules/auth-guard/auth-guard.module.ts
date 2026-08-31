@@ -28,7 +28,7 @@ class AuthGuard {
 
 	private throwUnauthorized(message: string): never {
 		throw new AuthError({
-			code: ErrorCode.UNAUTHENTICATED,
+			code: ErrorCode.UNAUTHORIZED,
 			message,
 			status: HTTPCode.UNAUTHORIZED,
 		});
