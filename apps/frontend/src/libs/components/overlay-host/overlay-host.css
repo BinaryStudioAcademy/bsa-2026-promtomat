@@ -5,9 +5,19 @@
 	pointer-events: none;
 }
 
-.overlay-host-blocking,
+.overlay-host-blocking {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
 .overlay-host-notifications {
 	position: absolute;
 	inset: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-end;
+	padding: 16px;
 	pointer-events: none;
 }

@@ -1,0 +1,6 @@
+.notification {
+	max-width: 360px;
+	padding: 12px 16px;
+	pointer-events: none;
+	background-color: #ffffff;
+}
