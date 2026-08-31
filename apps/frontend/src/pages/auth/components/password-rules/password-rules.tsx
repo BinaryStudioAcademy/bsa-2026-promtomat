@@ -1,3 +1,5 @@
+import { Icon } from "~/libs/components/icon/icon.js";
+import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { PASSWORD_RULES } from "./libs/constants.js";
@@ -29,7 +31,7 @@ const PasswordRules: React.FC<Properties> = ({
 						)}
 						key={label}
 					>
-						<span className={styles["icon"]} />
+						<Icon className={styles["icon"]} iconName={IconName.CHECK} />
 						{label}
 					</li>
 				);

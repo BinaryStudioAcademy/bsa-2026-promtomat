@@ -19,21 +19,12 @@
 	flex-shrink: 0;
 	width: 12px;
 	height: 12px;
-	background-color: var(--text-muted);
-	mask-image: url("../../../../assets/img/check.svg");
-	mask-repeat: no-repeat;
-	mask-position: center;
-	mask-size: 12px 12px;
 }
 
 .met .icon {
-	background-color: var(--fg-success);
+	color: var(--fg-success);
 }
 
 .failed {
 	color: var(--fg-danger);
-}
-
-.failed .icon {
-	background-color: var(--fg-danger);
 }

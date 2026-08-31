@@ -6,7 +6,8 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { ControlSize, InputType } from "~/libs/enums/enums.js";
+import { Icon } from "~/libs/components/icon/icon.js";
+import { ControlSize, IconName, InputType } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -94,17 +95,10 @@ const Input = <T extends FieldValues>({
 						onClick={handleVisibilityToggle}
 						type="button"
 					>
-						<svg
-							aria-hidden="true"
-							className={getValidClasses(
-								styles["toggle-icon"],
-								!isPasswordVisible && styles["toggle-icon-filled"],
-							)}
-							viewBox="0 0 16 16"
-						>
-							<path d="M1 8s2.5-4.5 7-4.5 7 4.5 7 4.5-2.5 4.5-7 4.5S1 8 1 8Z" />
-							<circle className={styles["pupil"]} cx="8" cy="8" r="2" />
-						</svg>
+						<Icon
+							className={styles["toggle-icon"]}
+							iconName={isPasswordVisible ? IconName.EYE : IconName.EYE_FILLED}
+						/>
 					</button>
 				)}
 			</div>

@@ -65,17 +65,14 @@ const Auth: React.FC = () => {
 	return (
 		<main className={styles["page"]}>
 			<div className={getValidClasses("page-container", styles["container"])}>
-				<section
-					aria-labelledby="auth-intro-heading"
-					className={styles["panel"]}
-				>
+				<div className={styles["panel"]}>
 					<div className={styles["intro"]}>
 						<Logo size={ControlSize.MD} />
 
 						<div className={styles["intro-copy"]}>
-							<h2 className={styles["headline"]} id="auth-intro-heading">
+							<p className={styles["headline"]} id="auth-intro-heading">
 								Find the prompt that already works.
-							</h2>
+							</p>
 
 							<p className={styles["tablet-description"]}>
 								Search, score and reuse prompts across your AI coding tools.
@@ -88,7 +85,7 @@ const Auth: React.FC = () => {
 						</div>
 						<PromptShowcase />
 					</div>
-				</section>
+				</div>
 				<div className={styles["form-side"]}>
 					<div className={styles["card"]}>
 						<div className={styles["mobile-logo"]}>

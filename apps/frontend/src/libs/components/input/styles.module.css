@@ -105,18 +105,4 @@
 .toggle-icon {
 	width: 16px;
 	height: 16px;
-	fill: none;
-	stroke: currentcolor;
-	stroke-width: 1.25px;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-}
-
-.toggle-icon-filled {
-	fill: currentcolor;
-	stroke: none;
-}
-
-.toggle-icon-filled .pupil {
-	fill: var(--surface-inset);
 }
