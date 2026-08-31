@@ -5,10 +5,13 @@ import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute } from "~/libs/enums/enums.js";
+import { useRedirect } from "~/libs/hooks/use-redirect/use-redirect.hook.js";
 import { useGetUsersQuery } from "~/modules/users/users-api.js";
 
 const App: React.FC = () => {
 	const { pathname } = useLocation();
+
+	useRedirect();
 
 	const isRoot = pathname === AppRoute.ROOT;
 

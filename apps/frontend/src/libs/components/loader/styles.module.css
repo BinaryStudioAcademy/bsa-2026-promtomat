@@ -42,11 +42,11 @@
 }
 
 .primary {
-	color: #2563eb;
+	color: var(--text-accent);
 }
 
 .neutral {
-	color: #6b7280;
+	color: var(--text-muted);
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -6,7 +6,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ValidationError } from "~/libs/exceptions/exceptions.js";
+import {
+	AuthError,
+	type ValidationError,
+} from "~/libs/exceptions/exceptions.js";
 import { type Config } from "~/libs/modules/config/config.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
@@ -17,6 +20,7 @@ import {
 	type ValidationSchema,
 } from "~/libs/types/types.js";
 
+import { AuthGuard, authGuardPlugin } from "../auth-guard/auth-guard.js";
 import {
 	type ServerApplication,
 	type ServerApplicationApi,
@@ -31,6 +35,7 @@ const SHUTDOWN_FAILURE_EXIT_CODE = 1;
 
 type Constructor = {
 	apis: ServerApplicationApi[];
+	authGuard: AuthGuard;
 	config: Config;
 	database: Database;
 	logger: Logger;
@@ -42,6 +47,8 @@ class BaseServerApplication implements ServerApplication {
 
 	private app!: FastifyInstance;
 
+	private authGuard: AuthGuard;
+
 	private config: Config;
 
 	private database: Database;
@@ -50,8 +57,16 @@ class BaseServerApplication implements ServerApplication {
 
 	private title: string;
 
-	public constructor({ apis, config, database, logger, title }: Constructor) {
+	public constructor({
+		apis,
+		authGuard,
+		config,
+		database,
+		logger,
+		title,
+	}: Constructor) {
 		this.title = title;
+		this.authGuard = authGuard;
 		this.config = config;
 		this.logger = logger;
 		this.database = database;
@@ -92,6 +107,19 @@ class BaseServerApplication implements ServerApplication {
 					};
 
 					return reply.status(HTTPCode.UNPROCESSED_ENTITY).send(response);
+				}
+
+				if (error instanceof AuthError) {
+					this.logger.error(
+						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
+					);
+
+					const response: ServerCommonErrorResponse = {
+						errorType: ServerErrorType.COMMON,
+						message: error.message,
+					};
+
+					return reply.status(error.status).send(response);
 				}
 
 				if (error instanceof HTTPError) {
@@ -145,8 +173,8 @@ class BaseServerApplication implements ServerApplication {
 
 	private initValidationCompiler(): void {
 		this.app.setValidatorCompiler<ValidationSchema>(({ schema }) => {
-			return <T, R = ReturnType<ValidationSchema["parse"]>>(data: T): R => {
-				return schema.parse(data) as R;
+			return <T>(data: T): { value: ReturnType<ValidationSchema["parse"]> } => {
+				return { value: schema.parse(data) };
 			};
 		});
 	}
@@ -224,6 +252,8 @@ class BaseServerApplication implements ServerApplication {
 
 		await this.initMiddlewares();
 
+		await this.app.register(authGuardPlugin, { authGuard: this.authGuard });
+
 		this.initValidationCompiler();
 
 		this.initErrorHandler();
@@ -273,7 +303,7 @@ class BaseServerApplication implements ServerApplication {
 				});
 
 				await this.app.register(swaggerUi, {
-					routePrefix: `${api.version}/documentation`,
+					routePrefix: `/${api.version}/documentation`,
 				});
 			}),
 		);

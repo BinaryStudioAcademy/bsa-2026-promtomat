@@ -4,7 +4,11 @@ export {
 	ContentType,
 	ServerErrorType,
 } from "./libs/enums/enums.js";
-export { HTTPError, ValidationError } from "./libs/exceptions/exceptions.js";
+export {
+	AuthError,
+	HTTPError,
+	ValidationError,
+} from "./libs/exceptions/exceptions.js";
 export { configureString } from "./libs/helpers/helpers.js";
 export { type Config } from "./libs/modules/config/config.js";
 export {
@@ -24,14 +28,19 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export {
+	type SignInRequestDto,
+	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	ExceptionMessage,
+	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type UserDto,
 	type UserGetAllResponseDto,
+	UserErrorMessage,
 	UsersApiPath,
 } from "./modules/users/users.js";
