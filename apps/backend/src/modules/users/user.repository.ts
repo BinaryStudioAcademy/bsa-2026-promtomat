@@ -9,17 +9,9 @@ class UserRepository {
 	}
 
 	public async create(entity: UserEntity): Promise<UserEntity> {
-		const { email, nickname, passwordHash, passwordSalt } =
-			entity.toNewObject();
-
 		const user = await this.userModel
 			.query()
-			.insert({
-				email,
-				nickname,
-				passwordHash,
-				passwordSalt,
-			})
+			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
 
@@ -34,6 +26,20 @@ class UserRepository {
 
 	public async findByEmail(email: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ email }).execute();
+
+		return user ? UserEntity.initialize(user) : null;
+	}
+
+	public async findByEmailOrNickname(
+		email: string,
+		nickname: string,
+	): Promise<null | UserEntity> {
+		const user = await this.userModel
+			.query()
+			.where({ email })
+			.orWhere({ nickname })
+			.first()
+			.execute();
 
 		return user ? UserEntity.initialize(user) : null;
 	}

@@ -11,6 +11,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
 	label: string;
+	maxLength?: number;
 	name: FieldPath<T>;
 	placeholder?: string;
 	type?: "email" | "text";
@@ -20,6 +21,7 @@ const Input = <T extends FieldValues>({
 	control,
 	errors,
 	label,
+	maxLength,
 	name,
 	placeholder = "",
 	type = "text",
@@ -32,7 +34,12 @@ const Input = <T extends FieldValues>({
 	return (
 		<label>
 			<span>{label}</span>
-			<input {...field} placeholder={placeholder} type={type} />
+			<input
+				{...field}
+				maxLength={maxLength}
+				placeholder={placeholder}
+				type={type}
+			/>
 			{hasError && <span>{error as string}</span>}
 		</label>
 	);

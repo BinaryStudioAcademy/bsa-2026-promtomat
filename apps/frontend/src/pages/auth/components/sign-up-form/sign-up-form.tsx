@@ -1,3 +1,4 @@
+import { AuthValidationRule } from "@promptomat/shared/src/modules/auth/libs/enums/auth-validation-rule.enum.js";
 import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -46,8 +47,9 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 						control={control}
 						errors={errors}
 						label="Nickname"
+						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
-						placeholder="Choose a nickname..."
+						placeholder="Enter your nickname"
 						type="text"
 					/>
 				</p>

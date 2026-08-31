@@ -2,7 +2,7 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
-import { type UserRepository } from "~/modules/users/user.repository.js";
+import { UserRepository } from "~/modules/users/user.repository.js";
 
 import {
 	type UserDto,
@@ -20,17 +20,16 @@ class UserService {
 	}
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
-		const existingUser = await this.userRepository.findByEmail(payload.email);
-		const existingUserByNickname = await this.userRepository.findByNickname(
+		const existingUser = await this.userRepository.findByEmailOrNickname(
+			payload.email,
 			payload.nickname,
 		);
 
 		if (existingUser) {
-			throw AuthError.emailAlreadyExists();
-		}
-
-		if (existingUserByNickname) {
-			throw AuthError.nicknameAlreadyTaken();
+			if (existingUser.toNewObject().email === payload.email) {
+				throw AuthError.emailAlreadyExists();
+			}
+			throw AuthError.nicknameAlreadyExists();
 		}
 
 		const { hash, salt } = await this.hashing.hash(payload.password);
