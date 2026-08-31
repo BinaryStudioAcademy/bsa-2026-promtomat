@@ -1,4 +1,4 @@
-import "./notification.css";
+import styles from "./styles.module.css";
 
 type Properties = {
 	message: string;
@@ -9,7 +9,7 @@ const Notification = ({ message }: Properties) => {
 		<p
 			aria-atomic="true"
 			aria-live="polite"
-			className="notification"
+			className={styles["notification"]}
 			role="status"
 		>
 			{message}

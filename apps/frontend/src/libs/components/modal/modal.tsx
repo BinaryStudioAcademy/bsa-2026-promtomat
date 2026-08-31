@@ -8,6 +8,7 @@ import {
 import { createPortal } from "react-dom";
 
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
 	FIRST_INDEX,
@@ -16,7 +17,7 @@ import {
 } from "./libs/constants/constants.js";
 import { KeyboardKey, ModalLabel } from "./libs/enums/enums.js";
 import { getFocusableElements } from "./libs/helpers/get-focusable-elements.helper.js";
-import "./modal.css";
+import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
@@ -140,32 +141,37 @@ const Modal = ({
 	}
 
 	return createPortal(
-		<div className="modal-layer" inert={!isTopBlocking}>
+		<div className={styles["modal-layer"]} inert={!isTopBlocking}>
 			{isDismissible ? (
 				<button
 					aria-label={ModalLabel.CLOSE}
-					className="modal-backdrop"
+					className={styles["modal-backdrop"]}
 					onClick={onClose}
 					type="button"
 				/>
 			) : (
-				<div className="modal-backdrop modal-backdrop-static" />
+				<div
+					className={getValidClasses(
+						styles["modal-backdrop"],
+						styles["modal-backdrop-static"],
+					)}
+				/>
 			)}
 			<div
 				aria-labelledby={titleId}
 				aria-modal="true"
-				className="modal"
+				className={styles["modal"]}
 				ref={dialogElementReference}
 				role={role}
 				tabIndex={ModalTabIndex.CONTAINER}
 			>
-				<div className="modal-header">
-					<h2 className="modal-title" id={titleId}>
+				<div className={styles["modal-header"]}>
+					<h2 className={styles["modal-title"]} id={titleId}>
 						{title}
 					</h2>
 					{isDismissible && (
 						<button
-							className="modal-close"
+							className={styles["modal-close"]}
 							onClick={onClose}
 							type="button"
 						>

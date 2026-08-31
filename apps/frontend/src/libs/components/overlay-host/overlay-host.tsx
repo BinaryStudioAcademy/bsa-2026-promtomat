@@ -16,7 +16,7 @@ import {
 import { lockPage } from "./libs/helpers/lock-page.helper.js";
 import { type NotificationItem } from "./libs/types/types.js";
 import { overlayHostContext } from "./overlay-host.context.js";
-import "./overlay-host.css";
+import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
@@ -116,9 +116,12 @@ const OverlayHost = ({ children }: Properties) => {
 		<overlayHostContext.Provider value={overlayHost}>
 			{children}
 			{createPortal(
-				<div className="overlay-host">
-					<div className="overlay-host-blocking" ref={setBlockingElement} />
-					<div className="overlay-host-notifications">
+				<div className={styles["overlay-host"]}>
+					<div
+						className={styles["overlay-host-blocking"]}
+						ref={setBlockingElement}
+					/>
+					<div className={styles["overlay-host-notifications"]}>
 						{notifications.map((item) => (
 							<Notification key={item.id} message={item.message} />
 						))}
