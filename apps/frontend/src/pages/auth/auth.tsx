@@ -32,10 +32,6 @@ const Auth: React.FC = () => {
 		}
 	}, [pathname, reset]);
 
-	const handleSignInSubmit = useCallback((): void => {
-		// handle sign in
-	}, []);
-
 	const handleSignUpSubmit = useCallback(
 		(payload: SignUpRequestDto): void => {
 			void signUp(payload);
@@ -63,8 +59,7 @@ const Auth: React.FC = () => {
 				/>
 			);
 		}
-
-		return <SignInForm onSubmit={handleSignInSubmit} />;
+		return <SignInForm />;
 	};
 
 	return (
