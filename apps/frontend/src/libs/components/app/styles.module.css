@@ -1,0 +1,15 @@
+.header {
+	display: flex;
+	gap: 24px;
+	align-items: center;
+	padding: 12px 24px;
+	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+}
+
+.nav {
+	display: flex;
+	gap: 16px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
