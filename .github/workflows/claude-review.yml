@@ -15,8 +15,14 @@ on:
     types:
       - created
 
+# The suffix keeps the bot out of the humans' group. Concurrency is evaluated
+# before the job-level `if`, so a comment the bot posts itself would otherwise
+# enter this group and cancel the very run that posted it - the job condition
+# rejects bot comments, but only after the cancellation has already happened.
+# Bot-triggered runs get a group of their own and cancel nothing; human ones
+# still supersede each other, so repeated mentions do not stack up reviews.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event.comment.user.type == 'Bot' && github.run_id || 'human' }}
   cancel-in-progress: true
 
 jobs:
