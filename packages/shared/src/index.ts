@@ -44,3 +44,12 @@ export {
 	UserErrorMessage,
 	UsersApiPath,
 } from "./modules/users/users.js";
+export {
+	type WorkspaceCreateRequestDto,
+	type WorkspaceDto,
+	type WorkspaceGetAllResponseDto,
+	workspaceCreationValidationSchema,
+	WorkspacesApiPath,
+	WorkspacesErrorMessage,
+	WorkspaceVisibility,
+} from "./modules/workspaces/workspaces.js";
