@@ -123,6 +123,14 @@ const unicornConfig = {
 	},
 	rules: {
 		...unicorn.configs.recommended.rules,
+		"unicorn/consistent-boolean-name": [
+			"error",
+			{
+				prefixes: {
+					check: true,
+				},
+			},
+		],
 		// Class member order is already governed by the project's explicit
 		// perfectionist/sort-classes groups configuration below; the two
 		// rules disagree on ordering, so defer to perfectionist.

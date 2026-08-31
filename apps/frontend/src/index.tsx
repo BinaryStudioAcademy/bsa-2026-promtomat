@@ -9,6 +9,9 @@ import { RouterProvider } from "~/libs/components/router-provider/router-provide
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
+import { ErrorPage } from "~/pages/error/error.js";
+import { NoAccessPage } from "~/pages/no-access/no-access.js";
+import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -33,8 +36,21 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								element: <Auth />,
 								path: AppRoute.SIGN_UP,
 							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<NoAccessPage />
+									</PrivateRoute>
+								),
+								path: AppRoute.NO_ACCESS,
+							},
+							{
+								element: <NotFoundPage />,
+								path: AppRoute.ANY,
+							},
 						],
 						element: <App />,
+						errorElement: <ErrorPage />,
 						path: AppRoute.ROOT,
 					},
 				]}
