@@ -15,11 +15,9 @@ const App: React.FC = () => {
 
 	const isRoot = pathname === AppRoute.ROOT;
 
-	const {
-		data: users,
-		error,
-		isLoading,
-	} = useGetUsersQuery(undefined, { skip: !isRoot });
+	const { data: users, isLoading } = useGetUsersQuery(undefined, {
+		skip: !isRoot,
+	});
 
 	return (
 		<>
@@ -43,7 +41,6 @@ const App: React.FC = () => {
 				<>
 					<h2>Users:</h2>
 					{isLoading && <p>Loading...</p>}
-					{error && <p>{error.message}</p>}
 					<ul>
 						{users?.items.map((user) => (
 							<li key={user.id}>{user.email}</li>

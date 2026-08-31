@@ -8,7 +8,7 @@ import {
 
 import { type ServerError } from "../types/server-error.type.js";
 
-const UNKNOWN_ERROR_MESSAGE = "Something went wrong. Please try again.";
+const NO_HTTP_STATUS = 0;
 
 const isServerErrorResponse = (
 	payload: unknown,
@@ -17,7 +17,8 @@ const isServerErrorResponse = (
 		typeof payload !== "object" ||
 		payload === null ||
 		!("code" in payload) ||
-		!("message" in payload)
+		!("message" in payload) ||
+		typeof (payload as { message: unknown }).message !== "string"
 	) {
 		return false;
 	}
@@ -38,32 +39,44 @@ const isValidationErrorResponse = (
 	return response.code === ErrorCode.VALIDATION_FAILED;
 };
 
+const toHttpStatus = (error: FetchBaseQueryError): number => {
+	if (typeof error.status === "number") {
+		return error.status;
+	}
+
+	if (error.status === "PARSING_ERROR") {
+		return error.originalStatus;
+	}
+
+	return NO_HTTP_STATUS;
+};
+
 const toServerError = (error: FetchBaseQueryError): ServerError => {
+	if (error.status === "FETCH_ERROR" || error.status === "TIMEOUT_ERROR") {
+		return { code: ErrorCode.NETWORK_ERROR, status: NO_HTTP_STATUS };
+	}
+
+	const status = toHttpStatus(error);
+
 	if (isServerErrorResponse(error.data)) {
-		if (isValidationErrorResponse(error.data)) {
+		const { data } = error;
+
+		if (isValidationErrorResponse(data)) {
 			return {
 				code: ErrorCode.VALIDATION_FAILED,
-				details: error.data.details,
-				message: error.data.message,
-				status: error.status,
+				details: data.details,
+				status,
 			};
 		}
 
-		return {
-			code: error.data.code,
-			message: error.data.message,
-			status: error.status,
-		};
+		const { code } = data;
+
+		if (code !== ErrorCode.VALIDATION_FAILED) {
+			return { code, status };
+		}
 	}
 
-	return {
-		code: ErrorCode.INTERNAL_SERVER_ERROR,
-		message:
-			"error" in error && typeof error.error === "string"
-				? error.error
-				: UNKNOWN_ERROR_MESSAGE,
-		status: error.status,
-	};
+	return { code: ErrorCode.INTERNAL_SERVER_ERROR, status };
 };
 
 export { toServerError };

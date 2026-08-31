@@ -6,6 +6,7 @@ import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
 import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
+import { ToastProvider } from "~/libs/components/toast-provider/toast-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
@@ -16,6 +17,7 @@ import { NotFoundPage } from "~/pages/not-found/not-found.js";
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
 		<StoreProvider store={store}>
+			<ToastProvider />
 			<RouterProvider
 				routes={[
 					{

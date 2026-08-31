@@ -6,23 +6,32 @@ import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
-import {
-	type SignInRequestDto,
-	signInValidationSchema,
-} from "~/modules/auth/auth.js";
+import { type SignInRequestDto } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
 import { FormAlert } from "../form-alert/form-alert.js";
-import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
+import { DEFAULT_SIGN_IN_PAYLOAD, SIGN_IN_FIELDS } from "./libs/constants.js";
 
 const SignInForm: React.FC = () => {
-	const [signIn, { data, isError, isLoading }] = useSignInMutation();
+	const [signIn, { data, error, isError, isLoading }] = useSignInMutation();
 
-	const { control, handleSubmit } = useAppForm<SignInRequestDto>({
-		defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
-		validationSchema: signInValidationSchema,
+	const { clearErrors, control, handleSubmit, setError } =
+		useAppForm<SignInRequestDto>({
+			defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
+		});
+
+	const { hasFieldErrors } = useServerFormErrors({
+		clearErrors,
+		error,
+		fields: SIGN_IN_FIELDS,
+		setError,
 	});
+
+	const formErrorMessage =
+		isError && !hasFieldErrors ? getErrorMessage(error) : null;
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -41,11 +50,7 @@ const SignInForm: React.FC = () => {
 		<>
 			<h1 className={styles["heading"]}>Sign In</h1>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				{isError && (
-					<FormAlert
-						message={"Coundn't Sign In: email or password is not valid"}
-					/>
-				)}
+				{formErrorMessage !== null && <FormAlert message={formErrorMessage} />}
 				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}

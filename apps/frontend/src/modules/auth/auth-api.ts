@@ -20,6 +20,7 @@ const authApi = baseApi
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
 			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
+				extraOptions: { suppressToast: true },
 				async onQueryStarted(_, { dispatch, queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
