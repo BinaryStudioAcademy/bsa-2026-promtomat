@@ -25,7 +25,7 @@ const Auth: React.FC = () => {
 		[signUp],
 	);
 
-	if (isLoading || isAuthLoading) {
+	if (isAuthLoading) {
 		return <p>Loading...</p>;
 	}
 
