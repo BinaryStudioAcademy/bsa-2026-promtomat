@@ -2,6 +2,12 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
+		// The embedding contract (status, typed errors, vector types) is exported
+		// ahead of its consumers: prompt embeddings (#76) and search (#77).
+		"apps/backend/src/libs/modules/embedding/embedding.ts": [
+			"exports",
+			"types",
+		],
 		// `isValidationError` is exported ahead of its consumer: routing server
 		// validation details onto form fields lands in a follow-up change.
 		"apps/frontend/src/libs/modules/api/libs/helpers/is-server-error.helper.ts":

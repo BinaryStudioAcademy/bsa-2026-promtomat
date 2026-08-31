@@ -21,6 +21,7 @@
 		"@fastify/static": "10.1.2",
 		"@fastify/swagger": "9.8.1",
 		"@fastify/swagger-ui": "6.1.1",
+		"@huggingface/transformers": "3.7.6",
 		"@promptomat/shared": "workspace:*",
 		"convict": "6.2.5",
 		"dotenv": "17.4.2",
