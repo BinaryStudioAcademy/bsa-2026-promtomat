@@ -36,6 +36,7 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 		const error = toServerError(result.error);
 
 		if (error.status === HTTPCode.UNAUTHORIZED) {
+			await storage.drop(StorageKey.TOKEN);
 			// TODO task #22: redirect to sign-in after clearing the session,
 			// plus the remaining status codes.
 		}

@@ -20,7 +20,6 @@ const authApi = baseApi
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
 			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
-				invalidatesTags: [UsersApiTag.USER],
 				async onQueryStarted(_, { dispatch, queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
