@@ -19,7 +19,7 @@ import { DEFAULT_SIGN_IN_PAYLOAD } from "./libs/constants.js";
 const SignInForm: React.FC = () => {
 	const [signIn, { data, isError, isLoading }] = useSignInMutation();
 
-	const { control, errors, handleSubmit } = useAppForm<SignInRequestDto>({
+	const { control, handleSubmit } = useAppForm<SignInRequestDto>({
 		defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
 		validationSchema: signInValidationSchema,
 	});
@@ -49,7 +49,6 @@ const SignInForm: React.FC = () => {
 				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}
-						errors={errors}
 						label="Email"
 						name="email"
 						placeholder="Enter your email"
@@ -57,7 +56,6 @@ const SignInForm: React.FC = () => {
 					/>
 					<Input
 						control={control}
-						errors={errors}
 						label="Password"
 						name="password"
 						placeholder="Enter your password"

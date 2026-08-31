@@ -16,7 +16,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	isDisabled?: boolean;
 	label: string;
-	name: Extract<keyof T, string>;
+	name: FieldPath<T>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
