@@ -1,6 +1,6 @@
 .notification {
 	max-width: 360px;
-	padding: 16px;
+	padding: var(--space-16);
 	margin: 0;
 	font-size: var(--font-size-body-base);
 	line-height: 1.5;

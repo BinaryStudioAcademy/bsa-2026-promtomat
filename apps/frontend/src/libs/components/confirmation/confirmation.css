@@ -1,6 +1,6 @@
 .confirmation-actions {
 	display: flex;
-	gap: 8px;
+	gap: var(--space-8);
 	justify-content: flex-end;
-	margin-top: 16px;
+	margin-top: var(--space-16);
 }
