@@ -115,6 +115,7 @@
 .rules {
 	display: grid;
 	grid-template-rows: 0fr;
+	min-height: 22px;
 	transition: grid-template-rows var(--motion-duration-med)
 		var(--motion-ease-standard);
 }

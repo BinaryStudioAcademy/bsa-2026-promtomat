@@ -19,6 +19,7 @@ type Properties<T extends FieldValues> = {
 	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
+	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
@@ -31,9 +32,10 @@ const Input = <T extends FieldValues>({
 	isDisabled = false,
 	label,
 	name,
+	onFocus,
 	placeholder = "",
 	size = ControlSize.MD,
-	type = "text",
+	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
 	const {
 		field,
@@ -41,7 +43,7 @@ const Input = <T extends FieldValues>({
 	} = useController({
 		control,
 		disabled: isDisabled,
-		name: name,
+		name,
 	});
 
 	const errorMessageId = useId();
@@ -79,6 +81,7 @@ const Input = <T extends FieldValues>({
 						isPasswordField && styles["with-toggle"],
 					)}
 					id={inputId}
+					onFocus={onFocus}
 					placeholder={placeholder}
 					type={inputType}
 				/>
@@ -105,8 +108,10 @@ const Input = <T extends FieldValues>({
 					</button>
 				)}
 			</div>
-			{descriptionId === undefined && (
-				<span className={styles["message"]} id={errorMessageId}></span>
+			{!descriptionId && (
+				<span className={styles["message"]} id={errorMessageId}>
+					{errorMessage}
+				</span>
 			)}
 		</div>
 	);

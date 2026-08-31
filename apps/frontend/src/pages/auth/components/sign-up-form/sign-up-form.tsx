@@ -15,12 +15,8 @@ import {
 import styles from "../../styles.module.css";
 import { FormAlert } from "../form-alert/form-alert.js";
 import { PasswordRules } from "../password-rules/password-rules.js";
-import {
-	DEFAULT_SIGN_UP_PAYLOAD,
-	SIGN_UP_SUBMIT_LABEL,
-	SIGN_UP_SUBMITTING_LABEL,
-	SIGN_UP_SUCCESS_MESSAGE,
-} from "./libs/constants.js";
+import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
+import { SignUpFormMessage } from "./libs/enums/enums.js";
 
 type Properties = {
 	errorMessage: null | string;
@@ -72,7 +68,7 @@ const SignUpForm: React.FC<Properties> = ({
 			<h1 className={styles["heading"]}>Sign up</h1>
 			{errorMessage && <FormAlert message={errorMessage} />}
 			{isSuccess ? (
-				<FormAlert message={SIGN_UP_SUCCESS_MESSAGE} variant="success" />
+				<FormAlert message={SignUpFormMessage.SUCCESS} variant="success" />
 			) : null}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
@@ -83,15 +79,13 @@ const SignUpForm: React.FC<Properties> = ({
 						placeholder="Enter your email"
 						type="email"
 					/>
-					<div
-						className={styles["password-field"]}
-						onFocus={handlePasswordFocus}
-					>
+					<div className={styles["password-field"]}>
 						<Input
 							control={control}
 							descriptionId={passwordRulesId}
 							label="Password"
 							name="password"
+							onFocus={handlePasswordFocus}
 							placeholder="Enter your password"
 							type="password"
 						/>
@@ -114,7 +108,9 @@ const SignUpForm: React.FC<Properties> = ({
 				</div>
 				<Button
 					isDisabled={isDisabled}
-					label={isLoading ? SIGN_UP_SUBMITTING_LABEL : SIGN_UP_SUBMIT_LABEL}
+					label={
+						isLoading ? SignUpFormMessage.SUBMITTING : SignUpFormMessage.SUBMIT
+					}
 					size={ControlSize.LG}
 					type="submit"
 				/>
