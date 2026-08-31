@@ -1,4 +1,6 @@
+import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
+import { ButtonVariant } from "~/libs/enums/enums.js";
 
 import { ConfirmationLabel } from "./libs/enums/enums.js";
 import "./confirmation.css";
@@ -32,12 +34,16 @@ const Confirmation = ({
 		>
 			{children}
 			<div className="confirmation-actions">
-				<button onClick={onCancel} type="button">
-					{cancelLabel}
-				</button>
-				<button onClick={onConfirm} type="button">
-					{confirmLabel}
-				</button>
+				<Button
+					label={cancelLabel}
+					onClick={onCancel}
+					variant={ButtonVariant.SECONDARY}
+				/>
+				<Button
+					label={confirmLabel}
+					onClick={onConfirm}
+					variant={ButtonVariant.PRIMARY}
+				/>
 			</div>
 		</Modal>
 	);

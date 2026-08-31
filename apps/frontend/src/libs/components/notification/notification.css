@@ -1,6 +1,12 @@
 .notification {
 	max-width: 360px;
-	padding: 12px 16px;
+	padding: 16px;
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	line-height: 1.5;
+	color: var(--text-muted);
 	pointer-events: none;
-	background-color: #ffffff;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-lg);
 }

@@ -159,12 +159,20 @@ const Modal = ({
 				role={role}
 				tabIndex={ModalTabIndex.CONTAINER}
 			>
-				<h2 id={titleId}>{title}</h2>
-				{isDismissible && (
-					<button onClick={onClose} type="button">
-						Close
-					</button>
-				)}
+				<div className="modal-header">
+					<h2 className="modal-title" id={titleId}>
+						{title}
+					</h2>
+					{isDismissible && (
+						<button
+							className="modal-close"
+							onClick={onClose}
+							type="button"
+						>
+							Close
+						</button>
+					)}
+				</div>
 				{children}
 			</div>
 		</div>,
