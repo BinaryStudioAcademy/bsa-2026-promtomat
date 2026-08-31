@@ -1,7 +1,10 @@
 import { type FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
-import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ServerErrorResponse } from "~/libs/types/types.js";
+import { ErrorCode } from "~/libs/enums/enums.js";
+import {
+	type ServerErrorResponse,
+	type ServerValidationErrorResponse,
+} from "~/libs/types/types.js";
 
 import { type ServerError } from "../types/server-error.type.js";
 
@@ -13,44 +16,52 @@ const isServerErrorResponse = (
 	if (
 		typeof payload !== "object" ||
 		payload === null ||
-		!("errorType" in payload) ||
+		!("code" in payload) ||
 		!("message" in payload)
 	) {
 		return false;
 	}
 
-	// A validation response without a well-formed `details` array is treated as
-	// a common error, so the narrowed type never lies about `details`.
-	if (payload.errorType === ServerErrorType.VALIDATION) {
-		return "details" in payload && Array.isArray(payload.details);
+	if ((payload as ServerErrorResponse).code === ErrorCode.VALIDATION_FAILED) {
+		return (
+			"details" in payload &&
+			Array.isArray((payload as ServerValidationErrorResponse).details)
+		);
 	}
 
-	return payload.errorType === ServerErrorType.COMMON;
+	return true;
+};
+
+const isValidationErrorResponse = (
+	response: ServerErrorResponse,
+): response is ServerValidationErrorResponse => {
+	return response.code === ErrorCode.VALIDATION_FAILED;
 };
 
 const toServerError = (error: FetchBaseQueryError): ServerError => {
 	if (isServerErrorResponse(error.data)) {
-		const { data } = error;
-
-		if (data.errorType === ServerErrorType.VALIDATION) {
+		if (isValidationErrorResponse(error.data)) {
 			return {
-				details: data.details,
-				errorType: ServerErrorType.VALIDATION,
-				message: data.message,
+				code: ErrorCode.VALIDATION_FAILED,
+				details: error.data.details,
+				message: error.data.message,
 				status: error.status,
 			};
 		}
 
 		return {
-			errorType: ServerErrorType.COMMON,
-			message: data.message,
+			code: error.data.code,
+			message: error.data.message,
 			status: error.status,
 		};
 	}
 
 	return {
-		errorType: ServerErrorType.COMMON,
-		message: "error" in error ? error.error : UNKNOWN_ERROR_MESSAGE,
+		code: ErrorCode.INTERNAL_SERVER_ERROR,
+		message:
+			"error" in error && typeof error.error === "string"
+				? error.error
+				: UNKNOWN_ERROR_MESSAGE,
 		status: error.status,
 	};
 };
