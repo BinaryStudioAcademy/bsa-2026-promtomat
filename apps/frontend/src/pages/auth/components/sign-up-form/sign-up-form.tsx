@@ -34,14 +34,14 @@ const SignUpForm: React.FC<Properties> = ({
 	return (
 		<>
 			<h3>Sign Up</h3>
-			<form onSubmit={handleFormSubmit}>
+			<form noValidate onSubmit={handleFormSubmit}>
 				<p>
 					<Input
 						control={control}
 						label="Email"
 						name="email"
 						placeholder="Enter your email"
-						type="text"
+						type="email"
 					/>
 				</p>
 				<p>
