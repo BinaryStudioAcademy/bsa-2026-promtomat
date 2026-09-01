@@ -24,10 +24,10 @@
 	line-height: 0;
 	color: transparent;
 	white-space: normal;
+	cursor: default;
 	outline: none;
 	background-color: var(--overlay-scrim);
 	border: 0;
-	cursor: default;
 	border-radius: 0;
 	transition: none;
 }
