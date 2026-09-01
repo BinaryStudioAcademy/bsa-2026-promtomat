@@ -8,15 +8,24 @@ body {
 	min-width: 320px;
 	min-height: 100vh;
 	margin: 0;
-	font-family: Arial, sans-serif;
+	font-family: var(--font-family-base);
 	font-size: 14px;
 	line-height: 1.5;
+	color: var(--text-body);
+	background-color: var(--surface-canvas);
 }
 
 #root {
 	display: flex;
 	flex-grow: 1;
 	flex-direction: column;
+}
+
+.page-container {
+	width: 100%;
+	max-width: var(--layout-page-max-width);
+	padding-inline: 16px;
+	margin-inline: auto;
 }
 
 .visually-hidden {
@@ -29,4 +38,16 @@ body {
 	white-space: nowrap;
 	border: 0;
 	clip-path: inset(100%);
+}
+
+@media (width >= 768px) {
+	.page-container {
+		padding-inline: 24px;
+	}
+}
+
+@media (width >= 1440px) {
+	.page-container {
+		padding-inline: 64px;
+	}
 }

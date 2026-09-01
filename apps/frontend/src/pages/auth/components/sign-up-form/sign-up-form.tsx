@@ -1,7 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
+import { useFormState, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { Link } from "~/libs/components/link/link.js";
+import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
 	AuthValidationRule,
@@ -9,17 +13,43 @@ import {
 	signUpValidationSchema,
 } from "~/modules/auth/auth.js";
 
+import styles from "../../styles.module.css";
+import { FormAlert } from "../form-alert/form-alert.js";
+import { PasswordRules } from "../password-rules/password-rules.js";
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
+import { SignUpFormMessage } from "./libs/enums/enums.js";
 
 type Properties = {
+	errorMessage: null | string;
+	hasConflictError: boolean;
+	isLoading: boolean;
+	isSuccess: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
-const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
-	const { control, errors, handleSubmit } = useAppForm<SignUpRequestDto>({
+const SignUpForm: React.FC<Properties> = ({
+	errorMessage,
+	hasConflictError,
+	isLoading,
+	isSuccess,
+	onSubmit,
+}: Properties) => {
+	const isDisabled = isLoading || isSuccess;
+	const { control, handleSubmit, setError } = useAppForm<SignUpRequestDto>({
 		defaultValues: DEFAULT_SIGN_UP_PAYLOAD,
+		isDisabled,
+		mode: "onTouched",
 		validationSchema: signUpValidationSchema,
 	});
+
+	const passwordRulesId = useId();
+	const [hasPasswordBeenFocused, setHasPasswordBeenFocused] = useState(false);
+	const password = useWatch({ control, name: "password" });
+	const { isSubmitted } = useFormState({ control });
+
+	const handlePasswordFocus = useCallback((): void => {
+		setHasPasswordBeenFocused(true);
+	}, []);
 
 	const handleFormSubmit = useCallback(
 		(event_: React.BaseSyntheticEvent): void => {
@@ -28,43 +58,75 @@ const SignUpForm: React.FC<Properties> = ({ onSubmit }: Properties) => {
 		[handleSubmit, onSubmit],
 	);
 
+	useEffect(() => {
+		if (hasConflictError) {
+			setError("email", { type: "server" });
+		}
+	}, [hasConflictError, setError]);
+
 	return (
 		<>
-			<h3>Sign Up</h3>
-			<form onSubmit={handleFormSubmit}>
-				<p>
+			<h1 className={styles["heading"]}>Sign up</h1>
+			{errorMessage && <FormAlert message={errorMessage} />}
+			{isSuccess ? (
+				<FormAlert message={SignUpFormMessage.SUCCESS} variant="success" />
+			) : null}
+			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+				<div className={styles["input-wrapper"]}>
 					<Input
 						control={control}
-						errors={errors}
-						label="Email"
-						name="email"
-						placeholder="Enter your email"
-						type="text"
-					/>
-				</p>
-				<p>
-					<Input
-						control={control}
-						errors={errors}
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
 						placeholder="Enter your nickname"
 						type="text"
 					/>
-				</p>
-				<p>
 					<Input
 						control={control}
-						errors={errors}
-						label="Password"
-						name="password"
-						placeholder="Enter your password"
-						type="text"
+						label="Email"
+						name="email"
+						placeholder="Enter your email"
+						type="email"
 					/>
-				</p>
-				<Button label="Sign up" type="submit" />
+					<div className={styles["password-field"]}>
+						<Input
+							control={control}
+							descriptionId={passwordRulesId}
+							label="Password"
+							name="password"
+							onFocus={handlePasswordFocus}
+							placeholder="Enter your password"
+							type="password"
+						/>
+						<div
+							className={getValidClasses(
+								styles["rules"],
+								(hasPasswordBeenFocused || isSubmitted) &&
+									styles["rules-shown"],
+							)}
+						>
+							<div className={styles["rules-inner"]}>
+								<PasswordRules
+									id={passwordRulesId}
+									isSubmitted={isSubmitted}
+									password={password}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<Button
+					isDisabled={isDisabled}
+					label={
+						isLoading ? SignUpFormMessage.SUBMITTING : SignUpFormMessage.SUBMIT
+					}
+					size={ControlSize.LG}
+					type="submit"
+				/>
 			</form>
+			<p className={styles["footer"]}>
+				Already have an account? <Link to={AppRoute.SIGN_IN}>Sign in</Link>
+			</p>
 		</>
 	);
 };

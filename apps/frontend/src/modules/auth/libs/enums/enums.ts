@@ -1,2 +1,5 @@
-export { AuthApiPath } from "@promptomat/shared";
-export { AuthValidationRule } from "@promptomat/shared/src/modules/auth/libs/enums/enums.js";
+export {
+	AuthApiPath,
+	AuthValidationMessage,
+	AuthValidationRule,
+} from "@promptomat/shared";
