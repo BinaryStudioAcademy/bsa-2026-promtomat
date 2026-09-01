@@ -2,7 +2,7 @@ import {
 	type FeatureExtractionPipeline,
 	pipeline,
 } from "@huggingface/transformers";
-import { access, mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -16,6 +16,7 @@ import {
 	EmbeddingFailedError,
 	EmbeddingNotReadyError,
 } from "./libs/exceptions/exceptions.js";
+import { checkIsManifest } from "./libs/helpers/helpers.js";
 import {
 	type Embedding,
 	type EmbeddingService,
@@ -106,7 +107,7 @@ class LocalEmbeddingService implements EmbeddingService {
 			)
 			.toSorted((first, second) => first.localeCompare(second));
 
-		return { files };
+		return { files, modelId: this.modelId };
 	}
 
 	private async createExtractor(
@@ -123,18 +124,10 @@ class LocalEmbeddingService implements EmbeddingService {
 		return extractor;
 	}
 
-	private async hasLocalMarker(): Promise<boolean> {
-		try {
-			await access(this.markerPath);
-
-			return true;
-		} catch {
-			return false;
-		}
-	}
-
 	private async provision(): Promise<void> {
-		if (await this.hasLocalMarker()) {
+		const localManifest = await this.readLocalManifest();
+
+		if (localManifest?.modelId === this.modelId) {
 			this.logger.info(
 				`Embedding model "${this.modelId}" has a local marker — loading from disk with zero S3 calls.`,
 			);
@@ -143,22 +136,36 @@ class LocalEmbeddingService implements EmbeddingService {
 			return;
 		}
 
+		if (localManifest) {
+			this.logger.warn(
+				`Embedding model marker at "${this.markerPath}" is for "${localManifest.modelId}" while "${this.modelId}" is configured — re-provisioning.`,
+			);
+		}
+
 		await this.resetLocalPath();
 
-		if (await this.store.hasMarker()) {
+		const remoteManifest = await this.store.fetchManifest();
+
+		if (remoteManifest?.modelId === this.modelId) {
 			this.logger.info(
 				"Embedding model store marker found — downloading the model from S3.",
 			);
 
-			const manifest = await this.store.downloadModel(this.localPath);
-			await this.writeLocalMarker(manifest);
+			await this.store.downloadModel(this.localPath, remoteManifest);
+			await this.writeLocalMarker(remoteManifest);
 			this.extractor = await this.createExtractor(true);
 
 			return;
 		}
 
+		if (remoteManifest) {
+			this.logger.warn(
+				`Embedding model store marker is for "${remoteManifest.modelId}" while "${this.modelId}" is configured — re-seeding the store.`,
+			);
+		}
+
 		this.logger.info(
-			`Embedding model store marker absent — seeding "${this.modelId}" from HuggingFace.`,
+			`Embedding model store has no marker for "${this.modelId}" — seeding from HuggingFace.`,
 		);
 
 		const extractor = await this.createExtractor(false);
@@ -212,6 +219,18 @@ class LocalEmbeddingService implements EmbeddingService {
 		}
 	}
 
+	private async readLocalManifest(): Promise<ModelManifest | null> {
+		try {
+			const parsed: unknown = JSON.parse(
+				await readFile(this.markerPath, "utf8"),
+			);
+
+			return checkIsManifest(parsed) ? parsed : null;
+		} catch {
+			return null;
+		}
+	}
+
 	private async resetLocalPath(): Promise<void> {
 		const resolvedPath = path.resolve(this.localPath);
 		const isProtectedPath =
@@ -225,7 +244,7 @@ class LocalEmbeddingService implements EmbeddingService {
 		}
 
 		this.logger.warn(
-			`Embedding model at "${this.localPath}" has no completion marker — removing any incomplete files before re-provisioning.`,
+			`Embedding model at "${this.localPath}" is not marked as provisioned for "${this.modelId}" — removing incomplete or stale files before re-provisioning.`,
 		);
 
 		await rm(resolvedPath, { force: true, recursive: true });

@@ -1,6 +1,5 @@
 import {
 	GetObjectCommand,
-	HeadObjectCommand,
 	PutObjectCommand,
 	S3Client,
 	S3ServiceException,
@@ -15,6 +14,7 @@ import { HTTPCode } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { PROVISION_MARKER_FILE_NAME } from "./libs/constants/constants.js";
+import { checkIsManifest } from "./libs/helpers/helpers.js";
 import { type ModelManifest } from "./libs/types/types.js";
 
 type Constructor = {
@@ -39,6 +39,19 @@ class S3ModelStore {
 		this.client = new S3Client({});
 	}
 
+	private assertSafeManifestEntry(file: string, localPath: string): void {
+		const destination = path.resolve(localPath, file);
+		const isConfinedToRoot = destination.startsWith(
+			path.resolve(localPath) + path.sep,
+		);
+
+		if (!isConfinedToRoot) {
+			throw new TypeError(
+				`Model store manifest entry "${file}" escapes the local path.`,
+			);
+		}
+	}
+
 	private buildKey(file: string): string {
 		return `${this.prefix}${file}`;
 	}
@@ -61,56 +74,56 @@ class S3ModelStore {
 		this.logger.info(`Embedding model store: downloaded "${file}".`);
 	}
 
-	public async downloadModel(localPath: string): Promise<ModelManifest> {
-		const marker = await this.client.send(
-			new GetObjectCommand({
-				Bucket: this.bucket,
-				Key: this.buildKey(PROVISION_MARKER_FILE_NAME),
-			}),
-		);
-
-		if (!marker.Body) {
-			throw new Error("Model store marker object has no body.");
-		}
-
-		const manifest = JSON.parse(
-			await marker.Body.transformToString(),
-		) as ModelManifest;
-
-		if (!Array.isArray(manifest.files)) {
-			throw new TypeError(
-				"Model store marker content is not a valid manifest.",
-			);
+	public async downloadModel(
+		localPath: string,
+		manifest: ModelManifest,
+	): Promise<void> {
+		for (const file of manifest.files) {
+			this.assertSafeManifestEntry(file, localPath);
 		}
 
 		for (const file of manifest.files) {
 			await this.downloadFile(file, localPath);
 		}
-
-		return manifest;
 	}
 
-	public async hasMarker(): Promise<boolean> {
+	public async fetchManifest(): Promise<ModelManifest | null> {
+		let marker;
+
 		try {
-			await this.client.send(
-				new HeadObjectCommand({
+			marker = await this.client.send(
+				new GetObjectCommand({
 					Bucket: this.bucket,
 					Key: this.buildKey(PROVISION_MARKER_FILE_NAME),
 				}),
 			);
-
-			return true;
 		} catch (error) {
 			const isMarkerAbsent =
 				error instanceof S3ServiceException &&
 				error.$metadata.httpStatusCode === HTTPCode.NOT_FOUND;
 
 			if (isMarkerAbsent) {
-				return false;
+				return null;
 			}
 
 			throw error;
 		}
+
+		if (!marker.Body) {
+			throw new Error("Model store marker object has no body.");
+		}
+
+		const parsed: unknown = JSON.parse(await marker.Body.transformToString());
+
+		if (!checkIsManifest(parsed)) {
+			this.logger.warn(
+				"Embedding model store: marker content is not a valid manifest — treating the store as unprovisioned.",
+			);
+
+			return null;
+		}
+
+		return parsed;
 	}
 
 	public async uploadModel(
