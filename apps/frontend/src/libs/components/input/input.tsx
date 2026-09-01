@@ -97,7 +97,7 @@ const Input = <T extends FieldValues>({
 					>
 						<Icon
 							className={styles["toggle-icon"]}
-							iconName={isPasswordVisible ? IconName.EYE : IconName.EYE_FILLED}
+							iconName={isPasswordVisible ? IconName.EYE_FILLED : IconName.EYE}
 						/>
 					</button>
 				)}

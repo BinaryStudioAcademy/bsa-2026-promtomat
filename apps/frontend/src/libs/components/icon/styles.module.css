@@ -1,20 +1,4 @@
 .icon {
 	display: inline-block;
 	flex-shrink: 0;
-	background-color: currentcolor;
-	mask-repeat: no-repeat;
-	mask-position: center;
-	mask-size: contain;
-}
-
-.check {
-	mask-image: url("../../../assets/img/check.svg");
-}
-
-.eye {
-	mask-image: url("../../../assets/img/eye.svg");
-}
-
-.eye-filled {
-	mask-image: url("../../../assets/img/eye-filled.svg");
 }
