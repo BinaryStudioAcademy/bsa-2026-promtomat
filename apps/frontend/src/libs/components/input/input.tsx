@@ -19,6 +19,7 @@ type Properties<T extends FieldValues> = {
 	descriptionId?: string;
 	isDisabled?: boolean;
 	label: string;
+	maxLength?: number;
 	name: FieldPath<T>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	placeholder?: string;
@@ -32,6 +33,7 @@ const Input = <T extends FieldValues>({
 	descriptionId,
 	isDisabled = false,
 	label,
+	maxLength,
 	name,
 	onFocus,
 	placeholder = "",
@@ -82,6 +84,7 @@ const Input = <T extends FieldValues>({
 						isPasswordField && styles["with-toggle"],
 					)}
 					id={inputId}
+					maxLength={maxLength}
 					onFocus={onFocus}
 					placeholder={placeholder}
 					type={inputType}
