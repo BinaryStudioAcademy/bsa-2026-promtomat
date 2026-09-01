@@ -2,12 +2,18 @@ import { config } from "~/libs/modules/config/config.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 
 import { LocalEmbeddingService } from "./local-embedding.service.js";
+import { S3ModelStore } from "./s3-model-store.service.js";
 
 const embedding = new LocalEmbeddingService({
 	dimensions: config.ENV.EMBEDDING.DIMENSIONS,
 	localPath: config.ENV.EMBEDDING.LOCAL_PATH,
 	logger,
 	modelId: config.ENV.EMBEDDING.MODEL_ID,
+	store: new S3ModelStore({
+		bucket: config.ENV.EMBEDDING.S3_BUCKET,
+		logger,
+		prefix: config.ENV.EMBEDDING.S3_PREFIX,
+	}),
 });
 
 export { embedding };

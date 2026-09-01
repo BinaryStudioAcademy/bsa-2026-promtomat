@@ -41,3 +41,6 @@ override.tf.json
 terraform.rc
 
 lambda.zip
+
+# locally provisioned embedding model store (EMBEDDING_LOCAL_PATH)
+.model-cache
