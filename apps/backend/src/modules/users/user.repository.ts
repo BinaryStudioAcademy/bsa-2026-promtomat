@@ -44,8 +44,28 @@ class UserRepository {
 		return user ? UserEntity.initialize(user) : null;
 	}
 
+	public async findByEmailOrNickname(
+		email: string,
+		nickname: string,
+	): Promise<null | UserEntity> {
+		const user = await this.userModel
+			.query()
+			.where({ email })
+			.orWhere({ nickname })
+			.first()
+			.execute();
+
+		return user ? UserEntity.initialize(user) : null;
+	}
+
 	public async findById(id: number): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findById(id);
+
+		return user ? UserEntity.initialize(user) : null;
+	}
+
+	public async findByNickname(nickname: string): Promise<null | UserEntity> {
+		const user = await this.userModel.query().findOne({ nickname }).execute();
 
 		return user ? UserEntity.initialize(user) : null;
 	}
