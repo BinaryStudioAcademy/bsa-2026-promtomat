@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
+import { Button } from "~/libs/components/button/button.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
@@ -54,7 +56,7 @@ const Modal = ({
 	}, [isOpen, modalId, registerBlocking, unregisterBlocking]);
 
 	useLayoutEffect(() => {
-		if (!isOpen) {
+		if (!isOpen || blockingElement === null) {
 			return;
 		}
 
@@ -68,7 +70,7 @@ const Modal = ({
 		return () => {
 			triggerElement?.focus();
 		};
-	}, [isOpen]);
+	}, [blockingElement, isOpen]);
 
 	const handleKeyDown = useCallback(
 		(event: KeyboardEvent) => {
@@ -137,9 +139,9 @@ const Modal = ({
 	return createPortal(
 		<div className={styles["modal-layer"]} inert={!isTopBlocking}>
 			{isDismissible ? (
-				<button
-					aria-label={ModalLabel.CLOSE}
-					className={styles["modal-backdrop"]}
+				<Button
+					className={getValidClasses(styles["modal-backdrop"])}
+					label={ModalLabel.CLOSE_DIALOG}
 					onClick={onClose}
 					type="button"
 				/>
@@ -164,13 +166,13 @@ const Modal = ({
 						{title}
 					</h2>
 					{isDismissible && (
-						<button
-							className={styles["modal-close"]}
+						<Button
+							label={ModalLabel.CLOSE}
 							onClick={onClose}
+							size={ControlSize.SM}
 							type="button"
-						>
-							Close
-						</button>
+							variant={ButtonVariant.SECONDARY}
+						/>
 					)}
 				</div>
 				{children}

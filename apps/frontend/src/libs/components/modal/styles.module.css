@@ -16,6 +16,27 @@
 	border: 0;
 }
 
+.modal-layer .modal-backdrop {
+	display: block;
+	height: auto;
+	overflow: hidden;
+	font-size: 0;
+	line-height: 0;
+	color: transparent;
+	white-space: normal;
+	outline: none;
+	background-color: var(--overlay-scrim);
+	border: 0;
+	border-radius: 0;
+	transition: none;
+	cursor: default;
+}
+
+.modal-layer .modal-backdrop:hover:not(:disabled),
+.modal-layer .modal-backdrop:active:not(:disabled) {
+	background-color: var(--overlay-scrim);
+}
+
 .modal-backdrop-static {
 	cursor: default;
 }
@@ -49,18 +70,4 @@
 	font-size: var(--font-size-body-xl);
 	font-weight: 600;
 	color: var(--text-strong);
-}
-
-.modal-close {
-	padding: 0;
-	font: inherit;
-	color: var(--text-muted);
-	cursor: pointer;
-	background: transparent;
-	border: 0;
-}
-
-.modal-close:focus-visible {
-	outline: var(--border-width-focus) solid var(--border-focus);
-	outline-offset: var(--border-width-focus);
 }

@@ -1,5 +1,6 @@
 const ModalLabel = {
-	CLOSE: "Close dialog",
+	CLOSE: "Close",
+	CLOSE_DIALOG: "Close dialog",
 } as const;
 
 export { ModalLabel };
