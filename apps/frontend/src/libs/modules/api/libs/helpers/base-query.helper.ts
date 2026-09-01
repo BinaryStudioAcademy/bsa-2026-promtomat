@@ -12,7 +12,6 @@ import { toast } from "~/libs/modules/toast/toast.js";
 
 import { type BaseQueryExtraOptions } from "../types/base-query-extra-options.type.js";
 import { type ServerError } from "../types/server-error.type.js";
-import { getErrorMessage } from "./get-error-message.helper.js";
 import { toServerError } from "./to-server-error.helper.js";
 
 type BaseQueryFunctionInternal = BaseQueryFn<
@@ -47,11 +46,10 @@ const baseQuery: BaseQueryFunctionInternal = async (
 	}
 
 	const error = toServerError(result.error);
-	const message = getErrorMessage(error);
 
 	switch (error.code) {
 		case ErrorCode.FORBIDDEN: {
-			toast.error(message, error.code);
+			toast.error(error.message, error.code);
 			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
 
 			return { error };
@@ -63,7 +61,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			await storage.drop(StorageKey.TOKEN);
 
 			if (isExpiredToken) {
-				toast.error(message, error.code);
+				toast.error(error.message, error.code);
 			}
 
 			api.dispatch(setRedirect(AppRoute.SIGN_IN));
@@ -82,7 +80,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 		default: {
 			if (extraOptions?.shouldSuppressToast !== true) {
-				toast.error(message, error.code);
+				toast.error(error.message, error.code);
 			}
 
 			return { error };

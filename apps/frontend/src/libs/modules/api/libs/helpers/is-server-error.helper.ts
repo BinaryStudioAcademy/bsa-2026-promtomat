@@ -13,4 +13,4 @@ const isValidationError = (error: unknown): error is ServerValidationError => {
 	return isServerError(error) && error.code === ErrorCode.VALIDATION_FAILED;
 };
 
-export { isServerError, isValidationError };
+export { isValidationError };

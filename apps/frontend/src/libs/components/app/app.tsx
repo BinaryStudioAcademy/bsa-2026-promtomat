@@ -45,7 +45,6 @@ const App: React.FC = () => {
 					{isLoading && (
 						<Loader label="Loading users" variant={LoaderVariant.SECTION} />
 					)}
-					{error && <p>{error.message}</p>}
 					<ul>
 						{users?.items.map((user) => (
 							<li key={user.id}>{user.email}</li>
