@@ -4,7 +4,7 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
-import { type UserRepository } from "~/modules/users/user.repository.js";
+import { UserRepository } from "~/modules/users/user.repository.js";
 
 import {
 	type UserDto,
@@ -21,14 +21,17 @@ class UserService {
 		this.userRepository = userRepository;
 	}
 
-	public async create(
-		payload: SignUpRequestDto,
-		trx?: Transaction,
-	): Promise<UserDto> {
-		const existingUser = await this.userRepository.findByEmail(payload.email);
+	public async create(payload: SignUpRequestDto): Promise<UserDto> {
+		const existingUser = await this.userRepository.findByEmailOrNickname(
+			payload.email,
+			payload.nickname,
+		);
 
 		if (existingUser) {
-			throw AuthError.emailAlreadyExists();
+			if (existingUser.toNewObject().email === payload.email) {
+				throw AuthError.emailAlreadyExists();
+			}
+			throw AuthError.nicknameAlreadyExists();
 		}
 
 		const { hash, salt } = await this.hashing.hash(payload.password);
@@ -36,6 +39,7 @@ class UserService {
 		const user = await this.userRepository.create(
 			UserEntity.initializeNew({
 				email: payload.email,
+				nickname: payload.nickname,
 				passwordHash: hash,
 				passwordSalt: salt,
 			}),
@@ -59,6 +63,12 @@ class UserService {
 
 	public async findById(id: number): Promise<null | UserDto> {
 		const user = await this.userRepository.findById(id);
+
+		return user ? user.toObject() : null;
+	}
+
+	public async findByNickname(nickname: string): Promise<null | UserDto> {
+		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
 	}
