@@ -3,10 +3,10 @@ import {
 	pipeline,
 } from "@huggingface/transformers";
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
+import { checkIsUnsafeDeletePath } from "~/libs/helpers/helpers.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -233,11 +233,8 @@ class LocalEmbeddingService implements EmbeddingService {
 
 	private async resetLocalPath(): Promise<void> {
 		const resolvedPath = path.resolve(this.localPath);
-		const isProtectedPath =
-			resolvedPath === path.parse(resolvedPath).root ||
-			resolvedPath === os.homedir();
 
-		if (isProtectedPath) {
+		if (checkIsUnsafeDeletePath(this.localPath)) {
 			throw new Error(
 				`Refusing to reset "${resolvedPath}" — the embedding local path must be a dedicated directory.`,
 			);

@@ -6,6 +6,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { JwtAlgorithm } from "./libs/enums/enums.js";
 import {
+	validateEmbeddingLocalPath,
 	validateJwtExpiresIn,
 	validateJwtSecret,
 } from "./libs/helpers/helpers.js";
@@ -116,7 +117,7 @@ class BaseConfig implements Config {
 					default: null,
 					doc: "Local directory the embedding model is provisioned into",
 					env: "EMBEDDING_LOCAL_PATH",
-					format: String,
+					format: validateEmbeddingLocalPath,
 				},
 				MODEL_ID: {
 					default: null,
