@@ -1,4 +1,6 @@
-import { type Entity } from "~/libs/types/types.js";
+import { type Entity, type ValueOf } from "~/libs/types/types.js";
+
+import { AiCodingTool } from "./libs/enums/enums.js";
 
 class UserEntity implements Entity {
 	private email: string;
@@ -11,24 +13,29 @@ class UserEntity implements Entity {
 
 	private passwordSalt: string;
 
+	private primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+
 	private constructor({
 		email,
 		id,
 		nickname,
 		passwordHash,
 		passwordSalt,
+		primaryAiCodingTool,
 	}: {
 		email: string;
 		id: null | number;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	}) {
 		this.id = id;
 		this.email = email;
 		this.nickname = nickname;
 		this.passwordHash = passwordHash;
 		this.passwordSalt = passwordSalt;
+		this.primaryAiCodingTool = primaryAiCodingTool;
 	}
 
 	public static initialize({
@@ -37,12 +44,14 @@ class UserEntity implements Entity {
 		nickname,
 		passwordHash,
 		passwordSalt,
+		primaryAiCodingTool,
 	}: {
 		email: string;
 		id: number;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -50,6 +59,7 @@ class UserEntity implements Entity {
 			nickname,
 			passwordHash,
 			passwordSalt,
+			primaryAiCodingTool,
 		});
 	}
 
@@ -58,11 +68,13 @@ class UserEntity implements Entity {
 		nickname,
 		passwordHash,
 		passwordSalt,
+		primaryAiCodingTool,
 	}: {
 		email: string;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -70,6 +82,7 @@ class UserEntity implements Entity {
 			nickname,
 			passwordHash,
 			passwordSalt,
+			primaryAiCodingTool,
 		});
 	}
 
@@ -92,12 +105,14 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	} {
 		return {
 			email: this.email,
 			nickname: this.nickname,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
+			primaryAiCodingTool: this.primaryAiCodingTool,
 		};
 	}
 
@@ -105,11 +120,13 @@ class UserEntity implements Entity {
 		email: string;
 		id: number;
 		nickname: string;
+		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	} {
 		return {
 			email: this.email,
 			id: this.id as number,
 			nickname: this.nickname,
+			primaryAiCodingTool: this.primaryAiCodingTool,
 		};
 	}
 }

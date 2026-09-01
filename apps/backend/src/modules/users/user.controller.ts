@@ -25,6 +25,14 @@ import { UsersApiPath } from "./libs/enums/enums.js";
  *          nickname:
  *            type: string
  *            format: string
+ *          primaryAiCodingTool:
+ *            type: string
+ *            enum:
+ *              - CLAUDE_CODE
+ *              - CURSOR
+ *              - GITHUB_COPILOT
+ *              - JETBRAINS_AI
+ *              - WINDSURF
  */
 class UserController extends BaseController {
 	private userService: UserService;

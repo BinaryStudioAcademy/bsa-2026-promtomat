@@ -4,6 +4,7 @@ import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
 
+import { AiCodingTool } from "./libs/enums/enums.js";
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
@@ -40,6 +41,7 @@ class UserService {
 				nickname: payload.nickname,
 				passwordHash: hash,
 				passwordSalt: salt,
+				primaryAiCodingTool: AiCodingTool.CURSOR,
 			}),
 		);
 
