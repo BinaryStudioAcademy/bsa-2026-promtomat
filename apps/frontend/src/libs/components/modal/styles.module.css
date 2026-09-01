@@ -28,8 +28,8 @@
 	background-color: var(--overlay-scrim);
 	border: 0;
 	border-radius: 0;
-	transition: none;
 	cursor: default;
+	transition: none;
 }
 
 .modal-layer .modal-backdrop:hover:not(:disabled),
