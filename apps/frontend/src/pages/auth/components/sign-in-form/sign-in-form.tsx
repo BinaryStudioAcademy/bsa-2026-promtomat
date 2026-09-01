@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
-import { AppRoute } from "~/libs/enums/enums.js";
+import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
@@ -62,7 +62,12 @@ const SignInForm: React.FC = () => {
 						type="password"
 					/>
 				</div>
-				<Button isDisabled={isLoading} label="Sign in" type="submit" />
+				<Button
+					isDisabled={isLoading}
+					label="Sign in"
+					size={ControlSize.LG}
+					type="submit"
+				/>
 			</form>
 			<p className={styles["footer"]}>
 				Don&apos;t have an account? <Link to={AppRoute.SIGN_UP}>Sign up</Link>
