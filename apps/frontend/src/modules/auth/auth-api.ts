@@ -21,17 +21,10 @@ const authApi = baseApi
 			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
 				extraOptions: { shouldSuppressToast: true },
-				async onQueryStarted(_, { dispatch, queryFulfilled }) {
+				async onQueryStarted(_, { queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
 						await storage.set(StorageKey.TOKEN, data.token);
-						await dispatch(
-							authApi.util.upsertQueryData(
-								"getAuthenticatedUser",
-								undefined,
-								data.user,
-							),
-						);
 					} catch {
 						// The failure is exposed through the mutation error state and rendered by the caller.
 					}
@@ -44,19 +37,10 @@ const authApi = baseApi
 			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
 				extraOptions: { shouldSuppressToast: true },
-				async onQueryStarted(_payload, { dispatch, queryFulfilled }) {
+				async onQueryStarted(_payload, { queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
-
 						await storage.set(StorageKey.TOKEN, data.token);
-
-						await dispatch(
-							authApi.util.upsertQueryData(
-								"getAuthenticatedUser",
-								undefined,
-								data.user,
-							),
-						);
 					} catch {
 						// API errors are exposed by the mutation
 						// If session setup fails, no user is cached, so navigation is skipped
@@ -71,7 +55,8 @@ const authApi = baseApi
 		}),
 	});
 
-const { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation } =
-	authApi;
+const { useSignInMutation, useSignUpMutation } = authApi;
 
-export { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation };
+const { getAuthenticatedUser: authenticatedUserEndpoint } = authApi.endpoints;
+
+export { authenticatedUserEndpoint, useSignInMutation, useSignUpMutation };

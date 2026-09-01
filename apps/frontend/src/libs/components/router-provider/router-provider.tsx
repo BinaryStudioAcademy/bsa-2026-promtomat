@@ -9,7 +9,9 @@ type Properties = {
 };
 
 const RouterProvider: React.FC<Properties> = ({ routes }: Properties) => (
-	<LibraryRouterProvider router={createBrowserRouter(routes)} />
+	<LibraryRouterProvider
+		router={createBrowserRouter(routes, { future: { v8_middleware: true } })}
+	/>
 );
 
 export { RouterProvider };

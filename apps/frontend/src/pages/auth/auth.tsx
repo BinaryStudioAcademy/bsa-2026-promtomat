@@ -1,14 +1,11 @@
 import { useCallback, useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { Logo } from "~/libs/components/logo/logo.js";
 import { AppRoute, ControlSize, HTTPCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
-import {
-	useGetAuthenticatedUserQuery,
-	useSignUpMutation,
-} from "~/modules/auth/auth-api.js";
+import { useSignUpMutation } from "~/modules/auth/auth-api.js";
 import { type SignUpRequestDto } from "~/modules/auth/auth.js";
 
 import { PromptShowcase } from "./components/prompt-showcase/prompt-showcase.js";
@@ -19,8 +16,6 @@ import styles from "./styles.module.css";
 const Auth: React.FC = () => {
 	const { pathname } = useLocation();
 	const [signUp, { error, isLoading, isSuccess, reset }] = useSignUpMutation();
-	const { data: user, isLoading: isAuthLoading } =
-		useGetAuthenticatedUserQuery(undefined);
 
 	const errorMessage = isServerError(error) ? error.message : null;
 	const hasConflictError =
@@ -38,14 +33,6 @@ const Auth: React.FC = () => {
 		},
 		[signUp],
 	);
-
-	if (isAuthLoading) {
-		return <p>Loading...</p>;
-	}
-
-	if (user) {
-		return <Navigate replace to={AppRoute.ROOT} />;
-	}
 
 	const getScreen = (screen: string): React.JSX.Element => {
 		if (screen === AppRoute.SIGN_UP) {

@@ -4,9 +4,8 @@ import {
 	fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { AppRoute, ErrorCode, HTTPHeader } from "~/libs/enums/enums.js";
+import { HTTPHeader } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
-import { setRedirect } from "~/libs/modules/navigation/navigation.slice.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
 
@@ -47,57 +46,15 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 	const error = toServerError(result.error);
 
-	switch (error.code) {
-		case ErrorCode.FORBIDDEN: {
-			showNotification({
-				id: error.code,
-				message: error.message,
-				type: "error",
-			});
-			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
-
-			return { error };
-		}
-
-		case ErrorCode.UNAUTHENTICATED: {
-			const isExpiredToken = await storage.has(StorageKey.TOKEN);
-
-			await storage.drop(StorageKey.TOKEN);
-
-			if (isExpiredToken) {
-				showNotification({
-					id: error.code,
-					message: error.message,
-					type: "error",
-				});
-			}
-
-			api.dispatch(setRedirect(AppRoute.SIGN_IN));
-
-			return { error };
-		}
-
-		case ErrorCode.UNAUTHORIZED: {
-			api.dispatch(setRedirect(AppRoute.SIGN_IN));
-			return { error };
-		}
-
-		case ErrorCode.VALIDATION_FAILED: {
-			return { error };
-		}
-
-		default: {
-			if (extraOptions?.shouldSuppressToast !== true) {
-				showNotification({
-					id: error.code,
-					message: error.message,
-					type: "error",
-				});
-			}
-
-			return { error };
-		}
+	if (extraOptions?.shouldSuppressToast !== true) {
+		showNotification({
+			id: error.code,
+			message: error.message,
+			type: "error",
+		});
 	}
+
+	return { error };
 };
 
 export { baseQuery };

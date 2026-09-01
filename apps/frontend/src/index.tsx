@@ -4,10 +4,10 @@ import { Provider as StoreProvider } from "react-redux";
 
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
-import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
+import { authMiddleware } from "~/modules/auth/libs/middlewares/middlewares.js";
 import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
@@ -21,12 +21,9 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 					{
 						children: [
 							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										Root
-									</PrivateRoute>
-								),
+								element: <p>Root</p>,
 								index: true,
+								middleware: [authMiddleware],
 							},
 							{
 								element: <Auth />,
@@ -37,11 +34,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.SIGN_UP,
 							},
 							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<NoAccessPage />
-									</PrivateRoute>
-								),
+								element: <NoAccessPage />,
+								middleware: [authMiddleware],
 								path: AppRoute.NO_ACCESS,
 							},
 							{
