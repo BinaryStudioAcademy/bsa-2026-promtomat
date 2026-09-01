@@ -1,0 +1,118 @@
+.header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 var(--space-16);
+	background-color: var(--surface-card);
+	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+}
+
+.identity {
+	display: inline-flex;
+	align-items: center;
+	padding: var(--space-8) 0;
+}
+
+.identity:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-radius: var(--radius-xs);
+}
+
+.logo {
+	display: block;
+	height: var(--space-28);
+}
+
+.menuToggle {
+	position: relative;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: var(--size-control-h-md);
+	height: var(--size-control-h-md);
+	cursor: pointer;
+	background: none;
+	border: none;
+}
+
+.menuToggle:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-radius: var(--radius-xs);
+}
+
+.menuIcon {
+	position: relative;
+	display: block;
+	width: var(--space-20);
+	height: var(--border-width-emphasis);
+	background-color: var(--text-strong);
+	border-radius: var(--radius-pill);
+}
+
+.menuIcon::before,
+.menuIcon::after {
+	position: absolute;
+	left: 0;
+	display: block;
+	width: var(--space-20);
+	height: var(--border-width-emphasis);
+	content: "";
+	background-color: var(--text-strong);
+	border-radius: var(--radius-pill);
+}
+
+.menuIcon::before {
+	top: calc(-1 * var(--space-6));
+}
+
+.menuIcon::after {
+	top: var(--space-6);
+}
+
+.nav {
+	display: flex;
+}
+
+.navList {
+	display: flex;
+	gap: var(--space-16);
+	align-items: center;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.identityLabel {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+@media (width <= 640px) {
+	.menuToggle {
+		display: inline-flex;
+	}
+
+	.nav {
+		position: absolute;
+		top: 100%;
+		right: 0;
+		left: 0;
+		display: none;
+		background-color: var(--surface-card);
+		border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+	}
+
+	.navOpen {
+		display: flex;
+	}
+
+	.navList {
+		flex-direction: column;
+		gap: 0;
+		align-items: stretch;
+		padding: var(--space-8) var(--space-16) var(--space-16);
+	}
+}
