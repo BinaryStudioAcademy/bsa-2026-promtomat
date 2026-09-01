@@ -3,8 +3,9 @@ import { useLocation } from "react-router-dom";
 
 import brandLogo from "~/assets/img/brand.svg";
 import { Button } from "~/libs/components/button/button.js";
+import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
-import { AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
+import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
@@ -58,17 +59,17 @@ const Header: React.FC = () => {
 				<img alt="Promptomat" className={styles["logo"]} src={brandLogo} />
 			</Link>
 
-			<button
-				aria-controls="primary-navigation"
-				aria-expanded={isMenuOpen}
-				aria-label="Toggle navigation"
-				className={styles["menuToggle"]}
-				onClick={handleMenuToggle}
-				ref={toggleButtonReference}
-				type="button"
-			>
-				<span className={styles["menuIcon"]} />
-			</button>
+			<div className={styles["menuToggle"]}>
+				<IconButton
+					ariaControls="primary-navigation"
+					ariaExpanded={isMenuOpen}
+					ariaLabel="Toggle navigation"
+					iconName={IconName.MENU}
+					onClick={handleMenuToggle}
+					reference={toggleButtonReference}
+					type="button"
+				/>
+			</div>
 
 			<nav
 				aria-label="Main"

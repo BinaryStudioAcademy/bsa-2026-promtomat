@@ -2,6 +2,15 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
+		// Overlay mechanism for later consumer tickets (#14, #22, #68, #70).
+		// Nothing in the app opens a modal or confirmation in this change.
+		"apps/frontend/src/libs/components/confirmation/**": ["files"],
+		"apps/frontend/src/libs/components/modal/**": ["files"],
+		"apps/frontend/src/libs/components/overlay-host/libs/hooks/use-overlay-host.hook.ts":
+			["exports"],
+		"apps/frontend/src/libs/components/overlay-host/overlay-host.tsx": [
+			"exports",
+		],
 		// `isValidationError` is exported ahead of its consumer: routing server
 		// validation details onto form fields lands in a follow-up change.
 		"apps/frontend/src/libs/modules/api/libs/helpers/is-server-error.helper.ts":

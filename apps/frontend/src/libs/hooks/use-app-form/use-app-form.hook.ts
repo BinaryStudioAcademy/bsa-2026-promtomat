@@ -6,6 +6,7 @@ import {
 	type FieldValues,
 	type UseFormHandleSubmit,
 	type UseFormProps,
+	type UseFormSetError,
 	type ValidationMode,
 } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -14,6 +15,7 @@ import { type ValidationSchema } from "~/libs/types/types.js";
 
 type Parameters<T extends FieldValues = FieldValues> = {
 	defaultValues: DefaultValues<T>;
+	isDisabled?: boolean;
 	mode?: keyof ValidationMode;
 	validationSchema?: ValidationSchema;
 };
@@ -22,15 +24,18 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
 	handleSubmit: UseFormHandleSubmit<T>;
+	setError: UseFormSetError<T>;
 };
 
 const useAppForm = <T extends FieldValues = FieldValues>({
 	defaultValues,
+	isDisabled = false,
 	mode = "onSubmit",
 	validationSchema,
 }: Parameters<T>): ReturnValue<T> => {
 	let parameters: UseFormProps<T> = {
 		defaultValues,
+		disabled: isDisabled,
 		mode,
 	};
 
@@ -46,12 +51,14 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 		control,
 		formState: { errors },
 		handleSubmit,
+		setError,
 	} = useForm<T>(parameters);
 
 	return {
 		control,
 		errors,
 		handleSubmit,
+		setError,
 	};
 };
 

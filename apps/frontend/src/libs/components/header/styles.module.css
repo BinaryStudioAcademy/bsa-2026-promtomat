@@ -26,50 +26,7 @@
 }
 
 .menuToggle {
-	position: relative;
 	display: none;
-	align-items: center;
-	justify-content: center;
-	width: var(--size-control-h-md);
-	height: var(--size-control-h-md);
-	cursor: pointer;
-	background: none;
-	border: none;
-}
-
-.menuToggle:focus-visible {
-	outline: var(--border-width-focus) solid var(--border-focus);
-	outline-offset: var(--border-width-focus);
-	border-radius: var(--radius-xs);
-}
-
-.menuIcon {
-	position: relative;
-	display: block;
-	width: var(--space-20);
-	height: var(--border-width-emphasis);
-	background-color: var(--text-strong);
-	border-radius: var(--radius-pill);
-}
-
-.menuIcon::before,
-.menuIcon::after {
-	position: absolute;
-	left: 0;
-	display: block;
-	width: var(--space-20);
-	height: var(--border-width-emphasis);
-	content: "";
-	background-color: var(--text-strong);
-	border-radius: var(--radius-pill);
-}
-
-.menuIcon::before {
-	top: calc(-1 * var(--space-6));
-}
-
-.menuIcon::after {
-	top: var(--space-6);
 }
 
 .nav {

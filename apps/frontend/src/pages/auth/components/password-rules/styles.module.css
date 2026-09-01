@@ -1,0 +1,30 @@
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.rule {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	font-size: var(--font-size-label-sm);
+	color: var(--text-muted);
+}
+
+.icon {
+	flex-shrink: 0;
+	width: 12px;
+	height: 12px;
+}
+
+.met .icon {
+	color: var(--fg-success);
+}
+
+.failed {
+	color: var(--fg-danger);
+}

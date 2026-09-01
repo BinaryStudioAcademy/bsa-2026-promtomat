@@ -39,6 +39,7 @@
 
 .lg {
 	height: var(--size-control-h-lg);
+	font-size: var(--font-size-body-xl);
 }
 
 .primary {

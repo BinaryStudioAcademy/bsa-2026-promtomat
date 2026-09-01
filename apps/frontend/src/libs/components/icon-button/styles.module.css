@@ -1,0 +1,35 @@
+.iconButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-strong);
+	cursor: pointer;
+	background: none;
+	border: none;
+	border-radius: var(--radius-sm);
+}
+
+.iconButton:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.iconButton:disabled {
+	color: var(--text-muted);
+	cursor: not-allowed;
+}
+
+.sm {
+	width: var(--size-control-h-sm);
+	height: var(--size-control-h-sm);
+}
+
+.md {
+	width: var(--size-control-h-md);
+	height: var(--size-control-h-md);
+}
+
+.lg {
+	width: var(--size-control-h-lg);
+	height: var(--size-control-h-lg);
+}
