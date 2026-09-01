@@ -9,7 +9,6 @@ import { getValidClasses } from "~/libs/helpers/helpers.js";
 import {
 	FIRST_INDEX,
 	LAST_INDEX_FROM_END,
-	ModalTabIndex,
 } from "./libs/constants/constants.js";
 import { KeyboardKey, ModalLabel } from "./libs/enums/enums.js";
 import { getFocusableElements } from "./libs/helpers/get-focusable-elements.helper.js";
@@ -60,12 +59,19 @@ const Modal = ({
 			return;
 		}
 
+		const dialogElement = dialogElementReference.current;
+
+		if (dialogElement === null) {
+			return;
+		}
+
 		const triggerElement =
 			document.activeElement instanceof HTMLElement
 				? document.activeElement
 				: null;
 
-		dialogElementReference.current?.focus();
+		const [firstElement] = getFocusableElements(dialogElement);
+		firstElement?.focus();
 
 		return () => {
 			triggerElement?.focus();
@@ -99,7 +105,6 @@ const Modal = ({
 
 			if (firstElement === undefined || lastElement === undefined) {
 				event.preventDefault();
-				dialogElement.focus();
 				return;
 			}
 
@@ -159,7 +164,6 @@ const Modal = ({
 				className={styles["modal"]}
 				ref={dialogElementReference}
 				role={role}
-				tabIndex={ModalTabIndex.CONTAINER}
 			>
 				<div className={styles["modal-header"]}>
 					<h2 className={styles["modal-title"]} id={titleId}>
