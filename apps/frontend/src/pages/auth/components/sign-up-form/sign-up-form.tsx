@@ -78,7 +78,7 @@ const SignUpForm: React.FC<Properties> = ({
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
-						placeholder="Enter your nickname"
+						placeholder="Enter a nickname"
 						type="text"
 					/>
 					<Input
