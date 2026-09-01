@@ -27,8 +27,8 @@
 	outline: none;
 	background-color: var(--overlay-scrim);
 	border: 0;
-	border-radius: 0;
 	cursor: default;
+	border-radius: 0;
 	transition: none;
 }
 
