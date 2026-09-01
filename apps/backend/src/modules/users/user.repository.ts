@@ -10,12 +10,9 @@ class UserRepository {
 		this.userModel = userModel;
 	}
 
-	public async create(
-		entity: UserEntity,
-		trx?: Transaction,
-	): Promise<UserEntity> {
+	public async create(entity: UserEntity): Promise<UserEntity> {
 		const user = await this.userModel
-			.query(trx)
+			.query()
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
