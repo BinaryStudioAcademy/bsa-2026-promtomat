@@ -6,7 +6,7 @@ import EyeIcon from "~/assets/img/eye.svg?react";
 import { IconName } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-const ICON_NAME_TO_ICON = {
+const iconNameToIcon = {
 	[IconName.CHECK]: CheckIcon,
 	[IconName.EYE]: EyeIcon,
 	[IconName.EYE_FILLED]: EyeFilledIcon,
@@ -15,4 +15,4 @@ const ICON_NAME_TO_ICON = {
 	FunctionComponent<SVGProps<SVGSVGElement>>
 >;
 
-export { ICON_NAME_TO_ICON };
+export { iconNameToIcon };

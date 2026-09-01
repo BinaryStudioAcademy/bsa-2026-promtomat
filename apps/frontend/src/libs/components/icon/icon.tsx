@@ -2,7 +2,7 @@ import { type IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { ICON_NAME_TO_ICON } from "./libs/constants.js";
+import { iconNameToIcon } from "./libs/maps.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -11,7 +11,7 @@ type Properties = {
 };
 
 const Icon: React.FC<Properties> = ({ className, iconName }: Properties) => {
-	const IconComponent = ICON_NAME_TO_ICON[iconName];
+	const IconComponent = iconNameToIcon[iconName];
 
 	return (
 		<IconComponent
