@@ -7,7 +7,9 @@ import { store } from "~/libs/modules/store/store.js";
 import { authenticatedUserEndpoint } from "../../auth-api.js";
 
 const noAccessMiddleware: MiddlewareFunction = async (_, next) => {
-	const result = store.dispatch(authenticatedUserEndpoint.initiate(undefined));
+	const result = store.dispatch(
+		authenticatedUserEndpoint.initiate(undefined, { forceRefetch: true }),
+	);
 	try {
 		await result.unwrap();
 	} catch (error) {
@@ -19,7 +21,7 @@ const noAccessMiddleware: MiddlewareFunction = async (_, next) => {
 			throw redirect(AppRoute.NO_ACCESS);
 		}
 
-		throw error;
+		throw new Error(`[${error.code}]: ${error.message}`, { cause: error });
 	} finally {
 		result.unsubscribe();
 	}

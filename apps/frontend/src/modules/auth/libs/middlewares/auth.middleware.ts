@@ -8,7 +8,9 @@ import { store } from "~/libs/modules/store/store.js";
 import { authenticatedUserEndpoint } from "../../auth-api.js";
 
 const authMiddleware: MiddlewareFunction = async (_, next) => {
-	const result = store.dispatch(authenticatedUserEndpoint.initiate(undefined));
+	const result = store.dispatch(
+		authenticatedUserEndpoint.initiate(undefined, { forceRefetch: true }),
+	);
 	try {
 		await result.unwrap();
 	} catch (error) {
@@ -25,7 +27,7 @@ const authMiddleware: MiddlewareFunction = async (_, next) => {
 			throw redirect(AppRoute.SIGN_IN);
 		}
 
-		throw error;
+		throw new Error(`[${error.code}]: ${error.message}`, { cause: error });
 	} finally {
 		result.unsubscribe();
 	}
