@@ -1,5 +1,6 @@
 import { config } from "~/libs/modules/config/config.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { s3 } from "~/libs/modules/s3/s3.js";
 
 import { LocalEmbeddingService } from "./local-embedding.service.js";
 import { S3ModelStore } from "./s3-model-store.service.js";
@@ -13,6 +14,7 @@ const embedding = new LocalEmbeddingService({
 		bucket: config.ENV.EMBEDDING.S3_BUCKET,
 		logger,
 		prefix: config.ENV.EMBEDDING.S3_PREFIX,
+		s3,
 	}),
 });
 

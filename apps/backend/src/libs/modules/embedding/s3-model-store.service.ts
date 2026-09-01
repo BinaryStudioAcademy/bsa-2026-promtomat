@@ -1,17 +1,7 @@
-import {
-	GetObjectCommand,
-	PutObjectCommand,
-	S3Client,
-	S3ServiceException,
-} from "@aws-sdk/client-s3";
-import { createReadStream, createWriteStream } from "node:fs";
-import { mkdir, stat } from "node:fs/promises";
 import path from "node:path";
-import { type Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
 
-import { HTTPCode } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type S3 } from "~/libs/modules/s3/s3.js";
 
 import { PROVISION_MARKER_FILE_NAME } from "./libs/constants/constants.js";
 import { checkIsManifest } from "./libs/helpers/helpers.js";
@@ -21,22 +11,23 @@ type Constructor = {
 	bucket: string;
 	logger: Logger;
 	prefix: string;
+	s3: S3;
 };
 
 class S3ModelStore {
 	private bucket: string;
 
-	private client: S3Client;
-
 	private logger: Logger;
 
 	private prefix: string;
 
-	public constructor({ bucket, logger, prefix }: Constructor) {
+	private s3: S3;
+
+	public constructor({ bucket, logger, prefix, s3 }: Constructor) {
 		this.bucket = bucket;
 		this.logger = logger;
 		this.prefix = prefix.endsWith("/") ? prefix : `${prefix}/`;
-		this.client = new S3Client({});
+		this.s3 = s3;
 	}
 
 	private assertSafeManifestEntry(file: string, localPath: string): void {
@@ -56,24 +47,6 @@ class S3ModelStore {
 		return `${this.prefix}${file}`;
 	}
 
-	private async downloadFile(file: string, localPath: string): Promise<void> {
-		const destination = path.join(localPath, file);
-		await mkdir(path.dirname(destination), { recursive: true });
-
-		const object = await this.client.send(
-			new GetObjectCommand({ Bucket: this.bucket, Key: this.buildKey(file) }),
-		);
-
-		if (!object.Body) {
-			throw new Error(
-				`Model store object "${this.buildKey(file)}" has no body.`,
-			);
-		}
-
-		await pipeline(object.Body as Readable, createWriteStream(destination));
-		this.logger.info(`Embedding model store: downloaded "${file}".`);
-	}
-
 	public async downloadModel(
 		localPath: string,
 		manifest: ModelManifest,
@@ -83,37 +56,27 @@ class S3ModelStore {
 		}
 
 		for (const file of manifest.files) {
-			await this.downloadFile(file, localPath);
+			await this.s3.downloadObject({
+				bucket: this.bucket,
+				destinationPath: path.join(localPath, file),
+				key: this.buildKey(file),
+			});
+
+			this.logger.info(`Embedding model store: downloaded "${file}".`);
 		}
 	}
 
 	public async fetchManifest(): Promise<ModelManifest | null> {
-		let marker;
+		const markerText = await this.s3.readObjectText({
+			bucket: this.bucket,
+			key: this.buildKey(PROVISION_MARKER_FILE_NAME),
+		});
 
-		try {
-			marker = await this.client.send(
-				new GetObjectCommand({
-					Bucket: this.bucket,
-					Key: this.buildKey(PROVISION_MARKER_FILE_NAME),
-				}),
-			);
-		} catch (error) {
-			const isMarkerAbsent =
-				error instanceof S3ServiceException &&
-				error.$metadata.httpStatusCode === HTTPCode.NOT_FOUND;
-
-			if (isMarkerAbsent) {
-				return null;
-			}
-
-			throw error;
+		if (markerText === null) {
+			return null;
 		}
 
-		if (!marker.Body) {
-			throw new Error("Model store marker object has no body.");
-		}
-
-		const parsed: unknown = JSON.parse(await marker.Body.transformToString());
+		const parsed: unknown = JSON.parse(markerText);
 
 		if (!checkIsManifest(parsed)) {
 			this.logger.warn(
@@ -131,30 +94,22 @@ class S3ModelStore {
 		manifest: ModelManifest,
 	): Promise<void> {
 		for (const file of manifest.files) {
-			const source = path.join(localPath, file);
-			const { size } = await stat(source);
-
-			await this.client.send(
-				new PutObjectCommand({
-					Body: createReadStream(source),
-					Bucket: this.bucket,
-					ContentLength: size,
-					Key: this.buildKey(file),
-				}),
-			);
+			const size = await this.s3.uploadFile({
+				bucket: this.bucket,
+				key: this.buildKey(file),
+				sourcePath: path.join(localPath, file),
+			});
 
 			this.logger.info(
 				`Embedding model store: uploaded "${file}" (${size.toString()} bytes).`,
 			);
 		}
 
-		await this.client.send(
-			new PutObjectCommand({
-				Body: JSON.stringify(manifest),
-				Bucket: this.bucket,
-				Key: this.buildKey(PROVISION_MARKER_FILE_NAME),
-			}),
-		);
+		await this.s3.uploadText({
+			bucket: this.bucket,
+			content: JSON.stringify(manifest),
+			key: this.buildKey(PROVISION_MARKER_FILE_NAME),
+		});
 
 		this.logger.info(
 			`Embedding model store: marker uploaded last — s3://${this.bucket}/${this.prefix} is complete.`,
