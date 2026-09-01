@@ -84,3 +84,21 @@
 .danger:active:not(:disabled) {
 	background-color: var(--surface-danger-active);
 }
+
+.danger-outline {
+	color: var(--fg-danger);
+	background-color: var(--bg-danger);
+	border-color: var(--fg-danger);
+}
+
+.warning-outline {
+	color: var(--fg-warning);
+	background-color: var(--bg-warning);
+	border-color: var(--fg-warning);
+}
+
+.success-outline {
+	color: var(--fg-success);
+	background-color: var(--bg-success);
+	border-color: var(--fg-success);
+}

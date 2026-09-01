@@ -1,0 +1,31 @@
+.score-grid-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.btn-wrapper {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+	gap: 6px;
+}
+
+.message {
+	font-size: var(--font-size-body-sm);
+}
+
+.danger-outline {
+	color: var(--fg-danger);
+}
+
+.warning-outline {
+	color: var(--fg-warning);
+}
+
+.success-outline {
+	color: var(--fg-success);
+}
+
+.score-button {
+	height: 48px;
+}
