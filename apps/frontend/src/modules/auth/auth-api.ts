@@ -43,7 +43,24 @@ const authApi = baseApi
 				}),
 			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
-				invalidatesTags: [UsersApiTag.USER],
+				async onQueryStarted(_payload, { dispatch, queryFulfilled }) {
+					try {
+						const { data } = await queryFulfilled;
+
+						await storage.set(StorageKey.TOKEN, data.token);
+
+						await dispatch(
+							authApi.util.upsertQueryData(
+								"getAuthenticatedUser",
+								undefined,
+								data.user,
+							),
+						);
+					} catch {
+						// API errors are exposed by the mutation
+						// If session setup fails, no user is cached, so navigation is skipped
+					}
+				},
 				query: (payload) => ({
 					body: payload,
 					method: HTTPMethod.POST,

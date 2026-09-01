@@ -16,6 +16,7 @@ import { type ValidationSchema } from "~/libs/types/types.js";
 
 type Parameters<T extends FieldValues = FieldValues> = {
 	defaultValues: DefaultValues<T>;
+	isDisabled?: boolean;
 	mode?: keyof ValidationMode;
 	validationSchema?: ValidationSchema;
 };
@@ -30,11 +31,13 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 
 const useAppForm = <T extends FieldValues = FieldValues>({
 	defaultValues,
+	isDisabled = false,
 	mode = "onSubmit",
 	validationSchema,
 }: Parameters<T>): ReturnValue<T> => {
 	let parameters: UseFormProps<T> = {
 		defaultValues,
+		disabled: isDisabled,
 		mode,
 	};
 
