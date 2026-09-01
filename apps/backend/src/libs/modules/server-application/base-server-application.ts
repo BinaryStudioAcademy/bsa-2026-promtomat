@@ -115,7 +115,7 @@ class BaseServerApplication implements ServerApplication {
 					);
 
 					const response: ServerCommonErrorResponse = {
-						code: ErrorCode.UNAUTHENTICATED,
+						code: error.code,
 						message: error.message,
 					};
 
@@ -128,7 +128,7 @@ class BaseServerApplication implements ServerApplication {
 					);
 
 					const response: ServerCommonErrorResponse = {
-						code: ErrorCode.INTERNAL_SERVER_ERROR,
+						code: error.code,
 						message: error.message,
 					};
 

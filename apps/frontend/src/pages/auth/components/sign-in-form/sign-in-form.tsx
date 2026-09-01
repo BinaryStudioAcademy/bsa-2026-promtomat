@@ -8,7 +8,10 @@ import { AppRoute } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
-import { type SignInRequestDto } from "~/modules/auth/auth.js";
+import {
+	type SignInRequestDto,
+	signInValidationSchema,
+} from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
 import { DEFAULT_SIGN_IN_PAYLOAD, SIGN_IN_FIELDS } from "./libs/constants.js";
@@ -19,6 +22,7 @@ const SignInForm: React.FC = () => {
 	const { clearErrors, control, handleSubmit, setError } =
 		useAppForm<SignInRequestDto>({
 			defaultValues: DEFAULT_SIGN_IN_PAYLOAD,
+			validationSchema: signInValidationSchema,
 		});
 
 	useServerFormErrors({
