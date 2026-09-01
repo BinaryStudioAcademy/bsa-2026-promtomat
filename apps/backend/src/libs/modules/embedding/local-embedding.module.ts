@@ -22,7 +22,7 @@ import {
 	type EmbeddingService,
 	type ModelManifest,
 } from "./libs/types/types.js";
-import { type S3ModelStore } from "./s3-model-store.service.js";
+import { type S3ModelStore } from "./s3-model-store.module.js";
 
 const LAST_DIMENSION_INDEX = -1;
 

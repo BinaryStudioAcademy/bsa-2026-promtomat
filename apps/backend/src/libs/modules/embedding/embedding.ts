@@ -2,8 +2,8 @@ import { config } from "~/libs/modules/config/config.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { s3 } from "~/libs/modules/s3/s3.js";
 
-import { LocalEmbeddingService } from "./local-embedding.service.js";
-import { S3ModelStore } from "./s3-model-store.service.js";
+import { LocalEmbeddingService } from "./local-embedding.module.js";
+import { S3ModelStore } from "./s3-model-store.module.js";
 
 const embedding = new LocalEmbeddingService({
 	dimensions: config.ENV.EMBEDDING.DIMENSIONS,
