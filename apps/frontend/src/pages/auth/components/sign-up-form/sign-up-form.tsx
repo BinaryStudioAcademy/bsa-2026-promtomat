@@ -1,10 +1,10 @@
-import { AuthValidationRule } from "@promptomat/shared/src/modules/auth/libs/enums/auth-validation-rule.enum.js";
 import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
+	AuthValidationRule,
 	type SignUpRequestDto,
 	signUpValidationSchema,
 } from "~/modules/auth/auth.js";
