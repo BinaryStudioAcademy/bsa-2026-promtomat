@@ -76,7 +76,13 @@ class S3ModelStore {
 			return null;
 		}
 
-		const parsed: unknown = JSON.parse(markerText);
+		let parsed: unknown;
+
+		try {
+			parsed = JSON.parse(markerText);
+		} catch {
+			parsed = null;
+		}
 
 		if (!checkIsManifest(parsed)) {
 			this.logger.warn(
