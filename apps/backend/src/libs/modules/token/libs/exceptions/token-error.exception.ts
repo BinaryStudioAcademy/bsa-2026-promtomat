@@ -1,5 +1,4 @@
-import { ErrorCode } from "@promptomat/shared";
-
+import { ErrorCode } from "~/libs/enums/enums.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
