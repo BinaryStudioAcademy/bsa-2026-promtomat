@@ -9,14 +9,12 @@ import styles from "./styles.module.css";
 type Properties = {
 	children: React.ReactNode;
 	className?: string | undefined;
-	onClick?: () => void;
 	to: NavigableRoute;
 };
 
 const Link: React.FC<Properties> = ({
 	children,
 	className,
-	onClick,
 	to,
 }: Properties) => {
 	const getLinkClassName = useCallback(
@@ -26,7 +24,7 @@ const Link: React.FC<Properties> = ({
 	);
 
 	return (
-		<NavLink className={getLinkClassName} onClick={onClick} to={to}>
+		<NavLink className={getLinkClassName} to={to}>
 			{children}
 		</NavLink>
 	);

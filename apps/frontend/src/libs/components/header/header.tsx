@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import brandLogo from "~/assets/img/brand.svg";
 import { Button } from "~/libs/components/button/button.js";
@@ -7,12 +8,20 @@ import { AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
+import { KeyboardKey } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 const Header: React.FC = () => {
+	const { pathname } = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [previousPathname, setPreviousPathname] = useState(pathname);
 	const toggleButtonReference = useRef<HTMLButtonElement>(null);
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
+
+	if (pathname !== previousPathname) {
+		setPreviousPathname(pathname);
+		setIsMenuOpen(false);
+	}
 
 	const handleMenuToggle = useCallback((): void => {
 		setIsMenuOpen((previousIsMenuOpen) => !previousIsMenuOpen);
@@ -28,7 +37,7 @@ const Header: React.FC = () => {
 		}
 
 		const handleKeyDown = (event: KeyboardEvent): void => {
-			if (event.key !== "Escape") {
+			if (event.key !== KeyboardKey.ESCAPE) {
 				return;
 			}
 
@@ -73,9 +82,7 @@ const Header: React.FC = () => {
 					{user ? (
 						<>
 							<li>
-								<Link onClick={handleMenuClose} to={AppRoute.ROOT}>
-									Root
-								</Link>
+								<Link to={AppRoute.ROOT}>Root</Link>
 							</li>
 							<li className={styles["identityLabel"]}>{user.email}</li>
 							<li>
@@ -90,14 +97,10 @@ const Header: React.FC = () => {
 					) : (
 						<>
 							<li>
-								<Link onClick={handleMenuClose} to={AppRoute.SIGN_IN}>
-									Sign in
-								</Link>
+								<Link to={AppRoute.SIGN_IN}>Sign in</Link>
 							</li>
 							<li>
-								<Link onClick={handleMenuClose} to={AppRoute.SIGN_UP}>
-									Sign up
-								</Link>
+								<Link to={AppRoute.SIGN_UP}>Sign up</Link>
 							</li>
 						</>
 					)}
