@@ -8,6 +8,7 @@ import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
+	AuthValidationRule,
 	type SignUpRequestDto,
 	signUpValidationSchema,
 } from "~/modules/auth/auth.js";
@@ -72,6 +73,14 @@ const SignUpForm: React.FC<Properties> = ({
 			) : null}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
+					<Input
+						control={control}
+						label="Nickname"
+						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
+						name="nickname"
+						placeholder="Enter a nickname"
+						type="text"
+					/>
 					<Input
 						control={control}
 						label="Email"
