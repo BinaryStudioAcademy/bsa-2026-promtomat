@@ -7,7 +7,10 @@ import { App } from "~/libs/components/app/app.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
-import { authMiddleware } from "~/modules/auth/libs/middlewares/middlewares.js";
+import {
+	authMiddleware,
+	noAccessMiddleware,
+} from "~/modules/auth/libs/middlewares/middlewares.js";
 import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
@@ -23,7 +26,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: <p>Root</p>,
 								index: true,
-								middleware: [authMiddleware],
+								middleware: [authMiddleware, noAccessMiddleware],
 							},
 							{
 								element: <Auth />,

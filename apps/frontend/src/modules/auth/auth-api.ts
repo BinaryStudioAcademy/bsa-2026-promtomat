@@ -1,4 +1,4 @@
-import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import { APIPath, ErrorCode, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
 import { type UserDto, UsersApiTag } from "~/modules/users/users.js";
@@ -16,6 +16,9 @@ const authApi = baseApi
 	.injectEndpoints({
 		endpoints: (builder) => ({
 			getAuthenticatedUser: builder.query<UserDto, undefined>({
+				extraOptions: {
+					suppressToastFor: [ErrorCode.UNAUTHORIZED, ErrorCode.FORBIDDEN],
+				},
 				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
 			}),

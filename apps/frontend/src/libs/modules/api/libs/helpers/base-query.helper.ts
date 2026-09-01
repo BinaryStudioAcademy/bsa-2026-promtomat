@@ -47,11 +47,15 @@ const baseQuery: BaseQueryFunctionInternal = async (
 	const error = toServerError(result.error);
 
 	if (extraOptions?.shouldSuppressToast !== true) {
-		showNotification({
-			id: error.code,
-			message: error.message,
-			type: "error",
-		});
+		const shouldSuppressErrorCode =
+			extraOptions?.suppressToastFor?.includes(error.code) === true;
+		if (!shouldSuppressErrorCode) {
+			showNotification({
+				id: error.code,
+				message: error.message,
+				type: "error",
+			});
+		}
 	}
 
 	return { error };
