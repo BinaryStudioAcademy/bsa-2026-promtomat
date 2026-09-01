@@ -1,8 +1,6 @@
-import { ErrorCode } from "@promptomat/shared";
+import { ErrorCode, UserErrorMessage } from "@promptomat/shared";
 
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
-
-import { UserErrorMessage } from "../enums/enums.js";
 
 class UsersError extends HTTPError {
 	public static emailAlreadyExists(): UsersError {
