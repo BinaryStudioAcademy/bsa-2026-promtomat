@@ -12,28 +12,13 @@ import { pipeline } from "node:stream/promises";
 
 import { HTTPCode } from "~/libs/modules/http/http.js";
 
-type DownloadObjectOptions = {
-	bucket: string;
-	destinationPath: string;
-	key: string;
-};
-
-type ReadObjectTextOptions = {
-	bucket: string;
-	key: string;
-};
-
-type UploadFileOptions = {
-	bucket: string;
-	key: string;
-	sourcePath: string;
-};
-
-type UploadTextOptions = {
-	bucket: string;
-	content: string;
-	key: string;
-};
+import { S3Error } from "./libs/exceptions/exceptions.js";
+import {
+	type DownloadObjectOptions,
+	type ReadObjectTextOptions,
+	type UploadFileOptions,
+	type UploadTextOptions,
+} from "./libs/types/types.js";
 
 class S3 {
 	private client: S3Client;
@@ -54,7 +39,7 @@ class S3 {
 		);
 
 		if (!object.Body) {
-			throw new Error(`S3 object "${key}" has no body.`);
+			throw new S3Error(`S3 object "${key}" has no body.`);
 		}
 
 		await pipeline(object.Body as Readable, createWriteStream(destinationPath));
@@ -83,7 +68,7 @@ class S3 {
 		}
 
 		if (!object.Body) {
-			throw new Error(`S3 object "${key}" has no body.`);
+			throw new S3Error(`S3 object "${key}" has no body.`);
 		}
 
 		return await object.Body.transformToString();
