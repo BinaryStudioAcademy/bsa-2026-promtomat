@@ -1,0 +1,68 @@
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.label {
+	font-size: var(--font-size-body-sm);
+	font-weight: 500;
+	color: var(--text-body);
+}
+
+.textarea {
+	width: 100%;
+	padding: 12px;
+	font-family: inherit;
+	font-size: var(--font-size-body-base);
+	color: var(--text-strong);
+	background-color: var(--surface-inset);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	transition:
+		border-color var(--motion-duration-fast) var(--motion-ease-standard),
+		background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.textarea::placeholder {
+	color: var(--text-faint);
+}
+
+.textarea:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-color: var(--border-focus);
+}
+
+.textarea:disabled {
+	color: var(--text-muted);
+	cursor: not-allowed;
+	background-color: var(--state-disabled-tint);
+}
+
+.sm {
+	height: var(--size-control-h-sm);
+}
+
+.md {
+	height: var(--size-control-h-md);
+}
+
+.lg {
+	height: var(--size-control-h-lg);
+}
+
+.error {
+	border-color: var(--surface-danger);
+}
+
+.message {
+	font-size: var(--font-size-label-sm);
+	color: var(--fg-danger);
+}
+
+.autoResize {
+	min-height: 72px;
+	overflow-y: hidden;
+	resize: none;
+}
