@@ -7,8 +7,8 @@ import {
 import { AppRoute, ErrorCode, HTTPHeader } from "~/libs/enums/enums.js";
 import { config } from "~/libs/modules/config/config.js";
 import { setRedirect } from "~/libs/modules/navigation/navigation.slice.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
-import { toast } from "~/libs/modules/toast/toast.js";
 
 import { type BaseQueryExtraOptions } from "../types/base-query-extra-options.type.js";
 import { type ServerError } from "../types/server-error.type.js";
@@ -49,7 +49,11 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 	switch (error.code) {
 		case ErrorCode.FORBIDDEN: {
-			toast.error(error.message, error.code);
+			showNotification({
+				id: error.code,
+				message: error.message,
+				type: "error",
+			});
 			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
 
 			return { error };
@@ -61,7 +65,11 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			await storage.drop(StorageKey.TOKEN);
 
 			if (isExpiredToken) {
-				toast.error(error.message, error.code);
+				showNotification({
+					id: error.code,
+					message: error.message,
+					type: "error",
+				});
 			}
 
 			api.dispatch(setRedirect(AppRoute.SIGN_IN));
@@ -70,7 +78,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 		}
 
 		case ErrorCode.UNAUTHORIZED: {
-			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
+			api.dispatch(setRedirect(AppRoute.SIGN_IN));
 			return { error };
 		}
 
@@ -80,7 +88,11 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 		default: {
 			if (extraOptions?.shouldSuppressToast !== true) {
-				toast.error(error.message, error.code);
+				showNotification({
+					id: error.code,
+					message: error.message,
+					type: "error",
+				});
 			}
 
 			return { error };

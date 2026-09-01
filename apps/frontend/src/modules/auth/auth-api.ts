@@ -43,6 +43,7 @@ const authApi = baseApi
 				}),
 			}),
 			signUp: builder.mutation<SignUpResponseDto, SignUpRequestDto>({
+				extraOptions: { shouldSuppressToast: true },
 				async onQueryStarted(_payload, { dispatch, queryFulfilled }) {
 					try {
 						const { data } = await queryFulfilled;
