@@ -9,6 +9,7 @@ const ToastProvider: React.FC = () => (
 		closeOnClick
 		pauseOnFocusLoss
 		role="status"
+		theme="dark"
 	/>
 );
 

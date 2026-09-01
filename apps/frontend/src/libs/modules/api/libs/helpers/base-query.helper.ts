@@ -71,12 +71,17 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			return { error };
 		}
 
+		case ErrorCode.UNAUTHORIZED: {
+			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
+			return { error };
+		}
+
 		case ErrorCode.VALIDATION_FAILED: {
 			return { error };
 		}
 
 		default: {
-			if (extraOptions?.suppressToast !== true) {
+			if (extraOptions?.shouldSuppressToast !== true) {
 				toast.error(message, error.code);
 			}
 
