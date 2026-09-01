@@ -11,12 +11,12 @@ import {
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 
 type Properties = {
-	isLoading: boolean;
+	isLoading?: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
 };
 
 const SignUpForm: React.FC<Properties> = ({
-	isLoading,
+	isLoading = false,
 	onSubmit,
 }: Properties) => {
 	const { control, handleSubmit } = useAppForm<SignUpRequestDto>({
@@ -53,7 +53,7 @@ const SignUpForm: React.FC<Properties> = ({
 						type="text"
 					/>
 				</p>
-				<Button isDisabled={isLoading} label="Sign up" type="submit" />
+				<Button isLoading={isLoading} label="Sign up" type="submit" />
 			</form>
 		</>
 	);
