@@ -1,7 +1,5 @@
 import { type Knex } from "knex";
 
-import { DatabaseTableName } from "../../libs/modules/database/database.js";
-
 const TABLE_NAME = "prompts";
 
 const ColumnName = {
@@ -26,13 +24,13 @@ async function up(knex: Knex): Promise<void> {
 			.integer(ColumnName.USER_ID)
 			.notNullable()
 			.references("id")
-			.inTable(DatabaseTableName.USERS)
+			.inTable("users")
 			.onDelete("CASCADE");
 		table
 			.integer(ColumnName.WORKSPACE_ID)
 			.notNullable()
 			.references("id")
-			.inTable(DatabaseTableName.WORKSPACES)
+			.inTable("workspaces")
 			.onDelete("CASCADE");
 		table.string(ColumnName.TASK_INTENT).notNullable();
 		table.text(ColumnName.PROMPT_BODY).notNullable();
