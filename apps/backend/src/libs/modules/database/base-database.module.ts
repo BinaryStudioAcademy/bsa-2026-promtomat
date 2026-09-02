@@ -1,5 +1,5 @@
 import knex, { type Knex } from "knex";
-import { knexSnakeCaseMappers, Model } from "objection";
+import { knexSnakeCaseMappers, Model, Transaction } from "objection";
 
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { type Config } from "~/libs/modules/config/config.js";
@@ -80,6 +80,12 @@ class BaseDatabase implements Database {
 		await this.knexInstance.destroy();
 
 		this.knexInstance = null;
+	}
+
+	public transaction<T>(
+		callback: (trx: Transaction) => Promise<T>,
+	): Promise<T> {
+		return Model.transaction(this.knexInstance as Knex, callback);
 	}
 }
 
