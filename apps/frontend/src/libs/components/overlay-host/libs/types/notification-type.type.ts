@@ -1,3 +1,3 @@
-type NotificationType = "error" | "info" | "message" | "warning";
+type NotificationType = "danger" | "info" | "success" | "warning";
 
 export { type NotificationType };

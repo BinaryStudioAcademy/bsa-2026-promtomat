@@ -4,10 +4,10 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { type NotificationType } from "../../overlay-host/libs/types/types.js";
 
 const notificationTypeToIconName = {
-	error: IconName.CIRCLE_X,
+	danger: IconName.CIRCLE_X,
 	info: IconName.INFO,
-	message: null,
+	success: IconName.CHECK_CIRCLE,
 	warning: IconName.ALERT_CIRCLE,
-} satisfies Record<NotificationType, null | ValueOf<typeof IconName>>;
+} satisfies Record<NotificationType, ValueOf<typeof IconName>>;
 
 export { notificationTypeToIconName };

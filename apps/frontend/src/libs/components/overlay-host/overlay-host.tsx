@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Notification } from "~/libs/components/notification/notification.js";
+import { KeyboardKey } from "~/libs/enums/enums.js";
 import {
 	bindShowNotification,
 	showNotification,
@@ -13,6 +14,7 @@ import {
 	DEFAULT_NOTIFICATION_DURATION_MS,
 	DEFAULT_NOTIFICATION_TYPE,
 	LAST_INDEX_FROM_END,
+	NOTIFICATION_CLOSING_DURATION_MS,
 } from "./libs/constants/constants.js";
 import { lockPage } from "./libs/helpers/lock-page.helper.js";
 import { type NotificationItem } from "./libs/types/types.js";
@@ -29,7 +31,6 @@ const OverlayHost = ({ children }: Properties) => {
 	);
 	const [blockingIds, setBlockingIds] = useState<string[]>([]);
 	const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-	const activeNotificationIdsReference = useRef<Set<string>>(new Set());
 	const timeoutIdsReference = useRef<
 		Map<string, ReturnType<typeof setTimeout>>
 	>(new Map());
@@ -60,22 +61,54 @@ const OverlayHost = ({ children }: Properties) => {
 			timeoutIdsReference.current.delete(id);
 		}
 
-		activeNotificationIdsReference.current.delete(id);
-
 		setNotifications((currentNotifications) => {
 			return currentNotifications.filter((item) => item.id !== id);
 		});
 	}, []);
 
+	const scheduleNotificationDismiss = useCallback(
+		(notification: NotificationItem) => {
+			if (notification.isClosing) {
+				return;
+			}
+
+			const previousTimeoutId = timeoutIdsReference.current.get(
+				notification.id,
+			);
+
+			if (previousTimeoutId !== undefined) {
+				clearTimeout(previousTimeoutId);
+			}
+
+			const timeoutId = setTimeout(() => {
+				dismissNotification(notification.id);
+			}, NOTIFICATION_CLOSING_DURATION_MS);
+
+			timeoutIdsReference.current.set(notification.id, timeoutId);
+		},
+		[dismissNotification],
+	);
+
+	const dismissNotifications = useCallback(() => {
+		for (const notification of notifications) {
+			scheduleNotificationDismiss(notification);
+		}
+
+		setNotifications((currentNotifications) =>
+			currentNotifications.map((notification) => ({
+				...notification,
+				isClosing: true,
+			})),
+		);
+	}, [scheduleNotificationDismiss, notifications]);
+
 	const handleShowNotification = useCallback(
 		(payload: ShowNotificationPayload) => {
 			const id = payload.id ?? crypto.randomUUID();
 
-			if (activeNotificationIdsReference.current.has(id)) {
+			if (timeoutIdsReference.current.has(id)) {
 				return;
 			}
-
-			activeNotificationIdsReference.current.add(id);
 
 			const duration = payload.duration ?? DEFAULT_NOTIFICATION_DURATION_MS;
 			const type = payload.type ?? DEFAULT_NOTIFICATION_TYPE;
@@ -84,6 +117,7 @@ const OverlayHost = ({ children }: Properties) => {
 				...currentNotifications,
 				{
 					id,
+					isClosing: false,
 					message: payload.message,
 					type,
 				},
@@ -99,6 +133,24 @@ const OverlayHost = ({ children }: Properties) => {
 	);
 
 	useEffect(() => {
+		if (hasBlocking) {
+			return;
+		}
+
+		const handleKeyPress = (event: KeyboardEvent) => {
+			if (event.key === KeyboardKey.ESCAPE) {
+				dismissNotifications();
+			}
+		};
+
+		document.addEventListener("keydown", handleKeyPress);
+
+		return () => {
+			document.removeEventListener("keydown", handleKeyPress);
+		};
+	}, [dismissNotifications, hasBlocking]);
+
+	useEffect(() => {
 		if (!hasBlocking) {
 			return;
 		}
@@ -112,7 +164,6 @@ const OverlayHost = ({ children }: Properties) => {
 
 	useEffect(() => {
 		const timeoutIds = timeoutIdsReference.current;
-		const activeNotificationIds = activeNotificationIdsReference.current;
 
 		return () => {
 			for (const timeoutId of timeoutIds.values()) {
@@ -120,7 +171,6 @@ const OverlayHost = ({ children }: Properties) => {
 			}
 
 			timeoutIds.clear();
-			activeNotificationIds.clear();
 		};
 	}, []);
 
@@ -149,11 +199,7 @@ const OverlayHost = ({ children }: Properties) => {
 						className={styles["overlay-host-notifications"]}
 					>
 						{notifications.map((item) => (
-							<Notification
-								item={item}
-								key={item.id}
-								onClose={dismissNotification}
-							/>
+							<Notification item={item} key={item.id} />
 						))}
 					</div>
 				</div>,

@@ -52,7 +52,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			showNotification({
 				id: error.code,
 				message: error.message,
-				type: "error",
+				type: "danger",
 			});
 			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
 
@@ -63,7 +63,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			showNotification({
 				id: error.code,
 				message: error.message,
-				type: "error",
+				type: "danger",
 			});
 
 			return { error };
@@ -78,7 +78,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				showNotification({
 					id: error.code,
 					message: error.message,
-					type: "error",
+					type: "danger",
 				});
 			}
 
@@ -96,7 +96,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				showNotification({
 					id: error.code,
 					message: error.message,
-					type: "error",
+					type: "danger",
 				});
 			}
 

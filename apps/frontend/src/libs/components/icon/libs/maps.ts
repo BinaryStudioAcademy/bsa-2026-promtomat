@@ -1,6 +1,7 @@
 import { type FunctionComponent, type SVGProps } from "react";
 
 import AlertCircleIcon from "~/assets/img/alert-circle.svg?react";
+import CheckCircleIcon from "~/assets/img/check-circle.svg?react";
 import CheckIcon from "~/assets/img/check.svg?react";
 import CircleXIcon from "~/assets/img/circle-x.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
@@ -13,6 +14,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 const iconNameToIcon = {
 	[IconName.ALERT_CIRCLE]: AlertCircleIcon,
 	[IconName.CHECK]: CheckIcon,
+	[IconName.CHECK_CIRCLE]: CheckCircleIcon,
 	[IconName.CIRCLE_X]: CircleXIcon,
 	[IconName.CLOSE]: CloseIcon,
 	[IconName.EYE]: EyeIcon,

@@ -1,4 +1,4 @@
-import { ErrorCode } from "@promptomat/shared";
+import { ErrorCode } from "~/libs/enums/enums.js";
 
 import { isServerError } from "./is-server-error.helper.js";
 

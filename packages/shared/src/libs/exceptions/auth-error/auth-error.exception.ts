@@ -32,8 +32,8 @@ class AuthError extends HTTPError {
 
 	public static invalidCredentials(): AuthError {
 		return new AuthError({
-			code: ErrorCode.AUTH_INVALID_CREDENTIALS,
-			message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
+			code: ErrorCode.INTERNAL_SERVER_ERROR,
+			message: "Something went wrong. Try again later",
 			status: HTTPCode.UNAUTHORIZED,
 		});
 	}
