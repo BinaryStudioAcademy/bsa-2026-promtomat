@@ -2,18 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import brandLogo from "~/assets/img/brand.svg";
-import { Button } from "~/libs/components/button/button.js";
 import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
-import {
-	LoaderSize,
-	LoaderVariant,
-} from "~/libs/components/loader/libs/enums/enums.js";
-import { Loader } from "~/libs/components/loader/loader.js";
-import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import { AppRoute, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
+import { HeaderNavigation } from "./components/header-navigation/header-navigation.js";
 import { KeyboardKey } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -62,50 +57,6 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 		};
 	}, [isMenuOpen]);
 
-	const getNavContent = (): React.JSX.Element => {
-		if (isLoading) {
-			return (
-				<li>
-					<Loader
-						label="Loading navigation"
-						size={LoaderSize.SMALL}
-						variant={LoaderVariant.INLINE}
-					/>
-				</li>
-			);
-		}
-
-		if (user) {
-			return (
-				<>
-					<li>
-						<Link to={AppRoute.ROOT}>Root</Link>
-					</li>
-					<li className={styles["identityLabel"]}>{user.email}</li>
-					<li>
-						<Button
-							label="Sign out"
-							onClick={handleMenuClose}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
-						/>
-					</li>
-				</>
-			);
-		}
-
-		return (
-			<>
-				<li>
-					<Link to={AppRoute.SIGN_IN}>Sign in</Link>
-				</li>
-				<li>
-					<Link to={AppRoute.SIGN_UP}>Sign up</Link>
-				</li>
-			</>
-		);
-	};
-
 	return (
 		<header className={styles["header"]}>
 			<Link className={styles["identity"]} to={AppRoute.ROOT}>
@@ -131,7 +82,13 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 				)}
 				id="primary-navigation"
 			>
-				<ul className={styles["navList"]}>{getNavContent()}</ul>
+				<ul className={styles["navList"]}>
+					<HeaderNavigation
+						isLoading={isLoading}
+						onSignOutClick={handleMenuClose}
+						user={user}
+					/>
+				</ul>
 			</nav>
 		</header>
 	);
