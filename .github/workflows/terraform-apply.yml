@@ -17,7 +17,6 @@ concurrency:
 jobs:
   apply:
     runs-on: ubuntu-latest
-    environment: production
     defaults:
       run:
         working-directory: infra

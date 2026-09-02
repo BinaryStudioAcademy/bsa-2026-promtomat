@@ -19,15 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug OIDC claims
-        run: |
-          payload=$(curl -sH "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r .value \
-            | cut -d. -f2 | tr '_-' '/+' )
-          # pad and decode the JWT payload
-          printf '%s' "$payload$(printf '%*s' $(( (4 - ${#payload} % 4) % 4 )) '' | tr ' ' '=')" \
-            | base64 -d | jq '{sub, aud, repository, event_name, ref}'
-
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.TF_PLAN_ROLE_ARN }}
