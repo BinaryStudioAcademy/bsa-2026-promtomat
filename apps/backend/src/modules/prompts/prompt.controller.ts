@@ -12,6 +12,28 @@ import { type PromptCreateRequestDto } from "./libs/types/types.js";
 import { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
+/*** @swagger
+ * components:
+ *    schemas:
+ *      Prompt:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: number
+ *            minimum: 1
+ *          efficiencyScore:
+ *            type: number
+ *            minimum: 1
+ *            maximum: 10
+ *          promptBody:
+ *            type: string
+ *          taskIntent:
+ *            type: string
+ *          userId:
+ *            type: number
+ *          workspaceId:
+ *            type: number
+ */
 class PromptController extends BaseController {
 	private promptService: PromptService;
 
@@ -35,6 +57,94 @@ class PromptController extends BaseController {
 		});
 	}
 
+	/**
+	 * @swagger
+	 * /prompts:
+	 *    post:
+	 *      description: Creates a new prompt
+	 *      security:
+	 *        - bearerAuth: []
+	 *      requestBody:
+	 *        description: Prompt data
+	 *        required: true
+	 *        content:
+	 *          application/json:
+	 *            schema:
+	 *              type: object
+	 *              properties:
+	 *                efficiencyScore:
+	 *                  type: number
+	 *                  minimum: 1
+	 *                  maximum: 10
+	 *                promptBody:
+	 *                  type: string
+	 *                taskIntent:
+	 *                  type: string
+	 *                workspaceId:
+	 *                  type: number
+	 *      responses:
+	 *        201:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Prompt"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        403:
+	 *          description: You do not have permission to access this workspace
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        404:
+	 *          description: Workspace not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  details:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        message:
+	 *                          type: string
+	 *                        path:
+	 *                          type: array
+	 *                          items:
+	 *                            type: string
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 */
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
