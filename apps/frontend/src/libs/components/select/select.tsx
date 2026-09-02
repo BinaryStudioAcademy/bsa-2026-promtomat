@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useId } from "react";
 import {
 	type Control,
 	type FieldPath,
@@ -6,7 +6,8 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { ControlSize } from "~/libs/enums/enums.js";
+import { Icon } from "~/libs/components/icon/icon.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -14,6 +15,7 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
+	descriptionId?: string;
 	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
@@ -29,6 +31,7 @@ type SelectOption = {
 
 const Select = <T extends FieldValues>({
 	control,
+	descriptionId,
 	isDisabled = false,
 	label,
 	name,
@@ -37,7 +40,7 @@ const Select = <T extends FieldValues>({
 	size = ControlSize.MD,
 }: Properties<T>): React.JSX.Element => {
 	const {
-		field,
+		field: { onChange, ...restField },
 		fieldState: { error },
 	} = useController({
 		control,
@@ -45,19 +48,45 @@ const Select = <T extends FieldValues>({
 		name,
 	});
 
+	const errorMessageId = useId();
+	const selectId = useId();
+
 	const hasError = Boolean(error);
+	const errorMessage = error?.message;
+	const describedById =
+		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
+
+	const handleChange = useCallback(
+		(event: React.ChangeEvent<HTMLSelectElement>): void => {
+			const stringValue = event.target.value;
+
+			const selectedOption = options.find(
+				(option) => String(option.value) === stringValue,
+			);
+
+			onChange(selectedOption ? selectedOption.value : stringValue);
+		},
+		[onChange, options],
+	);
 
 	return (
-		<label className={styles["field"]}>
-			<span className={styles["label"]}>{label}</span>
-			<div className={styles["selectWrapper"]}>
+		<div className={styles["field"]}>
+			<label className={styles["label"]} htmlFor={selectId}>
+				{label}
+			</label>
+			<div className={styles["control"]}>
 				<select
-					{...field}
+					{...restField}
+					aria-describedby={describedById}
+					aria-invalid={hasError || undefined}
 					className={getValidClasses(
 						styles["select"],
 						styles[size],
 						hasError && styles["error"],
 					)}
+					id={selectId}
+					onChange={handleChange}
+					value={restField.value ?? ""}
 				>
 					{placeholder && (
 						<option disabled hidden value="">
@@ -70,11 +99,14 @@ const Select = <T extends FieldValues>({
 						</option>
 					))}
 				</select>
+				<Icon className={styles["icon"]} iconName={IconName.CHEVRON} />
 			</div>
-			{error ? (
-				<span className={styles["message"]}>{error.message}</span>
-			) : null}
-		</label>
+			{!descriptionId && (
+				<span className={styles["message"]} id={errorMessageId}>
+					{errorMessage}
+				</span>
+			)}
+		</div>
 	);
 };
 

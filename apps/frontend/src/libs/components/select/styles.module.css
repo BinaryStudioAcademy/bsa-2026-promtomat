@@ -10,9 +10,10 @@
 	color: var(--text-body);
 }
 
-.selectWrapper {
+.control {
 	position: relative;
-	width: 100%;
+	display: flex;
+	align-items: center;
 }
 
 .select {
@@ -24,10 +25,6 @@
 	appearance: none;
 	cursor: pointer;
 	background-color: var(--surface-inset);
-	background-image: url('data:image/svg+xml;utf8,<svg fill="none" height="16" stroke="%239ca3af" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><polyline points="6 9 12 15 18 9"/></svg>');
-	background-repeat: no-repeat;
-	background-position: right 12px center;
-	background-size: 16px;
 	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-md);
 	transition:
@@ -67,4 +64,20 @@
 .message {
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
+}
+
+.icon {
+	position: absolute;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	color: var(--text-muted);
+	pointer-events: none;
+	background-color: transparent;
+	border: 0;
+	border-radius: var(--radius-sm);
 }
