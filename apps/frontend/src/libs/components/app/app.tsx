@@ -38,6 +38,9 @@ const App: React.FC = () => {
 					<li>
 						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
 					</li>
+					<li>
+						<Link to={AppRoute.WORKSPACE}>Workspaces</Link>
+					</li>
 				</ul>
 			</header>
 
