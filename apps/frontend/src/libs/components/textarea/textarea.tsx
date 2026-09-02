@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useId, useRef } from "react";
 import {
 	type Control,
 	type FieldPath,
@@ -15,6 +15,7 @@ import styles from "./styles.module.css";
 type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 		control: Control<T, null>;
+		descriptionId?: string;
 		disabled?: boolean;
 		label: string;
 		name: FieldPath<T>;
@@ -24,6 +25,7 @@ type Properties<T extends FieldValues> =
 
 const Textarea = <T extends FieldValues>({
 	control,
+	descriptionId,
 	disabled = false,
 	label,
 	name,
@@ -39,8 +41,14 @@ const Textarea = <T extends FieldValues>({
 		name,
 	});
 
+	const errorMessageId = useId();
+	const textareaId = useId();
+
 	const textareaReferance = useRef<HTMLTextAreaElement | null>(null);
 	const hasError = Boolean(error);
+	const errorMessage = error?.message;
+	const describedById =
+		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
 
 	const adjustHeight = useCallback(() => {
 		const textarea = textareaReferance.current;
@@ -71,24 +79,33 @@ const Textarea = <T extends FieldValues>({
 	}, [field.value, adjustHeight]);
 
 	return (
-		<label className={styles["field"]}>
-			<span className={styles["label"]}>{label}</span>
-			<textarea
-				{...rest}
-				{...field}
-				className={getValidClasses(
-					styles["textarea"],
-					styles[size],
-					hasError && styles["error"],
-					styles["autoResize"],
-				)}
-				onChange={handleChange}
-				ref={handleReference}
-			/>
-			{error ? (
-				<span className={styles["message"]}>{error.message}</span>
-			) : null}
-		</label>
+		<div className={styles["field"]}>
+			<label className={styles["label"]} htmlFor={textareaId}>
+				{label}
+			</label>
+			<div className={styles["control"]}>
+				<textarea
+					{...rest}
+					{...field}
+					aria-describedby={describedById}
+					aria-invalid={hasError || undefined}
+					className={getValidClasses(
+						styles["textarea"],
+						styles[size],
+						hasError && styles["error"],
+						styles["autoResize"],
+					)}
+					id={textareaId}
+					onChange={handleChange}
+					ref={handleReference}
+				/>
+			</div>
+			{!descriptionId && (
+				<span className={styles["message"]} id={errorMessageId}>
+					{errorMessage}
+				</span>
+			)}
+		</div>
 	);
 };
 

@@ -10,6 +10,12 @@
 	color: var(--text-body);
 }
 
+.control {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
 .textarea {
 	width: 100%;
 	padding: 12px;
