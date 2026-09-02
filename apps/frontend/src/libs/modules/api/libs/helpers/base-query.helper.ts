@@ -92,7 +92,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 		}
 
 		default: {
-			if (extraOptions?.shouldSuppressToast !== true) {
+			if (!extraOptions?.shouldSuppressToast) {
 				showNotification({
 					id: error.code,
 					message: error.message,

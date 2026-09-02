@@ -6,9 +6,9 @@ import {
 	ServerValidationErrorResponse,
 } from "~/libs/types/types.js";
 
+import { UNKNOWN_ERROR_MESSAGE } from "../constants/constants.js";
+import { FetchErrorMessage } from "../enums/enums.js";
 import { type ServerError } from "../types/server-error.type.js";
-
-const UNKNOWN_ERROR_MESSAGE = "Something went wrong. Please try again.";
 
 const isServerErrorResponse = (
 	payload: unknown,
@@ -52,6 +52,14 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 		return {
 			code: error.data.code,
 			message: error.data.message,
+			status: error.status,
+		};
+	}
+
+	if (typeof error.status === "string") {
+		return {
+			code: ErrorCode.INTERNAL_SERVER_ERROR,
+			message: FetchErrorMessage[error.status],
 			status: error.status,
 		};
 	}
