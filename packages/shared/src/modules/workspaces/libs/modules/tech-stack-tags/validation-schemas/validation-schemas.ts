@@ -1,4 +1,1 @@
-export {
-	TechStackTagSchema,
-	TechStackTagsSchema,
-} from "./tech-stack.validation-schema.js";
+export { TechStackTagSchema } from "./tech-stack.validation-schema.js";

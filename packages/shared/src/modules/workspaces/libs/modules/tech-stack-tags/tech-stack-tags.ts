@@ -7,7 +7,4 @@ export {
 	normalizeTechStackTag,
 	normalizeTechStackTags,
 } from "./helpers/helpers.js";
-export {
-	TechStackTagSchema,
-	TechStackTagsSchema,
-} from "./validation-schemas/validation-schemas.js";
+export { TechStackTagSchema } from "./validation-schemas/validation-schemas.js";
