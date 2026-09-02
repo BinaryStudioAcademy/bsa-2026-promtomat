@@ -58,10 +58,7 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 
 	return {
 		code: ErrorCode.INTERNAL_SERVER_ERROR,
-		message:
-			"error" in error && typeof error.error === "string"
-				? error.error
-				: UNKNOWN_ERROR_MESSAGE,
+		message: UNKNOWN_ERROR_MESSAGE,
 		status: error.status,
 	};
 };

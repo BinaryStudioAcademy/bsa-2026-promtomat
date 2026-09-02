@@ -59,12 +59,22 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			return { error };
 		}
 
-		case ErrorCode.UNAUTHENTICATED: {
-			const isExpiredToken = await storage.has(StorageKey.TOKEN);
+		case ErrorCode.INTERNAL_SERVER_ERROR: {
+			showNotification({
+				id: error.code,
+				message: error.message,
+				type: "error",
+			});
+
+			return { error };
+		}
+
+		case ErrorCode.UNAUTHORIZED: {
+			const hasExpiredToken = await storage.has(StorageKey.TOKEN);
 
 			await storage.drop(StorageKey.TOKEN);
 
-			if (isExpiredToken) {
+			if (hasExpiredToken) {
 				showNotification({
 					id: error.code,
 					message: error.message,
@@ -74,11 +84,6 @@ const baseQuery: BaseQueryFunctionInternal = async (
 
 			api.dispatch(setRedirect(AppRoute.SIGN_IN));
 
-			return { error };
-		}
-
-		case ErrorCode.UNAUTHORIZED: {
-			api.dispatch(setRedirect(AppRoute.SIGN_IN));
 			return { error };
 		}
 

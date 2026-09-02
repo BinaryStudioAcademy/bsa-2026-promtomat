@@ -22,23 +22,25 @@ const Notification = ({ item: { id, message, type }, onClose }: Properties) => {
 	}, [id, onClose]);
 
 	return (
-		<div className={styles["notification"]}>
-			<button
-				aria-label={NOTIFICATION_CLOSE_LABEL}
-				className={styles["close"]}
-				onClick={handleClose}
-				type="button"
-			>
-				<Icon iconName={IconName.CLOSE} />
-			</button>
-			<div className={styles["message"]}>
-				{iconName === null ? null : (
-					<Icon
-						className={getValidClasses(styles["icon"], styles[type])}
-						iconName={iconName}
-					/>
-				)}
-				{message}
+		<div className={styles["notification-container"]}>
+			<div className={styles["notification"]}>
+				<button
+					aria-label={NOTIFICATION_CLOSE_LABEL}
+					className={styles["close"]}
+					onClick={handleClose}
+					type="button"
+				>
+					<Icon iconName={IconName.CLOSE} />
+				</button>
+				<div className={styles["message"]}>
+					{iconName === null ? null : (
+						<Icon
+							className={getValidClasses(styles["icon"], styles[type])}
+							iconName={iconName}
+						/>
+					)}
+					{message}
+				</div>
 			</div>
 		</div>
 	);
