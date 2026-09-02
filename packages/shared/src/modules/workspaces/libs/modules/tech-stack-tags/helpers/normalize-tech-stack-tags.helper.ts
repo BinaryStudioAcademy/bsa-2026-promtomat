@@ -1,10 +1,4 @@
-import { TECH_STACK_VARIANTS } from "../enums/enums.js";
-
-const VARIANT_TO_CANONICAL = Object.fromEntries(
-	Object.entries(TECH_STACK_VARIANTS).flatMap(([canonical, variants]) =>
-		variants.map((variant) => [variant.toLowerCase(), canonical]),
-	),
-);
+import { VARIANT_TO_CANONICAL } from "../enums/enums.js";
 
 const normalizeTechStackTag = (tag: string): string => {
 	const normalizedTag = normalizeTagName(tag);
