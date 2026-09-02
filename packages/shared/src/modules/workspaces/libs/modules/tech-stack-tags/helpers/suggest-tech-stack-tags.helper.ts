@@ -1,5 +1,5 @@
 import { TECH_STACK_DICTIONARY } from "../enums/dictionary.enum.js";
-import { normalizeTagName } from "./normalize.helper.js";
+import { normalizeTagName } from "./normalize-tech-stack-tags.helper.js";
 
 const SUGGESTION_LIMIT = 5;
 const MIN_INPUT_LENGTH = 1;
@@ -9,7 +9,7 @@ const SINGLE_VALUE_INDEX = 0;
 const FIRST_INDEX = 0;
 const INDEX_STEP = 1;
 
-const getRandomInt = (maxExclusive: number): number => {
+const getRandomNumber = (maxExclusive: number): number => {
 	const maxUnbiasedValue =
 		Math.floor(UINT32_RANGE / maxExclusive) * maxExclusive;
 	const buffer = new Uint32Array(SINGLE_VALUE_LENGTH);
@@ -32,7 +32,7 @@ const shuffleTags = (tags: string[]): string[] => {
 		index > FIRST_INDEX;
 		index -= INDEX_STEP
 	) {
-		const swapIndex = getRandomInt(index + INDEX_STEP);
+		const swapIndex = getRandomNumber(index + INDEX_STEP);
 		const currentTag = shuffled[index];
 		const swapTag = shuffled[swapIndex];
 
