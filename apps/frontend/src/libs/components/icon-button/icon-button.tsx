@@ -17,7 +17,6 @@ type Properties = {
 	onClick?: () => void;
 	reference?: Ref<HTMLButtonElement>;
 	size?: ValueOf<typeof ControlSize>;
-	type: "button" | "submit";
 };
 
 const IconButton: React.FC<Properties> = ({
@@ -30,7 +29,6 @@ const IconButton: React.FC<Properties> = ({
 	onClick,
 	reference,
 	size = ControlSize.MD,
-	type,
 }: Properties) => (
 	<button
 		aria-controls={ariaControls}
@@ -40,7 +38,7 @@ const IconButton: React.FC<Properties> = ({
 		disabled={isDisabled}
 		onClick={onClick}
 		ref={reference}
-		type={type}
+		type="button"
 	>
 		<Icon iconName={iconName} />
 	</button>

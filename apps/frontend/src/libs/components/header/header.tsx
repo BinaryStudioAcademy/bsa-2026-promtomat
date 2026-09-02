@@ -5,19 +5,28 @@ import brandLogo from "~/assets/img/brand.svg";
 import { Button } from "~/libs/components/button/button.js";
 import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
+import {
+	LoaderSize,
+	LoaderVariant,
+} from "~/libs/components/loader/libs/enums/enums.js";
+import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
+import { type UserDto } from "~/modules/users/users.js";
 
 import { KeyboardKey } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
-const Header: React.FC = () => {
+type Properties = {
+	isLoading: boolean;
+	user: null | UserDto;
+};
+
+const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 	const { pathname } = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [previousPathname, setPreviousPathname] = useState(pathname);
 	const toggleButtonReference = useRef<HTMLButtonElement>(null);
-	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 
 	if (pathname !== previousPathname) {
 		setPreviousPathname(pathname);
@@ -53,6 +62,50 @@ const Header: React.FC = () => {
 		};
 	}, [isMenuOpen]);
 
+	const getNavContent = (): React.JSX.Element => {
+		if (isLoading) {
+			return (
+				<li>
+					<Loader
+						label="Loading navigation"
+						size={LoaderSize.SMALL}
+						variant={LoaderVariant.INLINE}
+					/>
+				</li>
+			);
+		}
+
+		if (user) {
+			return (
+				<>
+					<li>
+						<Link to={AppRoute.ROOT}>Root</Link>
+					</li>
+					<li className={styles["identityLabel"]}>{user.email}</li>
+					<li>
+						<Button
+							label="Sign out"
+							onClick={handleMenuClose}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+					</li>
+				</>
+			);
+		}
+
+		return (
+			<>
+				<li>
+					<Link to={AppRoute.SIGN_IN}>Sign in</Link>
+				</li>
+				<li>
+					<Link to={AppRoute.SIGN_UP}>Sign up</Link>
+				</li>
+			</>
+		);
+	};
+
 	return (
 		<header className={styles["header"]}>
 			<Link className={styles["identity"]} to={AppRoute.ROOT}>
@@ -67,7 +120,6 @@ const Header: React.FC = () => {
 					iconName={IconName.MENU}
 					onClick={handleMenuToggle}
 					reference={toggleButtonReference}
-					type="button"
 				/>
 			</div>
 
@@ -79,33 +131,7 @@ const Header: React.FC = () => {
 				)}
 				id="primary-navigation"
 			>
-				<ul className={styles["navList"]}>
-					{user ? (
-						<>
-							<li>
-								<Link to={AppRoute.ROOT}>Root</Link>
-							</li>
-							<li className={styles["identityLabel"]}>{user.email}</li>
-							<li>
-								<Button
-									label="Sign out"
-									onClick={handleMenuClose}
-									type="button"
-									variant={ButtonVariant.SECONDARY}
-								/>
-							</li>
-						</>
-					) : (
-						<>
-							<li>
-								<Link to={AppRoute.SIGN_IN}>Sign in</Link>
-							</li>
-							<li>
-								<Link to={AppRoute.SIGN_UP}>Sign up</Link>
-							</li>
-						</>
-					)}
-				</ul>
+				<ul className={styles["navList"]}>{getNavContent()}</ul>
 			</nav>
 		</header>
 	);

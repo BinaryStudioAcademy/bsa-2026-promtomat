@@ -39,7 +39,7 @@ const SignInForm: React.FC = () => {
 
 	return (
 		<>
-			<h1 className={styles["heading"]}>Sign In</h1>
+			<h1 className={styles["heading"]}>Log into your account</h1>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				{isError && (
 					<FormAlert
