@@ -1,5 +1,6 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { Database } from "~/libs/modules/database/database.js";
+import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
@@ -15,6 +16,8 @@ import {
 class AuthService {
 	private database: Database;
 
+	private database: Database;
+
 	private hashing: Hashing;
 
 	private tokenService: TokenService;
@@ -25,17 +28,20 @@ class AuthService {
 
 	public constructor({
 		database,
+		database,
 		hashing,
 		tokenService,
 		userService,
 		workspaceService,
 	}: {
 		database: Database;
+		database: Database;
 		hashing: Hashing;
 		tokenService: TokenService;
 		userService: UserService;
 		workspaceService: WorkspaceService;
 	}) {
+		this.database = database;
 		this.database = database;
 		this.hashing = hashing;
 		this.tokenService = tokenService;
@@ -80,12 +86,14 @@ class AuthService {
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
 		const user = await this.database.transaction(async (trx) => {
+		const user = await this.database.transaction(async (trx) => {
 			const newUser = await this.userService.create(signUpRequestDto, trx);
 
 			await this.workspaceService.create(
 				{
 					name: `${newUser.nickname} workspace`,
-					userId: newUser.id,
+					stackTags: [],
+					visibility: WorkspaceVisibility.PRIVATE,
 				},
 				trx,
 			);
