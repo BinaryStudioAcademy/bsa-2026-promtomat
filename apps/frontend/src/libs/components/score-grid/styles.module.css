@@ -1,10 +1,16 @@
-.score-grid-wrapper {
+.field {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 4px;
 }
 
-.btn-wrapper {
+.label {
+	font-size: var(--font-size-body-sm);
+	font-weight: 500;
+	color: var(--text-body);
+}
+
+.control {
 	display: grid;
 	grid-template-columns: repeat(
 		auto-fill,

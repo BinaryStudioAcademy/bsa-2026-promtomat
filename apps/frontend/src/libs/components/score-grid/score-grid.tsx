@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useId, useState } from "react";
 
 import { ButtonVariant } from "~/libs/enums/button-variant.enum.js";
 import { ValueOf } from "~/libs/types/types.js";
@@ -21,14 +21,18 @@ const getScoreColor = (score: number): ValueOf<typeof ButtonVariant> => {
 
 type Properties = {
 	disabled?: boolean;
+	label: string;
 	onScoreSelect: (score: number) => () => void;
 };
 
 const ScoreGrid: React.FC<Properties> = ({
 	disabled = false,
+	label,
 	onScoreSelect,
 }) => {
 	const [activeScore, setActiveScore] = useState<null | number>(null);
+
+	const inputId = useId();
 
 	const handleActive = useCallback((score: number) => {
 		return (): void => {
@@ -49,8 +53,11 @@ const ScoreGrid: React.FC<Properties> = ({
 		: "";
 
 	return (
-		<div className={styles["score-grid-wrapper"]}>
-			<div className={styles["btn-wrapper"]}>
+		<div className={styles["field"]}>
+			<label className={styles["label"]} htmlFor={inputId}>
+				{label}
+			</label>
+			<div className={styles["control"]}>
 				{SCORE_RANGE.map((score) => {
 					const isActive = activeScore === score;
 					const buttonColorClass = isActive

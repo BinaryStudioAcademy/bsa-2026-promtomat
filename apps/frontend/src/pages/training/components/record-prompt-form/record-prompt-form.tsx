@@ -79,7 +79,10 @@ const RecordPromptForm: React.FC = () => {
 						name="promptBody"
 						placeholder="Paste the exact prompt you sent to your &#10;coding AI tool here..."
 					/>
-					<ScoreGrid onScoreSelect={handleScoreSubmit} />
+					<ScoreGrid
+						label="Efficiency Score"
+						onScoreSelect={handleScoreSubmit}
+					/>
 				</div>
 			</form>
 		</>
