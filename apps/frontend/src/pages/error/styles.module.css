@@ -1,0 +1,17 @@
+.screen {
+	--screen-glow-color: color-mix(
+		in srgb,
+		var(--fg-warning, #fbbf24) 18%,
+		transparent
+	);
+}
+
+.details {
+	max-width: 100%;
+	margin: 0;
+	overflow-x: auto;
+	font-size: var(--font-size-label-sm, 12px);
+	line-height: 20px;
+	text-align: left;
+	white-space: pre-wrap;
+}

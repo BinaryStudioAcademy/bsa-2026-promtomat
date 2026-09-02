@@ -1,0 +1,41 @@
+mind_maps:
+  - name: Promptomat workflow
+    feature: whole app
+    tool: miro
+    url: https://miro.com/app/board/uXjVHuVvyVQ=/
+    owner: Khrystyna Babii, Olga Shaiakhmedova, Olena Moskalenko
+    created_at: 2026-08-26
+  - name: Promptomat UI Elements
+    feature: whole app
+    tool: miro
+    url: https://miro.com/app/board/uXjVHuMwyMg=/
+    owner: Khrystyna Babii, Olga Shaiakhmedova, Olena Moskalenko
+    created_at: 2026-08-26
+  - name: Promptomat MVP
+    feature: MVP scope
+    tool: miro
+    url: https://miro.com/app/board/uXjVHtUmVIA=/?share_link_id=15807242573
+    owner: Olena Moskalenko
+    created_at: 2026-08-29
+
+requirements:
+  - name: Promptomat Requirements (Original version)
+    feature: whole app
+    tool: google docs
+    url: https://docs.google.com/document/d/13wEuicGEAOFJqEosj1ckZ4LELxQhtPkmw_7LyN28mww/edit?tab=t.0#heading=h.bo815dzgs4g
+    owner: Volodymyr Koberniuk (Product Owner)
+    created_at: 2026-08-21
+
+qa_documentation:
+  - name: Test Plan
+    feature: MVP scope
+    tool: google docs
+    url: https://docs.google.com/document/d/1BeduXiYrV6YiRX-nXrPDN1_01ggb3bhv4qhfaq6ZyF0/edit?tab=t.0#heading=h.vh3cbl8416bi
+    owner: Khrystyna Babii, Olga Shaiakhmedova, Olena Moskalenko
+    created_at: 2026-08-27
+  - name: Promptomat MVP
+    feature: MVP scope
+    tool: google docs
+    url: https://docs.google.com/document/d/1VKkEr9VTEZUpZHTmcZNitKEJtZ6Lte2to8bx7P15APk/edit?tab=t.0
+    owner: Khrystyna Babii, Olga Shaiakhmedova
+    created_at: 2026-08-31

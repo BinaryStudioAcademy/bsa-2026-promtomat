@@ -41,3 +41,5 @@ override.tf.json
 terraform.rc
 
 lambda.zip
+
+mise.toml
