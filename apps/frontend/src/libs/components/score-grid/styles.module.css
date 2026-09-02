@@ -1,17 +1,21 @@
 .score-grid-wrapper {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 10px;
 }
 
 .btn-wrapper {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+	grid-template-columns: repeat(
+		auto-fill,
+		minmax(clamp(55px, 10vw, 62px), 1fr)
+	);
 	gap: 6px;
 }
 
 .message {
 	font-size: var(--font-size-body-sm);
+	color: var(--text-faint);
 }
 
 .danger-outline {
