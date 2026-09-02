@@ -1,11 +1,11 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
+import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 import { WorkspaceVisibility } from "~/modules/workspaces/libs/enums/enums.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
-import { UserModel } from "../users/user.model.js";
 import {
 	type SignInRequestDto,
 	type SignInResponseDto,
@@ -14,6 +14,8 @@ import {
 } from "./libs/types/types.js";
 
 class AuthService {
+	private database: Database;
+
 	private hashing: Hashing;
 
 	private tokenService: TokenService;
@@ -23,16 +25,19 @@ class AuthService {
 	private workspaceService: WorkspaceService;
 
 	public constructor({
+		database,
 		hashing,
 		tokenService,
 		userService,
 		workspaceService,
 	}: {
+		database: Database;
 		hashing: Hashing;
 		tokenService: TokenService;
 		userService: UserService;
 		workspaceService: WorkspaceService;
 	}) {
+		this.database = database;
 		this.hashing = hashing;
 		this.tokenService = tokenService;
 		this.userService = userService;
@@ -75,12 +80,12 @@ class AuthService {
 	public async signUp(
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
-		const user = await UserModel.transaction(async (trx) => {
+		const user = await this.database.transaction(async (trx) => {
 			const newUser = await this.userService.create(signUpRequestDto, trx);
 
 			await this.workspaceService.create(
 				{
-					name: `${newUser.email} workspace`,
+					name: `${newUser.nickname} workspace`,
 					stackTags: [],
 					visibility: WorkspaceVisibility.PRIVATE,
 				},

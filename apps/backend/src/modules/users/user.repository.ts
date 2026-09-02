@@ -10,7 +10,7 @@ class UserRepository {
 		this.userModel = userModel;
 	}
 
-public async create(
+	public async create(
 		entity: UserEntity,
 		trx?: Transaction,
 	): Promise<UserEntity> {
