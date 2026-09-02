@@ -46,7 +46,9 @@ export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
 	AiCodingTool,
+	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
 } from "./modules/users/users.js";

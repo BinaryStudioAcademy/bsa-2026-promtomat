@@ -7,6 +7,7 @@ import { UserRepository } from "~/modules/users/user.repository.js";
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
 
 class UserService {
@@ -68,6 +69,41 @@ class UserService {
 		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
+	}
+
+	public async updateProfile(
+		userId: number,
+		payload: UserUpdateRequestDto,
+	): Promise<UserDto> {
+		const currentUser = await this.userRepository.findById(userId);
+
+		if (currentUser === null) {
+			throw AuthError.invalidCredentials();
+		}
+
+		const currentUserObject = currentUser.toObject();
+
+		const isNicknameChanged = payload.nickname !== currentUserObject.nickname;
+		const isToolChanged =
+			payload.primaryAiCodingTool !== currentUserObject.primaryAiCodingTool;
+
+		if (!isNicknameChanged && !isToolChanged) {
+			return currentUserObject;
+		}
+
+		if (isNicknameChanged) {
+			const existingUser = await this.userRepository.findByNickname(
+				payload.nickname,
+			);
+
+			if (existingUser && existingUser.toObject().id !== userId) {
+				throw AuthError.nicknameAlreadyExists();
+			}
+		}
+
+		const updatedUser = await this.userRepository.update(userId, payload);
+
+		return updatedUser.toObject();
 	}
 }
 
