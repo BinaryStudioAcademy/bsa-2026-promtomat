@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import {
-	isValidTechStackTag,
+	checkIsValidTechStackTag,
 	normalizeTechStackTag,
 } from "../helpers/helpers.js";
 
@@ -11,7 +11,7 @@ const TechStackTagSchema = z
 	.string()
 	.refine(
 		(tag) => {
-			return isValidTechStackTag(tag);
+			return checkIsValidTechStackTag(tag);
 		},
 		{ message: INVALID_TAG_ERROR_MESSAGE },
 	)
