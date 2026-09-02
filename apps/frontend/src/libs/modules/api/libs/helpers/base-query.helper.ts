@@ -69,7 +69,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			return { error };
 		}
 
-		case ErrorCode.UNAUTHORIZED: {
+		case ErrorCode.UNAUTHENTICATED: {
 			const hasExpiredToken = await storage.has(StorageKey.TOKEN);
 
 			await storage.drop(StorageKey.TOKEN);
