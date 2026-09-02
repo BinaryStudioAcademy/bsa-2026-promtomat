@@ -7,6 +7,8 @@ import {
 
 import { UserColumnName } from "../users/libs/enums/enums.js";
 import { UserModel } from "../users/user.model.js";
+import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import { WorkspaceModel } from "../workspaces/workspace.model.js";
 import { PromptColumnName } from "./libs/enums/enums.js";
 
 class PromptModel extends AbstractModel {
@@ -30,15 +32,14 @@ class PromptModel extends AbstractModel {
 				modelClass: UserModel,
 				relation: this.BelongsToOneRelation,
 			},
-			// TODO
-			// workspace: {
-			// 	join:{
-			// 		from: `${DatabaseTableName.WORKSPACES}.${PromptColumnName.WORKSPACE_ID}`
-			// 		to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`
-			// 	},
-			// 	modelClass: WorkspaceModel,
-			// 	relation: this.BelongsToOneRelation
-			// }
+			workspace: {
+				join: {
+					from: `${DatabaseTableName.WORKSPACES}.${PromptColumnName.WORKSPACE_ID}`,
+					to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+				},
+				modelClass: WorkspaceModel,
+				relation: this.BelongsToOneRelation,
+			},
 		};
 	}
 

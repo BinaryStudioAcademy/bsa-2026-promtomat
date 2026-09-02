@@ -38,9 +38,11 @@ class PromptController extends BaseController {
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		const userId = (options.user as NonNullable<typeof options.user>).id;
 		return {
-			payload: await this.promptService.create(options.body, userId),
+			payload: await this.promptService.create(
+				options.body,
+				options.user?.id as number,
+			),
 			status: HTTPCode.CREATED,
 		};
 	}
