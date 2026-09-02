@@ -6,8 +6,6 @@ const ColumnName = {
 	PRIMARY_AI_CODING_TOOL: "primary_ai_coding_tool",
 } as const;
 
-const DEFAULT_PRIMARY_AI_CODING_TOOL = "CURSOR";
-
 const PRIMARY_AI_CODING_TOOL_MAX_LENGTH = 30;
 
 async function down(knex: Knex): Promise<void> {
@@ -23,8 +21,7 @@ async function up(knex: Knex): Promise<void> {
 				ColumnName.PRIMARY_AI_CODING_TOOL,
 				PRIMARY_AI_CODING_TOOL_MAX_LENGTH,
 			)
-			.notNullable()
-			.defaultTo(DEFAULT_PRIMARY_AI_CODING_TOOL);
+			.nullable();
 	});
 }
 

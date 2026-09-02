@@ -5,7 +5,7 @@ type UserDto = {
 	email: string;
 	id: number;
 	nickname: string;
-	primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+	primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 };
 
 export { type UserDto };

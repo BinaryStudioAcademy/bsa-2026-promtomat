@@ -15,7 +15,7 @@ class UserModel extends AbstractModel {
 
 	public passwordSalt!: string;
 
-	public primaryAiCodingTool!: ValueOf<typeof AiCodingTool>;
+	public primaryAiCodingTool!: null | ValueOf<typeof AiCodingTool>;
 
 	public static override get tableName(): string {
 		return DatabaseTableName.USERS;

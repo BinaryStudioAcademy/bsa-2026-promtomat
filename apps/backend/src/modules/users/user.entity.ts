@@ -13,7 +13,7 @@ class UserEntity implements Entity {
 
 	private passwordSalt: string;
 
-	private primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+	private primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 
 	private constructor({
 		email,
@@ -28,7 +28,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 	}) {
 		this.id = id;
 		this.email = email;
@@ -51,7 +51,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -68,13 +68,11 @@ class UserEntity implements Entity {
 		nickname,
 		passwordHash,
 		passwordSalt,
-		primaryAiCodingTool,
 	}: {
 		email: string;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -82,7 +80,7 @@ class UserEntity implements Entity {
 			nickname,
 			passwordHash,
 			passwordSalt,
-			primaryAiCodingTool,
+			primaryAiCodingTool: null,
 		});
 	}
 
@@ -105,7 +103,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 	} {
 		return {
 			email: this.email,
@@ -120,7 +118,7 @@ class UserEntity implements Entity {
 		email: string;
 		id: number;
 		nickname: string;
-		primaryAiCodingTool: ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
 	} {
 		return {
 			email: this.email,

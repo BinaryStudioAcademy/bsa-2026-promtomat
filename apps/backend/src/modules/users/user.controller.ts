@@ -27,9 +27,12 @@ import { UsersApiPath } from "./libs/enums/enums.js";
  *            format: string
  *          primaryAiCodingTool:
  *            type: string
+ *            nullable: true
  *            enum:
+ *              - CHATGPT
  *              - CLAUDE_CODE
  *              - CURSOR
+ *              - GEMINI
  *              - GITHUB_COPILOT
  *              - JETBRAINS_AI
  *              - WINDSURF
