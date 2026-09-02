@@ -7,3 +7,9 @@
 	border: var(--border-width-hairline) solid var(--surface-danger-active);
 	border-radius: var(--radius-md);
 }
+
+.success {
+	color: var(--fg-success);
+	background-color: var(--bg-success);
+	border-color: var(--fg-success);
+}
