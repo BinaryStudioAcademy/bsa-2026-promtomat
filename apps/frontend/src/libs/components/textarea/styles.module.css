@@ -82,18 +82,15 @@
 	margin-right: 20px;
 }
 
-/* Background of the scrollbar track */
 .textarea::-webkit-scrollbar-track {
 	background: transparent;
 }
 
-/* The draggable scroll handle */
 .textarea::-webkit-scrollbar-thumb {
 	background-color: var(--border-subtle);
 	border-radius: var(--radius-sm);
 }
 
-/* Hover effect on the scroll handle */
 .textarea::-webkit-scrollbar-thumb:hover {
 	background-color: var(--border-strong);
 }
