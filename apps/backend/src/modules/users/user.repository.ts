@@ -15,11 +15,10 @@ class UserRepository {
 		trx?: Transaction,
 	): Promise<UserEntity> {
 		const user = await this.userModel
-			.query()
+			.query(trx)
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
-
 		return UserEntity.initialize(user);
 	}
 
