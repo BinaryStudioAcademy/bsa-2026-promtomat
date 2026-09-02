@@ -33,7 +33,10 @@ class UserService {
 		this.workspaceService = workspaceService;
 	}
 
-	public async create(payload: SignUpRequestDto): Promise<UserDto> {
+	public async create(
+		payload: SignUpRequestDto,
+		trx?: Transaction,
+	): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmailOrNickname(
 			payload.email,
 			payload.nickname,
