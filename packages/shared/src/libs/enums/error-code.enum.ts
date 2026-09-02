@@ -1,12 +1,15 @@
-const ErrorCode = {
-	AUTH_EMAIL_ALREADY_EXISTS: "AUTH_EMAIL_ALREADY_EXISTS",
-	AUTH_INVALID_CREDENTIALS: "AUTH_INVALID_CREDENTIALS",
-	AUTH_NICKNAME_ALREADY_EXISTS: "AUTH_NICKNAME_ALREADY_EXISTS",
+import { AuthErrorCode } from "../../modules/auth/auth.js";
+
+const ServerErrorCode = {
 	FORBIDDEN: "FORBIDDEN",
 	INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
-	NOT_FOUND: "NOT_FOUND",
 	UNAUTHENTICATED: "UNAUTHENTICATED",
 	VALIDATION_FAILED: "VALIDATION_FAILED",
+} as const;
+
+const ErrorCode = {
+	...ServerErrorCode,
+	...AuthErrorCode,
 } as const;
 
 export { ErrorCode };
