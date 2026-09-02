@@ -33,6 +33,9 @@ const App: React.FC = () => {
 						<Link to={AppRoute.ROOT}>Root</Link>
 					</li>
 					<li>
+						<Link to={AppRoute.TRAINING}>Training</Link>
+					</li>
+					<li>
 						<Link to={AppRoute.SIGN_IN}>Sign in</Link>
 					</li>
 					<li>
