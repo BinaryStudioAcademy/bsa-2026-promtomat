@@ -1,2 +1,2 @@
-export { SCORE_DESCRIPTIONS } from "./score-description.enum.js";
-export { SCORE_THRESHOLD } from "./score-threshold.enum.js";
+export { ScoreDescriptions } from "./score-description.enum.js";
+export { ScoreThreshold } from "./score-threshold.enum.js";

@@ -1,4 +1,4 @@
-const SCORE_DESCRIPTIONS: Record<number, string> = {
+const ScoreDescriptions: Record<number, string> = {
 	1: "1 · Completely useless / Hallucinated heavily",
 	2: "2 · Code was completely broken / failed to run",
 	3: "3 · Required major manual fixes to work",
@@ -11,4 +11,4 @@ const SCORE_DESCRIPTIONS: Record<number, string> = {
 	10: "10 · Flawless, perfect context and execution",
 } as const;
 
-export { SCORE_DESCRIPTIONS };
+export { ScoreDescriptions };

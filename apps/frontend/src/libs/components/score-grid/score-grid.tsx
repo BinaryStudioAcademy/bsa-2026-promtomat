@@ -4,16 +4,16 @@ import { ButtonVariant } from "~/libs/enums/button-variant.enum.js";
 import { ValueOf } from "~/libs/types/types.js";
 
 import { Button } from "../button/button.js";
-import { SCORE_DESCRIPTIONS, SCORE_THRESHOLD } from "./libs/enums/enums.js";
+import { ScoreDescriptions, ScoreThreshold } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
-const SCORE_RANGE = Object.keys(SCORE_DESCRIPTIONS).map(Number);
+const SCORE_RANGE = Object.keys(ScoreDescriptions).map(Number);
 
 const getScoreColor = (score: number): ValueOf<typeof ButtonVariant> => {
-	if (score <= SCORE_THRESHOLD.DANGER_MAX) {
+	if (score <= ScoreThreshold.DANGER_MAX) {
 		return ButtonVariant.DANGER_OUTLINE;
 	}
-	if (score <= SCORE_THRESHOLD.WARNING_MAX) {
+	if (score <= ScoreThreshold.WARNING_MAX) {
 		return ButtonVariant.WARNING_OUTLINE;
 	}
 	return ButtonVariant.SUCCESS_OUTLINE;
@@ -44,9 +44,7 @@ const ScoreGrid: React.FC<Properties> = ({
 		setActiveScore(null);
 	}, []);
 
-	const activeDescription = activeScore
-		? SCORE_DESCRIPTIONS[activeScore]
-		: null;
+	const activeDescription = activeScore ? ScoreDescriptions[activeScore] : null;
 
 	const messageColorClass = activeScore
 		? styles[getScoreColor(activeScore)]
