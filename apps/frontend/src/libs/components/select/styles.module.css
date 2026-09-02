@@ -35,7 +35,6 @@
 .select:focus-visible {
 	outline: var(--border-width-focus) solid var(--border-focus);
 	outline-offset: var(--border-width-focus);
-	border-color: var(--border-focus);
 }
 
 .select:disabled {
@@ -62,6 +61,7 @@
 }
 
 .message {
+	min-height: 18px;
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
 }
