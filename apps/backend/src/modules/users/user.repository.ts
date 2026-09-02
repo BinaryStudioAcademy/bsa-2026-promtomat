@@ -1,5 +1,3 @@
-import { type Transaction } from "objection";
-
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
@@ -16,6 +14,7 @@ class UserRepository {
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
+
 		return UserEntity.initialize(user);
 	}
 
