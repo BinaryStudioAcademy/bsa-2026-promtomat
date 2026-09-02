@@ -7,6 +7,7 @@ import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
@@ -14,6 +15,7 @@ import {
 } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
+import { FormAlert } from "../form-alert/form-alert.js";
 import { DEFAULT_SIGN_IN_PAYLOAD, SIGN_IN_FIELDS } from "./libs/constants.js";
 
 const SignInForm: React.FC = () => {
@@ -45,9 +47,12 @@ const SignInForm: React.FC = () => {
 		return <Navigate replace to={AppRoute.ROOT} />;
 	}
 
+	const errorMessage = getErrorMessage(error);
+
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign In</h1>
+			{errorMessage && <FormAlert message={errorMessage} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input
