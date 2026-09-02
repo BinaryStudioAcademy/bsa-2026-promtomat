@@ -1,0 +1,12 @@
+.notification {
+	max-width: 360px;
+	padding: var(--space-16);
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	line-height: 1.5;
+	color: var(--text-muted);
+	pointer-events: none;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-lg);
+}
