@@ -1,3 +1,4 @@
+import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptDto,
@@ -8,8 +9,14 @@ import { type PromptRepository } from "./prompt.repository.js";
 class PromptService {
 	private promptRepository: PromptRepository;
 
-	public constructor(promptRepository: PromptRepository) {
+	private workspaceService: WorkspaceService;
+
+	public constructor(
+		promptRepository: PromptRepository,
+		workspaceService: WorkspaceService,
+	) {
 		this.promptRepository = promptRepository;
+		this.workspaceService = workspaceService;
 	}
 
 	public async create(
@@ -18,7 +25,7 @@ class PromptService {
 	): Promise<PromptDto> {
 		const { efficiencyScore, promptBody, taskIntent, workspaceId } = payload;
 
-		// TODO: varify the user has write access to workspace
+		await this.workspaceService.checkUserAccess(workspaceId, userId);
 
 		const prompt = await this.promptRepository.create(
 			PromptEntity.initializeNew({
