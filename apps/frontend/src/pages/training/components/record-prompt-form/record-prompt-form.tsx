@@ -78,6 +78,7 @@ const RecordPromptForm: React.FC = () => {
 						label="Prompt Body"
 						name="promptBody"
 						placeholder="Paste the exact prompt you sent to your &#10;coding AI tool here..."
+						rows={6}
 					/>
 					<ScoreGrid
 						label="Efficiency Score"

@@ -18,10 +18,15 @@
 
 .textarea {
 	width: 100%;
+	max-height: 300px;
 	padding: 12px;
+	overflow-y: auto;
 	font-family: inherit;
 	font-size: var(--font-size-body-base);
+	line-height: 1.2;
 	color: var(--text-strong);
+	scrollbar-color: var(--border-subtle) transparent;
+	scrollbar-width: thin;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-md);
@@ -69,6 +74,26 @@
 
 .autoResize {
 	min-height: 72px;
-	overflow-y: hidden;
 	resize: none;
+}
+
+.textarea::-webkit-scrollbar {
+	width: 4px;
+	margin-right: 20px;
+}
+
+/* Background of the scrollbar track */
+.textarea::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* The draggable scroll handle */
+.textarea::-webkit-scrollbar-thumb {
+	background-color: var(--border-subtle);
+	border-radius: var(--radius-sm);
+}
+
+/* Hover effect on the scroll handle */
+.textarea::-webkit-scrollbar-thumb:hover {
+	background-color: var(--border-strong);
 }

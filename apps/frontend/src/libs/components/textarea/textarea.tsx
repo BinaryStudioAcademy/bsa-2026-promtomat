@@ -10,6 +10,7 @@ import { ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
+import { MAX_HEIGHT } from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> =
@@ -18,6 +19,7 @@ type Properties<T extends FieldValues> =
 		descriptionId?: string;
 		disabled?: boolean;
 		label: string;
+		maxHeight?: number;
 		name: FieldPath<T>;
 		rows?: number;
 		size?: ValueOf<typeof ControlSize>;
@@ -28,7 +30,9 @@ const Textarea = <T extends FieldValues>({
 	descriptionId,
 	disabled = false,
 	label,
+	maxHeight = MAX_HEIGHT,
 	name,
+	rows,
 	size = ControlSize.MD,
 	...rest
 }: Properties<T>): React.JSX.Element => {
@@ -54,9 +58,12 @@ const Textarea = <T extends FieldValues>({
 		const textarea = textareaReferance.current;
 		if (textarea) {
 			textarea.style.height = "auto";
-			textarea.style.height = `${String(textarea.scrollHeight)}px`;
+			const scrollHeight = textarea.scrollHeight;
+			textarea.style.height = `${String(scrollHeight)}px`;
+
+			textarea.style.overflowY = scrollHeight >= maxHeight ? "auto" : "hidden";
 		}
-	}, []);
+	}, [maxHeight]);
 
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -98,6 +105,7 @@ const Textarea = <T extends FieldValues>({
 					id={textareaId}
 					onChange={handleChange}
 					ref={handleReference}
+					rows={rows}
 				/>
 			</div>
 			{!descriptionId && (
