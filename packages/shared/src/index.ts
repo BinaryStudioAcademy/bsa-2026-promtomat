@@ -64,7 +64,6 @@ export {
 	TECH_STACK_DICTIONARY,
 	TECH_STACK_VARIANTS,
 	TechStackTagSchema,
-	TechStackTagsSchema,
 	workspaceCreationValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,

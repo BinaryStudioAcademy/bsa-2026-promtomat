@@ -1,5 +1,7 @@
 import { z } from "zod";
 
-const stackTagsField = z.array(z.string()).optional().default([]);
+import { TechStackTagSchema } from "../modules/tech-stack-tags/tech-stack-tags.js";
+
+const stackTagsField = z.array(TechStackTagSchema).optional().default([]);
 
 export { stackTagsField };

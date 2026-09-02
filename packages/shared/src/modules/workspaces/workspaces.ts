@@ -14,7 +14,6 @@ export {
 	TECH_STACK_DICTIONARY,
 	TECH_STACK_VARIANTS,
 	TechStackTagSchema,
-	TechStackTagsSchema,
 } from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {
 	type WorkspaceCreateRequestDto,

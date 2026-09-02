@@ -19,6 +19,4 @@ const TechStackTagSchema = z
 		return normalizeTechStackTag(tag);
 	});
 
-const TechStackTagsSchema = z.array(TechStackTagSchema).optional().default([]);
-
-export { TechStackTagSchema, TechStackTagsSchema };
+export { TechStackTagSchema };
