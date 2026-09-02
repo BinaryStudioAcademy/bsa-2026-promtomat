@@ -5,6 +5,7 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { useRedirect } from "~/libs/hooks/use-redirect/use-redirect.hook.js";
+import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { useGetUsersQuery } from "~/modules/users/users-api.js";
 
 const App: React.FC = () => {
@@ -14,23 +15,32 @@ const App: React.FC = () => {
 
 	const isRoot = pathname === AppRoute.ROOT;
 
+	const { data: authenticatedUser, isLoading: isAuthenticatedUserLoading } =
+		useGetAuthenticatedUserQuery(undefined);
+
 	const {
 		data: users,
-		error,
-		isLoading,
+		error: usersError,
+		isLoading: isUsersLoading,
 	} = useGetUsersQuery(undefined, { skip: !isRoot });
 
 	return (
 		<>
-			<Header />
+			<Header
+				isLoading={isAuthenticatedUserLoading}
+				user={authenticatedUser ?? null}
+			/>
 			<RouterOutlet />
 			{isRoot && (
 				<>
-					<h2>Users:</h2>
-					{isLoading && (
+					<h2>Signed in as</h2>
+					{authenticatedUser && <p>{authenticatedUser.email}</p>}
+
+					<h2>All users</h2>
+					{isUsersLoading && (
 						<Loader label="Loading users" variant={LoaderVariant.SECTION} />
 					)}
-					{error && <p>{error.message}</p>}
+					{usersError && <p>{usersError.message}</p>}
 					<ul>
 						{users?.items.map((user) => (
 							<li key={user.id}>{user.email}</li>

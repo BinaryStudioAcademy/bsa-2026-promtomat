@@ -42,7 +42,7 @@ const baseQuery: BaseQueryFn<FetchArgs | string, unknown, ServerError> = async (
 		}
 
 		if (error.status === HTTPCode.FORBIDDEN) {
-			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
+			api.dispatch(setRedirect({ replace: false, to: AppRoute.NO_ACCESS }));
 		}
 
 		return { error };
