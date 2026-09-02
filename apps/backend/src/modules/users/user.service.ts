@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
@@ -19,7 +21,10 @@ class UserService {
 		this.userRepository = userRepository;
 	}
 
-	public async create(payload: SignUpRequestDto): Promise<UserDto> {
+	public async create(
+		payload: SignUpRequestDto,
+		trx?: Transaction,
+	): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmailOrNickname(
 			payload.email,
 			payload.nickname,
@@ -41,6 +46,7 @@ class UserService {
 				passwordHash: hash,
 				passwordSalt: salt,
 			}),
+			trx,
 		);
 
 		return user.toObject();

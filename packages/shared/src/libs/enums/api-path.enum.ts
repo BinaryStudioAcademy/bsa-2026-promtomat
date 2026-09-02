@@ -3,6 +3,7 @@ const APIPath = {
 	HEALTH: "/health",
 	PROMPTS: "/prompts",
 	USERS: "/users",
+	WORKSPACES: "/workspaces",
 } as const;
 
 export { APIPath };
