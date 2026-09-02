@@ -5,6 +5,8 @@ class UserEntity implements Entity {
 
 	private id: null | number;
 
+	private nickname: string;
+
 	private passwordHash: string;
 
 	private passwordSalt: string;
@@ -12,16 +14,19 @@ class UserEntity implements Entity {
 	private constructor({
 		email,
 		id,
+		nickname,
 		passwordHash,
 		passwordSalt,
 	}: {
 		email: string;
 		id: null | number;
+		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
 	}) {
 		this.id = id;
 		this.email = email;
+		this.nickname = nickname;
 		this.passwordHash = passwordHash;
 		this.passwordSalt = passwordSalt;
 	}
@@ -29,17 +34,20 @@ class UserEntity implements Entity {
 	public static initialize({
 		email,
 		id,
+		nickname,
 		passwordHash,
 		passwordSalt,
 	}: {
 		email: string;
 		id: number;
+		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
 	}): UserEntity {
 		return new UserEntity({
 			email,
 			id,
+			nickname,
 			passwordHash,
 			passwordSalt,
 		});
@@ -47,16 +55,19 @@ class UserEntity implements Entity {
 
 	public static initializeNew({
 		email,
+		nickname,
 		passwordHash,
 		passwordSalt,
 	}: {
 		email: string;
+		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
 	}): UserEntity {
 		return new UserEntity({
 			email,
 			id: null,
+			nickname,
 			passwordHash,
 			passwordSalt,
 		});
@@ -78,11 +89,13 @@ class UserEntity implements Entity {
 
 	public toNewObject(): {
 		email: string;
+		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
 	} {
 		return {
 			email: this.email,
+			nickname: this.nickname,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
 		};
@@ -91,10 +104,12 @@ class UserEntity implements Entity {
 	public toObject(): {
 		email: string;
 		id: number;
+		nickname: string;
 	} {
 		return {
 			email: this.email,
 			id: this.id as number,
+			nickname: this.nickname,
 		};
 	}
 }

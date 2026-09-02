@@ -1,7 +1,8 @@
 import { ErrorCode } from "../../../libs/enums/enums.js";
 import { HTTPCode } from "../../../libs/modules/http/http.js";
-import { type ValueOf } from "../../../libs/types/value-of.type.js";
+import { AuthValidationMessage } from "../../../modules/auth/libs/enums/auth-validation-message.enum.js";
 import { UserErrorMessage } from "../../../modules/users/users.js";
+import { type ValueOf } from "../../types/value-of.type.js";
 import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
@@ -34,6 +35,14 @@ class AuthError extends HTTPError {
 			code: ErrorCode.AUTH_INVALID_CREDENTIALS,
 			message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
 			status: HTTPCode.UNAUTHORIZED,
+		});
+	}
+
+	public static nicknameAlreadyExists(): AuthError {
+		return new AuthError({
+			code: ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS,
+			message: AuthValidationMessage.NICKNAME_ALREADY_EXISTS,
+			status: HTTPCode.CONFLICT,
 		});
 	}
 }

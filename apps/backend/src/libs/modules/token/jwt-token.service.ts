@@ -33,14 +33,23 @@ class JwtTokenService implements TokenService {
 			return payload;
 		} catch (error) {
 			if (error instanceof errors.JWTExpired) {
-				throw new TokenError(TokenErrorMessage.TOKEN_HAS_EXPIRED, error);
+				throw new TokenError({
+					cause: error,
+					message: TokenErrorMessage.TOKEN_HAS_EXPIRED,
+				});
 			}
 
 			if (error instanceof errors.JWSSignatureVerificationFailed) {
-				throw new TokenError(TokenErrorMessage.INVALID_TOKEN_SIGNATURE, error);
+				throw new TokenError({
+					cause: error,
+					message: TokenErrorMessage.INVALID_TOKEN_SIGNATURE,
+				});
 			}
 
-			throw new TokenError(TokenErrorMessage.INVALID_TOKEN, error);
+			throw new TokenError({
+				cause: error,
+				message: TokenErrorMessage.INVALID_TOKEN,
+			});
 		}
 	}
 
