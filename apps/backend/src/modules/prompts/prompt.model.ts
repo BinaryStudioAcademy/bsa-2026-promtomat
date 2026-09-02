@@ -34,7 +34,7 @@ class PromptModel extends AbstractModel {
 			},
 			workspace: {
 				join: {
-					from: `${DatabaseTableName.WORKSPACES}.${PromptColumnName.WORKSPACE_ID}`,
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 					to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 				},
 				modelClass: WorkspaceModel,
