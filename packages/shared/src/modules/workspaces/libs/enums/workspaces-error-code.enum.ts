@@ -1,0 +1,7 @@
+const WorkspacesErrorCode = {
+	NO_PERMISSION_TO_ACCESS: "NO_PERMISSION_TO_ACCESS",
+	NOT_FOUND: "NOT_FOUND",
+	WORKSPACE_ALREADY_EXISTS: "WORKSPACE_ALREADY_EXISTS",
+} as const;
+
+export { WorkspacesErrorCode };

@@ -1,7 +1,9 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
+import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
+import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
 	type SignInRequestDto,
@@ -11,20 +13,34 @@ import {
 } from "./libs/types/types.js";
 
 class AuthService {
+	private database: Database;
+
 	private hashing: Hashing;
 
 	private tokenService: TokenService;
 
 	private userService: UserService;
 
-	public constructor(
-		hashing: Hashing,
-		tokenService: TokenService,
-		userService: UserService,
-	) {
+	private workspaceService: WorkspaceService;
+
+	public constructor({
+		database,
+		hashing,
+		tokenService,
+		userService,
+		workspaceService,
+	}: {
+		database: Database;
+		hashing: Hashing;
+		tokenService: TokenService;
+		userService: UserService;
+		workspaceService: WorkspaceService;
+	}) {
+		this.database = database;
 		this.hashing = hashing;
 		this.tokenService = tokenService;
 		this.userService = userService;
+		this.workspaceService = workspaceService;
 	}
 
 	public async signIn(
@@ -63,7 +79,9 @@ class AuthService {
 	public async signUp(
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
-		const user = await this.userService.create(signUpRequestDto);
+		const user = await this.database.transaction(async (trx) => {
+			return await this.userService.create(signUpRequestDto, trx);
+		});
 
 		const token = await this.tokenService.create({
 			userId: user.id,

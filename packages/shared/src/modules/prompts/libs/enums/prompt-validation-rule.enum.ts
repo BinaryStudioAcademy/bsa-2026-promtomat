@@ -1,0 +1,10 @@
+const PromptValidationRule = {
+	BODY_MAXIMUM_LENGTH: 50_000,
+	BODY_MINIMUM_LENGTH: 1,
+	EFFICIENCY_SCORE_MAX: 10,
+	EFFICIENCY_SCORE_MIN: 1,
+	INTENT_MAXIMUM_LENGTH: 255,
+	INTENT_MINIMUM_LENGTH: 5,
+} as const;
+
+export { PromptValidationRule };

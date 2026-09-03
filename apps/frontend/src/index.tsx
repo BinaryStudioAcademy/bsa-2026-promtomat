@@ -12,6 +12,8 @@ import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { Training } from "~/pages/training/training.js";
+import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -27,6 +29,22 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								index: true,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<Workspaces />
+									</PrivateRoute>
+								),
+								path: AppRoute.WORKSPACES,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<Training />
+									</PrivateRoute>
+								),
+								path: AppRoute.TRAINING,
 							},
 							{
 								element: <Auth />,
