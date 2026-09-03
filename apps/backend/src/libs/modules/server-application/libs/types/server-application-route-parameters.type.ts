@@ -12,6 +12,7 @@ type ServerApplicationRouteParameters = {
 	path: string;
 	validation?: {
 		body?: ValidationSchema;
+		params?: ValidationSchema;
 	};
 };
 
