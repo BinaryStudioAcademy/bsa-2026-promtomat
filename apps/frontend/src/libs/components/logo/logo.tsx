@@ -15,7 +15,11 @@ const Logo: React.FC<Properties> = ({
 	size = ControlSize.MD,
 }: Properties) => (
 	<div className={getValidClasses(styles["logo"], styles[size])}>
-		<img alt="app logo" className={styles["mark"]} src={logo} />
+		<img
+			alt={isIconOnly ? "Promptomat logo" : ""}
+			className={styles["mark"]}
+			src={logo}
+		/>
 		{!isIconOnly && <span className={styles["wordmark"]}>Promptomat</span>}
 	</div>
 );
