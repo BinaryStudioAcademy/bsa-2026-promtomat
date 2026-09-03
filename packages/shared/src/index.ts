@@ -56,7 +56,6 @@ export {
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	checkIsValidTechStackTag,
-	getRandomTechStackTags,
 	getTechStackTagSuggestions,
 	normalizeTagName,
 	normalizeTechStackTag,
