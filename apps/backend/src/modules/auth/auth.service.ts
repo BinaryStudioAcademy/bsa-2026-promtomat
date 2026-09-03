@@ -80,17 +80,7 @@ class AuthService {
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
 		const user = await this.database.transaction(async (trx) => {
-			const newUser = await this.userService.create(signUpRequestDto, trx);
-
-			await this.workspaceService.create(
-				{
-					name: `${newUser.nickname} workspace`,
-					userId: newUser.id,
-				},
-				trx,
-			);
-
-			return newUser;
+			return await this.userService.create(signUpRequestDto, trx);
 		});
 
 		const token = await this.tokenService.create({

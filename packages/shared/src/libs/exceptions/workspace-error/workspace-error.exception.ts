@@ -22,8 +22,6 @@ class WorkspaceError extends HTTPError {
 			message,
 			status,
 		});
-
-		this.status = status;
 	}
 
 	public static nameAlreadyExists(): WorkspaceError {
