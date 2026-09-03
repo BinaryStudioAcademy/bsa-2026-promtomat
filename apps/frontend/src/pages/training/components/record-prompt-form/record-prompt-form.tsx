@@ -50,6 +50,13 @@ const RecordPromptForm: React.FC = () => {
 		[handleSubmit, recordPrompt, setValue, reset],
 	);
 
+	const handleFormSubmit = useCallback(
+		(event: React.SubmitEvent<HTMLFormElement>) => {
+			event.preventDefault();
+		},
+		[],
+	);
+
 	return (
 		<>
 			<div>
@@ -58,7 +65,7 @@ const RecordPromptForm: React.FC = () => {
 					Every submission trains the retrieval index.
 				</span>
 			</div>
-			<form className={styles["form"]} noValidate>
+			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Select
 						control={control}
