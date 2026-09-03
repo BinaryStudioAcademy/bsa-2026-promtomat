@@ -1,3 +1,4 @@
+export { WorkspaceRole } from "./workspace-role.enum.js";
 export { WorkspaceValidationMessage } from "./workspace-validation-message.enum.js";
 export { WorkspaceValidationRule } from "./workspace-validation-rule.enum.js";
 export { WorkspaceVisibility } from "./workspace-visibility.enum.js";
