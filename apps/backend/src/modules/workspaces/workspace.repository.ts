@@ -38,9 +38,13 @@ class WorkspaceRepository {
 	): Promise<WorkspaceEntity[]> {
 		const query = this.workspaceModel.query().where({ userId });
 
-		if (workspaceName) {
-			const escapedWorkspaceName = escapeILikePattern(workspaceName);
-			query.whereILike("name", `%${escapedWorkspaceName}%`);
+		if (search) {
+			query = query
+				.whereILike("name", `%${search}%`)
+				.orWhereRaw(
+					"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
+					[`%${search}%`],
+				);
 		}
 
 		const workspaces = await query.execute();
