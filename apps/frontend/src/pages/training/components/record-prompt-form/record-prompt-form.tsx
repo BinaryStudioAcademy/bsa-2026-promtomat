@@ -1,7 +1,3 @@
-import {
-	PromptCreateRequestDto,
-	promptCreateValidationSchema,
-} from "@promptomat/shared";
 import React, { useCallback } from "react";
 
 import { Input } from "~/libs/components/input/input.js";
@@ -10,6 +6,10 @@ import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
+import {
+	type PromptCreateRequestDto,
+	promptCreateValidationSchema,
+} from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import styles from "../../styles.module.css";
@@ -21,12 +21,9 @@ const RecordPromptForm: React.FC = () => {
 
 	const workspaces = data?.items;
 
-	const options = workspaces?.map(({ id, name, visibility }) => {
-		const [firstLetter = "", ...restChars] = visibility;
-		const capitalizedVisibility =
-			firstLetter.toUpperCase() + restChars.join("");
+	const options = workspaces?.map(({ id, name }) => {
 		return {
-			label: `${name} (${capitalizedVisibility})`,
+			label: name,
 			value: id,
 		};
 	});
