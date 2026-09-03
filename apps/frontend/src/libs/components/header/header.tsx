@@ -78,7 +78,7 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 				<Logo size={ControlSize.SM} />
 			</Link>
 
-			<div className={styles["menuToggle"]}>
+			<div className={styles["menu-toggle"]}>
 				<IconButton
 					ariaControls="primary-navigation"
 					ariaExpanded={isMenuOpen}
@@ -93,7 +93,7 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 				aria-label="Main"
 				className={getValidClasses(
 					styles["nav"],
-					isMenuOpen && styles["navOpen"],
+					isMenuOpen && styles["nav-open"],
 				)}
 				id="primary-navigation"
 				ref={navReference}

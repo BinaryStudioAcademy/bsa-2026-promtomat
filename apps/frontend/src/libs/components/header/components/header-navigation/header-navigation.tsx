@@ -19,13 +19,13 @@ const HeaderNavigation: React.FC<Properties> = ({
 	}
 
 	return (
-		<ul className={styles["navList"]}>
+		<ul className={styles["nav-list"]}>
 			{user ? (
 				<>
 					<li>
-						<Link to={AppRoute.ROOT}>Root</Link>
+						<Link to={AppRoute.ROOT}>Home</Link>
 					</li>
-					<li className={styles["identityLabel"]}>{user.email}</li>
+					<li className={styles["identity-label"]}>{user.email}</li>
 					<li>
 						<Button
 							label="Sign out"
