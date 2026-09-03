@@ -7,7 +7,6 @@ export {
 export { normalizeWorkspaceTags } from "./libs/helpers/helpers.js";
 export {
 	checkIsValidTechStackTag,
-	getRandomTechStackTags,
 	getTechStackTagSuggestions,
 	normalizeTagName,
 	normalizeTechStackTag,
