@@ -20,8 +20,6 @@ class AuthError extends HTTPError {
 			message,
 			status,
 		});
-
-		this.status = status;
 	}
 
 	public static emailAlreadyExists(): AuthError {
