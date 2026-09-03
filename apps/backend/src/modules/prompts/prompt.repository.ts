@@ -9,18 +9,9 @@ class PromptRepository {
 	}
 
 	public async create(entity: PromptEntity): Promise<PromptEntity> {
-		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
-			entity.toNewObject();
-
 		const prompt = await this.promptModel
 			.query()
-			.insert({
-				efficiencyScore,
-				promptBody,
-				taskIntent,
-				userId,
-				workspaceId,
-			})
+			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
 
