@@ -43,7 +43,7 @@ class WorkspaceRepository {
 		userId: number,
 		search?: string,
 	): Promise<WorkspaceEntity[]> {
-		let query = this.workspaceModel.query().where("user_id", userId);
+		let query = this.workspaceModel.query().where({ userId });
 
 		if (search) {
 			query = query.whereILike("name", `%${search}%`);
@@ -51,18 +51,6 @@ class WorkspaceRepository {
 
 		const workspaces = await query.execute();
 		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
-	}
-
-	public async findByNameAndUser(
-		name: string,
-		userId: number,
-	): Promise<null | WorkspaceEntity> {
-		const workspace = await this.workspaceModel
-			.query()
-			.findOne({ name, userId })
-			.execute();
-
-		return workspace ? WorkspaceEntity.initialize(workspace) : null;
 	}
 }
 
