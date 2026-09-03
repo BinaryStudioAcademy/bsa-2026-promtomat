@@ -1,4 +1,4 @@
-import { ServerErrorType } from "~/libs/enums/enums.js";
+import { ErrorCode } from "~/libs/enums/enums.js";
 
 import {
 	type ServerError,
@@ -6,11 +6,11 @@ import {
 } from "../types/server-error.type.js";
 
 const isServerError = (error: unknown): error is ServerError => {
-	return typeof error === "object" && error !== null && "errorType" in error;
+	return typeof error === "object" && error !== null && "code" in error;
 };
 
 const isValidationError = (error: unknown): error is ServerValidationError => {
-	return isServerError(error) && error.errorType === ServerErrorType.VALIDATION;
+	return isServerError(error) && error.code === ErrorCode.VALIDATION_FAILED;
 };
 
 export { isServerError, isValidationError };

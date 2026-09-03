@@ -1,10 +1,10 @@
 import { type FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
-import { type ServerErrorType } from "~/libs/enums/enums.js";
-import { type ServerErrorDetail } from "~/libs/types/types.js";
+import { type ErrorCode } from "~/libs/enums/enums.js";
+import { type ServerErrorDetail, type ValueOf } from "~/libs/types/types.js";
 
 type ServerCommonError = {
-	errorType: typeof ServerErrorType.COMMON;
+	code: ValueOf<typeof ErrorCode>;
 	message: string;
 	status: FetchBaseQueryError["status"];
 };
@@ -12,8 +12,8 @@ type ServerCommonError = {
 type ServerError = ServerCommonError | ServerValidationError;
 
 type ServerValidationError = {
+	code: typeof ErrorCode.VALIDATION_FAILED;
 	details: ServerErrorDetail[];
-	errorType: typeof ServerErrorType.VALIDATION;
 	message: string;
 	status: FetchBaseQueryError["status"];
 };
