@@ -21,6 +21,7 @@ const checkIsCommonErrorResponse = (
 	return (
 		checkIsRecord(value) &&
 		typeof value["code"] === "string" &&
+		(Object.values(ErrorCode) as string[]).includes(value["code"]) &&
 		typeof value["message"] === "string"
 	);
 };
