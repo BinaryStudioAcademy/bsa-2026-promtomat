@@ -115,7 +115,25 @@ You should use .env.example files as a reference.
 1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
    commit.
 
-2. Run database. You can run it by installing postgres on your computer.
+2. Run database. The migrations enable the [pgvector](https://github.com/pgvector/pgvector) extension, so it has to be
+   available to the server before step 3; `migrate:dev` then runs `CREATE EXTENSION` itself and no manual SQL is
+   needed.
+
+   The simplest way is the Docker Compose file at the repository root, which starts PostgreSQL 18 with pgvector using
+   the `DB_*` values from the backend env file:
+
+   `docker compose --env-file apps/backend/.env up -d`
+
+   To use your own installation instead, make pgvector available to it:
+
+   - Homebrew: `brew install pgvector`, then restart the postgresql service.
+   - Postgres.app ships pgvector; nothing to do.
+   - Other installations: follow the [pgvector installation notes](https://github.com/pgvector/pgvector#installation).
+
+   If you already have a database from before pgvector was required, only the extension is missing. For your own
+   installation, install it as above; the data stays. A Docker container from the plain `postgres` image has to be
+   replaced: remove it with `docker rm -f <container-name>` and run the compose command above. The compose volume
+   starts empty, so the migrations rebuild the schema and local data is lost.
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
