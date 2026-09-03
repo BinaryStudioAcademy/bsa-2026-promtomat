@@ -17,13 +17,4 @@ const normalizeTagName = (tag: string): string => {
 	return tag.trim().toLowerCase();
 };
 
-const isValidTechStackTag = (tag: string): boolean => {
-	return Object.hasOwn(VARIANT_TO_CANONICAL, normalizeTagName(tag));
-};
-
-export {
-	isValidTechStackTag,
-	normalizeTagName,
-	normalizeTechStackTag,
-	normalizeTechStackTags,
-};
+export { normalizeTagName, normalizeTechStackTag, normalizeTechStackTags };
