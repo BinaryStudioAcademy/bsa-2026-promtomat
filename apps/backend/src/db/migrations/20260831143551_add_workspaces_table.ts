@@ -5,6 +5,8 @@ const TableName = {
 	WORKSPACES: "workspaces",
 } as const;
 
+const DELETE_STRATEGY = "CASCADE";
+
 const ColumnName = {
 	CREATED_AT: "created_at",
 	ID: "id",
@@ -27,7 +29,7 @@ async function up(knex: Knex): Promise<void> {
 			.notNullable()
 			.references(ColumnName.ID)
 			.inTable(TableName.USERS)
-			.onDelete("CASCADE");
+			.onDelete(DELETE_STRATEGY);
 		table.string(ColumnName.NAME).notNullable();
 		table
 			.specificType(ColumnName.STACK_TAGS, "text[]")

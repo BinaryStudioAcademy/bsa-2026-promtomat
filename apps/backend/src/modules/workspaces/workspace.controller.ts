@@ -42,7 +42,12 @@ class WorkspaceController extends BaseController {
 		this.workspaceService = workspaceService;
 
 		this.addRoute({
-			handler: (options) => this.findAllUserWorkspaces(options),
+			handler: (options) =>
+				this.findAllUserWorkspaces(
+					options as APIHandlerOptions<{
+						query: { search?: string };
+					}>,
+				),
 			method: HTTPMethod.GET,
 			path: WorkspacesApiPath.ROOT,
 		});
@@ -115,12 +120,14 @@ class WorkspaceController extends BaseController {
 	 *                  $ref: "#/components/schemas/Workspace"
 	 */
 	private async findAllUserWorkspaces(
-		options: APIHandlerOptions,
+		options: APIHandlerOptions<{
+			query: { search?: string };
+		}>,
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.workspaceService.findAllUserWorkspaces(
 				options.user?.id as number,
-				(options.query as { search?: string }).search,
+				options.query.search,
 			),
 			status: HTTPCode.OK,
 		};
