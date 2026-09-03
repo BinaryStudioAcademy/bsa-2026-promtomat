@@ -39,15 +39,6 @@ class WorkspaceService {
 		userId: number,
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
-		const existingWorkspace = await this.workspaceRepository.findByNameAndUser(
-			payload.name,
-			userId,
-		);
-
-		if (existingWorkspace) {
-			throw WorkspaceError.nameAlreadyExists();
-		}
-
 		const workspace = await this.workspaceRepository.create(
 			WorkspaceEntity.initializeNew({
 				name: payload.name,

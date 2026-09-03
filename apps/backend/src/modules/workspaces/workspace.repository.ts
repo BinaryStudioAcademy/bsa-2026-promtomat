@@ -1,4 +1,6 @@
-import { type Transaction } from "objection";
+import { type Transaction, UniqueViolationError } from "objection";
+
+import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
@@ -16,34 +18,35 @@ class WorkspaceRepository {
 	): Promise<WorkspaceEntity> {
 		const { name, stackTags, userId, visibility } = entity.toNewObject();
 
-		const workspace = await this.workspaceModel
-			.query(trx)
-			.insert({
-				name,
-				stackTags,
-				userId,
-				visibility,
-			})
-			.returning("*")
-			.execute();
+		try {
+			const workspace = await this.workspaceModel
+				.query(trx)
+				.insert({
+					name,
+					stackTags,
+					userId,
+					visibility,
+				})
+				.returning("*")
+				.execute();
 
-		return WorkspaceEntity.initialize(workspace);
-	}
-
-	public async findAll(): Promise<WorkspaceEntity[]> {
-		const workspaces = await this.workspaceModel.query().execute();
-
-		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
+			return WorkspaceEntity.initialize(workspace);
+		} catch (error) {
+			if (error instanceof UniqueViolationError) {
+				throw WorkspaceError.nameAlreadyExists();
+			}
+			throw error;
+		}
 	}
 
 	public async findAllUserWorkspaces(
 		userId: number,
 		search?: string,
 	): Promise<WorkspaceEntity[]> {
-		const query = this.workspaceModel.query().where("user_id", userId);
+		let query = this.workspaceModel.query().where("user_id", userId);
 
 		if (search) {
-			query.whereILike("name", `%${search}`);
+			query = query.whereILike("name", `%${search}%`);
 		}
 
 		const workspaces = await query.execute();

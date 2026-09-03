@@ -1,5 +1,5 @@
 const WorkspacesApiTag = {
-	WORKSPACE: "Workspace",
+	WORKSPACE: "workspace",
 } as const;
 
 export { WorkspacesApiTag };

@@ -37,6 +37,6 @@ const workspacesApi = baseApi
 		}),
 	});
 
-const { useGetWorkspacesQuery } = workspacesApi;
+const { useCreateWorkspaceMutation, useGetWorkspacesQuery } = workspacesApi;
 
-export { useGetWorkspacesQuery };
+export { useCreateWorkspaceMutation, useGetWorkspacesQuery };

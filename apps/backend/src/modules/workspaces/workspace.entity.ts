@@ -1,6 +1,6 @@
-import { WorkspaceVisibility } from "@promptomat/shared";
-
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
+
+import { WorkspaceVisibility } from "./libs/enums/enums.js";
 
 class WorkspaceEntity implements Entity {
 	private id: null | number;
