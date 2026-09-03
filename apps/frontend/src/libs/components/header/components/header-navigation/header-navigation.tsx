@@ -1,10 +1,5 @@
 import { Button } from "~/libs/components/button/button.js";
 import { Link } from "~/libs/components/link/link.js";
-import {
-	LoaderSize,
-	LoaderVariant,
-} from "~/libs/components/loader/libs/enums/enums.js";
-import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
 import { type UserDto } from "~/modules/users/users.js";
 
@@ -22,45 +17,37 @@ const HeaderNavigation: React.FC<Properties> = ({
 	user,
 }: Properties) => {
 	if (isLoading) {
-		return (
-			<li>
-				<Loader
-					label="Loading navigation"
-					size={LoaderSize.SMALL}
-					variant={LoaderVariant.INLINE}
-				/>
-			</li>
-		);
-	}
-
-	if (user) {
-		return (
-			<>
-				<li>
-					<Link to={AppRoute.ROOT}>Root</Link>
-				</li>
-				<li className={styles["identityLabel"]}>{user.email}</li>
-				<li>
-					<Button
-						label="Sign out"
-						onClick={onSignOutClick}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
-				</li>
-			</>
-		);
+		return null;
 	}
 
 	return (
-		<>
-			<li>
-				<Link to={AppRoute.SIGN_IN}>Sign in</Link>
-			</li>
-			<li>
-				<Link to={AppRoute.SIGN_UP}>Sign up</Link>
-			</li>
-		</>
+		<ul className={styles["navList"]}>
+			{user ? (
+				<>
+					<li>
+						<Link to={AppRoute.ROOT}>Root</Link>
+					</li>
+					<li className={styles["identityLabel"]}>{user.email}</li>
+					<li>
+						<Button
+							label="Sign out"
+							onClick={onSignOutClick}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+					</li>
+				</>
+			) : (
+				<>
+					<li>
+						<Link to={AppRoute.SIGN_IN}>Sign in</Link>
+					</li>
+					<li>
+						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
+					</li>
+				</>
+			)}
+		</ul>
 	);
 };
 

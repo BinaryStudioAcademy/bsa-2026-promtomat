@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-import brandLogo from "~/assets/img/brand.svg";
 import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
-import { AppRoute, IconName } from "~/libs/enums/enums.js";
+import { Logo } from "~/libs/components/logo/logo.js";
+import { AppRoute, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
@@ -60,7 +60,7 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 	return (
 		<header className={styles["header"]}>
 			<Link className={styles["identity"]} to={AppRoute.ROOT}>
-				<img alt="Promptomat" className={styles["logo"]} src={brandLogo} />
+				<Logo size={ControlSize.SM} />
 			</Link>
 
 			<div className={styles["menuToggle"]}>
@@ -82,13 +82,11 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 				)}
 				id="primary-navigation"
 			>
-				<ul className={styles["navList"]}>
-					<HeaderNavigation
-						isLoading={isLoading}
-						onSignOutClick={handleMenuClose}
-						user={user}
-					/>
-				</ul>
+				<HeaderNavigation
+					isLoading={isLoading}
+					onSignOutClick={handleMenuClose}
+					user={user}
+				/>
 			</nav>
 		</header>
 	);
