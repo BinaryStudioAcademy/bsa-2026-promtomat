@@ -1,5 +1,10 @@
 import Fuse from "fuse.js";
 
+import {
+	FIRST_ELEMENT_INDEX,
+	MIN_INPUT_LENGTH,
+	SUGGESTION_LIMIT,
+} from "../constants/constants.js";
 import { TECH_STACK_DICTIONARY } from "../enums/dictionary.enum.js";
 import { normalizeTagName } from "./normalize-tech-stack-tags.helper.js";
 
@@ -11,10 +16,6 @@ const fuseInstance = new Fuse(Object.values(TECH_STACK_DICTIONARY), {
 	minMatchCharLength: 2,
 	threshold: 0.3,
 });
-
-const SLICE_START_INDEX = 0;
-const SUGGESTION_LIMIT = 10;
-const MIN_INPUT_LENGTH = 2;
 
 const getTechStackTagSuggestions = (input: string): string[] => {
 	if (!input || typeof input !== "string" || !input.trim()) {
@@ -34,7 +35,7 @@ const getTechStackTagSuggestions = (input: string): string[] => {
 	if (normalizedName.length < MIN_INPUT_LENGTH) {
 		const prefixMatches = Object.values(TECH_STACK_DICTIONARY)
 			.filter((tag) => normalizeTagName(tag).startsWith(normalizedName))
-			.slice(SLICE_START_INDEX, SUGGESTION_LIMIT);
+			.slice(FIRST_ELEMENT_INDEX, SUGGESTION_LIMIT);
 
 		return prefixMatches;
 	}
