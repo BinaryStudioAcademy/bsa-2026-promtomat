@@ -1,7 +1,12 @@
-import { type Transaction, UniqueViolationError } from "objection";
+import {
+	type PartialModelObject,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 
+import { type WorkspaceUpdateRequestDto } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
 
@@ -51,6 +56,41 @@ class WorkspaceRepository {
 
 		const workspaces = await query.execute();
 		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
+	}
+
+	public async findById(id: number): Promise<null | WorkspaceEntity> {
+		const workspace = await this.workspaceModel.query().findById(id);
+
+		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
+
+	public async update(
+		id: number,
+		payload: WorkspaceUpdateRequestDto,
+	): Promise<WorkspaceEntity> {
+		const patch: PartialModelObject<WorkspaceModel> = {};
+
+		if (payload.name !== undefined) {
+			patch.name = payload.name;
+		}
+
+		if (payload.stackTags !== undefined) {
+			patch.stackTags = payload.stackTags;
+		}
+
+		try {
+			const workspace = await this.workspaceModel
+				.query()
+				.patchAndFetchById(id, patch);
+
+			return WorkspaceEntity.initialize(workspace);
+		} catch (error) {
+			if (error instanceof UniqueViolationError) {
+				throw WorkspaceError.nameAlreadyExists();
+			}
+
+			throw error;
+		}
 	}
 }
 

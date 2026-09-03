@@ -1,1 +1,5 @@
-export { workspaceCreationValidationSchema } from "@promptomat/shared";
+export {
+	workspaceCreationValidationSchema,
+	workspaceRouteParametersValidationSchema,
+	workspaceUpdateValidationSchema,
+} from "@promptomat/shared";

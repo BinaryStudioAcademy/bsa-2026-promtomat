@@ -1,9 +1,12 @@
 import { type Transaction } from "objection";
 
+import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceRepository } from "./workspace.repository.js";
@@ -45,6 +48,22 @@ class WorkspaceService {
 		return {
 			items: workspaces.map((workspace) => workspace.toObject()),
 		};
+	}
+
+	public async update(
+		id: number,
+		payload: WorkspaceUpdateRequestDto,
+		userId: number,
+	): Promise<WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findById(id);
+
+		if (!workspace || workspace.toObject().userId !== userId) {
+			throw WorkspaceError.notFound();
+		}
+
+		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
+
+		return updatedWorkspace.toObject();
 	}
 }
 
