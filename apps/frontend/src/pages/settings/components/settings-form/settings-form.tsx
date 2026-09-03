@@ -1,10 +1,10 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useFormState } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize, HTTPCode } from "~/libs/enums/enums.js";
+import { ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
 	isServerError,
@@ -21,7 +21,6 @@ import {
 import {
 	AI_CODING_TOOL_OPTIONS,
 	EMPTY_AI_CODING_TOOL,
-	FIRST_INDEX,
 } from "../../libs/constants.js";
 import { SettingsMessage } from "../../libs/enums/enums.js";
 import { getSettingsFormValues } from "../../libs/helpers/helpers.js";
@@ -34,51 +33,15 @@ type Properties = {
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
-	const { control, handleSubmit, reset, setError } =
-		useAppForm<SettingsFormValues>({
-			defaultValues: getSettingsFormValues(user),
-			validationSchema: updateProfileValidationSchema,
-		});
+	const { control, handleSubmit, reset } = useAppForm<SettingsFormValues>({
+		defaultValues: getSettingsFormValues(user),
+		validationSchema: updateProfileValidationSchema,
+	});
 	const { isDirty } = useFormState({ control });
 
-	const hasConflictError =
-		isServerError(error) && error.status === HTTPCode.CONFLICT;
 	const errorMessage =
-		!hasConflictError && isServerError(error) && !isValidationError(error)
-			? error.message
-			: null;
+		isServerError(error) && !isValidationError(error) ? error.message : null;
 	const isSaveDisabled = isLoading || !isDirty;
-
-	useEffect(() => {
-		if (hasConflictError && isServerError(error)) {
-			setError(
-				"nickname",
-				{ message: error.message, type: "server" },
-				{ shouldFocus: true },
-			);
-
-			return;
-		}
-
-		if (!isValidationError(error)) {
-			return;
-		}
-
-		let hasFocusedField = false;
-
-		for (const detail of error.details) {
-			const fieldName = detail.path[FIRST_INDEX];
-
-			if (fieldName === "nickname" || fieldName === "primaryAiCodingTool") {
-				setError(
-					fieldName,
-					{ message: detail.message, type: "server" },
-					{ shouldFocus: !hasFocusedField },
-				);
-				hasFocusedField = true;
-			}
-		}
-	}, [error, hasConflictError, setError]);
 
 	const handleSave = useCallback(
 		(payload: SettingsFormValues): void => {

@@ -51,4 +51,5 @@ export {
 	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
+	UserValidationMessage,
 } from "./modules/users/users.js";
