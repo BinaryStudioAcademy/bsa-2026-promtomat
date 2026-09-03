@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 
 import { AppRoute } from "~/libs/enums/enums.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
@@ -14,11 +13,7 @@ const PrivateRoute: React.FC<Properties> = ({
 	children,
 	redirectTo,
 }: Properties) => {
-	const {
-		data: user,
-		error,
-		isLoading,
-	} = useGetAuthenticatedUserQuery(undefined);
+	const { data: user, isLoading } = useGetAuthenticatedUserQuery(undefined);
 
 	if (isLoading) {
 		return <p>Loading...</p>;
@@ -28,12 +23,7 @@ const PrivateRoute: React.FC<Properties> = ({
 		return <Navigate to={redirectTo} />;
 	}
 
-	return (
-		<>
-			{isServerError(error) && <p>{error.message}</p>}
-			{children}
-		</>
-	);
+	return <>{children}</>;
 };
 
 export { PrivateRoute };
