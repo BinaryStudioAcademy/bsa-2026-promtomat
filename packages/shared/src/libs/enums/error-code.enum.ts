@@ -1,11 +1,5 @@
 import { AuthErrorCode } from "../../modules/auth/auth.js";
-
-const ServerErrorCode = {
-	FORBIDDEN: "FORBIDDEN",
-	INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
-	UNAUTHENTICATED: "UNAUTHENTICATED",
-	VALIDATION_FAILED: "VALIDATION_FAILED",
-} as const;
+import { ServerErrorCode } from "./server-error-code.enum.js";
 
 const ErrorCode = {
 	...ServerErrorCode,
