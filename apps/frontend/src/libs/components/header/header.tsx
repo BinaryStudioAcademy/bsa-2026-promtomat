@@ -1,17 +1,15 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
-import { Button } from "~/libs/components/button/button.js";
+import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
-import {
-	LoaderSize,
-	LoaderVariant,
-} from "~/libs/components/loader/libs/enums/enums.js";
-import { Loader } from "~/libs/components/loader/loader.js";
 import { Logo } from "~/libs/components/logo/logo.js";
-import { AppRoute } from "~/libs/enums/enums.js";
-import { useSignOut } from "~/modules/auth/auth.js";
+import { AppRoute, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
+import { HeaderNavigation } from "./components/header-navigation/header-navigation.js";
+import { KeyboardKey } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -20,53 +18,87 @@ type Properties = {
 };
 
 const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
-	const signOut = useSignOut();
+	const { pathname } = useLocation();
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [previousPathname, setPreviousPathname] = useState(pathname);
+	const toggleButtonReference = useRef<HTMLButtonElement>(null);
+	const navReference = useRef<HTMLElement>(null);
 
-	const handleSignOut = useCallback((): void => {
-		void signOut();
-	}, [signOut]);
+	if (pathname !== previousPathname) {
+		setPreviousPathname(pathname);
+		setIsMenuOpen(false);
+	}
+
+	const handleMenuToggle = useCallback((): void => {
+		setIsMenuOpen((previousIsMenuOpen) => !previousIsMenuOpen);
+	}, []);
+
+	const handleMenuClose = useCallback((): void => {
+		setIsMenuOpen(false);
+	}, []);
+
+	useEffect(() => {
+		if (!isMenuOpen) {
+			return;
+		}
+
+		const handleKeyDown = (event: KeyboardEvent): void => {
+			if (event.key !== KeyboardKey.ESCAPE) {
+				return;
+			}
+
+			setIsMenuOpen(false);
+			toggleButtonReference.current?.focus();
+		};
+
+		document.addEventListener("keydown", handleKeyDown);
+
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isMenuOpen]);
+
+	useEffect(() => {
+		const navElement = navReference.current;
+
+		if (!navElement) {
+			return;
+		}
+
+		navElement.addEventListener("click", handleMenuClose);
+
+		return () => {
+			navElement.removeEventListener("click", handleMenuClose);
+		};
+	}, [handleMenuClose]);
 
 	return (
 		<header className={styles["header"]}>
-			<Logo />
+			<Link className={styles["identity"]} to={AppRoute.ROOT}>
+				<Logo size={ControlSize.SM} />
+			</Link>
 
-			<nav aria-label="Main navigation">
-				<ul className={styles["navigation"]}>
-					{isLoading && (
-						<li>
-							<Loader
-								label="Loading navigation"
-								size={LoaderSize.SMALL}
-								variant={LoaderVariant.INLINE}
-							/>
-						</li>
-					)}
-					{!isLoading && user && (
-						<>
-							<li>
-								<Link to={AppRoute.ROOT}>Root</Link>
-							</li>
-							<li>{user.email}</li>
-							<li>
-								<Button
-									label="Sign out"
-									onClick={handleSignOut}
-									type="button"
-								/>
-							</li>
-						</>
-					)}
-					{!isLoading && !user && (
-						<>
-							<li>
-								<Link to={AppRoute.SIGN_IN}>Sign in</Link>
-							</li>
-							<li>
-								<Link to={AppRoute.SIGN_UP}>Sign up</Link>
-							</li>
-						</>
-					)}
-				</ul>
+			<div className={styles["menu-toggle"]}>
+				<IconButton
+					ariaControls="primary-navigation"
+					ariaExpanded={isMenuOpen}
+					ariaLabel="Toggle navigation"
+					iconName={IconName.MENU}
+					onClick={handleMenuToggle}
+					reference={toggleButtonReference}
+				/>
+			</div>
+
+			<nav
+				aria-label="Main"
+				className={getValidClasses(
+					styles["nav"],
+					isMenuOpen && styles["nav-open"],
+				)}
+				id="primary-navigation"
+				ref={navReference}
+			>
+				<HeaderNavigation isLoading={isLoading} user={user} />
 			</nav>
 		</header>
 	);
