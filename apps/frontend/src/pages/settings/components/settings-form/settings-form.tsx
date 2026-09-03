@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useFormState } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
@@ -33,11 +32,11 @@ type Properties = {
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
-	const { control, handleSubmit, reset } = useAppForm<SettingsFormValues>({
-		defaultValues: getSettingsFormValues(user),
-		validationSchema: updateProfileValidationSchema,
-	});
-	const { isDirty } = useFormState({ control });
+	const { control, handleSubmit, isDirty, reset } =
+		useAppForm<SettingsFormValues>({
+			defaultValues: getSettingsFormValues(user),
+			validationSchema: updateProfileValidationSchema,
+		});
 
 	const errorMessage =
 		isServerError(error) && !isValidationError(error) ? error.message : null;
