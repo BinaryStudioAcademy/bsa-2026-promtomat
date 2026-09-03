@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 
+import { Header } from "~/libs/components/header/header.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -31,7 +32,8 @@ const PrivateRoute: React.FC<Properties> = ({
 	return (
 		<>
 			{isServerError(error) && <p>{error.message}</p>}
-			{children}
+			<Header isLoading={false} user={user} />
+			<main>{children}</main>
 		</>
 	);
 };
