@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Promptomat">
+	<mask id="promptomat-counter" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+		<rect width="120" height="120" fill="#fff"/>
+		<g transform="translate(10.8,10.8) scale(0.82) translate(6,0)" fill="none" stroke="#000" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M24 24 V96"/>
+			<path d="M24 24 H60 A24 24 0 0 1 60 72"/>
+		</g>
+	</mask>
+	<rect width="120" height="120" rx="30" fill="#e1ad66" mask="url(#promptomat-counter)"/>
+</svg>
