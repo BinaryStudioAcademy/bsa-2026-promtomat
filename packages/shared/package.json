@@ -16,6 +16,7 @@
 		"build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json"
 	},
 	"dependencies": {
+		"fuse.js": "7.5.0",
 		"zod": "4.4.3"
 	}
 }
