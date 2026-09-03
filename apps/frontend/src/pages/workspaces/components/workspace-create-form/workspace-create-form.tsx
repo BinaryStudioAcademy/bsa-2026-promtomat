@@ -16,7 +16,7 @@ import {
 	DEFAULT_WORKSPACE_CREATE_PAYLOAD,
 	FIRST_ELEMENT_INDEX,
 	WORKSPACE_STACK_TAG_OPTIONS,
-} from "./libs/constants.js";
+} from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {

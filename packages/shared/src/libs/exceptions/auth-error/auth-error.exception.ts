@@ -1,9 +1,7 @@
 import { ErrorCode } from "../../../libs/enums/enums.js";
 import { HTTPCode } from "../../../libs/modules/http/http.js";
 import { AuthValidationMessage } from "../../../modules/auth/libs/enums/auth-validation-message.enum.js";
-import { AuthValidationMessage } from "../../../modules/auth/libs/enums/auth-validation-message.enum.js";
 import { UserErrorMessage } from "../../../modules/users/users.js";
-import { type ValueOf } from "../../types/value-of.type.js";
 import { type ValueOf } from "../../types/value-of.type.js";
 import { HTTPError } from "../http-error/http-error.exception.js";
 
@@ -42,6 +40,7 @@ class AuthError extends HTTPError {
 
 	public static nicknameAlreadyExists(): AuthError {
 		return new AuthError({
+			code: ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS,
 			message: AuthValidationMessage.NICKNAME_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});

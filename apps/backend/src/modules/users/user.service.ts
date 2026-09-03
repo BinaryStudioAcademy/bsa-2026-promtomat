@@ -5,7 +5,7 @@ import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
-import { UserRepository } from "~/modules/users/user.repository.js";
+import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
 	type UserDto,
@@ -17,9 +17,16 @@ class UserService {
 
 	private userRepository: UserRepository;
 
-	public constructor(hashing: Hashing, userRepository: UserRepository) {
+	private workspaceService: WorkspaceService;
+
+	public constructor(
+		hashing: Hashing,
+		userRepository: UserRepository,
+		workspaceService: WorkspaceService,
+	) {
 		this.hashing = hashing;
 		this.userRepository = userRepository;
+		this.workspaceService = workspaceService;
 	}
 
 	public async create(
@@ -36,10 +43,6 @@ class UserService {
 				throw AuthError.emailAlreadyExists();
 			}
 			throw AuthError.nicknameAlreadyExists();
-			if (existingUser.toNewObject().email === payload.email) {
-				throw AuthError.emailAlreadyExists();
-			}
-			throw AuthError.nicknameAlreadyExists();
 		}
 
 		const { hash, salt } = await this.hashing.hash(payload.password);
@@ -48,14 +51,23 @@ class UserService {
 			UserEntity.initializeNew({
 				email: payload.email,
 				nickname: payload.nickname,
-				nickname: payload.nickname,
 				passwordHash: hash,
 				passwordSalt: salt,
 			}),
 			trx,
 		);
 
-		return user.toObject();
+		const userDto = user.toObject();
+
+		await this.workspaceService.create(
+			{
+				name: `${userDto.nickname} workspace`,
+				userId: userDto.id,
+			},
+			trx,
+		);
+
+		return userDto;
 	}
 
 	public async findAll(): Promise<UserGetAllResponseDto> {
@@ -72,12 +84,6 @@ class UserService {
 
 	public async findById(id: number): Promise<null | UserDto> {
 		const user = await this.userRepository.findById(id);
-
-		return user ? user.toObject() : null;
-	}
-
-	public async findByNickname(nickname: string): Promise<null | UserDto> {
-		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
 	}
