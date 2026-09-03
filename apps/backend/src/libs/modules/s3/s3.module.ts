@@ -12,6 +12,7 @@ import { pipeline } from "node:stream/promises";
 
 import { HTTPCode } from "~/libs/modules/http/http.js";
 
+import { S3ErrorMessage } from "./libs/enums/enums.js";
 import { S3Error } from "./libs/exceptions/exceptions.js";
 import {
 	type DownloadObjectOptions,
@@ -39,7 +40,7 @@ class S3 {
 		);
 
 		if (!object.Body) {
-			throw new S3Error(`S3 object "${key}" has no body.`);
+			throw new S3Error(S3ErrorMessage.OBJECT_HAS_NO_BODY, key);
 		}
 
 		await pipeline(object.Body as Readable, createWriteStream(destinationPath));
@@ -68,7 +69,7 @@ class S3 {
 		}
 
 		if (!object.Body) {
-			throw new S3Error(`S3 object "${key}" has no body.`);
+			throw new S3Error(S3ErrorMessage.OBJECT_HAS_NO_BODY, key);
 		}
 
 		return await object.Body.transformToString();
