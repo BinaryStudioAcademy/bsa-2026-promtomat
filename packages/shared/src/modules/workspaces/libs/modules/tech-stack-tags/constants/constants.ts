@@ -1,3 +1,4 @@
+export { FIRST_ELEMENT_INDEX } from "./first-element-index.constant.js";
 export {
 	MAX_TAGS_COUNT,
 	MIN_INPUT_LENGTH,
