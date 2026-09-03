@@ -7,13 +7,11 @@ import styles from "../../styles.module.css";
 
 type Properties = {
 	isLoading: boolean;
-	onSignOutClick: () => void;
 	user: null | UserDto;
 };
 
 const HeaderNavigation: React.FC<Properties> = ({
 	isLoading,
-	onSignOutClick,
 	user,
 }: Properties) => {
 	if (isLoading) {
@@ -31,7 +29,6 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Button
 							label="Sign out"
-							onClick={onSignOutClick}
 							type="button"
 							variant={ButtonVariant.SECONDARY}
 						/>

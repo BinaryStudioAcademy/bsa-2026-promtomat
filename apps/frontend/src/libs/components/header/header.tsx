@@ -22,6 +22,7 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [previousPathname, setPreviousPathname] = useState(pathname);
 	const toggleButtonReference = useRef<HTMLButtonElement>(null);
+	const navReference = useRef<HTMLElement>(null);
 
 	if (pathname !== previousPathname) {
 		setPreviousPathname(pathname);
@@ -57,6 +58,20 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 		};
 	}, [isMenuOpen]);
 
+	useEffect(() => {
+		const navElement = navReference.current;
+
+		if (!navElement) {
+			return;
+		}
+
+		navElement.addEventListener("click", handleMenuClose);
+
+		return () => {
+			navElement.removeEventListener("click", handleMenuClose);
+		};
+	}, [handleMenuClose]);
+
 	return (
 		<header className={styles["header"]}>
 			<Link className={styles["identity"]} to={AppRoute.ROOT}>
@@ -81,12 +96,9 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 					isMenuOpen && styles["navOpen"],
 				)}
 				id="primary-navigation"
+				ref={navReference}
 			>
-				<HeaderNavigation
-					isLoading={isLoading}
-					onSignOutClick={handleMenuClose}
-					user={user}
-				/>
+				<HeaderNavigation isLoading={isLoading} user={user} />
 			</nav>
 		</header>
 	);
