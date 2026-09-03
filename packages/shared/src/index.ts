@@ -54,8 +54,12 @@ export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 	workspaceCreationValidationSchema,
+	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
+	workspaceUpdateValidationSchema,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

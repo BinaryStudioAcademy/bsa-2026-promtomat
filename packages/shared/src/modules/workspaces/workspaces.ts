@@ -7,5 +7,11 @@ export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
-export { workspaceCreationValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+export {
+	workspaceCreationValidationSchema,
+	workspaceRouteParametersValidationSchema,
+	workspaceUpdateValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
