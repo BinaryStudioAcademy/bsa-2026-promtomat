@@ -2,7 +2,7 @@ import { ErrorCode } from "~/libs/enums/enums.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { type TokenErrorMessage } from "../enums/enums.js";
+import { TokenErrorMessage } from "../enums/enums.js";
 
 type Constructor = {
 	cause?: unknown;
@@ -16,6 +16,30 @@ class TokenError extends HTTPError {
 			code: ErrorCode.UNAUTHENTICATED,
 			message,
 			status: HTTPCode.UNAUTHORIZED,
+		});
+	}
+
+	public static invalidToken(): TokenError {
+		return new TokenError({
+			message: TokenErrorMessage.INVALID_TOKEN,
+		});
+	}
+
+	public static invalidTokenPayload(): TokenError {
+		return new TokenError({
+			message: TokenErrorMessage.INVALID_TOKEN_PAYLOAD,
+		});
+	}
+
+	public static invalidTokenSignature(): TokenError {
+		return new TokenError({
+			message: TokenErrorMessage.INVALID_TOKEN_SIGNATURE,
+		});
+	}
+
+	public static tokenHasExpired(): TokenError {
+		return new TokenError({
+			message: TokenErrorMessage.TOKEN_HAS_EXPIRED,
 		});
 	}
 }

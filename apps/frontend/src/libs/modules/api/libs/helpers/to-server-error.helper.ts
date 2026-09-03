@@ -2,6 +2,7 @@ import { type FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 import { ErrorCode } from "~/libs/enums/enums.js";
 import {
+	type ServerCommonErrorResponse,
 	type ServerErrorResponse,
 	type ServerValidationErrorResponse,
 } from "~/libs/types/types.js";
@@ -10,37 +11,50 @@ import { type ServerError } from "../types/server-error.type.js";
 
 const UNKNOWN_ERROR_MESSAGE = "Something went wrong. Please try again.";
 
-const isServerErrorResponse = (
+const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
+	return typeof value === "object" && value !== null;
+};
+
+const checkIsCommonErrorResponse = (
+	value: unknown,
+): value is ServerCommonErrorResponse => {
+	return (
+		checkIsRecord(value) &&
+		typeof value["code"] === "string" &&
+		typeof value["message"] === "string"
+	);
+};
+
+const checkIsValidationErrorResponse = (
+	payload: unknown,
+): payload is ServerValidationErrorResponse => {
+	return (
+		checkIsRecord(payload) &&
+		"details" in payload &&
+		Array.isArray((payload as ServerValidationErrorResponse).details)
+	);
+};
+
+const checkIsServerErrorResponse = (
 	payload: unknown,
 ): payload is ServerErrorResponse => {
-	if (
-		typeof payload !== "object" ||
-		payload === null ||
-		!("code" in payload) ||
-		!("message" in payload)
-	) {
+	if (!checkIsCommonErrorResponse(payload)) {
 		return false;
 	}
 
-	if ((payload as ServerErrorResponse).code === ErrorCode.VALIDATION_FAILED) {
-		return (
-			"details" in payload &&
-			Array.isArray((payload as ServerValidationErrorResponse).details)
-		);
+	if (payload.code === ErrorCode.VALIDATION_FAILED) {
+		return checkIsValidationErrorResponse(payload);
 	}
 
 	return true;
 };
 
-const isValidationErrorResponse = (
-	response: ServerErrorResponse,
-): response is ServerValidationErrorResponse => {
-	return response.code === ErrorCode.VALIDATION_FAILED;
-};
-
 const toServerError = (error: FetchBaseQueryError): ServerError => {
-	if (isServerErrorResponse(error.data)) {
-		if (isValidationErrorResponse(error.data)) {
+	if (checkIsServerErrorResponse(error.data)) {
+		if (
+			error.data.code === ErrorCode.VALIDATION_FAILED &&
+			checkIsValidationErrorResponse(error.data)
+		) {
 			return {
 				code: ErrorCode.VALIDATION_FAILED,
 				details: error.data.details,
