@@ -1,8 +1,8 @@
 const TokenErrorMessage = {
-	INVALID_TOKEN: "Invalid token",
-	INVALID_TOKEN_PAYLOAD: "Invalid token payload",
-	INVALID_TOKEN_SIGNATURE: "Invalid token signature",
-	TOKEN_HAS_EXPIRED: "Token has expired",
+	INVALID_TOKEN: "INVALID_TOKEN",
+	INVALID_TOKEN_PAYLOAD: "INVALID_TOKEN_PAYLOAD",
+	INVALID_TOKEN_SIGNATURE: "INVALID_TOKEN_SIGNATURE",
+	TOKEN_HAS_EXPIRED: "TOKEN_HAS_EXPIRED",
 } as const;
 
 export { TokenErrorMessage };

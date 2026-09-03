@@ -3,11 +3,12 @@ export { ButtonVariant } from "./button-variant.enum.js";
 export { ControlSize } from "./control-size.enum.js";
 export { IconName } from "./icon-name.enum.js";
 export { InputType } from "./input-type.enum.js";
+export { KeyboardKey } from "./keyboard-key.enum.js";
 export {
 	APIPath,
 	AppEnvironment,
+	ErrorCode,
 	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,
-	ServerErrorType,
 } from "@promptomat/shared";

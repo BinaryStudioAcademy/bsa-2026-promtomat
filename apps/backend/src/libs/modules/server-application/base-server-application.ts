@@ -5,11 +5,8 @@ import Fastify, { type FastifyError, type FastifyInstance } from "fastify";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { ServerErrorType } from "~/libs/enums/enums.js";
-import {
-	AuthError,
-	type ValidationError,
-} from "~/libs/exceptions/exceptions.js";
+import { ErrorCode } from "~/libs/enums/enums.js";
+import { type ValidationError } from "~/libs/exceptions/exceptions.js";
 import { type Config } from "~/libs/modules/config/config.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
@@ -98,37 +95,24 @@ class BaseServerApplication implements ServerApplication {
 					}
 
 					const response: ServerValidationErrorResponse = {
+						code: ErrorCode.VALIDATION_FAILED,
 						details: error.issues.map((issue) => ({
 							message: issue.message,
 							path: issue.path.map((segment) => segment.toString()),
 						})),
-						errorType: ServerErrorType.VALIDATION,
 						message: error.message,
 					};
 
 					return reply.status(HTTPCode.UNPROCESSED_ENTITY).send(response);
 				}
 
-				if (error instanceof AuthError) {
-					this.logger.error(
-						`[Auth Error]: ${error.status.toString()} – ${error.message}`,
-					);
-
-					const response: ServerCommonErrorResponse = {
-						errorType: ServerErrorType.COMMON,
-						message: error.message,
-					};
-
-					return reply.status(error.status).send(response);
-				}
-
 				if (error instanceof HTTPError) {
 					this.logger.error(
-						`[HTTP Error]: ${error.status.toString()} – ${error.message}`,
+						`[HTTP Error]: ${error.status.toString()} — ${error.message}`,
 					);
 
 					const response: ServerCommonErrorResponse = {
-						errorType: ServerErrorType.COMMON,
+						code: error.code,
 						message: error.message,
 					};
 
@@ -138,7 +122,7 @@ class BaseServerApplication implements ServerApplication {
 				this.logger.error(error.message);
 
 				const response: ServerCommonErrorResponse = {
-					errorType: ServerErrorType.COMMON,
+					code: ErrorCode.INTERNAL_SERVER_ERROR,
 					message: error.message,
 				};
 

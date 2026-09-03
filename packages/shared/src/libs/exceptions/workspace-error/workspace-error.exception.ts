@@ -1,18 +1,24 @@
 import { HTTPCode } from "../../../libs/modules/http/http.js";
 import { type ValueOf } from "../../../libs/types/value-of.type.js";
-import { WorkspacesErrorMessage } from "../../../modules/workspaces/workspaces.js";
+import {
+	WorkspacesErrorCode,
+	WorkspacesErrorMessage,
+} from "../../../modules/workspaces/workspaces.js";
+import { ErrorCode } from "../../enums/error-code.enum.js";
 import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
 	cause?: unknown;
+	code: ValueOf<typeof ErrorCode>;
 	message: string;
 	status: ValueOf<typeof HTTPCode>;
 };
 
 class WorkspaceError extends HTTPError {
-	public constructor({ cause, message, status }: Constructor) {
+	public constructor({ cause, code, message, status }: Constructor) {
 		super({
 			cause,
+			code,
 			message,
 			status,
 		});
@@ -22,6 +28,7 @@ class WorkspaceError extends HTTPError {
 
 	public static nameAlreadyExists(): WorkspaceError {
 		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_ALREADY_EXISTS,
 			message: WorkspacesErrorMessage.WORKSPACE_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});
@@ -29,6 +36,7 @@ class WorkspaceError extends HTTPError {
 
 	public static noPermissionToAccess(): WorkspaceError {
 		return new WorkspaceError({
+			code: WorkspacesErrorCode.NO_PERMISSION_TO_ACCESS,
 			message: WorkspacesErrorMessage.NO_PERMISSION_TO_ACCESS,
 			status: HTTPCode.FORBIDDEN,
 		});
@@ -36,6 +44,7 @@ class WorkspaceError extends HTTPError {
 
 	public static notFound(): WorkspaceError {
 		return new WorkspaceError({
+			code: WorkspacesErrorCode.NOT_FOUND,
 			message: WorkspacesErrorMessage.NOT_FOUND,
 			status: HTTPCode.NOT_FOUND,
 		});

@@ -4,6 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Logo } from "~/libs/components/logo/logo.js";
 import { AppRoute, ControlSize, HTTPCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	useGetAuthenticatedUserQuery,
@@ -22,7 +23,7 @@ const Auth: React.FC = () => {
 	const { data: user, isLoading: isAuthLoading } =
 		useGetAuthenticatedUserQuery(undefined);
 
-	const errorMessage = isServerError(error) ? error.message : null;
+	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
 		isServerError(error) && error.status === HTTPCode.CONFLICT;
 
