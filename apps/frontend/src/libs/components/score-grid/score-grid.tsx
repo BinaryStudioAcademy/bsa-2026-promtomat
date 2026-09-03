@@ -1,6 +1,7 @@
 import React, { useCallback, useId, useState } from "react";
 
 import { ButtonVariant } from "~/libs/enums/button-variant.enum.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { ValueOf } from "~/libs/types/types.js";
 
 import { Button } from "../button/button.js";
@@ -44,7 +45,9 @@ const ScoreGrid: React.FC<Properties> = ({
 		setActiveScore(null);
 	}, []);
 
-	const activeDescription = activeScore ? ScoreDescriptions[activeScore] : null;
+	const activeDescription = activeScore
+		? ScoreDescriptions[activeScore]
+		: "Hover or focus a score to see its evaluation criteria";
 
 	const messageColorClass = activeScore
 		? styles[getScoreColor(activeScore)]
@@ -81,10 +84,9 @@ const ScoreGrid: React.FC<Properties> = ({
 			</div>
 			<div
 				aria-live="polite"
-				className={`${styles["message"] ?? ""} ${messageColorClass ?? ""}`}
+				className={getValidClasses(styles["message"], messageColorClass)}
 			>
-				{activeDescription ??
-					"Hover or focus a score to see its evaluation criteria"}
+				{activeDescription}
 			</div>
 		</div>
 	);
