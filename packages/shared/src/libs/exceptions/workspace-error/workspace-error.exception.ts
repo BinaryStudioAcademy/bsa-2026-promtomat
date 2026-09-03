@@ -27,7 +27,7 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
-	public static noPersmissionToAccess(): WorkspaceError {
+	public static noPermissionToAccess(): WorkspaceError {
 		return new WorkspaceError({
 			message: WorkspacesErrorMessage.NO_PERMISSION_TO_ACCESS,
 			status: HTTPCode.FORBIDDEN,

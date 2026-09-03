@@ -30,7 +30,7 @@ class WorkspaceService {
 		const isOwner = workspace.toObject().userId === userId;
 
 		if (!isOwner) {
-			throw WorkspaceError.noPersmissionToAccess();
+			throw WorkspaceError.noPermissionToAccess();
 		}
 	}
 
