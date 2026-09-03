@@ -27,7 +27,7 @@ const SignInForm: React.FC = () => {
 			validationSchema: signInValidationSchema,
 		});
 
-	useServerFormErrors({
+	const { hasFieldErrors } = useServerFormErrors({
 		clearErrors,
 		error,
 		fields: SIGN_IN_FIELDS,
@@ -52,7 +52,7 @@ const SignInForm: React.FC = () => {
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign In</h1>
-			{errorMessage && <FormAlert message={errorMessage} />}
+			{!hasFieldErrors && errorMessage && <FormAlert message={errorMessage} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input

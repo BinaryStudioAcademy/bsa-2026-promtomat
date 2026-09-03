@@ -82,8 +82,6 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				});
 			}
 
-			api.dispatch(setRedirect(AppRoute.SIGN_IN));
-
 			return { error };
 		}
 

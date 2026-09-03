@@ -11,8 +11,6 @@ import { UNKNOWN_ERROR_MESSAGE } from "../constants/constants.js";
 import { FetchErrorMessage } from "../enums/enums.js";
 import { type ServerError } from "../types/server-error.type.js";
 
-const UNKNOWN_ERROR_MESSAGE = "Something went wrong. Please try again.";
-
 const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
 	return typeof value === "object" && value !== null;
 };
