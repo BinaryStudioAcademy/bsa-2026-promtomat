@@ -36,7 +36,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 										<Workspaces />
 									</PrivateRoute>
 								),
-								path: AppRoute.WORKSPACE,
+								path: AppRoute.WORKSPACES,
 							},
 							{
 								element: (

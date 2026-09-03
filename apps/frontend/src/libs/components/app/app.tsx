@@ -40,7 +40,7 @@ const App: React.FC = () => {
 						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
 					</li>
 					<li>
-						<Link to={AppRoute.WORKSPACE}>Workspaces</Link>
+						<Link to={AppRoute.WORKSPACES}>Workspaces</Link>
 					</li>
 				</ul>
 			</header>

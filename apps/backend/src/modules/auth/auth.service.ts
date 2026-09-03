@@ -3,7 +3,6 @@ import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
-import { WorkspaceVisibility } from "~/modules/workspaces/libs/enums/enums.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
@@ -86,10 +85,8 @@ class AuthService {
 			await this.workspaceService.create(
 				{
 					name: `${newUser.nickname} workspace`,
-					stackTags: [],
-					visibility: WorkspaceVisibility.PRIVATE,
+					userId: newUser.id,
 				},
-				newUser.id,
 				trx,
 			);
 
