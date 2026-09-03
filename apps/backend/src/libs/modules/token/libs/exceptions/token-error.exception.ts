@@ -19,26 +19,30 @@ class TokenError extends HTTPError {
 		});
 	}
 
-	public static invalidToken(): TokenError {
+	public static invalidToken(cause?: unknown): TokenError {
 		return new TokenError({
+			cause,
 			message: TokenErrorMessage.INVALID_TOKEN,
 		});
 	}
 
-	public static invalidTokenPayload(): TokenError {
+	public static invalidTokenPayload(cause?: unknown): TokenError {
 		return new TokenError({
+			cause,
 			message: TokenErrorMessage.INVALID_TOKEN_PAYLOAD,
 		});
 	}
 
-	public static invalidTokenSignature(): TokenError {
+	public static invalidTokenSignature(cause?: unknown): TokenError {
 		return new TokenError({
+			cause,
 			message: TokenErrorMessage.INVALID_TOKEN_SIGNATURE,
 		});
 	}
 
-	public static tokenHasExpired(): TokenError {
+	public static tokenHasExpired(cause?: unknown): TokenError {
 		return new TokenError({
+			cause,
 			message: TokenErrorMessage.TOKEN_HAS_EXPIRED,
 		});
 	}

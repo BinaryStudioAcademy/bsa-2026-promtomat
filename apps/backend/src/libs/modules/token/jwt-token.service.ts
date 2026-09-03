@@ -3,7 +3,6 @@ import { errors, type JWTPayload, jwtVerify, SignJWT } from "jose";
 import { type JwtAlgorithm } from "~/libs/modules/config/config.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { TokenErrorMessage } from "./libs/enums/enums.js";
 import { TokenError } from "./libs/exceptions/exceptions.js";
 import { type TokenService } from "./libs/types/types.js";
 
@@ -33,23 +32,14 @@ class JwtTokenService implements TokenService {
 			return payload;
 		} catch (error) {
 			if (error instanceof errors.JWTExpired) {
-				throw new TokenError({
-					cause: error,
-					message: TokenErrorMessage.TOKEN_HAS_EXPIRED,
-				});
+				throw TokenError.tokenHasExpired(error);
 			}
 
 			if (error instanceof errors.JWSSignatureVerificationFailed) {
-				throw new TokenError({
-					cause: error,
-					message: TokenErrorMessage.INVALID_TOKEN_SIGNATURE,
-				});
+				throw TokenError.invalidTokenSignature(error);
 			}
 
-			throw new TokenError({
-				cause: error,
-				message: TokenErrorMessage.INVALID_TOKEN,
-			});
+			throw TokenError.invalidToken(error);
 		}
 	}
 
