@@ -1,6 +1,12 @@
 import { type Knex } from "knex";
 
-const TABLE_NAME = "prompts";
+const TableName = {
+	PROMPTS: "prompts",
+	USERS: "users",
+	WORKSPACES: "workspaces",
+};
+
+const DELETE_STRATEGY = "CASCADE";
 
 const ColumnName = {
 	CREATED_AT: "created_at",
@@ -14,24 +20,24 @@ const ColumnName = {
 } as const;
 
 function down(knex: Knex): Promise<void> {
-	return knex.schema.dropTableIfExists(TABLE_NAME);
+	return knex.schema.dropTableIfExists(TableName.PROMPTS);
 }
 
 async function up(knex: Knex): Promise<void> {
-	await knex.schema.createTable(TABLE_NAME, (table) => {
+	await knex.schema.createTable(TableName.PROMPTS, (table) => {
 		table.increments(ColumnName.ID).primary();
 		table
 			.integer(ColumnName.USER_ID)
 			.notNullable()
-			.references("id")
-			.inTable("users")
-			.onDelete("CASCADE");
+			.references(ColumnName.ID)
+			.inTable(TableName.USERS)
+			.onDelete(DELETE_STRATEGY);
 		table
 			.integer(ColumnName.WORKSPACE_ID)
 			.notNullable()
-			.references("id")
-			.inTable("workspaces")
-			.onDelete("CASCADE");
+			.references(ColumnName.ID)
+			.inTable(TableName.WORKSPACES)
+			.onDelete(DELETE_STRATEGY);
 		table.string(ColumnName.TASK_INTENT).notNullable();
 		table.text(ColumnName.PROMPT_BODY).notNullable();
 		table.integer(ColumnName.EFFICIENCY_SCORE).notNullable();
