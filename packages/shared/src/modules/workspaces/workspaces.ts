@@ -5,6 +5,7 @@ export {
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
 export {
+	type MembershipDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
