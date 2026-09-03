@@ -1,2 +1,1 @@
-export { WorkspaceVisibility } from "@promptomat/shared";
-export { WorkspacesApiPath } from "@promptomat/shared";
+export { WorkspacesApiPath, WorkspaceVisibility } from "@promptomat/shared";

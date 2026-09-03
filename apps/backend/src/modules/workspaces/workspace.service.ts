@@ -16,15 +16,15 @@ class WorkspaceService {
 	}
 
 	public async create(
-		payload: WorkspaceCreateRequestDto,
-		userId: number,
+		payload: Omit<WorkspaceCreateRequestDto, "stackTags" | "visibility"> &
+			Partial<WorkspaceCreateRequestDto> & { userId: number },
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(
 			WorkspaceEntity.initializeNew({
 				name: payload.name,
 				stackTags: payload.stackTags,
-				userId: userId,
+				userId: payload.userId,
 				visibility: payload.visibility,
 			}),
 			trx,

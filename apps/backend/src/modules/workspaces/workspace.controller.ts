@@ -9,6 +9,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
 import { type WorkspaceCreateRequestDto } from "./libs/types/types.js";
+import { workspaceCreationValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 import { type WorkspaceService } from "./workspace.service.js";
 
 /**
@@ -50,6 +51,9 @@ class WorkspaceController extends BaseController {
 			handler: (options) => this.create(options),
 			method: HTTPMethod.POST,
 			path: WorkspacesApiPath.ROOT,
+			validation: {
+				body: workspaceCreationValidationSchema,
+			},
 		});
 	}
 
@@ -85,10 +89,10 @@ class WorkspaceController extends BaseController {
 	 */
 	private async create(options: APIHandlerOptions) {
 		return {
-			payload: await this.workspaceService.create(
-				options.body as WorkspaceCreateRequestDto,
-				options.user?.id as number,
-			),
+			payload: await this.workspaceService.create({
+				...(options.body as WorkspaceCreateRequestDto),
+				userId: options.user?.id as number,
+			}),
 			status: HTTPCode.CREATED,
 		};
 	}
