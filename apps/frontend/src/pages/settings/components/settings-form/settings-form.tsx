@@ -1,14 +1,11 @@
 import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import {
-	isServerError,
-	isValidationError,
-} from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
 import { useUpdateProfileMutation } from "~/modules/users/users-api.js";
@@ -38,8 +35,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 			validationSchema: updateProfileValidationSchema,
 		});
 
-	const errorMessage =
-		isServerError(error) && !isValidationError(error) ? error.message : null;
 	const isSaveDisabled = isLoading || !isDirty;
 
 	const handleSave = useCallback(
@@ -74,11 +69,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	return (
 		<section className={styles["card"]}>
 			<h2 className={styles["section-title"]}>PROFILE SETUP</h2>
-			{errorMessage ? (
-				<p className={styles["alert"]} role="alert">
-					{errorMessage}
-				</p>
-			) : null}
+			<FormAlert error={error} />
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
 					<Input
