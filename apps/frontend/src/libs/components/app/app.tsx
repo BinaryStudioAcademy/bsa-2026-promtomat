@@ -18,11 +18,9 @@ const App: React.FC = () => {
 
 	const isRoot = pathname === AppRoute.ROOT;
 
-	const {
-		data: users,
-		error,
-		isLoading,
-	} = useGetUsersQuery(undefined, { skip: !isRoot });
+	const { data: users, isLoading } = useGetUsersQuery(undefined, {
+		skip: !isRoot,
+	});
 
 	return (
 		<OverlayHost>
@@ -51,7 +49,6 @@ const App: React.FC = () => {
 					{isLoading && (
 						<Loader label="Loading users" variant={LoaderVariant.SECTION} />
 					)}
-					{error && <p>{error.message}</p>}
 					<ul>
 						{users?.items.map((user) => (
 							<li key={user.id}>{user.email}</li>
