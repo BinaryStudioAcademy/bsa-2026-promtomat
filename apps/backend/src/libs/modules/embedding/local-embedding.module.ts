@@ -10,7 +10,14 @@ import { checkIsUnsafeDeletePath } from "~/libs/helpers/helpers.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { PROVISION_MARKER_FILE_NAME } from "./libs/constants/constants.js";
+import {
+	LAST_DIMENSION_INDEX,
+	MODEL_CALL_OPTIONS,
+	MODEL_DTYPE,
+	PROBE_TEXT,
+	PROVISION_MARKER_FILE_NAME,
+	PROVISION_RETRY_DELAYS_MS,
+} from "./libs/constants/constants.js";
 import { EmbeddingErrorMessage, EmbeddingStatus } from "./libs/enums/enums.js";
 import {
 	EmbeddingFailedError,
@@ -23,23 +30,6 @@ import {
 	type ModelManifest,
 } from "./libs/types/types.js";
 import { type S3ModelStore } from "./s3-model-store.module.js";
-
-const LAST_DIMENSION_INDEX = -1;
-
-const MODEL_DTYPE = "int8";
-
-const MODEL_CALL_OPTIONS = { normalize: true, pooling: "cls" } as const;
-
-const PROBE_TEXT = "dimension probe";
-
-const FIRST_RETRY_DELAY_MS = 5000;
-
-const SECOND_RETRY_DELAY_MS = 15_000;
-
-const PROVISION_RETRY_DELAYS_MS = [
-	FIRST_RETRY_DELAY_MS,
-	SECOND_RETRY_DELAY_MS,
-] as const;
 
 type Constructor = {
 	dimensions: number;
