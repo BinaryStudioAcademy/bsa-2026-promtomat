@@ -1,3 +1,4 @@
+import { ErrorCode } from "../../../libs/enums/enums.js";
 import { HTTPCode } from "../../../libs/modules/http/http.js";
 import { AuthValidationMessage } from "../../../modules/auth/libs/enums/auth-validation-message.enum.js";
 import { UserErrorMessage } from "../../../modules/users/users.js";
@@ -6,23 +7,24 @@ import { HTTPError } from "../http-error/http-error.exception.js";
 
 type Constructor = {
 	cause?: unknown;
+	code: ValueOf<typeof ErrorCode>;
 	message: string;
 	status: ValueOf<typeof HTTPCode>;
 };
 
 class AuthError extends HTTPError {
-	public constructor({ cause, message, status }: Constructor) {
+	public constructor({ cause, code, message, status }: Constructor) {
 		super({
 			cause,
+			code,
 			message,
 			status,
 		});
-
-		this.status = status;
 	}
 
 	public static emailAlreadyExists(): AuthError {
 		return new AuthError({
+			code: ErrorCode.AUTH_EMAIL_ALREADY_EXISTS,
 			message: UserErrorMessage.EMAIL_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});
@@ -30,6 +32,7 @@ class AuthError extends HTTPError {
 
 	public static invalidCredentials(): AuthError {
 		return new AuthError({
+			code: ErrorCode.AUTH_INVALID_CREDENTIALS,
 			message: UserErrorMessage.INVALID_EMAIL_OR_PASSWORD,
 			status: HTTPCode.UNAUTHORIZED,
 		});
@@ -37,6 +40,7 @@ class AuthError extends HTTPError {
 
 	public static nicknameAlreadyExists(): AuthError {
 		return new AuthError({
+			code: ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS,
 			message: AuthValidationMessage.NICKNAME_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});

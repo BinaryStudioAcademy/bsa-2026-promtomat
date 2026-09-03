@@ -3,14 +3,14 @@ import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { ButtonVariant, ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
 	FIRST_INDEX,
 	LAST_INDEX_FROM_END,
 } from "./libs/constants/constants.js";
-import { KeyboardKey, ModalLabel } from "./libs/enums/enums.js";
+import { ModalLabel } from "./libs/enums/enums.js";
 import { getFocusableElements } from "./libs/helpers/get-focusable-elements.helper.js";
 import styles from "./styles.module.css";
 
