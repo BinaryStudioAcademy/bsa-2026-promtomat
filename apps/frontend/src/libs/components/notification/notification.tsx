@@ -1,19 +1,28 @@
+import { Icon } from "~/libs/components/icon/icon.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
+
+import { type NotificationItem } from "../overlay-host/libs/types/types.js";
+import { notificationTypeToIconName } from "./libs/maps.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	message: string;
+	item: NotificationItem;
 };
 
-const Notification = ({ message }: Properties) => {
+const Notification = ({ item: { isClosing, message, type } }: Properties) => {
 	return (
-		<p
-			aria-atomic="true"
-			aria-live="polite"
-			className={styles["notification"]}
-			role="status"
+		<div
+			className={getValidClasses(
+				styles["notification"],
+				isClosing && styles["closing"],
+			)}
 		>
-			{message}
-		</p>
+			<Icon
+				className={styles[type]}
+				iconName={notificationTypeToIconName[type]}
+			/>
+			<p className={styles["message"]}>{message}</p>
+		</div>
 	);
 };
 
