@@ -7,6 +7,4 @@ const DEFAULT_WORKSPACE_CREATE_PAYLOAD: WorkspaceCreateRequestDto = {
 	visibility: WorkspaceVisibility.PRIVATE,
 };
 
-const FIRST_ELEMENT_INDEX = 0;
-
-export { DEFAULT_WORKSPACE_CREATE_PAYLOAD, FIRST_ELEMENT_INDEX };
+export { DEFAULT_WORKSPACE_CREATE_PAYLOAD };

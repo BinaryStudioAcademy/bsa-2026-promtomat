@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { WorkspaceValidationMessage } from "../enums/enums.js";
-import { nameField } from "./name-field.validation-schema.js";
+import { workspaceNameField } from "./name-field.validation-schema.js";
 import { stackTagsField } from "./stack-tags-field.validation-schema.js";
 
 const workspaceUpdate = z
 	.strictObject({
-		name: nameField.optional(),
+		name: workspaceNameField.optional(),
 		stackTags: stackTagsField.optional(),
 	})
 	.refine(

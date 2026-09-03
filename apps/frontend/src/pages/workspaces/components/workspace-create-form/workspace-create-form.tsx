@@ -6,8 +6,6 @@ import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
-import { WorkspaceVisibility } from "~/modules/workspaces/libs/enums/enums.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useCreateWorkspaceMutation,
@@ -17,12 +15,15 @@ import {
 import {
 	DEFAULT_WORKSPACE_CREATE_PAYLOAD,
 	FIRST_ELEMENT_INDEX,
-} from "./libs/constants.js";
+	WORKSPACE_STACK_TAG_OPTIONS,
+} from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	onClose: () => void;
 };
+
+const STACK_TAGS = "stackTags";
 
 const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
@@ -33,33 +34,20 @@ const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 	});
 
 	const {
-		field: visibilityField,
-		fieldState: { error: visibilityError },
-	} = useController({
-		control,
-		name: "visibility",
-	});
-
-	const {
 		field: stackTagsField,
 		fieldState: { error: stackTagsError },
 	} = useController({
 		control,
-		name: "stackTags",
+		name: STACK_TAGS,
 	});
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
-			void handleSubmit((payload: WorkspaceCreateRequestDto) => {
-				void createWorkspace(payload)
-					.unwrap()
-					.then(() => {
-						onClose();
-					})
-					.catch((error: unknown) => {
-						const { message } = error as { message: string };
-						showNotification({ message });
-					});
+			void handleSubmit(async (payload: WorkspaceCreateRequestDto) => {
+				const { data } = await createWorkspace(payload);
+				if (data) {
+					onClose();
+				}
 			})(event);
 		},
 		[createWorkspace, handleSubmit, onClose],
@@ -84,24 +72,6 @@ const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 				/>
 
 				<div className={styles["field"]}>
-					<label className={styles["label"]} htmlFor="visibility-select">
-						Visibility
-					</label>
-					<select
-						className={styles["select"]}
-						id="visibility-select"
-						{...visibilityField}
-					>
-						<option disabled hidden value={WorkspaceVisibility.PUBLIC}>
-							Select an ...
-						</option>
-						<option value={WorkspaceVisibility.PUBLIC}>Public</option>
-						<option value={WorkspaceVisibility.PRIVATE}>Private</option>
-					</select>
-					<span className={styles["message"]}>{visibilityError?.message}</span>
-				</div>
-
-				<div className={styles["field"]}>
 					<label className={styles["label"]} htmlFor="stack-tags-select">
 						Stack Tags
 					</label>
@@ -116,9 +86,11 @@ const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 						<option disabled hidden value="">
 							Select an option...
 						</option>
-						<option value="react">React</option>
-						<option value="node">Node.js</option>
-						<option value="typescript">TypeScript</option>
+						{WORKSPACE_STACK_TAG_OPTIONS.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
+							</option>
+						))}
 					</select>
 					<span className={styles["message"]}>{stackTagsError?.message}</span>
 				</div>

@@ -3,7 +3,6 @@ import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
-import { WorkspaceVisibility } from "~/modules/workspaces/libs/enums/enums.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
@@ -81,19 +80,7 @@ class AuthService {
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
 		const user = await this.database.transaction(async (trx) => {
-			const newUser = await this.userService.create(signUpRequestDto, trx);
-
-			await this.workspaceService.create(
-				{
-					name: `${newUser.nickname} workspace`,
-					stackTags: [],
-					visibility: WorkspaceVisibility.PRIVATE,
-				},
-				newUser.id,
-				trx,
-			);
-
-			return newUser;
+			return await this.userService.create(signUpRequestDto, trx);
 		});
 
 		const token = await this.tokenService.create({
