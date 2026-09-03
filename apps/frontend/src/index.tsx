@@ -12,6 +12,7 @@ import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { SettingsPage } from "~/pages/settings/settings.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -27,6 +28,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								index: true,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<SettingsPage />
+									</PrivateRoute>
+								),
+								path: AppRoute.SETTINGS,
 							},
 							{
 								element: <Auth />,

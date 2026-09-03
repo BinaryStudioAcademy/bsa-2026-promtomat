@@ -1,8 +1,12 @@
-import { APIPath } from "~/libs/enums/enums.js";
+import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
 import { UsersApiPath, UsersApiTag } from "./libs/enums/enums.js";
-import { type UserGetAllResponseDto } from "./libs/types/types.js";
+import {
+	type UserDto,
+	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 
 const usersApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
@@ -12,9 +16,17 @@ const usersApi = baseApi
 				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.USERS}${UsersApiPath.ROOT}`,
 			}),
+			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
+				invalidatesTags: [UsersApiTag.USER],
+				query: (payload) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: `${APIPath.USERS}${UsersApiPath.ME}`,
+				}),
+			}),
 		}),
 	});
 
-const { useGetUsersQuery } = usersApi;
+const { useGetUsersQuery, useUpdateProfileMutation } = usersApi;
 
-export { useGetUsersQuery };
+export { useGetUsersQuery, useUpdateProfileMutation };
