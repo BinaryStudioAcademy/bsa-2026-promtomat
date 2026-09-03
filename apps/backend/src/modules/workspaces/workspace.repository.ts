@@ -46,7 +46,12 @@ class WorkspaceRepository {
 		let query = this.workspaceModel.query().where({ userId });
 
 		if (search) {
-			query = query.whereILike("name", `%${search}%`);
+			query = query
+				.whereILike("name", `%${search}%`)
+				.orWhereRaw(
+					"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
+					[`%${search}%`],
+				);
 		}
 
 		const workspaces = await query.execute();
