@@ -1,5 +1,4 @@
 import { APIPath } from "~/libs/enums/enums.js";
-import { AuthError } from "~/libs/exceptions/exceptions.js";
 import {
 	type APIHandlerOptions,
 	type APIHandlerResponse,
@@ -10,7 +9,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { UsersApiPath } from "./libs/enums/enums.js";
-import { type UserUpdateRequestDto } from "./libs/types/types.js";
+import { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
 import { updateProfileValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
 /*** @swagger
@@ -60,7 +59,7 @@ class UserController extends BaseController {
 				this.updateProfile(
 					options as APIHandlerOptions<{
 						body: UserUpdateRequestDto;
-					}>,
+					}> & { user: UserDto },
 				),
 			method: HTTPMethod.PATCH,
 			path: UsersApiPath.ME,
@@ -167,16 +166,13 @@ class UserController extends BaseController {
 	private async updateProfile(
 		options: APIHandlerOptions<{
 			body: UserUpdateRequestDto;
-		}>,
+		}> & { user: UserDto },
 	): Promise<APIHandlerResponse> {
-		const { user } = options;
-
-		if (user === null) {
-			throw AuthError.invalidCredentials();
-		}
-
 		return {
-			payload: await this.userService.updateProfile(user.id, options.body),
+			payload: await this.userService.updateProfile(
+				options.user.id,
+				options.body,
+			),
 			status: HTTPCode.OK,
 		};
 	}
