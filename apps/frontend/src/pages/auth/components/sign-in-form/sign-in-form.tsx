@@ -51,7 +51,7 @@ const SignInForm: React.FC = () => {
 
 	return (
 		<>
-			<h1 className={styles["heading"]}>Sign In</h1>
+			<h1 className={styles["heading"]}>Log into your account</h1>
 			{!hasFieldErrors && errorMessage && <FormAlert message={errorMessage} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
