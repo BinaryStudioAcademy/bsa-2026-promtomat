@@ -1,4 +1,4 @@
-const VECTOR_TYPE_PATTERN = /^vector\((?<dimension>\d+)\)$/;
+import { VECTOR_TYPE_PATTERN } from "../constants/constants.js";
 
 const parseVectorDimension = (typeName: string): null | number => {
 	const dimension = VECTOR_TYPE_PATTERN.exec(typeName)?.groups?.["dimension"];

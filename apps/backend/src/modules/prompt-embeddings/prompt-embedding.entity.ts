@@ -1,5 +1,5 @@
 import { type Embedding } from "~/libs/modules/embedding/embedding.js";
-import { type Entity } from "~/libs/types/entity.type.js";
+import { type Entity } from "~/libs/types/types.js";
 
 class PromptEmbeddingEntity implements Entity {
 	private createdAt: string;

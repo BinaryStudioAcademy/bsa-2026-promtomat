@@ -16,13 +16,9 @@ import {
 	parseVectorDimension,
 	serializeEmbedding,
 } from "./libs/helpers/helpers.js";
-import { type NearestPrompt } from "./libs/types/types.js";
+import { type ColumnTypeRow, type NearestPrompt } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
-
-type ColumnTypeRow = {
-	columnType: string;
-};
 
 class PromptEmbeddingRepository {
 	private promptEmbeddingModel: typeof PromptEmbeddingModel;

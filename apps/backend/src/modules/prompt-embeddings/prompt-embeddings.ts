@@ -11,7 +11,7 @@ const promptEmbeddingRepository = new PromptEmbeddingRepository(
 );
 const promptEmbeddingService = new PromptEmbeddingService({
 	dimensions: config.ENV.EMBEDDING.DIMENSIONS,
-	embedding,
+	embeddingService: embedding,
 	logger,
 	modelId: config.ENV.EMBEDDING.MODEL_ID,
 	promptEmbeddingRepository,

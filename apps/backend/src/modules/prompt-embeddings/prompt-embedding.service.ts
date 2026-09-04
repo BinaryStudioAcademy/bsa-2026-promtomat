@@ -21,7 +21,7 @@ import { type PromptEmbeddingRepository } from "./prompt-embedding.repository.js
 
 type Constructor = {
 	dimensions: number;
-	embedding: EmbeddingService;
+	embeddingService: EmbeddingService;
 	logger: Logger;
 	modelId: string;
 	promptEmbeddingRepository: PromptEmbeddingRepository;
@@ -30,7 +30,7 @@ type Constructor = {
 class PromptEmbeddingService {
 	private dimensions: number;
 
-	private embedding: EmbeddingService;
+	private embeddingService: EmbeddingService;
 
 	private logger: Logger;
 
@@ -42,20 +42,20 @@ class PromptEmbeddingService {
 
 	public constructor({
 		dimensions,
-		embedding,
+		embeddingService,
 		logger,
 		modelId,
 		promptEmbeddingRepository,
 	}: Constructor) {
 		this.dimensions = dimensions;
-		this.embedding = embedding;
+		this.embeddingService = embeddingService;
 		this.logger = logger;
 		this.modelId = modelId;
 		this.promptEmbeddingRepository = promptEmbeddingRepository;
 	}
 
 	private async embedText(text: string): Promise<Embedding> {
-		const [embedding] = await this.embedding.embed([text]);
+		const [embedding] = await this.embeddingService.embed([text]);
 
 		if (!embedding) {
 			throw new PromptEmbeddingError(PromptEmbeddingErrorMessage.EMPTY_RESULT);
@@ -81,13 +81,10 @@ class PromptEmbeddingService {
 			return;
 		}
 
-		this.logger.error(
-			`Prompt ${promptId.toString()} was not embedded — the backfill will close the gap.`,
-			{
-				message: error instanceof Error ? error.message : String(error),
-				stack: error instanceof Error ? error.stack : undefined,
-			},
-		);
+		this.logger.error(`Prompt ${promptId.toString()} was not embedded.`, {
+			message: error instanceof Error ? error.message : String(error),
+			stack: error instanceof Error ? error.stack : undefined,
+		});
 	}
 
 	private async verifySchemaDimension(): Promise<void> {
