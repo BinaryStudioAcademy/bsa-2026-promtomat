@@ -35,11 +35,11 @@ class WorkspaceService {
 
 	public async findAllUserWorkspaces(
 		userId: number,
-		search?: string,
+		workspaceName?: string,
 	): Promise<WorkspaceGetAllResponseDto> {
 		const workspaces = await this.workspaceRepository.findAllUserWorkspaces(
 			userId,
-			search,
+			workspaceName,
 		);
 
 		return {

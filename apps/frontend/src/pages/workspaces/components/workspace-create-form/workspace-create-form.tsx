@@ -5,6 +5,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { ControlSize } from "~/libs/enums/control-size.enum.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -96,7 +97,12 @@ const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 				</div>
 
 				<div className={styles["footer"]}>
-					<Button isDisabled={isLoading} label="Create" type="submit" />
+					<Button
+						isDisabled={isLoading}
+						label="Create"
+						size={ControlSize.MD}
+						type="submit"
+					/>
 				</div>
 			</form>
 		</>
