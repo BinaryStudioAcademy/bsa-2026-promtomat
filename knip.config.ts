@@ -3,7 +3,7 @@ import { type KnipConfig } from "knip";
 const config: KnipConfig = {
 	ignoreIssues: {
 		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
-		// consumers.
+		// consumers: the editing flow (regenerate) and search (#77).
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
 			"types",
 		],
