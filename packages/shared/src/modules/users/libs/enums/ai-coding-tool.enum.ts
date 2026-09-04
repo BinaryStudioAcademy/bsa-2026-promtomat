@@ -1,0 +1,11 @@
+const AiCodingTool = {
+	CHATGPT: "CHATGPT",
+	CLAUDE_CODE: "CLAUDE_CODE",
+	CURSOR: "CURSOR",
+	GEMINI: "GEMINI",
+	GITHUB_COPILOT: "GITHUB_COPILOT",
+	JETBRAINS_AI: "JETBRAINS_AI",
+	WINDSURF: "WINDSURF",
+} as const;
+
+export { AiCodingTool };

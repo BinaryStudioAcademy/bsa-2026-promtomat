@@ -2,12 +2,12 @@ import { useCallback } from "react";
 import { Navigate } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
-import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
@@ -15,7 +15,6 @@ import {
 } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
-import { FormAlert } from "../form-alert/form-alert.js";
 import { DEFAULT_SIGN_IN_PAYLOAD, SIGN_IN_FIELDS } from "./libs/constants.js";
 
 const SignInForm: React.FC = () => {
@@ -47,12 +46,10 @@ const SignInForm: React.FC = () => {
 		return <Navigate replace to={AppRoute.ROOT} />;
 	}
 
-	const errorMessage = getErrorMessage(error);
-
 	return (
 		<>
 			<h1 className={styles["heading"]}>Log into your account</h1>
-			{!hasFieldErrors && errorMessage && <FormAlert message={errorMessage} />}
+			{hasFieldErrors ? null : <FormAlert error={error} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input

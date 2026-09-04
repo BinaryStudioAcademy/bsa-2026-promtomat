@@ -18,6 +18,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
+	isRequired?: boolean;
 	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
@@ -32,6 +33,7 @@ const Input = <T extends FieldValues>({
 	control,
 	descriptionId,
 	isDisabled = false,
+	isRequired = false,
 	label,
 	maxLength,
 	name,
@@ -70,12 +72,18 @@ const Input = <T extends FieldValues>({
 		<div className={styles["field"]}>
 			<label className={styles["label"]} htmlFor={inputId}>
 				{label}
+				{isRequired ? (
+					<span aria-hidden="true" className={styles["required"]}>
+						*
+					</span>
+				) : null}
 			</label>
 			<div className={styles["control"]}>
 				<input
 					{...field}
 					aria-describedby={describedById}
 					aria-invalid={hasError || undefined}
+					aria-required={isRequired || undefined}
 					autoComplete={autoComplete}
 					className={getValidClasses(
 						styles["input"],
