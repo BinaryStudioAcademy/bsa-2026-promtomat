@@ -2,8 +2,9 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
+import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { ButtonVariant, ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import { ControlSize, IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
@@ -170,12 +171,11 @@ const Modal = ({
 						{title}
 					</h2>
 					{isDismissible && (
-						<Button
-							label={ModalLabel.CLOSE}
+						<IconButton
+							ariaLabel={ModalLabel.CLOSE}
+							iconName={IconName.CIRCLE_X}
 							onClick={onClose}
 							size={ControlSize.SM}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
 						/>
 					)}
 				</div>
