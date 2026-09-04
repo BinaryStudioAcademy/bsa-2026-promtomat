@@ -61,6 +61,7 @@ const Textarea = <T extends FieldValues>({
 			const scrollHeight = textarea.scrollHeight;
 			textarea.style.height = `${String(scrollHeight)}px`;
 
+			textarea.style.maxHeight = `${String(maxHeight)}px`;
 			textarea.style.overflowY = scrollHeight >= maxHeight ? "auto" : "hidden";
 		}
 	}, [maxHeight]);

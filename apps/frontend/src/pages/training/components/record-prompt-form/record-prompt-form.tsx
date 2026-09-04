@@ -78,6 +78,7 @@ const RecordPromptForm: React.FC = () => {
 						placeholder="What were you trying to achieve? (e.g., JWT Authentication on FastAPI)"
 					/>
 					<Textarea
+						autoComplete="off"
 						control={control}
 						label="Prompt Body"
 						name="promptBody"
