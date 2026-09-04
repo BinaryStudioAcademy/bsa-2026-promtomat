@@ -33,7 +33,7 @@ const promptCreate = z.object({
 			PromptValidationRule.INTENT_MAXIMUM_LENGTH,
 			PromptValidationMessage.INTENT_TOO_LONG,
 		),
-	workspaceId: z.number(),
+	workspaceId: z.number(PromptValidationMessage.INVALID_CONTEXT),
 });
 
 export { promptCreate };
