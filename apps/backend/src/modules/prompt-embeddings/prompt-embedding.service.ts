@@ -1,3 +1,4 @@
+import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
 	type Embedding,
 	EmbeddingFailedError,
@@ -6,13 +7,20 @@ import {
 } from "~/libs/modules/embedding/embedding.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
+import {
+	BACKFILL_BATCH_SIZE,
+	BACKFILL_PAGE_SIZE,
+} from "./libs/constants/constants.js";
 import { PromptEmbeddingErrorMessage } from "./libs/enums/enums.js";
 import { PromptEmbeddingError } from "./libs/exceptions/exceptions.js";
 import {
 	composeEmbeddedText,
 	computeSourceHash,
+	splitIntoBatches,
 } from "./libs/helpers/helpers.js";
 import {
+	type BackfillReport,
+	type IndexedPromptSource,
 	type NearestPrompt,
 	type PromptEmbeddingSource,
 } from "./libs/types/types.js";
@@ -54,14 +62,90 @@ class PromptEmbeddingService {
 		this.promptEmbeddingRepository = promptEmbeddingRepository;
 	}
 
-	private async embedText(text: string): Promise<Embedding> {
-		const [embedding] = await this.embeddingService.embed([text]);
+	// Embeds one batch and stores each row on its own, so a failed row costs only itself.
+	private async backfillBatch(
+		sources: PromptEmbeddingSource[],
+	): Promise<Pick<BackfillReport, "embedded" | "failed">> {
+		const report = { embedded: 0, failed: 0 };
+		let entities: PromptEmbeddingEntity[];
 
-		if (!embedding) {
-			throw new PromptEmbeddingError(PromptEmbeddingErrorMessage.EMPTY_RESULT);
+		try {
+			entities = await this.embedSources(sources);
+		} catch (error) {
+			this.logBackfillFailure(
+				sources.map((source) => source.id),
+				error,
+			);
+
+			return { ...report, failed: sources.length };
 		}
 
-		return embedding;
+		for (const entity of entities) {
+			const { promptId } = entity.toObject();
+
+			try {
+				await this.promptEmbeddingRepository.createOrUpdate(entity);
+				report.embedded++;
+			} catch (error) {
+				this.logBackfillFailure([promptId], error);
+				report.failed++;
+			}
+		}
+
+		return report;
+	}
+
+	private checkIsCurrent({
+		modelId,
+		sourceHash,
+		...source
+	}: IndexedPromptSource): boolean {
+		return (
+			modelId === this.modelId &&
+			sourceHash === computeSourceHash(composeEmbeddedText(source))
+		);
+	}
+
+	private async embedSources(
+		sources: PromptEmbeddingSource[],
+	): Promise<PromptEmbeddingEntity[]> {
+		const embeddedTexts = sources.map((source) => ({
+			source,
+			text: composeEmbeddedText(source),
+		}));
+		const embeddings = await this.embeddingService.embed(
+			embeddedTexts.map(({ text }) => text),
+		);
+
+		if (embeddings.length !== embeddedTexts.length) {
+			throw new PromptEmbeddingError(
+				PromptEmbeddingErrorMessage.RESULT_COUNT_MISMATCH,
+			);
+		}
+
+		return embeddedTexts.map(({ source, text }, index) => {
+			const embedding = embeddings[index];
+
+			if (!embedding) {
+				throw new PromptEmbeddingError(
+					PromptEmbeddingErrorMessage.EMPTY_RESULT,
+				);
+			}
+
+			return PromptEmbeddingEntity.initializeNew({
+				embedding,
+				modelId: this.modelId,
+				promptId: source.id,
+				sourceHash: computeSourceHash(text),
+			});
+		});
+	}
+
+	private logBackfillFailure(promptIds: number[], error: unknown): void {
+		this.logger.error(
+			`Backfill did not embed prompts ${promptIds.join(", ")} — they stay eligible for the next run.`,
+			getErrorDetails(error),
+		);
 	}
 
 	private logFailure(promptId: number, error: unknown): void {
@@ -81,10 +165,10 @@ class PromptEmbeddingService {
 			return;
 		}
 
-		this.logger.error(`Prompt ${promptId.toString()} was not embedded.`, {
-			message: error instanceof Error ? error.message : String(error),
-			stack: error instanceof Error ? error.stack : undefined,
-		});
+		this.logger.error(
+			`Prompt ${promptId.toString()} was not embedded.`,
+			getErrorDetails(error),
+		);
 	}
 
 	private async verifySchemaDimension(): Promise<void> {
@@ -115,6 +199,42 @@ class PromptEmbeddingService {
 		}
 	}
 
+	public async backfill(): Promise<BackfillReport> {
+		await this.verifySchemaDimension();
+
+		const report: BackfillReport = { embedded: 0, failed: 0, skipped: 0 };
+		let afterId = 0;
+		let page: IndexedPromptSource[];
+
+		do {
+			page = await this.promptEmbeddingRepository.findIndexedSourcesAfter(
+				afterId,
+				BACKFILL_PAGE_SIZE,
+			);
+
+			const staleSources: PromptEmbeddingSource[] = [];
+
+			for (const source of page) {
+				afterId = source.id;
+
+				if (this.checkIsCurrent(source)) {
+					report.skipped++;
+				} else {
+					staleSources.push(source);
+				}
+			}
+
+			for (const batch of splitIntoBatches(staleSources, BACKFILL_BATCH_SIZE)) {
+				const { embedded, failed } = await this.backfillBatch(batch);
+
+				report.embedded += embedded;
+				report.failed += failed;
+			}
+		} while (page.length === BACKFILL_PAGE_SIZE);
+
+		return report;
+	}
+
 	// Fire-and-forget: never throws into the caller, every failure is logged.
 	public async embedForPrompt(prompt: PromptEmbeddingSource): Promise<void> {
 		try {
@@ -136,17 +256,11 @@ class PromptEmbeddingService {
 	): Promise<void> {
 		await this.verifySchemaDimension();
 
-		const text = composeEmbeddedText(prompt);
-		const embedding = await this.embedText(text);
+		const entities = await this.embedSources([prompt]);
 
-		await this.promptEmbeddingRepository.createOrUpdate(
-			PromptEmbeddingEntity.initializeNew({
-				embedding,
-				modelId: this.modelId,
-				promptId: prompt.id,
-				sourceHash: computeSourceHash(text),
-			}),
-		);
+		for (const entity of entities) {
+			await this.promptEmbeddingRepository.createOrUpdate(entity);
+		}
 	}
 }
 

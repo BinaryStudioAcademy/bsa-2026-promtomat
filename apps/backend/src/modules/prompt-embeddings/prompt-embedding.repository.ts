@@ -2,6 +2,7 @@ import { raw } from "objection";
 
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { type Embedding } from "~/libs/modules/embedding/embedding.js";
+import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 
 import {
 	COLUMN_TYPE_ALIAS,
@@ -16,7 +17,11 @@ import {
 	parseVectorDimension,
 	serializeEmbedding,
 } from "./libs/helpers/helpers.js";
-import { type ColumnTypeRow, type NearestPrompt } from "./libs/types/types.js";
+import {
+	type ColumnTypeRow,
+	type IndexedPromptSource,
+	type NearestPrompt,
+} from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
 
@@ -44,6 +49,32 @@ class PromptEmbeddingRepository {
 			.execute();
 
 		return PromptEmbeddingEntity.initialize(promptEmbedding);
+	}
+
+	public async findIndexedSourcesAfter(
+		afterId: number,
+		limit: number,
+	): Promise<IndexedPromptSource[]> {
+		const promptId = `${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`;
+
+		return await this.promptEmbeddingModel
+			.knex()
+			.select<IndexedPromptSource[]>(
+				promptId,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROPMPT_BODY}`,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.MODEL_ID}`,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.SOURCE_HASH}`,
+			)
+			.from(DatabaseTableName.PROMPTS)
+			.leftJoin(
+				DatabaseTableName.PROMPT_EMBEDDINGS,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
+				promptId,
+			)
+			.where(promptId, ">", afterId)
+			.orderBy(promptId)
+			.limit(limit);
 	}
 
 	public async findNearest(

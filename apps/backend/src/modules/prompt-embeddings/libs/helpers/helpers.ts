@@ -4,3 +4,4 @@ export { computeSourceHash } from "./compute-source-hash.helper.js";
 export { parseEmbedding } from "./parse-embedding.helper.js";
 export { parseVectorDimension } from "./parse-vector-dimension.helper.js";
 export { serializeEmbedding } from "./serialize-embedding.helper.js";
+export { splitIntoBatches } from "./split-into-batches.helper.js";

@@ -1,3 +1,5 @@
+export { BACKFILL_BATCH_SIZE } from "./backfill-batch-size.constant.js";
+export { BACKFILL_PAGE_SIZE } from "./backfill-page-size.constant.js";
 export { COLUMN_TYPE_ALIAS } from "./column-type-alias.constant.js";
 export { DISTANCE_ALIAS } from "./distance-alias.constant.js";
 export { EMBEDDED_TEXT_SEPARATOR } from "./embedded-text-separator.constant.js";
