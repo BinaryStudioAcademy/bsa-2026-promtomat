@@ -1,12 +1,12 @@
 resource "aws_ecr_repository" "ecr" {
-  for_each = toset([ var.ecr_frontend, var.ecr_backend ])
-  name = each.key
+  for_each             = toset([var.ecr_frontend, var.ecr_backend])
+  name                 = each.key
   image_tag_mutability = "IMMUTABLE"
-  force_delete = true
+  force_delete         = true
 }
 
 resource "aws_ecr_lifecycle_policy" "ecr" {
-  for_each = aws_ecr_repository.ecr
+  for_each   = aws_ecr_repository.ecr
   repository = each.value.name
 
   policy = jsonencode({
