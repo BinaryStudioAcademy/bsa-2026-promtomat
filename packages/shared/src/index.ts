@@ -47,8 +47,14 @@ export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetRecentResponseDto,
+	type PromptProgressResponseDto,
+	type PromptRecentDto,
+	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
+	PromptProgress,
 	PromptsApiPath,
+	promptWorkspaceQueryValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
 	type UserDto,
