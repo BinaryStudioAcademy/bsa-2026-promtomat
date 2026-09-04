@@ -18,12 +18,6 @@ class UserRepository {
 		return UserEntity.initialize(user);
 	}
 
-	public async findAll(): Promise<UserEntity[]> {
-		const users = await this.userModel.query().execute();
-
-		return users.map((user) => UserEntity.initialize(user));
-	}
-
 	public async findByEmail(email: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ email }).execute();
 
