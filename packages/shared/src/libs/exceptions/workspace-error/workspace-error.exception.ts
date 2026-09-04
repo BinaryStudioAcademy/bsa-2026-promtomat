@@ -24,6 +24,14 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
+	public static lastWorkspaceDeletionNotAllowed(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.LAST_WORKSPACE_DELETION_NOT_ALLOWED,
+			message: WorkspacesErrorMessage.LAST_WORKSPACE_DELETION_NOT_ALLOWED,
+			status: HTTPCode.CONFLICT,
+		});
+	}
+
 	public static nameAlreadyExists(): WorkspaceError {
 		return new WorkspaceError({
 			code: WorkspacesErrorCode.WORKSPACE_ALREADY_EXISTS,

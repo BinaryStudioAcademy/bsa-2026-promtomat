@@ -52,11 +52,13 @@ export {
 } from "./modules/users/users.js";
 export {
 	type WorkspaceCreateRequestDto,
+	type WorkspaceDeletionImpactResponseDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceRouteParametersDto,
 	type WorkspaceUpdateRequestDto,
 	workspaceCreationValidationSchema,
+	workspaceDeletionImpactValidationSchema,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,

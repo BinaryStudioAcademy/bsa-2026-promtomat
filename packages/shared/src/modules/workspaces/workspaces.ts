@@ -6,6 +6,7 @@ export {
 } from "./libs/enums/enums.js";
 export {
 	type WorkspaceCreateRequestDto,
+	type WorkspaceDeletionImpactResponseDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceRouteParametersDto,
@@ -13,6 +14,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	workspaceCreationValidationSchema,
+	workspaceDeletionImpactValidationSchema,
 	workspaceRouteParametersValidationSchema,
 	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
