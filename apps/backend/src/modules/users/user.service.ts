@@ -1,8 +1,11 @@
+import { type Transaction } from "objection";
+
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
+import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
 	type UserDto,
@@ -14,12 +17,22 @@ class UserService {
 
 	private userRepository: UserRepository;
 
-	public constructor(hashing: Hashing, userRepository: UserRepository) {
+	private workspaceService: WorkspaceService;
+
+	public constructor(
+		hashing: Hashing,
+		userRepository: UserRepository,
+		workspaceService: WorkspaceService,
+	) {
 		this.hashing = hashing;
 		this.userRepository = userRepository;
+		this.workspaceService = workspaceService;
 	}
 
-	public async create(payload: SignUpRequestDto): Promise<UserDto> {
+	public async create(
+		payload: SignUpRequestDto,
+		trx?: Transaction,
+	): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmailOrNickname(
 			payload.email,
 			payload.nickname,
@@ -41,9 +54,20 @@ class UserService {
 				passwordHash: hash,
 				passwordSalt: salt,
 			}),
+			trx,
 		);
 
-		return user.toObject();
+		const userDto = user.toObject();
+
+		await this.workspaceService.create(
+			{
+				name: `${userDto.nickname} workspace`,
+				userId: userDto.id,
+			},
+			trx,
+		);
+
+		return userDto;
 	}
 
 	public async findAll(): Promise<UserGetAllResponseDto> {
