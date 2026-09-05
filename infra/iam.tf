@@ -87,13 +87,21 @@ resource "aws_iam_role_policy" "backend_s3_access" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = ["s3:GetObject", "s3:PutObject"]
-      Resource = [
-        aws_s3_bucket.local_model.arn,
-        "${aws_s3_bucket.local_model.arn}/*"
-      ]
-    }]
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["s3:GetObject", "s3:PutObject"]
+        Resource = [
+          aws_s3_bucket.local_model.arn,
+          "${aws_s3_bucket.local_model.arn}/*"
+        ]
+        }, {
+        Effect = "Allow"
+        Action = ["s3:ListBucket"]
+        Resource = [
+          aws_s3_bucket.local_model.arn
+        ]
+      }
+    ]
   })
 }
