@@ -1,6 +1,7 @@
 import { type Transaction, UniqueViolationError } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
@@ -31,17 +32,14 @@ class WorkspaceRepository {
 		}
 	}
 
-	public async findAllUserWorkspaces(
+	public async findAllByUserId(
 		userId: number,
 		workspaceName?: string,
 	): Promise<WorkspaceEntity[]> {
 		const query = this.workspaceModel.query().where({ userId });
 
 		if (workspaceName) {
-			const escapedWorkspaceName = workspaceName.replaceAll(
-				/[\\%_]/g,
-				String.raw`\$&`,
-			);
+			const escapedWorkspaceName = escapeILikePattern(workspaceName);
 			query.whereILike("name", `%${escapedWorkspaceName}%`);
 		}
 

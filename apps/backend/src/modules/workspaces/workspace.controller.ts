@@ -46,9 +46,9 @@ class WorkspaceController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
-				this.findAllUserWorkspaces(
+				this.findAllByUserId(
 					options as APIHandlerOptions<{
-						query: { search?: string };
+						query: { workspaceName?: string };
 					}>,
 				),
 			method: HTTPMethod.GET,
@@ -128,21 +128,21 @@ class WorkspaceController extends BaseController {
 	 *        - bearerAuth: []
 	 *      parameters:
 	 *        - in: query
-	 *          name: search
+	 *          name: workspaceName
 	 *          schema:
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
 	 */
-	private async findAllUserWorkspaces(
+	private async findAllByUserId(
 		options: APIHandlerOptions<{
-			query: { search?: string };
+			query: { workspaceName?: string };
 		}>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.workspaceService.findAllUserWorkspaces(
+			payload: await this.workspaceService.findAllByUserId(
 				options.user?.id as number,
-				options.query.search,
+				options.query.workspaceName,
 			),
 			status: HTTPCode.OK,
 		};

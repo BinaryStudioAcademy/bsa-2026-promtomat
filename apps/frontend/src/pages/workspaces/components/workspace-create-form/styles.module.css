@@ -53,7 +53,7 @@
 
 .footer {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	padding: var(--space-24);
 	margin: 0 calc(-1 * var(--space-24)) calc(-1 * var(--space-24));
 	border-top: var(--border-width-hairline) solid var(--border-subtle);
