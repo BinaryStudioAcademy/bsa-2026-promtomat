@@ -5,6 +5,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -25,7 +26,7 @@ type Properties = {
 
 const STACK_TAGS = "stackTags";
 
-const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
+const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
 
 	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
@@ -96,7 +97,20 @@ const WorkspaceCreateForm = ({ onClose }: Properties): React.JSX.Element => {
 				</div>
 
 				<div className={styles["footer"]}>
-					<Button isDisabled={isLoading} label="Create" type="submit" />
+					<Button
+						isDisabled={isLoading}
+						label="Close"
+						onClick={onClose}
+						size={ControlSize.MD}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
+					<Button
+						isDisabled={isLoading}
+						label="Create"
+						size={ControlSize.MD}
+						type="submit"
+					/>
 				</div>
 			</form>
 		</>
