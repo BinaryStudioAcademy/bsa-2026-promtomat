@@ -61,6 +61,7 @@ export {
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,

@@ -62,7 +62,7 @@ class PromptEmbeddingRepository {
 			.select<IndexedPromptSource[]>(
 				promptId,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROPMPT_BODY}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
 				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.MODEL_ID}`,
 				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.SOURCE_HASH}`,
 			)

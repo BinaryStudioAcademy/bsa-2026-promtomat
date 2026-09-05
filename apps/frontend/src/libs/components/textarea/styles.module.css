@@ -1,7 +1,7 @@
 .field {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: var(--space-4);
 }
 
 .label {
@@ -18,8 +18,7 @@
 
 .textarea {
 	width: 100%;
-	max-height: 300px;
-	padding: 12px;
+	padding: var(--space-12);
 	overflow-y: auto;
 	font-family: inherit;
 	font-size: var(--font-size-body-base);
@@ -67,19 +66,19 @@
 }
 
 .message {
-	min-height: 18px;
+	min-height: var(--space-18);
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
 }
 
 .autoResize {
-	min-height: 72px;
+	min-height: var(--size-control-h-xl);
 	resize: none;
 }
 
 .textarea::-webkit-scrollbar {
-	width: 4px;
-	margin-right: 20px;
+	width: var(--size-scrollbar-w);
+	margin-right: var(--space-20);
 }
 
 .textarea::-webkit-scrollbar-track {

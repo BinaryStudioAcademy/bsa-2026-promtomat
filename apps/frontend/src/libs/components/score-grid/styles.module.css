@@ -1,7 +1,7 @@
 .field {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: var(--space-4);
 }
 
 .label {
@@ -14,9 +14,9 @@
 	display: grid;
 	grid-template-columns: repeat(
 		auto-fill,
-		minmax(clamp(55px, 10vw, 62px), 1fr)
+		minmax(clamp(var(--space-48), 15vw, var(--space-64)), 1fr)
 	);
-	gap: 6px;
+	gap: var(--space-6);
 }
 
 .message {
@@ -37,5 +37,5 @@
 }
 
 .score-button {
-	height: 48px;
+	height: var(--size-control-h-xl);
 }

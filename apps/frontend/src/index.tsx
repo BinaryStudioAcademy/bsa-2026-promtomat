@@ -10,6 +10,7 @@ import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
+import { Home } from "~/pages/home/home.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { Training } from "~/pages/training/training.js";
@@ -25,7 +26,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: (
 									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										Root
+										<Home />
 									</PrivateRoute>
 								),
 								index: true,

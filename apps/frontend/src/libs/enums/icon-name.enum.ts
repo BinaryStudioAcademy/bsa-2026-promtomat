@@ -8,6 +8,7 @@ const IconName = {
 	EYE: "eye",
 	EYE_FILLED: "eye-filled",
 	INFO: "info",
+	MENU: "menu",
 } as const;
 
 export { IconName };
