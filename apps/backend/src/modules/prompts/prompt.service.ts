@@ -1,8 +1,5 @@
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
-import {
-	type PromptCreateRequestDto,
-	type PromptDto,
-} from "./libs/types/types.js";
+import { PromptCreatePayload, type PromptDto } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
@@ -19,11 +16,9 @@ class PromptService {
 		this.workspaceService = workspaceService;
 	}
 
-	public async create(
-		payload: PromptCreateRequestDto,
-		userId: number,
-	): Promise<PromptDto> {
-		const { efficiencyScore, promptBody, taskIntent, workspaceId } = payload;
+	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
+		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
+			payload;
 
 		await this.workspaceService.checkUserAccess(workspaceId, userId);
 
