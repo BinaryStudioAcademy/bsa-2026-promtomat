@@ -64,6 +64,15 @@ class WorkspaceRepository {
 		return workspace ? WorkspaceEntity.initialize(workspace) : null;
 	}
 
+	public async findCountByUserId(userId: number): Promise<number> {
+		const workspaceCount = await this.workspaceModel
+			.query()
+			.where({ userId })
+			.resultSize();
+
+		return workspaceCount;
+	}
+
 	public async update(
 		id: number,
 		payload: WorkspaceUpdateRequestDto,

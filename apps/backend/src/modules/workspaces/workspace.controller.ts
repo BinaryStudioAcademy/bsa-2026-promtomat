@@ -61,6 +61,20 @@ class WorkspaceController extends BaseController {
 		});
 
 		this.addRoute({
+			handler: (options) =>
+				this.findDeletionImpact(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: WorkspacesApiPath.DELETION_IMPACT,
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
+			},
+		});
+
+		this.addRoute({
 			handler: (options) => this.create(options),
 			method: HTTPMethod.POST,
 			path: WorkspacesApiPath.ROOT,
@@ -152,6 +166,64 @@ class WorkspaceController extends BaseController {
 			payload: await this.workspaceService.findAllUserWorkspaces(
 				options.user?.id as number,
 				options.query.search,
+			),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /workspaces/{id}/deletion-impact:
+	 *   get:
+	 *     description: Returns the deletion impact for an owned workspace
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: id
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       200:
+	 *         description: Workspace deletion impact returned successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               required:
+	 *                 - canDelete
+	 *                 - promptCount
+	 *               properties:
+	 *                 canDelete:
+	 *                   type: boolean
+	 *                 promptCount:
+	 *                   type: integer
+	 *                   minimum: 0
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Invalid workspace id
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
+
+	private async findDeletionImpact(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.workspaceService.findDeletionImpact(
+				options.params.id,
+				options.user?.id as number,
 			),
 			status: HTTPCode.OK,
 		};

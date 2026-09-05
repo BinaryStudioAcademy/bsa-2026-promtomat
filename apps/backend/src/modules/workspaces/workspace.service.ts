@@ -1,9 +1,12 @@
 import { type Transaction } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
 
+import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
 import {
 	type WorkspaceCreateRequestDto,
+	type WorkspaceDeletionImpactResponseDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceUpdateRequestDto,
@@ -12,10 +15,16 @@ import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceRepository } from "./workspace.repository.js";
 
 class WorkspaceService {
+	private promptRepository: PromptRepository;
+
 	private workspaceRepository: WorkspaceRepository;
 
-	public constructor(workspaceRepository: WorkspaceRepository) {
+	public constructor(
+		workspaceRepository: WorkspaceRepository,
+		promptRepository: PromptRepository,
+	) {
 		this.workspaceRepository = workspaceRepository;
+		this.promptRepository = promptRepository;
 	}
 
 	public async checkUserAccess(
@@ -64,6 +73,23 @@ class WorkspaceService {
 
 		return {
 			items: workspaces.map((workspace) => workspace.toObject()),
+		};
+	}
+
+	public async findDeletionImpact(
+		workspaceId: number,
+		userId: number,
+	): Promise<WorkspaceDeletionImpactResponseDto> {
+		await this.checkUserAccess(workspaceId, userId);
+
+		const [ownedWorkspaceCount, promptCount] = await Promise.all([
+			this.workspaceRepository.findCountByUserId(userId),
+			this.promptRepository.findCountByWorkspaceId(workspaceId),
+		]);
+
+		return {
+			canDelete: ownedWorkspaceCount >= MINIMUM_WORKSPACE_COUNT_FOR_DELETION,
+			promptCount,
 		};
 	}
 
