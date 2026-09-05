@@ -9,6 +9,12 @@ type EnvironmentSchema = {
 		HOST: string;
 		PORT: number;
 	};
+	BEDROCK: {
+		MODEL: {
+			ID: string;
+		};
+		REGION: string;
+	};
 	DB: {
 		DIALECT: string;
 		HOST: string;

@@ -1,0 +1,3 @@
+const FIRST_CONTENT_INDEX = 0;
+
+export { FIRST_CONTENT_INDEX };
