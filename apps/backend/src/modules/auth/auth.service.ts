@@ -3,7 +3,6 @@ import { Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
-import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import {
 	type SignInRequestDto,
@@ -21,26 +20,21 @@ class AuthService {
 
 	private userService: UserService;
 
-	private workspaceService: WorkspaceService;
-
 	public constructor({
 		database,
 		hashing,
 		tokenService,
 		userService,
-		workspaceService,
 	}: {
 		database: Database;
 		hashing: Hashing;
 		tokenService: TokenService;
 		userService: UserService;
-		workspaceService: WorkspaceService;
 	}) {
 		this.database = database;
 		this.hashing = hashing;
 		this.tokenService = tokenService;
 		this.userService = userService;
-		this.workspaceService = workspaceService;
 	}
 
 	public async signIn(

@@ -1,14 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import { AppRoute } from "~/libs/enums/enums.js";
-import { type ValueOf } from "~/libs/types/types.js";
+import { type Redirect } from "./libs/types/redirect.type.js";
 
 type NavigationState = {
-	redirectTo: null | ValueOf<typeof AppRoute>;
+	redirect: null | Redirect;
 };
 
 const initialState: NavigationState = {
-	redirectTo: null,
+	redirect: null,
 };
 
 const navigationSlice = createSlice({
@@ -16,10 +15,10 @@ const navigationSlice = createSlice({
 	name: "navigation",
 	reducers: {
 		clearRedirect: (state) => {
-			state.redirectTo = null;
+			state.redirect = null;
 		},
-		setRedirect: (state, action: PayloadAction<ValueOf<typeof AppRoute>>) => {
-			state.redirectTo = action.payload;
+		setRedirect: (state, action: PayloadAction<Redirect>) => {
+			state.redirect = action.payload;
 		},
 	},
 });

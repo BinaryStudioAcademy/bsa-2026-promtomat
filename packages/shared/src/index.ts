@@ -65,6 +65,7 @@ export {
 	type WorkspaceUpdateRequestDto,
 	workspaceCreationValidationSchema,
 	workspaceDeletionImpactValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,

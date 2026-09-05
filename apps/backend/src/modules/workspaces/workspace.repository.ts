@@ -5,6 +5,7 @@ import {
 } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 
 import { type WorkspaceUpdateRequestDto } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
@@ -21,18 +22,10 @@ class WorkspaceRepository {
 		entity: WorkspaceEntity,
 		trx?: Transaction,
 	): Promise<WorkspaceEntity> {
-		const { name, stackTags, userId, visibility } = entity.toNewObject();
-
 		try {
 			const workspace = await this.workspaceModel
 				.query(trx)
-				.insert({
-					name,
-					stackTags,
-					userId,
-					visibility,
-				})
-				.returning("*")
+				.insert(entity.toNewObject())
 				.execute();
 
 			return WorkspaceEntity.initialize(workspace);
@@ -48,6 +41,21 @@ class WorkspaceRepository {
 		await this.workspaceModel.query(trx).deleteById(id).execute();
 	}
 
+	public async findAllByUserId(
+		userId: number,
+		workspaceName?: string,
+	): Promise<WorkspaceEntity[]> {
+		const query = this.workspaceModel.query().where({ userId });
+
+		if (workspaceName) {
+			const escapedWorkspaceName = escapeILikePattern(workspaceName);
+			query.whereILike("name", `%${escapedWorkspaceName}%`);
+		}
+
+		const workspaces = await query.execute();
+		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
+	}
+
 	public async findAllByUserIdForUpdate(
 		userId: number,
 		trx: Transaction,
@@ -59,20 +67,6 @@ class WorkspaceRepository {
 			.forUpdate()
 			.execute();
 
-		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
-	}
-
-	public async findAllUserWorkspaces(
-		userId: number,
-		search?: string,
-	): Promise<WorkspaceEntity[]> {
-		let query = this.workspaceModel.query().where({ userId });
-
-		if (search) {
-			query = query.whereILike("name", `%${search}%`);
-		}
-
-		const workspaces = await query.execute();
 		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
 	}
 

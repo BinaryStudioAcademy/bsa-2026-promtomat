@@ -6,7 +6,7 @@ import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
 
 import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
 import {
-	type WorkspaceCreateRequestDto,
+	type WorkspaceCreatePayload,
 	type WorkspaceDeletionImpactResponseDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
@@ -50,8 +50,7 @@ class WorkspaceService {
 	}
 
 	public async create(
-		payload: Omit<WorkspaceCreateRequestDto, "stackTags" | "visibility"> &
-			Partial<WorkspaceCreateRequestDto> & { userId: number },
+		payload: WorkspaceCreatePayload,
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(
@@ -84,13 +83,13 @@ class WorkspaceService {
 		});
 	}
 
-	public async findAllUserWorkspaces(
+	public async findAllByUserId(
 		userId: number,
-		search?: string,
+		workspaceName?: string,
 	): Promise<WorkspaceGetAllResponseDto> {
-		const workspaces = await this.workspaceRepository.findAllUserWorkspaces(
+		const workspaces = await this.workspaceRepository.findAllByUserId(
 			userId,
-			search,
+			workspaceName,
 		);
 
 		return {

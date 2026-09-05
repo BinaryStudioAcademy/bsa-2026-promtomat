@@ -15,6 +15,7 @@ export {
 export {
 	workspaceCreationValidationSchema,
 	workspaceDeletionImpactValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
 	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
