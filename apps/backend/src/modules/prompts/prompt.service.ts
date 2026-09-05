@@ -1,5 +1,8 @@
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
-import { PromptCreatePayload, type PromptDto } from "./libs/types/types.js";
+import {
+	type PromptCreatePayload,
+	type PromptDto,
+} from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
