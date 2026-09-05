@@ -17,6 +17,15 @@ class PromptRepository {
 
 		return PromptEntity.initialize(prompt);
 	}
+
+	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
+		const promptCount = await this.promptModel
+			.query()
+			.where({ workspaceId })
+			.resultSize();
+
+		return promptCount;
+	}
 }
 
 export { PromptRepository };

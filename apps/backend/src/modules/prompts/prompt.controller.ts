@@ -100,17 +100,6 @@ class PromptController extends BaseController {
 	 *                    type: string
 	 *                  message:
 	 *                    type: string
-	 *        403:
-	 *          description: You do not have permission to access this workspace
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
 	 *        404:
 	 *          description: Workspace not found
 	 *          content:

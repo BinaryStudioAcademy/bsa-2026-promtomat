@@ -24,6 +24,14 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
+	public static lastWorkspaceDeletionNotAllowed(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.LAST_WORKSPACE_DELETION_NOT_ALLOWED,
+			message: WorkspacesErrorMessage.LAST_WORKSPACE_DELETION_NOT_ALLOWED,
+			status: HTTPCode.CONFLICT,
+		});
+	}
+
 	public static nameAlreadyExists(): WorkspaceError {
 		return new WorkspaceError({
 			code: WorkspacesErrorCode.WORKSPACE_ALREADY_EXISTS,
@@ -32,18 +40,10 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
-	public static noPermissionToAccess(): WorkspaceError {
-		return new WorkspaceError({
-			code: WorkspacesErrorCode.NO_PERMISSION_TO_ACCESS,
-			message: WorkspacesErrorMessage.NO_PERMISSION_TO_ACCESS,
-			status: HTTPCode.FORBIDDEN,
-		});
-	}
-
 	public static notFound(): WorkspaceError {
 		return new WorkspaceError({
-			code: WorkspacesErrorCode.NOT_FOUND,
-			message: WorkspacesErrorMessage.NOT_FOUND,
+			code: WorkspacesErrorCode.WORKSPACE_NOT_FOUND,
+			message: WorkspacesErrorMessage.WORKSPACE_NOT_FOUND,
 			status: HTTPCode.NOT_FOUND,
 		});
 	}
