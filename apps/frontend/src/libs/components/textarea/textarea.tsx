@@ -17,7 +17,7 @@ type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 		control: Control<T, null>;
 		descriptionId?: string;
-		disabled?: boolean;
+		isDisabled?: boolean;
 		label: string;
 		maxHeight?: number;
 		name: FieldPath<T>;
@@ -28,7 +28,7 @@ type Properties<T extends FieldValues> =
 const Textarea = <T extends FieldValues>({
 	control,
 	descriptionId,
-	disabled = false,
+	isDisabled = false,
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
@@ -41,7 +41,7 @@ const Textarea = <T extends FieldValues>({
 		fieldState: { error },
 	} = useController({
 		control,
-		disabled,
+		disabled: isDisabled,
 		name,
 	});
 
