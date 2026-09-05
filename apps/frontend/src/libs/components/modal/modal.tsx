@@ -2,9 +2,8 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
-import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { ControlSize, IconName, KeyboardKey } from "~/libs/enums/enums.js";
+import { KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
@@ -166,18 +165,10 @@ const Modal = ({
 				ref={dialogElementReference}
 				role={role}
 			>
-				<div className={styles["modal-header"]}>
+				<div>
 					<h2 className={styles["modal-title"]} id={titleId}>
 						{title}
 					</h2>
-					{isDismissible && (
-						<IconButton
-							ariaLabel={ModalLabel.CLOSE}
-							iconName={IconName.CIRCLE_X}
-							onClick={onClose}
-							size={ControlSize.SM}
-						/>
-					)}
 				</div>
 				{children}
 			</div>
