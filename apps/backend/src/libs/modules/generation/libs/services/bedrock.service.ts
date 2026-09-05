@@ -56,11 +56,11 @@ class BedrockService {
 	}
 
 	private createStructuredConverseCommandInput(
-		request: StructuredGenerationOptions,
+		options: StructuredGenerationOptions,
 	): ConverseCommandInput {
-		const { schema } = request;
+		const { schema } = options;
 		const input: ConverseCommandInput = {
-			...this.createBaseConverseCommandInput(request),
+			...this.createBaseConverseCommandInput(options),
 			outputConfig: {
 				textFormat: {
 					structure: {
@@ -79,13 +79,13 @@ class BedrockService {
 	}
 
 	public async sendCommand(
-		request: StructuredGenerationOptions | TextGenerationOptions,
+		options: StructuredGenerationOptions | TextGenerationOptions,
 	): Promise<ConverseCommandOutput> {
 		try {
 			const command =
-				"schema" in request
-					? this.createStructuredConverseCommandInput(request)
-					: this.createBaseConverseCommandInput(request);
+				"schema" in options
+					? this.createStructuredConverseCommandInput(options)
+					: this.createBaseConverseCommandInput(options);
 
 			return await this.client.send(new ConverseCommand(command));
 		} catch (error) {

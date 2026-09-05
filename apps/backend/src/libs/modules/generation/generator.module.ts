@@ -15,14 +15,14 @@ import {
 } from "./libs/types/types.js";
 
 type Constructor = {
-	client: BedrockService;
+	bedrockService: BedrockService;
 };
 
 class Generator implements GeneratorInterface {
-	private client: BedrockService;
+	private bedrockService: BedrockService;
 
-	public constructor({ client }: Constructor) {
-		this.client = client;
+	public constructor({ bedrockService }: Constructor) {
+		this.bedrockService = bedrockService;
 	}
 
 	private getContent(response: ConverseCommandOutput): string {
@@ -37,9 +37,9 @@ class Generator implements GeneratorInterface {
 	}
 
 	public async generate<T extends object>(
-		request: StructuredGenerationOptions,
+		options: StructuredGenerationOptions,
 	): Promise<T> {
-		const response = await this.client.sendCommand(request);
+		const response = await this.bedrockService.sendCommand(options);
 
 		if (!isGenerationCompleted(response.stopReason)) {
 			throw new GenerationOutputError();
@@ -52,8 +52,8 @@ class Generator implements GeneratorInterface {
 		}
 	}
 
-	public async generateText(request: TextGenerationOptions): Promise<string> {
-		const response = await this.client.sendCommand(request);
+	public async generateText(options: TextGenerationOptions): Promise<string> {
+		const response = await this.bedrockService.sendCommand(options);
 
 		if (!isGenerationCompleted(response.stopReason)) {
 			throw new GenerationOutputError();

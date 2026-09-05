@@ -13,7 +13,7 @@ const bedrockService = new BedrockService({
 });
 
 const generator = new Generator({
-	client: bedrockService,
+	bedrockService: bedrockService,
 });
 
 export { generator };
