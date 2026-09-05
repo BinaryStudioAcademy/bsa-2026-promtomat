@@ -91,7 +91,7 @@ class WorkspaceRepository {
 	public async update(
 		id: number,
 		payload: WorkspaceUpdateRequestDto,
-	): Promise<WorkspaceEntity> {
+	): Promise<null | WorkspaceEntity> {
 		const patch: PartialModelObject<WorkspaceModel> = {};
 
 		if (payload.name !== undefined) {
@@ -105,7 +105,12 @@ class WorkspaceRepository {
 		try {
 			const workspace = await this.workspaceModel
 				.query()
-				.patchAndFetchById(id, patch);
+				.patchAndFetchById(id, patch)
+				.castTo<undefined | WorkspaceModel>();
+
+			if (!workspace) {
+				return null;
+			}
 
 			return WorkspaceEntity.initialize(workspace);
 		} catch (error) {

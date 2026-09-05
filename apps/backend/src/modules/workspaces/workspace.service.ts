@@ -119,13 +119,13 @@ class WorkspaceService {
 		payload: WorkspaceUpdateRequestDto,
 		userId: number,
 	): Promise<WorkspaceDto> {
-		const workspace = await this.workspaceRepository.findById(id);
-
-		if (!workspace || workspace.toObject().userId !== userId) {
-			throw WorkspaceError.notFound();
-		}
+		await this.checkUserAccess(id, userId);
 
 		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
+
+		if (!updatedWorkspace) {
+			throw WorkspaceError.notFound();
+		}
 
 		return updatedWorkspace.toObject();
 	}
