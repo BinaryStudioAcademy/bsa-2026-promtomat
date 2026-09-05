@@ -1,6 +1,7 @@
 import { type Transaction } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { type Database } from "~/libs/modules/database/database.js";
 import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
 
 import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
@@ -15,6 +16,7 @@ import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceRepository } from "./workspace.repository.js";
 
 class WorkspaceService {
+	private database: Database;
 	private promptRepository: PromptRepository;
 
 	private workspaceRepository: WorkspaceRepository;
@@ -22,16 +24,19 @@ class WorkspaceService {
 	public constructor(
 		workspaceRepository: WorkspaceRepository,
 		promptRepository: PromptRepository,
+		database: Database,
 	) {
 		this.workspaceRepository = workspaceRepository;
 		this.promptRepository = promptRepository;
+		this.database = database;
 	}
 
 	public async checkUserAccess(
 		workspaceId: number,
 		userId: number,
+		trx?: Transaction,
 	): Promise<void> {
-		const workspace = await this.workspaceRepository.findById(workspaceId);
+		const workspace = await this.workspaceRepository.findById(workspaceId, trx);
 
 		if (!workspace) {
 			throw WorkspaceError.notFound();
@@ -60,6 +65,23 @@ class WorkspaceService {
 		);
 
 		return workspace.toObject();
+	}
+
+	public async delete(workspaceId: number, userId: number): Promise<void> {
+		await this.database.transaction(async (trx) => {
+			await this.checkUserAccess(workspaceId, userId, trx);
+
+			const workspaces =
+				await this.workspaceRepository.findAllByUserIdForUpdate(userId, trx);
+
+			await this.checkUserAccess(workspaceId, userId, trx);
+
+			if (workspaces.length < MINIMUM_WORKSPACE_COUNT_FOR_DELETION) {
+				throw WorkspaceError.lastWorkspaceDeletionNotAllowed();
+			}
+
+			await this.workspaceRepository.deleteById(workspaceId, trx);
+		});
 	}
 
 	public async findAllUserWorkspaces(

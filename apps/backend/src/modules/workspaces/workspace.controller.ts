@@ -85,6 +85,20 @@ class WorkspaceController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
+				this.delete(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.DELETE,
+			path: WorkspacesApiPath.ID,
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
 				this.update(
 					options as APIHandlerOptions<{
 						body: WorkspaceUpdateRequestDto;
@@ -137,6 +151,22 @@ class WorkspaceController extends BaseController {
 				userId: options.user?.id as number,
 			}),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	private async delete(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		await this.workspaceService.delete(
+			options.params.id,
+			options.user?.id as number,
+		);
+
+		return {
+			payload: null,
+			status: HTTPCode.NO_CONTENT,
 		};
 	}
 
@@ -232,6 +262,38 @@ class WorkspaceController extends BaseController {
 	/**
 	 * @swagger
 	 * /workspaces/{id}:
+	 *   delete:
+	 *     description: Deletes an owned workspace
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: id
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       204:
+	 *         description: Workspace deleted successfully
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       409:
+	 *         description: The last owned workspace cannot be deleted
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Invalid workspace id
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 *   patch:
 	 *     description: Updates an owned workspace
 	 *     security:

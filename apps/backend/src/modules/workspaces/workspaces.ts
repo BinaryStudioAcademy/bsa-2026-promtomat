@@ -1,3 +1,4 @@
+import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { PromptModel } from "~/modules/prompts/prompt.model.js";
 import { PromptRepository } from "~/modules/prompts/prompt.repository.js";
@@ -12,6 +13,7 @@ const workspaceRepository = new WorkspaceRepository(WorkspaceModel);
 const workspaceService = new WorkspaceService(
 	workspaceRepository,
 	promptRepository,
+	database,
 );
 const workspaceController = new WorkspaceController(logger, workspaceService);
 
