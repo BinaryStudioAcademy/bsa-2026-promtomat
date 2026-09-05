@@ -31,6 +31,22 @@ class WorkspaceError extends HTTPError {
 			status: HTTPCode.CONFLICT,
 		});
 	}
+
+	public static noPermissionToAccess(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.NO_PERMISSION_TO_ACCESS,
+			message: WorkspacesErrorMessage.NO_PERMISSION_TO_ACCESS,
+			status: HTTPCode.FORBIDDEN,
+		});
+	}
+
+	public static notFound(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.NOT_FOUND,
+			message: WorkspacesErrorMessage.NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
+		});
+	}
 }
 
 export { WorkspaceError };

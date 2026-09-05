@@ -45,6 +45,12 @@ export {
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type PromptCreateRequestDto,
+	type PromptDto,
+	promptCreateValidationSchema,
+	PromptsApiPath,
+} from "./modules/prompts/prompts.js";
+export {
 	type UserDto,
 	type UserGetAllResponseDto,
 	UserErrorMessage,
