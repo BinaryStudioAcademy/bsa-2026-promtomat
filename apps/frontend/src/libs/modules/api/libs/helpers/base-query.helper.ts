@@ -54,7 +54,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				message: error.message,
 				type: "danger",
 			});
-			api.dispatch(setRedirect(AppRoute.NO_ACCESS));
+			api.dispatch(setRedirect({ replace: false, to: AppRoute.NO_ACCESS }));
 
 			return { error };
 		}
