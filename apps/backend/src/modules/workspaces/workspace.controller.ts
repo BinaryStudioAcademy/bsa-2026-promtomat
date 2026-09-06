@@ -211,7 +211,7 @@ class WorkspaceController extends BaseController {
 	 *        401:
 	 *          description: Unauthorized
 	 *          content:
-	 *				application/json:
+	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/Error"
 	 *        422:
