@@ -128,24 +128,19 @@
 
 .suggestions {
 	position: absolute;
-	top: calc(100% + var(--space-4));
+	top: 100%;
 	right: 0;
 	left: 0;
-	z-index: 1;
+	z-index: 9999;
 	max-height: 240px;
 	padding: var(--space-4);
-	margin: 0;
+	margin: var(--space-4) 0 0;
 	overflow-y: auto;
-	outline: var(--border-width-hairline) solid var(--border-subtle);
 	list-style: none;
 	background-color: var(--surface-raised);
 	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-md);
 	box-shadow: 0 var(--space-4) var(--space-12) rgb(0 0 0 / 10%);
-}
-
-.suggestions:empty {
-	display: none;
 }
 
 .suggestion {
