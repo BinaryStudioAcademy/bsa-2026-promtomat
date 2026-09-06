@@ -5,7 +5,7 @@ import {
 	WorkspaceValidationRule,
 } from "../enums/enums.js";
 
-const nameField = z
+const workspaceNameField = z
 	.string()
 	.min(WorkspaceValidationRule.NAME_MINIMUM_LENGTH, {
 		error: WorkspaceValidationMessage.NAME_TOO_SHORT,
@@ -17,4 +17,4 @@ const nameField = z
 		error: WorkspaceValidationMessage.NAME_HAS_LEADING_OR_TRAILING_SPACES,
 	});
 
-export { nameField };
+export { workspaceNameField };

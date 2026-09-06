@@ -57,14 +57,14 @@ class WorkspaceEntity implements Entity {
 
 	public static initializeNew({
 		name,
-		stackTags,
+		stackTags = [],
 		userId,
-		visibility,
+		visibility = WorkspaceVisibility.PRIVATE,
 	}: {
 		name: string;
-		stackTags: string[];
+		stackTags?: string[] | undefined;
 		userId: number;
-		visibility: ValueOf<typeof WorkspaceVisibility>;
+		visibility?: undefined | ValueOf<typeof WorkspaceVisibility>;
 	}): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id: null,

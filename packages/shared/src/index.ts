@@ -2,7 +2,7 @@ export {
 	APIPath,
 	AppEnvironment,
 	ContentType,
-	ServerErrorType,
+	ErrorCode,
 } from "./libs/enums/enums.js";
 export {
 	AuthError,
@@ -53,8 +53,10 @@ export {
 export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,

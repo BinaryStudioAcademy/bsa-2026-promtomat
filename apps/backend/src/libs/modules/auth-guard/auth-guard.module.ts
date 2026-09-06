@@ -1,5 +1,6 @@
 import type { UserDto } from "~/libs/types/types.js";
 
+import { ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
@@ -27,6 +28,7 @@ class AuthGuard {
 
 	private throwUnauthorized(message: string): never {
 		throw new AuthError({
+			code: ErrorCode.UNAUTHENTICATED,
 			message,
 			status: HTTPCode.UNAUTHORIZED,
 		});

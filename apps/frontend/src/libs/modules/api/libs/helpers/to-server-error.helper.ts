@@ -1,56 +1,87 @@
 import { type FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
-import { ServerErrorType } from "~/libs/enums/enums.js";
-import { type ServerErrorResponse } from "~/libs/types/types.js";
+import { ErrorCode } from "~/libs/enums/enums.js";
+import {
+	type ServerCommonErrorResponse,
+	type ServerErrorResponse,
+	ServerValidationErrorResponse,
+} from "~/libs/types/types.js";
 
+import { UNKNOWN_ERROR_MESSAGE } from "../constants/constants.js";
+import { FetchErrorMessage } from "../enums/enums.js";
 import { type ServerError } from "../types/server-error.type.js";
 
-const UNKNOWN_ERROR_MESSAGE = "Something went wrong. Please try again.";
+const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
+	return typeof value === "object" && value !== null;
+};
 
-const isServerErrorResponse = (
+const checkIsCommonErrorResponse = (
+	value: unknown,
+): value is ServerCommonErrorResponse => {
+	return (
+		checkIsRecord(value) &&
+		typeof value["code"] === "string" &&
+		(Object.values(ErrorCode) as string[]).includes(value["code"]) &&
+		typeof value["message"] === "string"
+	);
+};
+
+const checkIsValidationErrorResponse = (
+	payload: unknown,
+): payload is ServerValidationErrorResponse => {
+	return (
+		checkIsRecord(payload) &&
+		"details" in payload &&
+		Array.isArray((payload as ServerValidationErrorResponse).details)
+	);
+};
+
+const checkIsServerErrorResponse = (
 	payload: unknown,
 ): payload is ServerErrorResponse => {
-	if (
-		typeof payload !== "object" ||
-		payload === null ||
-		!("errorType" in payload) ||
-		!("message" in payload)
-	) {
+	if (!checkIsCommonErrorResponse(payload)) {
 		return false;
 	}
 
-	// A validation response without a well-formed `details` array is treated as
-	// a common error, so the narrowed type never lies about `details`.
-	if (payload.errorType === ServerErrorType.VALIDATION) {
-		return "details" in payload && Array.isArray(payload.details);
+	if (payload.code === ErrorCode.VALIDATION_FAILED) {
+		return checkIsValidationErrorResponse(payload);
 	}
 
-	return payload.errorType === ServerErrorType.COMMON;
+	return true;
 };
 
 const toServerError = (error: FetchBaseQueryError): ServerError => {
-	if (isServerErrorResponse(error.data)) {
-		const { data } = error;
-
-		if (data.errorType === ServerErrorType.VALIDATION) {
+	if (checkIsServerErrorResponse(error.data)) {
+		if (
+			error.data.code === ErrorCode.VALIDATION_FAILED &&
+			checkIsValidationErrorResponse(error.data)
+		) {
 			return {
-				details: data.details,
-				errorType: ServerErrorType.VALIDATION,
-				message: data.message,
+				code: ErrorCode.VALIDATION_FAILED,
+				details: error.data.details,
+				message: error.data.message,
 				status: error.status,
 			};
 		}
 
 		return {
-			errorType: ServerErrorType.COMMON,
-			message: data.message,
+			code: error.data.code,
+			message: error.data.message,
+			status: error.status,
+		};
+	}
+
+	if (typeof error.status === "string") {
+		return {
+			code: ErrorCode.INTERNAL_SERVER_ERROR,
+			message: FetchErrorMessage[error.status],
 			status: error.status,
 		};
 	}
 
 	return {
-		errorType: ServerErrorType.COMMON,
-		message: "error" in error ? error.error : UNKNOWN_ERROR_MESSAGE,
+		code: ErrorCode.INTERNAL_SERVER_ERROR,
+		message: UNKNOWN_ERROR_MESSAGE,
 		status: error.status,
 	};
 };

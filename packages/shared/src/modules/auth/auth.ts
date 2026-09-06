@@ -1,5 +1,6 @@
 export {
 	AuthApiPath,
+	AuthErrorCode,
 	AuthValidationMessage,
 	AuthValidationRule,
 	ExceptionMessage,

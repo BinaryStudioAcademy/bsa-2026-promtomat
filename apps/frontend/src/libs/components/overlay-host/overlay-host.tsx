@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Notification } from "~/libs/components/notification/notification.js";
+import { KeyboardKey } from "~/libs/enums/enums.js";
 import {
 	bindShowNotification,
 	showNotification,
@@ -10,8 +11,10 @@ import {
 
 import {
 	BLOCKING_IDS_EMPTY_LENGTH,
+	DEFAULT_NOTIFICATION_DURATION_MS,
+	DEFAULT_NOTIFICATION_TYPE,
 	LAST_INDEX_FROM_END,
-	NOTIFICATION_DURATION_MS,
+	NOTIFICATION_CLOSING_DURATION_MS,
 } from "./libs/constants/constants.js";
 import { lockPage } from "./libs/helpers/lock-page.helper.js";
 import { type NotificationItem } from "./libs/types/types.js";
@@ -28,9 +31,9 @@ const OverlayHost = ({ children }: Properties) => {
 	);
 	const [blockingIds, setBlockingIds] = useState<string[]>([]);
 	const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-	const timeoutIdsReference = useRef<Set<ReturnType<typeof setTimeout>>>(
-		new Set(),
-	);
+	const timeoutIdsReference = useRef<
+		Map<string, ReturnType<typeof setTimeout>>
+	>(new Map());
 
 	const hasBlocking = blockingIds.length > BLOCKING_IDS_EMPTY_LENGTH;
 
@@ -51,32 +54,101 @@ const OverlayHost = ({ children }: Properties) => {
 	}, []);
 
 	const dismissNotification = useCallback((id: string) => {
+		const timeoutId = timeoutIdsReference.current.get(id);
+
+		if (timeoutId !== undefined) {
+			clearTimeout(timeoutId);
+			timeoutIdsReference.current.delete(id);
+		}
+
 		setNotifications((currentNotifications) => {
 			return currentNotifications.filter((item) => item.id !== id);
 		});
 	}, []);
 
+	const scheduleNotificationDismiss = useCallback(
+		(notification: NotificationItem) => {
+			if (notification.isClosing) {
+				return;
+			}
+
+			const previousTimeoutId = timeoutIdsReference.current.get(
+				notification.id,
+			);
+
+			if (previousTimeoutId !== undefined) {
+				clearTimeout(previousTimeoutId);
+			}
+
+			const timeoutId = setTimeout(() => {
+				dismissNotification(notification.id);
+			}, NOTIFICATION_CLOSING_DURATION_MS);
+
+			timeoutIdsReference.current.set(notification.id, timeoutId);
+		},
+		[dismissNotification],
+	);
+
+	const dismissNotifications = useCallback(() => {
+		for (const notification of notifications) {
+			scheduleNotificationDismiss(notification);
+		}
+
+		setNotifications((currentNotifications) =>
+			currentNotifications.map((notification) => ({
+				...notification,
+				isClosing: true,
+			})),
+		);
+	}, [scheduleNotificationDismiss, notifications]);
+
 	const handleShowNotification = useCallback(
 		(payload: ShowNotificationPayload) => {
-			const id = crypto.randomUUID();
+			const id = payload.id ?? crypto.randomUUID();
+
+			if (timeoutIdsReference.current.has(id)) {
+				return;
+			}
+
+			const duration = payload.duration ?? DEFAULT_NOTIFICATION_DURATION_MS;
+			const type = payload.type ?? DEFAULT_NOTIFICATION_TYPE;
 
 			setNotifications((currentNotifications) => [
 				...currentNotifications,
 				{
 					id,
+					isClosing: false,
 					message: payload.message,
+					type,
 				},
 			]);
 
 			const timeoutId = setTimeout(() => {
-				timeoutIdsReference.current.delete(timeoutId);
 				dismissNotification(id);
-			}, NOTIFICATION_DURATION_MS);
+			}, duration);
 
-			timeoutIdsReference.current.add(timeoutId);
+			timeoutIdsReference.current.set(id, timeoutId);
 		},
 		[dismissNotification],
 	);
+
+	useEffect(() => {
+		if (hasBlocking) {
+			return;
+		}
+
+		const handleKeyPress = (event: KeyboardEvent) => {
+			if (event.key === KeyboardKey.ESCAPE) {
+				dismissNotifications();
+			}
+		};
+
+		document.addEventListener("keydown", handleKeyPress);
+
+		return () => {
+			document.removeEventListener("keydown", handleKeyPress);
+		};
+	}, [dismissNotifications, hasBlocking]);
 
 	useEffect(() => {
 		if (!hasBlocking) {
@@ -94,7 +166,7 @@ const OverlayHost = ({ children }: Properties) => {
 		const timeoutIds = timeoutIdsReference.current;
 
 		return () => {
-			for (const timeoutId of timeoutIds) {
+			for (const timeoutId of timeoutIds.values()) {
 				clearTimeout(timeoutId);
 			}
 
@@ -121,9 +193,13 @@ const OverlayHost = ({ children }: Properties) => {
 						className={styles["overlay-host-blocking"]}
 						ref={setBlockingElement}
 					/>
-					<div className={styles["overlay-host-notifications"]}>
+					<div
+						aria-atomic="false"
+						aria-live="polite"
+						className={styles["overlay-host-notifications"]}
+					>
 						{notifications.map((item) => (
-							<Notification key={item.id} message={item.message} />
+							<Notification item={item} key={item.id} />
 						))}
 					</div>
 				</div>,
