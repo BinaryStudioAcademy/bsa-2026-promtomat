@@ -1,36 +1,26 @@
-import { type ConverseCommandOutput } from "@aws-sdk/client-bedrock-runtime";
-
-import { FIRST_CONTENT_INDEX } from "./libs/constants/constants.js";
-import { GenerationErrorMessage } from "./libs/enums/enums.js";
 import {
-	GenerationError,
-	GenerationOutputError,
-} from "./libs/exceptions/exceptions.js";
-import { isGenerationCompleted } from "./libs/helpers/helpers.js";
-import { BedrockService } from "./libs/services/services.js";
-import {
-	type GeneratorInterface,
+	type BedrockInterface,
 	type StructuredGenerationOptions,
 	type TextGenerationOptions,
-} from "./libs/types/types.js";
+} from "~/libs/modules/bedrock/bedrock.js";
+
+import { GenerationError } from "./libs/exceptions/exceptions.js";
+import { type GeneratorInterface } from "./libs/types/types.js";
 
 type Constructor = {
-	bedrockService: BedrockService;
+	bedrockService: BedrockInterface;
 };
 
 class Generator implements GeneratorInterface {
-	private bedrockService: BedrockService;
+	private bedrockService: BedrockInterface;
 
 	public constructor({ bedrockService }: Constructor) {
 		this.bedrockService = bedrockService;
 	}
 
-	private getContent(response: ConverseCommandOutput): string {
-		const text =
-			response.output?.message?.content?.at(FIRST_CONTENT_INDEX)?.text;
-
+	private tryGetContent(text: string | undefined): string {
 		if (text === undefined) {
-			throw new GenerationError(GenerationErrorMessage.OUTPUT_UNUSABLE);
+			throw GenerationError.outputUnusable();
 		}
 
 		return text;
@@ -39,27 +29,28 @@ class Generator implements GeneratorInterface {
 	public async generate<T extends object>(
 		options: StructuredGenerationOptions,
 	): Promise<T> {
-		const response = await this.bedrockService.sendCommand(options);
+		const result = await this.bedrockService.sendCommand(options);
 
-		if (!isGenerationCompleted(response.stopReason)) {
-			throw new GenerationOutputError();
+		if (result.isTextTruncated) {
+			throw GenerationError.outputUnusable();
 		}
 
+		const text = this.tryGetContent(result.text);
 		try {
-			return JSON.parse(this.getContent(response)) as T;
+			return JSON.parse(text) as T;
 		} catch (error) {
-			throw new GenerationOutputError(error);
+			throw GenerationError.outputUnusable(error);
 		}
 	}
 
 	public async generateText(options: TextGenerationOptions): Promise<string> {
-		const response = await this.bedrockService.sendCommand(options);
+		const result = await this.bedrockService.sendCommand(options);
 
-		if (!isGenerationCompleted(response.stopReason)) {
-			throw new GenerationOutputError();
+		if (result.isTextTruncated) {
+			throw GenerationError.outputUnusable();
 		}
 
-		return this.getContent(response);
+		return this.tryGetContent(result.text);
 	}
 }
 

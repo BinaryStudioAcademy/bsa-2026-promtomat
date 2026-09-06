@@ -1,0 +1,8 @@
+const TextGenerationErrorCode = {
+	CONFIG_INVALID: "CONFIG_INVALID",
+	UNAVAILABLE: "UNAVAILABLE",
+	UNCLASSIFIED: "UNCLASSIFIED",
+	VALIDATION_FAILED: "VALIDATION_FAILED",
+} as const;
+
+export { TextGenerationErrorCode };

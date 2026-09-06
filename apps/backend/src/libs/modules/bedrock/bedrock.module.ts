@@ -2,22 +2,29 @@ import {
 	type BedrockRuntimeClient,
 	ConverseCommand,
 	type ConverseCommandInput,
-	type ConverseCommandOutput,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { DEFAULT_ROLE, TEXT_FORMAT_TYPE } from "../constants/constants.js";
-import { toApplicationError } from "../helpers/helpers.js";
 import {
-	type StructuredGenerationOptions,
-	type TextGenerationOptions,
-} from "../types/types.js";
+	DEFAULT_CONVERSATION_ROLE,
+	FIRST_CONTENT_INDEX,
+	TEXT_FORMAT_TYPE,
+} from "./libs/constants/constants.js";
+import {
+	checkIsTextTruncated,
+	toTextGenerationError,
+} from "./libs/helpers/helpers.js";
+import {
+	type CommandOutput,
+	StructuredGenerationOptions,
+	TextGenerationOptions,
+} from "./libs/types/types.js";
 
 type Constructor = {
 	client: BedrockRuntimeClient;
 	modelId: string;
 };
 
-class BedrockService {
+class Bedrock {
 	private client: BedrockRuntimeClient;
 
 	private modelId: string;
@@ -42,7 +49,7 @@ class BedrockService {
 			messages: [
 				{
 					content: [{ text: message }],
-					role: DEFAULT_ROLE,
+					role: DEFAULT_CONVERSATION_ROLE,
 				},
 			],
 			modelId: this.modelId,
@@ -80,18 +87,24 @@ class BedrockService {
 
 	public async sendCommand(
 		options: StructuredGenerationOptions | TextGenerationOptions,
-	): Promise<ConverseCommandOutput> {
+	): Promise<CommandOutput> {
 		try {
 			const command =
 				"schema" in options
 					? this.createStructuredConverseCommandInput(options)
 					: this.createBaseConverseCommandInput(options);
 
-			return await this.client.send(new ConverseCommand(command));
+			const result = await this.client.send(new ConverseCommand(command));
+			const text =
+				result.output?.message?.content?.at(FIRST_CONTENT_INDEX)?.text;
+			return {
+				isTextTruncated: checkIsTextTruncated(result.stopReason),
+				text,
+			};
 		} catch (error) {
-			throw toApplicationError(error);
+			throw toTextGenerationError(error);
 		}
 	}
 }
 
-export { BedrockService };
+export { Bedrock };

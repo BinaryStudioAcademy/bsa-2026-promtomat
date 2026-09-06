@@ -1,19 +1,9 @@
-import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
-
-import { config } from "~/libs/modules/config/config.js";
+import { bedrock } from "~/libs/modules/bedrock/bedrock.js";
 
 import { Generator } from "./generator.module.js";
-import { BedrockService } from "./libs/services/services.js";
-
-const bedrockService = new BedrockService({
-	client: new BedrockRuntimeClient({
-		region: config.ENV.BEDROCK.REGION,
-	}),
-	modelId: config.ENV.BEDROCK.MODEL.ID,
-});
 
 const generator = new Generator({
-	bedrockService: bedrockService,
+	bedrockService: bedrock,
 });
 
 export { generator };

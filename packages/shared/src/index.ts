@@ -5,6 +5,7 @@ export {
 	ErrorCode,
 } from "./libs/enums/enums.js";
 export {
+	ApplicationError,
 	AuthError,
 	HTTPError,
 	ValidationError,

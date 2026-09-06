@@ -10,13 +10,9 @@ import {
 	ValidationException,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { GenerationErrorMessage } from "../enums/enums.js";
-import {
-	GenerationConfigError,
-	GenerationError,
-} from "../exceptions/exceptions.js";
+import { TextGenerationError } from "../exceptions/exceptions.js";
 
-const toApplicationError = (error: unknown): GenerationError => {
+const toTextGenerationError = (error: unknown): TextGenerationError => {
 	if (
 		error instanceof InternalServerException ||
 		error instanceof ModelNotReadyException ||
@@ -24,7 +20,7 @@ const toApplicationError = (error: unknown): GenerationError => {
 		error instanceof ServiceUnavailableException ||
 		error instanceof ThrottlingException
 	) {
-		return new GenerationError(GenerationErrorMessage.UNAVAILABLE, error);
+		return TextGenerationError.unavailable(error);
 	}
 
 	if (
@@ -32,14 +28,14 @@ const toApplicationError = (error: unknown): GenerationError => {
 		error instanceof ResourceNotFoundException ||
 		error instanceof ServiceQuotaExceededException
 	) {
-		return new GenerationConfigError({ cause: error });
+		return TextGenerationError.configInvalid(error);
 	}
 
 	if (error instanceof ValidationException) {
-		return new GenerationError(GenerationErrorMessage.VALIDATION_FAILED, error);
+		return TextGenerationError.validationFailed(error);
 	}
 
-	return new GenerationError(GenerationErrorMessage.UNCLASSIFIED, error);
+	return TextGenerationError.unclassified(error);
 };
 
-export { toApplicationError };
+export { toTextGenerationError };
