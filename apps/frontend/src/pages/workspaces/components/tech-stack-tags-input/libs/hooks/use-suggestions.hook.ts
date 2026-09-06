@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getTechStackTagSuggestions } from "~/libs/helpers/helpers.js";
 
@@ -28,12 +28,28 @@ const useSuggestions = ({
 		);
 	}, [inputValue, isOpen, selectedTags]);
 
+	useEffect(() => {
+		if (suggestions.length > NO_ACTIVE_SUGGESTION) {
+			setActiveIndex(FIRST_ELEMENT_INDEX);
+		} else {
+			setActiveIndex(NO_ACTIVE_SUGGESTION);
+		}
+	}, [suggestions]);
+
 	const resetActiveIndex = () => {
 		setActiveIndex(NO_ACTIVE_SUGGESTION);
 	};
 
+	const setActiveIndexDirectly = (index: number) => {
+		setActiveIndex(index);
+	};
+
 	const selectNext = () => {
 		setActiveIndex((previous) => {
+			if (suggestions.length === NO_ACTIVE_SUGGESTION) {
+				return NO_ACTIVE_SUGGESTION;
+			}
+
 			const nextIndex = previous + INDEX_STEP;
 			return nextIndex < suggestions.length ? nextIndex : FIRST_ELEMENT_INDEX;
 		});
@@ -41,6 +57,10 @@ const useSuggestions = ({
 
 	const selectPrevious = () => {
 		setActiveIndex((previous) => {
+			if (suggestions.length === NO_ACTIVE_SUGGESTION) {
+				return NO_ACTIVE_SUGGESTION;
+			}
+
 			const previousIndex = previous - INDEX_STEP;
 			return previousIndex >= FIRST_ELEMENT_INDEX
 				? previousIndex
@@ -52,7 +72,8 @@ const useSuggestions = ({
 		if (activeIndex === NO_ACTIVE_SUGGESTION) {
 			return suggestions[FIRST_ELEMENT_INDEX];
 		}
-		return suggestions[activeIndex];
+
+		return suggestions[activeIndex] ?? suggestions[FIRST_ELEMENT_INDEX];
 	};
 
 	return {
@@ -62,6 +83,7 @@ const useSuggestions = ({
 		resetActiveIndex,
 		selectNext,
 		selectPrevious,
+		setActiveIndexDirectly,
 		suggestions,
 	};
 };
