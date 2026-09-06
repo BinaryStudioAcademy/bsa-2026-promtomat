@@ -18,7 +18,13 @@ Promptomat is an intelligent prompt search, evaluation, and autocomplete system 
 
 - [NodeJS](https://nodejs.org/en) (24.x.x);
 - [pnpm](https://pnpm.io/) (11.x.x);
-- [PostgreSQL](https://www.postgresql.org/) (18.4)
+- [PostgreSQL](https://www.postgresql.org/) (18.x)
+
+Supported development systems:
+
+- Windows 11 (PowerShell or WSL2)
+- macOS
+- Linux
 
 The pnpm version is pinned in the `packageManager` field, so `corepack enable pnpm` is enough to get the exact version
 the project expects.
@@ -115,7 +121,24 @@ You should use .env.example files as a reference.
 1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
    commit.
 
-2. Run database. You can run it by installing postgres on your computer.
+2. Run database (Postgres). Choose one option:
+
+   Option A: Docker Compose
+
+   Prerequisites:
+   - Windows/macOS: Docker Desktop
+   - Linux: Docker Engine + Docker Compose plugin
+
+   Start:
+   pnpm db:up
+
+   Stop:
+   pnpm db:down
+
+   Option B: native PostgreSQL install
+
+   Install PostgreSQL 18.x on your OS, then create a database and credentials matching
+   apps/backend/.env (DB_HOST, DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD).
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
@@ -123,8 +146,8 @@ You should use .env.example files as a reference.
 
 5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 
-Note that pnpm uses `--filter <package-name>` to target a single workspace, while `-w` is a shorthand for
-`--workspace-root` and runs the script of the root `package.json`.
+Note that pnpm uses --filter <package-name> to target a single workspace, while -w is a shorthand for
+--workspace-root and runs the script of the root package.json.
 
 ### 6.2 Worktrees
 
