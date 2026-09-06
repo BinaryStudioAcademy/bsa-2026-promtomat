@@ -32,6 +32,14 @@ class TextGenerationError extends ApplicationError {
 		});
 	}
 
+	public static outputUnusable(cause?: unknown): TextGenerationError {
+		return new TextGenerationError({
+			cause,
+			code: TextGenerationErrorCode.OUTPUT_UNUSABLE,
+			message: TextGenerationErrorMessage.OUTPUT_UNUSABLE,
+		});
+	}
+
 	public static unavailable(cause?: unknown): TextGenerationError {
 		return new TextGenerationError({
 			cause,

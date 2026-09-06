@@ -1,10 +1,10 @@
 import {
 	type BedrockInterface,
 	type StructuredGenerationOptions,
+	TextGenerationError,
 	type TextGenerationOptions,
 } from "~/libs/modules/bedrock/bedrock.js";
 
-import { GenerationError } from "./libs/exceptions/exceptions.js";
 import { type GeneratorInterface } from "./libs/types/types.js";
 
 type Constructor = {
@@ -20,7 +20,7 @@ class Generator implements GeneratorInterface {
 
 	private tryGetContent(text: string | undefined): string {
 		if (text === undefined) {
-			throw GenerationError.outputUnusable();
+			throw TextGenerationError.outputUnusable();
 		}
 
 		return text;
@@ -32,14 +32,14 @@ class Generator implements GeneratorInterface {
 		const result = await this.bedrockService.sendCommand(options);
 
 		if (result.isTextTruncated) {
-			throw GenerationError.outputUnusable();
+			throw TextGenerationError.outputUnusable();
 		}
 
 		const text = this.tryGetContent(result.text);
 		try {
 			return JSON.parse(text) as T;
 		} catch (error) {
-			throw GenerationError.outputUnusable(error);
+			throw TextGenerationError.outputUnusable(error);
 		}
 	}
 
@@ -47,7 +47,7 @@ class Generator implements GeneratorInterface {
 		const result = await this.bedrockService.sendCommand(options);
 
 		if (result.isTextTruncated) {
-			throw GenerationError.outputUnusable();
+			throw TextGenerationError.outputUnusable();
 		}
 
 		return this.tryGetContent(result.text);
