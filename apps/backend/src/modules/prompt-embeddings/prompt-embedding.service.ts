@@ -80,14 +80,19 @@ class PromptEmbeddingService {
 			return { ...report, failed: sources.length };
 		}
 
-		for (const entity of entities) {
-			const { promptId } = entity.toObject();
+		const results = await Promise.allSettled(
+			entities.map((entity) =>
+				this.promptEmbeddingRepository.createOrUpdate(entity),
+			),
+		);
 
-			try {
-				await this.promptEmbeddingRepository.createOrUpdate(entity);
+		for (const [index, entity] of entities.entries()) {
+			const result = results[index];
+
+			if (result?.status === "fulfilled") {
 				report.embedded++;
-			} catch (error) {
-				this.logBackfillFailure([promptId], error);
+			} else {
+				this.logBackfillFailure([entity.toObject().promptId], result?.reason);
 				report.failed++;
 			}
 		}
@@ -194,7 +199,7 @@ class PromptEmbeddingService {
 
 		if (schemaDimension !== this.dimensions) {
 			throw new PromptEmbeddingError(
-				`${PromptEmbeddingErrorMessage.DIMENSION_MISMATCH} Schema: ${schemaDimension.toString()}, configured: ${this.dimensions.toString()}.`,
+				`The prompt embeddings column is vector(${schemaDimension.toString()}) while EMBEDDING_DIMENSIONS is ${this.dimensions.toString()}.`,
 			);
 		}
 	}
