@@ -62,14 +62,45 @@ resource "aws_iam_role_policy" "ecs_redeploy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = [ "ecs:UpdateService" ]
+        Action   = ["ecs:UpdateService"]
         Effect   = "Allow"
         Resource = aws_ecs_service.fargate_backend.arn
       },
       {
-        Action   = [ "logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents" ]
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
         Effect   = "Allow"
         Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "backend_s3" {
+  name = "promptomat-backend-s3"
+
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
+}
+
+resource "aws_iam_role_policy" "backend_s3_access" {
+  name = "read-write-model-bucket"
+  role = aws_iam_role.backend_s3.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["s3:GetObject", "s3:PutObject"]
+        Resource = [
+          aws_s3_bucket.local_model.arn,
+          "${aws_s3_bucket.local_model.arn}/*"
+        ]
+        }, {
+        Effect = "Allow"
+        Action = ["s3:ListBucket"]
+        Resource = [
+          aws_s3_bucket.local_model.arn
+        ]
       }
     ]
   })

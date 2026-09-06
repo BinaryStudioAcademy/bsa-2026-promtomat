@@ -6,6 +6,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { JwtAlgorithm } from "./libs/enums/enums.js";
 import {
+	validateEmbeddingLocalPath,
 	validateJwtExpiresIn,
 	validateJwtSecret,
 } from "./libs/helpers/helpers.js";
@@ -102,6 +103,38 @@ class BaseConfig implements Config {
 					default: null,
 					doc: "Database username",
 					env: "DB_USERNAME",
+					format: String,
+				},
+			},
+			EMBEDDING: {
+				DIMENSIONS: {
+					default: null,
+					doc: "Expected embedding vector dimension",
+					env: "EMBEDDING_DIMENSIONS",
+					format: Number,
+				},
+				LOCAL_PATH: {
+					default: null,
+					doc: "Local directory the embedding model is provisioned into",
+					env: "EMBEDDING_LOCAL_PATH",
+					format: validateEmbeddingLocalPath,
+				},
+				MODEL_ID: {
+					default: null,
+					doc: "HuggingFace id of the embedding model",
+					env: "EMBEDDING_MODEL_ID",
+					format: String,
+				},
+				S3_BUCKET: {
+					default: null,
+					doc: "S3 bucket of the embedding model store",
+					env: "EMBEDDING_S3_BUCKET",
+					format: String,
+				},
+				S3_PREFIX: {
+					default: null,
+					doc: "Key prefix of the embedding model inside the store bucket",
+					env: "EMBEDDING_S3_PREFIX",
 					format: String,
 				},
 			},

@@ -2,6 +2,12 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
+		// The embedding contract (status, typed errors, vector types) is exported
+		// ahead of its consumers: prompt embeddings (#76) and search (#77).
+		"apps/backend/src/libs/modules/embedding/embedding.ts": [
+			"exports",
+			"types",
+		],
 		// Overlay mechanism for later consumer tickets (#14, #22, #68, #70).
 		// Nothing in the app opens a modal or confirmation in this change.
 		"apps/frontend/src/libs/components/confirmation/**": ["files"],

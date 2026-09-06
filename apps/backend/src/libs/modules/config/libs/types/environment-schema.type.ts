@@ -25,6 +25,13 @@ type EnvironmentSchema = {
 		PORT: number;
 		USERNAME: string;
 	};
+	EMBEDDING: {
+		DIMENSIONS: number;
+		LOCAL_PATH: string;
+		MODEL_ID: string;
+		S3_BUCKET: string;
+		S3_PREFIX: string;
+	};
 	HASHING: {
 		SALT_LENGTH: number;
 	};
