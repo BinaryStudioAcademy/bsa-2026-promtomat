@@ -1,4 +1,11 @@
-import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
+import {
+	useCallback,
+	useEffect,
+	useId,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import { createPortal } from "react-dom";
 import {
 	type Control,
@@ -12,9 +19,9 @@ import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { FIRST_ELEMENT_INDEX } from "../workspace-create-form/libs/constants/constants.js";
 import {
 	EMPTY_SELECTION_LENGTH,
+	FIRST_ELEMENT_INDEX,
 	SUGGESTIONS_GAP_PX,
 } from "./libs/constants/constants.js";
 import { useSuggestions, useTags } from "./libs/hooks/hooks.js";
@@ -51,6 +58,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 	const suggestionsListId = useId();
 
 	const inputReference = useRef<HTMLInputElement>(null);
+	const activeSuggestionReference = useRef<HTMLLIElement>(null);
 	const [inputRect, setInputRect] = useState<DOMRect | null>(null);
 
 	const [inputValue, setInputValue] = useState("");
@@ -68,6 +76,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 		resetActiveIndex,
 		selectNext,
 		selectPrevious,
+		setActiveIndexDirectly,
 		suggestions,
 	} = useSuggestions({
 		inputValue,
@@ -80,6 +89,20 @@ const TechStackTagsInput = <T extends FieldValues>({
 			setInputRect(inputReference.current.getBoundingClientRect());
 		}
 	}, [isSuggestionsOpen, suggestions]);
+
+	useEffect(() => {
+		activeSuggestionReference.current?.scrollIntoView({ block: "nearest" });
+	}, [activeIndex]);
+
+	const commitTag = useCallback(
+		(tag: string) => {
+			addTag(tag);
+			setInputValue("");
+			resetActiveIndex();
+			inputReference.current?.focus();
+		},
+		[addTag, resetActiveIndex],
+	);
 
 	const handleInputChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,12 +138,13 @@ const TechStackTagsInput = <T extends FieldValues>({
 
 			if (event.key === "Enter") {
 				event.preventDefault();
+
 				const tagToAdd = getActiveSuggestion();
+
 				if (tagToAdd) {
-					addTag(tagToAdd);
-					setInputValue("");
-					resetActiveIndex();
+					commitTag(tagToAdd);
 				}
+
 				return;
 			}
 
@@ -133,8 +157,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 			selectNext,
 			selectPrevious,
 			getActiveSuggestion,
-			addTag,
-			resetActiveIndex,
+			commitTag,
 			inputValue,
 			removeLastTag,
 		],
@@ -150,12 +173,16 @@ const TechStackTagsInput = <T extends FieldValues>({
 	const handleSuggestionMouseDown = useCallback(
 		(tag: string) => (event: React.MouseEvent) => {
 			event.preventDefault();
-			addTag(tag);
-			setInputValue("");
-			resetActiveIndex();
-			inputReference.current?.focus();
+			commitTag(tag);
 		},
-		[addTag, resetActiveIndex],
+		[commitTag],
+	);
+
+	const handleSuggestionMouseMove = useCallback(
+		(index: number) => () => {
+			setActiveIndexDirectly(index);
+		},
+		[setActiveIndexDirectly],
 	);
 
 	return (
@@ -192,6 +219,11 @@ const TechStackTagsInput = <T extends FieldValues>({
 				</ul>
 
 				<input
+					aria-activedescendant={
+						activeIndex >= FIRST_ELEMENT_INDEX
+							? `${suggestionsListId}-option-${String(activeIndex)}`
+							: undefined
+					}
 					aria-autocomplete="list"
 					aria-controls={suggestionsListId}
 					aria-describedby={
@@ -236,8 +268,13 @@ const TechStackTagsInput = <T extends FieldValues>({
 									styles["suggestion"],
 									index === activeIndex && styles["suggestion-active"],
 								)}
+								id={`${suggestionsListId}-option-${String(index)}`}
 								key={tag}
 								onMouseDown={handleSuggestionMouseDown(tag)}
+								onMouseMove={handleSuggestionMouseMove(index)}
+								ref={
+									index === activeIndex ? activeSuggestionReference : undefined
+								}
 								role="option"
 							>
 								{tag}
