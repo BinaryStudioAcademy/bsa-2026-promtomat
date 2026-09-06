@@ -6,7 +6,7 @@ import { Bedrock } from "./bedrock.module.js";
 
 const bedrock = new Bedrock({
 	client: new BedrockRuntimeClient({
-		region: config.ENV.BEDROCK.REGION,
+		region: config.ENV.AWS.REGION,
 	}),
 	modelId: config.ENV.BEDROCK.MODEL.ID,
 });

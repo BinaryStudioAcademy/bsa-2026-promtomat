@@ -56,6 +56,14 @@ class BaseConfig implements Config {
 					format: Number,
 				},
 			},
+			AWS: {
+				REGION: {
+					default: null,
+					doc: "Region for AWS resources",
+					env: "AWS_REGION",
+					format: String,
+				},
+			},
 			BEDROCK: {
 				MODEL: {
 					ID: {
@@ -64,12 +72,6 @@ class BaseConfig implements Config {
 						env: "BEDROCK_MODEL_ID",
 						format: String,
 					},
-				},
-				REGION: {
-					default: null,
-					doc: "Region for bedrock",
-					env: "BEDROCK_REGION",
-					format: String,
 				},
 			},
 			DB: {
