@@ -117,25 +117,24 @@ You should use .env.example files as a reference.
 1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
    commit.
 
-2. Run database. The migrations enable the [pgvector](https://github.com/pgvector/pgvector) extension, so it has to be
-   available to the server before step 3; `migrate:dev` then runs `CREATE EXTENSION` itself and no manual SQL is
-   needed.
+2. Run database (PostgreSQL). The migrations enable the [pgvector](https://github.com/pgvector/pgvector) extension, so it has to be available to the server before step 3; `migrate:dev` then runs `CREATE EXTENSION` itself and no manual SQL is needed. Choose one option:
 
-   The simplest way is the Docker Compose file at the repository root, which starts PostgreSQL 18 with pgvector using
-   the `DB_*` values from the backend env file:
+   Option A: Docker Compose
 
-   `docker compose --env-file apps/backend/.env up -d`
+   Prerequisites: Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin (Linux). The compose file in `apps/backend` starts `pgvector/pgvector:pg18` with the `DB_*` values from `apps/backend/.env`:
 
-   To use your own installation instead, make pgvector available to it:
+   - Start: `pnpm db:up`
+   - Stop: `pnpm db:down`
+
+   Option B: native PostgreSQL install
+
+   Install PostgreSQL 18.x, create a database and credentials matching `apps/backend/.env` (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`), and make pgvector available:
 
    - Homebrew: `brew install pgvector`, then restart the postgresql service.
    - Postgres.app ships pgvector; nothing to do.
    - Other installations: follow the [pgvector installation notes](https://github.com/pgvector/pgvector#installation).
 
-   If you already have a database from before pgvector was required, only the extension is missing. For your own
-   installation, install it as above; the data stays. A Docker container from the plain `postgres` image has to be
-   replaced: remove it with `docker rm -f <container-name>` and run the compose command above. The compose volume
-   starts empty, so the migrations rebuild the schema and local data is lost.
+   If you already have a database from before pgvector was required, only the extension is missing. For a native installation, install it as above; the data stays. A Docker container from the plain `postgres` image has to be replaced: remove it with `docker rm -f <container-name>` and run `pnpm db:up`. The compose volume starts empty, so the migrations rebuild the schema and local data is lost.
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
