@@ -1,7 +1,6 @@
-import type { UserDto } from "~/libs/types/types.js";
-
 import { ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
+import { type UserDto } from "~/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
