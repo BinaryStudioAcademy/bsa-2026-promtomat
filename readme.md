@@ -91,6 +91,8 @@ TODO: add application schema
 
 3. modules - separate app features or functionalities
 
+4. scripts - manually run maintenance entry points (`embeddings:backfill`, `embeddings:backfill:dev`)
+
 ### 5.4 Shared Package
 
 #### 5.4.1 Reason
@@ -115,11 +117,33 @@ You should use .env.example files as a reference.
 1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
    commit.
 
-2. Run database. You can run it by installing postgres on your computer.
+2. Run database (PostgreSQL). The migrations enable the [pgvector](https://github.com/pgvector/pgvector) extension, so it has to be available to the server before step 3; `migrate:dev` then runs `CREATE EXTENSION` itself and no manual SQL is needed. Choose one option:
+
+   Option A: Docker Compose
+
+   Prerequisites: Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin (Linux). The compose file in `apps/backend` starts `pgvector/pgvector:pg18` with the `DB_*` values from `apps/backend/.env`:
+
+   - Start: `pnpm db:up`
+   - Stop: `pnpm db:down`
+
+   Option B: native PostgreSQL install
+
+   Install PostgreSQL 18.x, create a database and credentials matching `apps/backend/.env` (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`), and make pgvector available:
+
+   - Homebrew: `brew install pgvector`, then restart the postgresql service.
+   - Postgres.app ships pgvector; nothing to do.
+   - Other installations: follow the [pgvector installation notes](https://github.com/pgvector/pgvector#installation).
+
+   If you already have a database from before pgvector was required, only the extension is missing. For a native installation, install it as above; the data stays. A Docker container from the plain `postgres` image has to be replaced: remove it with `docker rm -f <container-name>` and run `pnpm db:up`. The compose volume starts empty, so the migrations rebuild the schema and local data is lost.
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
 4. Run backend: `pnpm --filter @promptomat/backend start:dev`
+
+   To repair the embedded prompt index — prompts with no Embedding, changed text, or a changed embedding model — run
+   `pnpm --filter @promptomat/backend embeddings:backfill:dev`. The run is idempotent: it reports how many prompts it
+   embedded, skipped, and failed, and a repeated run embeds nothing. The production image carries the compiled script
+   as `embeddings:backfill`, meant for a one-off task on the same image.
 
 5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 

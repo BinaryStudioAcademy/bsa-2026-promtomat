@@ -1,3 +1,5 @@
+import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import {
 	type PromptCreatePayload,
@@ -7,6 +9,8 @@ import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
+	private promptEmbeddingService: PromptEmbeddingService;
+
 	private promptRepository: PromptRepository;
 
 	private workspaceService: WorkspaceService;
@@ -14,9 +18,11 @@ class PromptService {
 	public constructor(
 		promptRepository: PromptRepository,
 		workspaceService: WorkspaceService,
+		promptEmbeddingService: PromptEmbeddingService,
 	) {
 		this.promptRepository = promptRepository;
 		this.workspaceService = workspaceService;
+		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
@@ -35,7 +41,11 @@ class PromptService {
 			}),
 		);
 
-		return prompt.toObject();
+		const promptDto = prompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptDto);
+
+		return promptDto;
 	}
 }
 
