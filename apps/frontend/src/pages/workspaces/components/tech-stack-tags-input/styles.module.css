@@ -154,13 +154,14 @@
 		var(--motion-ease-standard);
 }
 
-.suggestion:hover {
-	background-color: var(--state-hover-tint);
+.suggestions:empty,
+.suggestions:has(li:only-child:empty) {
+	display: none;
 }
 
+.suggestion:hover,
 .suggestion-active {
-	color: var(--text-accent);
-	background-color: var(--surface-inset);
+	background-color: var(--state-hover-tint);
 }
 
 .message {
