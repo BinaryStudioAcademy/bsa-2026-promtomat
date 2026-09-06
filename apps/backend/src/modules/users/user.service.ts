@@ -4,10 +4,7 @@ import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
 
-import {
-	type UserDto,
-	type UserGetAllResponseDto,
-} from "./libs/types/types.js";
+import { type UserDto } from "./libs/types/types.js";
 
 class UserService {
 	private hashing: Hashing;
@@ -44,14 +41,6 @@ class UserService {
 		);
 
 		return user.toObject();
-	}
-
-	public async findAll(): Promise<UserGetAllResponseDto> {
-		const users = await this.userRepository.findAll();
-
-		return {
-			items: users.map((user) => user.toObject()),
-		};
 	}
 
 	public async findByEmail(email: string): Promise<null | UserEntity> {
