@@ -31,6 +31,14 @@ class WorkspaceError extends HTTPError {
 			status: HTTPCode.CONFLICT,
 		});
 	}
+
+	public static notFound(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.NOT_FOUND,
+			message: WorkspacesErrorMessage.NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
+		});
+	}
 }
 
 export { WorkspaceError };
