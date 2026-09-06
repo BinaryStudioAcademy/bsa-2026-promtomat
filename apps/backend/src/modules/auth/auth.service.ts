@@ -1,5 +1,5 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
-import { Database } from "~/libs/modules/database/database.js";
+import { type Database } from "~/libs/modules/database/database.js";
 import { Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";

@@ -7,6 +7,7 @@ export {
 export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 } from "./libs/types/types.js";
 export {
