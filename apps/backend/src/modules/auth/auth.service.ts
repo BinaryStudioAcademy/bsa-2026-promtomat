@@ -1,6 +1,5 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
-import { type Database } from "~/libs/modules/database/database.js";
-import { Hashing } from "~/libs/modules/hashing/hashing.js";
+import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
@@ -12,26 +11,17 @@ import {
 } from "./libs/types/types.js";
 
 class AuthService {
-	private database: Database;
-
 	private hashing: Hashing;
 
 	private tokenService: TokenService;
 
 	private userService: UserService;
 
-	public constructor({
-		database,
-		hashing,
-		tokenService,
-		userService,
-	}: {
-		database: Database;
-		hashing: Hashing;
-		tokenService: TokenService;
-		userService: UserService;
-	}) {
-		this.database = database;
+	public constructor(
+		hashing: Hashing,
+		tokenService: TokenService,
+		userService: UserService,
+	) {
 		this.hashing = hashing;
 		this.tokenService = tokenService;
 		this.userService = userService;
@@ -73,9 +63,7 @@ class AuthService {
 	public async signUp(
 		signUpRequestDto: SignUpRequestDto,
 	): Promise<SignUpResponseDto> {
-		const user = await this.database.transaction(async (trx) => {
-			return await this.userService.create(signUpRequestDto, trx);
-		});
+		const user = await this.userService.create(signUpRequestDto);
 
 		const token = await this.tokenService.create({
 			userId: user.id,
