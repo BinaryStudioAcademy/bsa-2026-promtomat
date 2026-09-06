@@ -1,6 +1,8 @@
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
+import { EMPTY_WORKSPACE_ID_LIST_LENGTH } from "./libs/constants/prompt.constant.js";
+
 class PromptRepository {
 	private promptModel: typeof PromptModel;
 
@@ -18,13 +20,34 @@ class PromptRepository {
 		return PromptEntity.initialize(prompt);
 	}
 
-	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
-		const promptCount = await this.promptModel
+	public async findCountsByWorkspaceIds(
+		workspaceIds: number[],
+	): Promise<Map<number, number>> {
+		if (workspaceIds.length === EMPTY_WORKSPACE_ID_LIST_LENGTH) {
+			return new Map();
+		}
+		const promptCounts = await this.promptModel
 			.query()
-			.where({ workspaceId })
-			.resultSize();
+			.select("workspaceId")
+			.whereIn("workspaceId", workspaceIds)
+			.count("* as promptCount")
+			.groupBy("workspaceId")
+			.castTo<
+				Array<{
+					promptCount: string;
+					workspaceId: number;
+				}>
+			>()
+			.execute();
 
-		return promptCount;
+		const promptCountsByWorkspaceId = new Map(
+			promptCounts.map(
+				({ promptCount, workspaceId }) =>
+					[workspaceId, Number(promptCount)] as const,
+			),
+		);
+
+		return promptCountsByWorkspaceId;
 	}
 }
 

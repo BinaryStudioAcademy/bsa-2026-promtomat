@@ -4,10 +4,12 @@ import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
 
-import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
+import {
+	DEFAULT_PROMPT_COUNT,
+	MINIMUM_WORKSPACE_COUNT_FOR_DELETION,
+} from "./libs/constants/workspace.constant.js";
 import {
 	type WorkspaceCreatePayload,
-	type WorkspaceDeletionImpactResponseDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceUpdateRequestDto,
@@ -92,25 +94,18 @@ class WorkspaceService {
 			workspaceName,
 		);
 
-		return {
-			items: workspaces.map((workspace) => workspace.toObject()),
-		};
-	}
-
-	public async findDeletionImpact(
-		workspaceId: number,
-		userId: number,
-	): Promise<WorkspaceDeletionImpactResponseDto> {
-		await this.checkUserAccess(workspaceId, userId);
-
-		const [ownedWorkspaceCount, promptCount] = await Promise.all([
-			this.workspaceRepository.findCountByUserId(userId),
-			this.promptRepository.findCountByWorkspaceId(workspaceId),
-		]);
+		const workspaceDtos = workspaces.map((workspace) => workspace.toObject());
+		const workspaceIds = workspaceDtos.map(({ id }) => id);
+		const promptCountsByWorkspaceId =
+			await this.promptRepository.findCountsByWorkspaceIds(workspaceIds);
+		const workspaceListItems = workspaceDtos.map((workspaceDto) => ({
+			...workspaceDto,
+			promptCount:
+				promptCountsByWorkspaceId.get(workspaceDto.id) ?? DEFAULT_PROMPT_COUNT,
+		}));
 
 		return {
-			canDelete: ownedWorkspaceCount >= MINIMUM_WORKSPACE_COUNT_FOR_DELETION,
-			promptCount,
+			items: workspaceListItems,
 		};
 	}
 

@@ -41,6 +41,16 @@ import { type WorkspaceService } from "./workspace.service.js";
  *           type: number
  *         visibility:
  *           type: string
+ *     WorkspaceListItem:
+ *       allOf:
+ *         - $ref: "#/components/schemas/Workspace"
+ *         - type: object
+ *           required:
+ *             - promptCount
+ *           properties:
+ *             promptCount:
+ *               type: integer
+ *               minimum: 0
  */
 class WorkspaceController extends BaseController {
 	private workspaceService: WorkspaceService;
@@ -61,20 +71,6 @@ class WorkspaceController extends BaseController {
 			path: WorkspacesApiPath.ROOT,
 			validation: {
 				query: workspaceGetByQueryValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.findDeletionImpact(
-					options as APIHandlerOptions<{
-						params: WorkspaceRouteParametersDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.DELETION_IMPACT,
-			validation: {
-				params: workspaceRouteParametersValidationSchema,
 			},
 		});
 
@@ -199,6 +195,31 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
+	 *        200:
+	 *          description: Workspaces returned successfully
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                required:
+	 *                  - items
+	 *                properties:
+	 *                  items:
+	 *                    type: array
+	 *                    items:
+	 *                      $ref: "#/components/schemas/WorkspaceListItem"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *				application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Invalid query parameters
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
@@ -209,64 +230,6 @@ class WorkspaceController extends BaseController {
 			payload: await this.workspaceService.findAllByUserId(
 				options.user?.id as number,
 				options.query.workspaceName,
-			),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /workspaces/{id}/deletion-impact:
-	 *   get:
-	 *     description: Returns the deletion impact for an owned workspace
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: path
-	 *         name: id
-	 *         required: true
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *     responses:
-	 *       200:
-	 *         description: Workspace deletion impact returned successfully
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               required:
-	 *                 - canDelete
-	 *                 - promptCount
-	 *               properties:
-	 *                 canDelete:
-	 *                   type: boolean
-	 *                 promptCount:
-	 *                   type: integer
-	 *                   minimum: 0
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Error"
-	 *       422:
-	 *         description: Invalid workspace id
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationError"
-	 */
-
-	private async findDeletionImpact(
-		options: APIHandlerOptions<{
-			params: WorkspaceRouteParametersDto;
-		}>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.workspaceService.findDeletionImpact(
-				options.params.id,
-				options.user?.id as number,
 			),
 			status: HTTPCode.OK,
 		};

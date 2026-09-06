@@ -1,7 +1,7 @@
-import { type WorkspaceDto } from "./workspace-dto.type.js";
+import { type WorkspaceListItemDto } from "./workspace-list-item-dto.type.js";
 
 type WorkspaceGetAllResponseDto = {
-	items: WorkspaceDto[];
+	items: WorkspaceListItemDto[];
 };
 
 export { type WorkspaceGetAllResponseDto };
