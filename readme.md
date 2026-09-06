@@ -18,7 +18,7 @@ Promptomat is an intelligent prompt search, evaluation, and autocomplete system 
 
 - [NodeJS](https://nodejs.org/en) (24.x.x);
 - [pnpm](https://pnpm.io/) (11.x.x);
-- [PostgreSQL](https://www.postgresql.org/) (18.x)
+- [PostgreSQL](https://www.postgresql.org/) (18.x) with [pgvector](https://github.com/pgvector/pgvector)
 
 Supported development systems:
 
@@ -137,7 +137,8 @@ You should use .env.example files as a reference.
 
    Option B: native PostgreSQL install
 
-   Install PostgreSQL 18.x on your OS, then create a database and credentials matching
+   Install PostgreSQL 18.x on your OS with the [pgvector](https://github.com/pgvector/pgvector) extension
+   (`CREATE EXTENSION vector`), then create a database and credentials matching
    apps/backend/.env (DB_HOST, DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD).
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
