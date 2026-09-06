@@ -64,6 +64,7 @@ export {
 	TECH_STACK_VARIANTS,
 	TechStackTagSchema,
 	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,

@@ -26,7 +26,7 @@ const workspacesApi = baseApi
 
 			getWorkspaces: builder.query<
 				WorkspaceGetAllResponseDto,
-				{ search?: string }
+				{ workspaceName?: string }
 			>({
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (queryPayload) => ({

@@ -24,6 +24,8 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Code Linting
+        env:
+          EC_VERSION: v3.11.2
         run: pnpm run lint
 
   build:

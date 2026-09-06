@@ -2,6 +2,7 @@ export {
 	AuthValidationMessage,
 	AuthValidationRule,
 } from "./libs/enums/enums.js";
+export { useSignOut } from "./libs/hooks/use-sign-out/use-sign-out.hook.js";
 export {
 	type SignInRequestDto,
 	type SignUpRequestDto,

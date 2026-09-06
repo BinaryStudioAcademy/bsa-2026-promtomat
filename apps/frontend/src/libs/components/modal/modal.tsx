@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { ButtonVariant, ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import { KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import {
@@ -165,19 +165,10 @@ const Modal = ({
 				ref={dialogElementReference}
 				role={role}
 			>
-				<div className={styles["modal-header"]}>
+				<div>
 					<h2 className={styles["modal-title"]} id={titleId}>
 						{title}
 					</h2>
-					{isDismissible && (
-						<Button
-							label={ModalLabel.CLOSE}
-							onClick={onClose}
-							size={ControlSize.SM}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
-						/>
-					)}
 				</div>
 				{children}
 			</div>
