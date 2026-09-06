@@ -6,6 +6,8 @@
 		"lint:type": "tsc --noEmit",
 		"lint:js": "eslint . --max-warnings=0",
 		"lint": "concurrently \"pnpm:lint:*\"",
+		"db:up": "docker compose -f docker-compose.db.yml up -d",
+		"db:down": "docker compose -f docker-compose.db.yml down",
 		"start:dev": "tsx watch src/index.ts",
 		"migrate:dev": "node --loader ts-paths-esm-loader node_modules/knex/bin/cli.js migrate:latest",
 		"migrate:dev:make": "node --loader ts-paths-esm-loader node_modules/knex/bin/cli.js migrate:make -x ts",
