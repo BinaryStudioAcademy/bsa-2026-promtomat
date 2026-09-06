@@ -14,6 +14,7 @@ import {
 import { PromptEmbeddingErrorMessage } from "./libs/enums/enums.js";
 import { PromptEmbeddingError } from "./libs/exceptions/exceptions.js";
 import {
+	buildDimensionMismatchMessage,
 	composeEmbeddedText,
 	computeSourceHash,
 	splitIntoBatches,
@@ -199,7 +200,7 @@ class PromptEmbeddingService {
 
 		if (schemaDimension !== this.dimensions) {
 			throw new PromptEmbeddingError(
-				`The prompt embeddings column is vector(${schemaDimension.toString()}) while EMBEDDING_DIMENSIONS is ${this.dimensions.toString()}.`,
+				buildDimensionMismatchMessage(schemaDimension, this.dimensions),
 			);
 		}
 	}

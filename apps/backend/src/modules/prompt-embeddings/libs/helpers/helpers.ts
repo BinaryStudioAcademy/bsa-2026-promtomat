@@ -1,3 +1,4 @@
+export { buildDimensionMismatchMessage } from "./build-dimension-mismatch-message.helper.js";
 export { checkIsEmbedding } from "./check-is-embedding.helper.js";
 export { composeEmbeddedText } from "./compose-embedded-text.helper.js";
 export { computeSourceHash } from "./compute-source-hash.helper.js";
