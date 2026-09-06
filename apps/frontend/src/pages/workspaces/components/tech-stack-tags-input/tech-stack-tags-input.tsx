@@ -1,4 +1,5 @@
-import { useCallback, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
 	type Control,
 	type FieldPath,
@@ -8,18 +9,16 @@ import {
 
 import { Icon } from "~/libs/components/icon/icon.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
-import {
-	getTechStackTagSuggestions,
-	getValidClasses,
-} from "~/libs/helpers/helpers.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { FIRST_ELEMENT_INDEX } from "../workspace-create-form/libs/constants/constants.js";
+import {
+	EMPTY_SELECTION_LENGTH,
+	SUGGESTIONS_GAP_PX,
+} from "./libs/constants/constants.js";
+import { useSuggestions, useTags } from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
-
-const NO_ACTIVE_SUGGESTION = -1;
-const EMPTY_SELECTION_LENGTH = 0;
-const INDEX_STEP = 1;
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
@@ -44,65 +43,50 @@ const TechStackTagsInput = <T extends FieldValues>({
 	} = useController({ control, disabled: isDisabled, name });
 
 	const selectedTags = fieldValue as string[];
+	const errorMessage = error?.message;
+	const hasError = Boolean(error);
 
 	const errorMessageId = useId();
 	const inputId = useId();
 	const suggestionsListId = useId();
+
+	const inputReference = useRef<HTMLInputElement>(null);
+	const [inputRect, setInputRect] = useState<DOMRect | null>(null);
+
 	const [inputValue, setInputValue] = useState("");
 	const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
-	const [activeSuggestionIndex, setActiveSuggestionIndex] =
-		useState(NO_ACTIVE_SUGGESTION);
-	const inputReference = useRef<HTMLInputElement>(null);
 
-	const hasError = Boolean(error);
-	const errorMessage = error?.message;
+	const { addTag, removeLastTag, removeTag } = useTags({
+		onChange,
+		selectedTags,
+	});
 
-	const suggestions = useMemo(() => {
-		if (!isSuggestionsOpen) {
-			return [];
+	const {
+		activeIndex,
+		getActiveSuggestion,
+		hasSuggestions,
+		resetActiveIndex,
+		selectNext,
+		selectPrevious,
+		suggestions,
+	} = useSuggestions({
+		inputValue,
+		isOpen: isSuggestionsOpen,
+		selectedTags,
+	});
+
+	useLayoutEffect(() => {
+		if (isSuggestionsOpen && inputReference.current) {
+			setInputRect(inputReference.current.getBoundingClientRect());
 		}
-
-		return getTechStackTagSuggestions(inputValue).filter(
-			(tag) => !selectedTags.includes(tag),
-		);
-	}, [inputValue, isSuggestionsOpen, selectedTags]);
-
-	const addTag = useCallback(
-		(tag: string) => {
-			onChange([...selectedTags, tag]);
-			setInputValue("");
-			setActiveSuggestionIndex(NO_ACTIVE_SUGGESTION);
-			inputReference.current?.focus();
-		},
-		[onChange, selectedTags],
-	);
-
-	const removeTag = useCallback(
-		(tag: string) => {
-			onChange(selectedTags.filter((selectedTag) => selectedTag !== tag));
-			inputReference.current?.focus();
-		},
-		[onChange, selectedTags],
-	);
-
-	const removeLastTag = useCallback(() => {
-		if (selectedTags.length <= EMPTY_SELECTION_LENGTH) {
-			return;
-		}
-
-		const lastTag = selectedTags.at(NO_ACTIVE_SUGGESTION);
-
-		if (lastTag) {
-			removeTag(lastTag);
-		}
-	}, [removeTag, selectedTags]);
+	}, [isSuggestionsOpen, suggestions]);
 
 	const handleInputChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
 			setInputValue(event.target.value);
-			setActiveSuggestionIndex(NO_ACTIVE_SUGGESTION);
+			resetActiveIndex();
 		},
-		[],
+		[resetActiveIndex],
 	);
 
 	const handleInputFocus = useCallback(() => {
@@ -112,47 +96,31 @@ const TechStackTagsInput = <T extends FieldValues>({
 	const handleInputBlur = useCallback(() => {
 		onBlur();
 		setIsSuggestionsOpen(false);
-		setActiveSuggestionIndex(NO_ACTIVE_SUGGESTION);
-	}, [onBlur]);
+		resetActiveIndex();
+	}, [onBlur, resetActiveIndex]);
 
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement>) => {
-			if (event.key === "ArrowDown") {
+			if (hasSuggestions && event.key === "ArrowDown") {
 				event.preventDefault();
-				setActiveSuggestionIndex((previousIndex) =>
-					previousIndex + INDEX_STEP < suggestions.length
-						? previousIndex + INDEX_STEP
-						: FIRST_ELEMENT_INDEX,
-				);
-
+				selectNext();
 				return;
 			}
 
-			if (event.key === "ArrowUp") {
+			if (hasSuggestions && event.key === "ArrowUp") {
 				event.preventDefault();
-				setActiveSuggestionIndex(
-					(previousIndex) =>
-						(previousIndex - INDEX_STEP + suggestions.length) %
-						suggestions.length,
-				);
-
+				selectPrevious();
 				return;
 			}
 
 			if (event.key === "Enter") {
 				event.preventDefault();
-
-				const tagToAdd =
-					suggestions[
-						activeSuggestionIndex === NO_ACTIVE_SUGGESTION
-							? FIRST_ELEMENT_INDEX
-							: activeSuggestionIndex
-					];
-
+				const tagToAdd = getActiveSuggestion();
 				if (tagToAdd) {
 					addTag(tagToAdd);
+					setInputValue("");
+					resetActiveIndex();
 				}
-
 				return;
 			}
 
@@ -160,7 +128,16 @@ const TechStackTagsInput = <T extends FieldValues>({
 				removeLastTag();
 			}
 		},
-		[activeSuggestionIndex, addTag, inputValue, removeLastTag, suggestions],
+		[
+			hasSuggestions,
+			selectNext,
+			selectPrevious,
+			getActiveSuggestion,
+			addTag,
+			resetActiveIndex,
+			inputValue,
+			removeLastTag,
+		],
 	);
 
 	const handleRemoveTagClick = useCallback(
@@ -174,8 +151,11 @@ const TechStackTagsInput = <T extends FieldValues>({
 		(tag: string) => (event: React.MouseEvent) => {
 			event.preventDefault();
 			addTag(tag);
+			setInputValue("");
+			resetActiveIndex();
+			inputReference.current?.focus();
 		},
-		[addTag],
+		[addTag, resetActiveIndex],
 	);
 
 	return (
@@ -194,7 +174,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 				<ul className={styles["tags"]}>
 					{selectedTags.map((tag) => (
 						<li className={styles["tag"]} key={tag}>
-							{tag}
+							<span className={styles["tag-text"]}>{tag}</span>
 							<button
 								aria-label={`Remove ${tag}`}
 								className={styles["remove"]}
@@ -235,28 +215,37 @@ const TechStackTagsInput = <T extends FieldValues>({
 				/>
 			</div>
 
-			{suggestions.length > FIRST_ELEMENT_INDEX && (
-				<ul
-					className={styles["suggestions"]}
-					id={suggestionsListId}
-					role="listbox"
-				>
-					{suggestions.map((tag, index) => (
-						<li
-							aria-selected={index === activeSuggestionIndex}
-							className={getValidClasses(
-								styles["suggestion"],
-								index === activeSuggestionIndex && styles["suggestion-active"],
-							)}
-							key={tag}
-							onMouseDown={handleSuggestionMouseDown(tag)}
-							role="option"
-						>
-							{tag}
-						</li>
-					))}
-				</ul>
-			)}
+			{suggestions.length > FIRST_ELEMENT_INDEX &&
+				inputRect &&
+				createPortal(
+					<ul
+						className={styles["suggestions"]}
+						id={suggestionsListId}
+						role="listbox"
+						style={{
+							left: inputRect.left,
+							position: "fixed",
+							top: inputRect.bottom + SUGGESTIONS_GAP_PX,
+							width: inputRect.width,
+						}}
+					>
+						{suggestions.map((tag, index) => (
+							<li
+								aria-selected={index === activeIndex}
+								className={getValidClasses(
+									styles["suggestion"],
+									index === activeIndex && styles["suggestion-active"],
+								)}
+								key={tag}
+								onMouseDown={handleSuggestionMouseDown(tag)}
+								role="option"
+							>
+								{tag}
+							</li>
+						))}
+					</ul>,
+					document.body,
+				)}
 
 			<span className={styles["message"]} id={errorMessageId}>
 				{errorMessage}
