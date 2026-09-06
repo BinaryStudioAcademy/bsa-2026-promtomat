@@ -91,7 +91,7 @@ TODO: add application schema
 
 3. modules - separate app features or functionalities
 
-4. scripts - manually run maintenance entry points (`embeddings:backfill`)
+4. scripts - manually run maintenance entry points (`embeddings:backfill`, `embeddings:backfill:dev`)
 
 ### 5.4 Shared Package
 
@@ -141,8 +141,9 @@ You should use .env.example files as a reference.
 4. Run backend: `pnpm --filter @promptomat/backend start:dev`
 
    To repair the embedded prompt index — prompts with no Embedding, changed text, or a changed embedding model — run
-   `pnpm --filter @promptomat/backend embeddings:backfill`. The run is idempotent: it reports how many prompts it
-   embedded, skipped, and failed, and a repeated run embeds nothing.
+   `pnpm --filter @promptomat/backend embeddings:backfill:dev`. The run is idempotent: it reports how many prompts it
+   embedded, skipped, and failed, and a repeated run embeds nothing. The production image carries the compiled script
+   as `embeddings:backfill`, meant for a one-off task on the same image.
 
 5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 
