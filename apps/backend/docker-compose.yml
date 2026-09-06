@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: promptomat-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-promptomap}
+      POSTGRES_USER: ${DB_USERNAME:-promptomap}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-promptomap}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d ${DB_NAME:-promptomap} -U ${DB_USERNAME:-promptomap}",
+        ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
