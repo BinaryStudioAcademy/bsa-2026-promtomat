@@ -8,7 +8,10 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
-import { type WorkspaceCreateRequestDto } from "./libs/types/types.js";
+import {
+	type WorkspaceCreateRequestDto,
+	type WorkspaceGetAllRequestDto,
+} from "./libs/types/types.js";
 import {
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
@@ -48,7 +51,7 @@ class WorkspaceController extends BaseController {
 			handler: (options) =>
 				this.findAllByUserId(
 					options as APIHandlerOptions<{
-						query: { workspaceName?: string };
+						query: WorkspaceGetAllRequestDto;
 					}>,
 				),
 			method: HTTPMethod.GET,
@@ -133,10 +136,21 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
+	 *         200:
+	 *           description: Successful operation
+	 *           content:
+	 *             application/json:
+	 *               schema:
+	 *                 type: object
+	 *                 properties:
+	 *                   items:
+	 *                     type: array
+	 *                     items:
+	 *                       $ref: "#/components/schemas/Workspace"
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
-			query: { workspaceName?: string };
+			query: WorkspaceGetAllRequestDto;
 		}>,
 	): Promise<APIHandlerResponse> {
 		return {
