@@ -4,6 +4,17 @@ export {
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
+export { normalizeWorkspaceTags } from "./libs/helpers/helpers.js";
+export {
+	checkIsValidTechStackTag,
+	getTechStackTagSuggestions,
+	MAX_TAGS_COUNT,
+	normalizeTagName,
+	normalizeTechStackTag,
+	normalizeTechStackTags,
+	TECH_STACK_VARIANTS,
+	TechStackTagSchema,
+} from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
