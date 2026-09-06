@@ -38,13 +38,18 @@ class WorkspaceRepository {
 	): Promise<WorkspaceEntity[]> {
 		const query = this.workspaceModel.query().where({ userId });
 
-		if (search) {
-			query = query
-				.whereILike("name", `%${search}%`)
-				.orWhereRaw(
-					"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
-					[`%${search}%`],
-				);
+		if (workspaceName) {
+			const escapedWorkspaceName = escapeILikePattern(workspaceName);
+			const searchPattern = `%${escapedWorkspaceName}%`;
+
+			query.where((builder) => {
+				builder
+					.whereILike("name", searchPattern)
+					.orWhereRaw(
+						"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
+						[searchPattern],
+					);
+			});
 		}
 
 		const workspaces = await query.execute();
