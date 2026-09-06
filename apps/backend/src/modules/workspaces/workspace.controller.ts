@@ -136,6 +136,17 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
+	 *         200:
+	 *           description: Successful operation
+	 *           content:
+	 *             application/json:
+	 *               schema:
+	 *                 type: object
+	 *                 properties:
+	 *                   items:
+	 *                     type: array
+	 *                     items:
+	 *                       $ref: "#/components/schemas/Workspace"
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
