@@ -56,6 +56,22 @@ class BaseConfig implements Config {
 					format: Number,
 				},
 			},
+			BEDROCK: {
+				MODEL: {
+					ID: {
+						default: null,
+						doc: "Id of the model",
+						env: "BEDROCK_MODEL_ID",
+						format: String,
+					},
+				},
+				REGION: {
+					default: null,
+					doc: "Region for bedrock",
+					env: "BEDROCK_REGION",
+					format: String,
+				},
+			},
 			DB: {
 				DIALECT: {
 					default: null,
