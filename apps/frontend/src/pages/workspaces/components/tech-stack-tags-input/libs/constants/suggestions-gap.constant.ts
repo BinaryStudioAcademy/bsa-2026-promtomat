@@ -1,0 +1,3 @@
+const SUGGESTIONS_GAP_PX = 4;
+
+export { SUGGESTIONS_GAP_PX };
