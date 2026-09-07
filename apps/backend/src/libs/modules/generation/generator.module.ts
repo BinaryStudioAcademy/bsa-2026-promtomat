@@ -4,6 +4,7 @@ import {
 	TextGenerationError,
 } from "~/libs/modules/bedrock/bedrock.js";
 
+import { TOKENS_THRESHOLD } from "./libs/constants/constants.js";
 import { getOutputSchema } from "./libs/helpers/helpers.js";
 import {
 	type GeneratorInterface,
@@ -26,14 +27,17 @@ class Generator implements GeneratorInterface {
 	private createCommandOptions<K extends keyof SchemaResultMap>(
 		options: StructuredGenerationOptions<K>,
 	): CommandOptions {
+		if (options.config.maxTokens > TOKENS_THRESHOLD) {
+			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
+				TOKENS_THRESHOLD,
+			);
+		}
+
 		const commandOptions = {
+			config: options.config,
 			message: options.message,
 			schema: getOutputSchema(options.schemaKey),
 		} as CommandOptions;
-
-		if (options.config !== undefined) {
-			commandOptions.config = options.config;
-		}
 
 		if (options.systemPrompt !== undefined) {
 			commandOptions.systemPrompt = options.systemPrompt;

@@ -1,9 +1,9 @@
 type TextGenerationOptions = {
-	config?: {
-		maxTokens?: number;
+	config: {
+		maxTokens: number;
 		stopSequences?: string[];
-		temperature?: number;
-		topP?: number;
+		temperature: number;
+		topP: number;
 	};
 	message: string;
 	systemPrompt?: string;
