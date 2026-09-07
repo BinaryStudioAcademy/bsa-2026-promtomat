@@ -9,6 +9,7 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserServiceConstructorPayload,
 } from "./libs/types/types.js";
 
 class UserService {
@@ -25,12 +26,7 @@ class UserService {
 		hashing,
 		userRepository,
 		workspaceService,
-	}: {
-		database: Database;
-		hashing: Hashing;
-		userRepository: UserRepository;
-		workspaceService: WorkspaceService;
-	}) {
+	}: UserServiceConstructorPayload) {
 		this.database = database;
 		this.hashing = hashing;
 		this.userRepository = userRepository;
