@@ -12,7 +12,7 @@ import {
 
 import { TextGenerationError } from "../exceptions/exceptions.js";
 
-const convertBedrockErrortoTextGenerationError = (
+const convertBedrockErrorToTextGenerationError = (
 	error: unknown,
 ): TextGenerationError => {
 	if (
@@ -40,4 +40,4 @@ const convertBedrockErrortoTextGenerationError = (
 	return TextGenerationError.unclassified(error);
 };
 
-export { convertBedrockErrortoTextGenerationError };
+export { convertBedrockErrorToTextGenerationError };

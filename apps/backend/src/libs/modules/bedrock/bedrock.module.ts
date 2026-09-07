@@ -4,8 +4,6 @@ import {
 	type ConverseCommandInput,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { config } from "~/libs/modules/config/config.js";
-
 import {
 	DEFAULT_CONVERSATION_ROLE,
 	FIRST_CONTENT_INDEX,
@@ -13,7 +11,7 @@ import {
 } from "./libs/constants/constants.js";
 import {
 	checkIsTextTruncated,
-	convertBedrockErrortoTextGenerationError,
+	convertBedrockErrorToTextGenerationError,
 } from "./libs/helpers/helpers.js";
 import {
 	type CommandOutput,
@@ -21,16 +19,21 @@ import {
 	TextGenerationOptions,
 } from "./libs/types/types.js";
 
+type Constructor = {
+	modelId: string;
+	region: string;
+};
+
 class Bedrock {
 	private client: BedrockRuntimeClient;
 
 	private modelId: string;
 
-	public constructor() {
+	public constructor({ modelId, region }: Constructor) {
 		this.client = new BedrockRuntimeClient({
-			region: config.ENV.AWS.REGION,
+			region,
 		});
-		this.modelId = config.ENV.BEDROCK.MODEL.ID;
+		this.modelId = modelId;
 	}
 
 	private createBaseConverseCommandInput({
@@ -101,7 +104,7 @@ class Bedrock {
 				text,
 			};
 		} catch (error) {
-			throw convertBedrockErrortoTextGenerationError(error);
+			throw convertBedrockErrorToTextGenerationError(error);
 		}
 	}
 }

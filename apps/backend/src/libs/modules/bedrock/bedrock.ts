@@ -1,6 +1,11 @@
+import { config } from "~/libs/modules/config/config.js";
+
 import { Bedrock } from "./bedrock.module.js";
 
-const bedrock = new Bedrock();
+const bedrock = new Bedrock({
+	modelId: config.ENV.BEDROCK.MODEL.ID,
+	region: config.ENV.AWS.REGION,
+});
 
 export { bedrock };
 export { TextGenerationError } from "./libs/exceptions/text-generation-error.exception.js";
