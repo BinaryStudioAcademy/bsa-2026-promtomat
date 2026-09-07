@@ -5,6 +5,8 @@ import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
+import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import { PromptColumnName } from "./libs/enums/enums.js";
 import { type PromptGetQueryDto } from "./libs/types/types.js";
 
 const DEFAULT_PAGE = 1;
@@ -51,7 +53,11 @@ class PromptRepository {
 
 		const baseQuery = this.promptModel
 			.query()
-			.withGraphJoined("workspace")
+			.leftJoin(
+				DatabaseTableName.WORKSPACES,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+			)
 			.modify((builder) => {
 				if (scope === PromptScope.MINE) {
 					builder.where(`${DatabaseTableName.PROMPTS}.userId`, userId);
@@ -98,7 +104,7 @@ class PromptRepository {
 			.avg(
 				`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`,
 			)) as unknown as {
-			averageScore: number | string;
+			averageScore: null | number | string;
 			count: number | string;
 		}[];
 
@@ -110,6 +116,8 @@ class PromptRepository {
 
 		const items = await baseQuery
 			.clone()
+			.select(`${DatabaseTableName.PROMPTS}.*`)
+			.withGraphFetched("workspace")
 			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
 			.offset(offset)
 			.limit(limit)
