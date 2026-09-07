@@ -7,7 +7,7 @@ import {
 import {
 	DEFAULT_CONVERSATION_ROLE,
 	FIRST_CONTENT_INDEX,
-	TEXT_FORMAT_TYPE,
+	SCHEMA_FORMAT_TYPE,
 } from "./libs/constants/constants.js";
 import {
 	checkIsTextTruncated,
@@ -81,7 +81,7 @@ class Bedrock {
 						schema: schema.value,
 					},
 				},
-				type: TEXT_FORMAT_TYPE,
+				type: SCHEMA_FORMAT_TYPE,
 			},
 		};
 	}
