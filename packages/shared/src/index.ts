@@ -67,6 +67,7 @@ export {
 	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
+	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
 	workspaceUpdateValidationSchema,
 	WorkspaceVisibility,

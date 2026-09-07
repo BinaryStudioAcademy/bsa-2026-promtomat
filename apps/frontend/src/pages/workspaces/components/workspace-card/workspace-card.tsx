@@ -3,17 +3,19 @@ import { useCallback } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { capitalizeFirstLetter } from "~/libs/helpers/helpers.js";
-import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
+import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
 import styles from "./styles.module.css";
 
 type Properties = {
-	onConfig: (workspace: WorkspaceDto) => void;
-	workspace: WorkspaceDto;
+	onConfig: (workspace: WorkspaceListItemDto) => void;
+	onDelete: (workspace: WorkspaceListItemDto) => void;
+	workspace: WorkspaceListItemDto;
 };
 
 const WorkspaceCard: React.FC<Properties> = ({
 	onConfig,
+	onDelete,
 	workspace,
 }: Properties) => {
 	const visibility = capitalizeFirstLetter(workspace.visibility);
@@ -21,6 +23,10 @@ const WorkspaceCard: React.FC<Properties> = ({
 	const handleConfigClick = useCallback((): void => {
 		onConfig(workspace);
 	}, [onConfig, workspace]);
+
+	const handleDeleteClick = useCallback((): void => {
+		onDelete(workspace);
+	}, [onDelete, workspace]);
 
 	return (
 		<div className={styles["card"]}>
@@ -60,6 +66,7 @@ const WorkspaceCard: React.FC<Properties> = ({
 				/>
 				<Button
 					label="Delete"
+					onClick={handleDeleteClick}
 					size={ControlSize.SM}
 					type="button"
 					variant={ButtonVariant.DANGER}

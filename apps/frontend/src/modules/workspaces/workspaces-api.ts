@@ -26,6 +26,18 @@ const workspacesApi = baseApi
 				}),
 			}),
 
+			deleteWorkspace: builder.mutation<null, number>({
+				extraOptions: { shouldSuppressToast: true },
+				invalidatesTags: (_result, error) =>
+					error === undefined ? [WorkspacesApiTag.WORKSPACE] : [],
+				query: (id) => ({
+					method: HTTPMethod.DELETE,
+					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
+						id: String(id),
+					}),
+				}),
+			}),
+
 			getWorkspaces: builder.query<
 				WorkspaceGetAllResponseDto,
 				{ workspaceName?: string }
@@ -56,12 +68,14 @@ const workspacesApi = baseApi
 
 const {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceMutation,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 } = workspacesApi;
 
 export {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceMutation,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 };
