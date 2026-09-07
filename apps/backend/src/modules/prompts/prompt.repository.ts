@@ -1,12 +1,13 @@
-import { PromptScope } from "@promptomat/shared";
-
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
-import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
-import { PromptColumnName } from "./libs/enums/enums.js";
+import {
+	WorkspaceColumnName,
+	WorkspaceVisibility,
+} from "../workspaces/libs/enums/enums.js";
+import { PromptColumnName, PromptScope } from "./libs/enums/enums.js";
 import { type PromptGetQueryDto } from "./libs/types/types.js";
 
 const DEFAULT_PAGE = 1;
@@ -64,7 +65,10 @@ class PromptRepository {
 				} else {
 					builder.where((subQuery) => {
 						subQuery
-							.where(`${DatabaseTableName.WORKSPACES}.visibility`, "public")
+							.where(
+								`${DatabaseTableName.WORKSPACES}.visibility`,
+								WorkspaceVisibility.PUBLIC,
+							)
 							.orWhere(`${DatabaseTableName.WORKSPACES}.userId`, userId);
 					});
 				}

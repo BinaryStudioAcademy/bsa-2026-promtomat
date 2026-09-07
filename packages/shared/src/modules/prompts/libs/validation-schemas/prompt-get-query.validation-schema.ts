@@ -13,7 +13,7 @@ const promptGetQuery = z.object({
 		.max(PromptValidationRule.EFFICIENCY_SCORE_MAX)
 		.optional(),
 	search: z.string().trim().optional(),
-	workspaceId: z.string().trim().optional(),
+	workspaceId: z.coerce.number().int().positive().optional(),
 });
 
 export { promptGetQuery };
