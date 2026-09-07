@@ -1,10 +1,10 @@
 type PromptItemResponseDto = {
 	body: string;
 	createdAt: string;
-	id: string;
+	id: number;
 	intent: string;
 	score: number;
-	workspaceId: string;
+	workspaceId: number;
 	workspaceName: string;
 };
 

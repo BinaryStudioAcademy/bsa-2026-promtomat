@@ -8,31 +8,66 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { PromptsApiPath } from "./libs/enums/enums.js";
-import { type PromptCreateRequestDto } from "./libs/types/types.js";
-import { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import {
+	type PromptCreateRequestDto,
+	type PromptGetQueryDto,
+} from "./libs/types/types.js";
+import {
+	promptCreateValidationSchema,
+	promptGetQueryValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
-/*** @swagger
+/**
+ * @swagger
  * components:
- *    schemas:
- *      Prompt:
- *        type: object
- *        properties:
- *          id:
- *            type: number
- *            minimum: 1
- *          efficiencyScore:
- *            type: number
- *            minimum: 1
- *            maximum: 10
- *          promptBody:
- *            type: string
- *          taskIntent:
- *            type: string
- *          userId:
- *            type: number
- *          workspaceId:
- *            type: number
+ *   schemas:
+ *     Prompt:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: number
+ *           minimum: 1
+ *         efficiencyScore:
+ *           type: number
+ *           minimum: 1
+ *           maximum: 10
+ *         promptBody:
+ *           type: string
+ *         taskIntent:
+ *           type: string
+ *         userId:
+ *           type: number
+ *         workspaceId:
+ *           type: number
+ *     PromptItem:
+ *       type: object
+ *       properties:
+ *         body:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *         id:
+ *           type: number
+ *         intent:
+ *           type: string
+ *         score:
+ *           type: number
+ *         workspaceId:
+ *           type: number
+ *         workspaceName:
+ *           type: string
+ *     PromptGetAllResponse:
+ *       type: object
+ *       properties:
+ *         averageScore:
+ *           type: number
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: "#/components/schemas/PromptItem"
+ *         totalCount:
+ *           type: number
  */
 class PromptController extends BaseController {
 	private promptService: PromptService;
@@ -55,95 +90,109 @@ class PromptController extends BaseController {
 				body: promptCreateValidationSchema,
 			},
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findAll(
+					options as APIHandlerOptions<{
+						query: PromptGetQueryDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.ROOT,
+			validation: {
+				query: promptGetQueryValidationSchema,
+			},
+		});
 	}
 
 	/**
 	 * @swagger
 	 * /prompts:
-	 *    post:
-	 *      description: Creates a new prompt
-	 *      security:
-	 *        - bearerAuth: []
-	 *      requestBody:
-	 *        description: Prompt data
-	 *        required: true
-	 *        content:
-	 *          application/json:
-	 *            schema:
-	 *              type: object
-	 *              properties:
-	 *                efficiencyScore:
-	 *                  type: number
-	 *                  minimum: 1
-	 *                  maximum: 10
-	 *                promptBody:
-	 *                  type: string
-	 *                taskIntent:
-	 *                  type: string
-	 *                workspaceId:
-	 *                  type: number
-	 *      responses:
-	 *        201:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Prompt"
-	 *        401:
-	 *          description: Unauthorized
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
-	 *        403:
-	 *          description: You do not have permission to access this workspace
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
-	 *        404:
-	 *          description: Workspace not found
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
-	 *        422:
-	 *          description: Validation failed
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  details:
-	 *                    type: array
-	 *                    items:
-	 *                      type: object
-	 *                      properties:
-	 *                        message:
-	 *                          type: string
-	 *                        path:
-	 *                          type: array
-	 *                          items:
-	 *                            type: string
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
+	 *   post:
+	 *     description: Creates a new prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     requestBody:
+	 *       description: Prompt data
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               efficiencyScore:
+	 *                 type: number
+	 *                 minimum: 1
+	 *                 maximum: 10
+	 *               promptBody:
+	 *                 type: string
+	 *               taskIntent:
+	 *                 type: string
+	 *               workspaceId:
+	 *                 type: number
+	 *     responses:
+	 *       201:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       403:
+	 *         description: You do not have permission to access this workspace
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 details:
+	 *                   type: array
+	 *                   items:
+	 *                     type: object
+	 *                     properties:
+	 *                       message:
+	 *                         type: string
+	 *                       path:
+	 *                         type: array
+	 *                         items:
+	 *                           type: string
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
 	 */
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
@@ -155,6 +204,99 @@ class PromptController extends BaseController {
 		return {
 			payload: await this.promptService.create(payload),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts:
+	 *   get:
+	 *     description: Returns paginated prompts list with metrics
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: query
+	 *         name: scope
+	 *         required: true
+	 *         schema:
+	 *           type: string
+	 *           enum: [mine, global]
+	 *       - in: query
+	 *         name: page
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *       - in: query
+	 *         name: limit
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *       - in: query
+	 *         name: search
+	 *         schema:
+	 *           type: string
+	 *       - in: query
+	 *         name: score
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *           maximum: 10
+	 *       - in: query
+	 *         name: workspaceId
+	 *         schema:
+	 *           type: integer
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/PromptGetAllResponse"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 details:
+	 *                   type: array
+	 *                   items:
+	 *                     type: object
+	 *                     properties:
+	 *                       message:
+	 *                         type: string
+	 *                       path:
+	 *                         type: array
+	 *                         items:
+	 *                           type: string
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 */
+	private async findAll(
+		options: APIHandlerOptions<{
+			query: PromptGetQueryDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findAll({
+				query: options.query,
+				userId: options.user?.id as number,
+			}),
+			status: HTTPCode.OK,
 		};
 	}
 }
