@@ -24,6 +24,7 @@
 	font-size: var(--font-size-body-base);
 	line-height: 1.2;
 	color: var(--text-strong);
+	resize: none;
 	scrollbar-color: var(--border-subtle) transparent;
 	scrollbar-width: thin;
 	background-color: var(--surface-inset);
@@ -69,11 +70,6 @@
 	min-height: var(--space-18);
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
-}
-
-.autoResize {
-	min-height: var(--size-control-h-xl);
-	resize: none;
 }
 
 .textarea::-webkit-scrollbar {
