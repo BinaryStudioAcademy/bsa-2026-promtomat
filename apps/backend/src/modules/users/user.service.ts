@@ -82,22 +82,17 @@ class UserService {
 	}
 
 	public async updateProfile(
-		userId: number,
+		currentUser: UserDto,
 		payload: UserUpdateRequestDto,
 	): Promise<UserDto> {
-		const currentUser = await this.userRepository.findById(userId);
-
-		if (currentUser === null) {
-			throw AuthError.userNotFound();
+		if (!this.hasProfileChanged(currentUser, payload)) {
+			return currentUser;
 		}
 
-		const currentUserObject = currentUser.toObject();
-
-		if (!this.hasProfileChanged(currentUserObject, payload)) {
-			return currentUserObject;
-		}
-
-		const updatedUser = await this.userRepository.update(userId, payload);
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			payload,
+		);
 
 		return updatedUser.toObject();
 	}

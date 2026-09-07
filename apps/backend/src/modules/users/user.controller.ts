@@ -169,10 +169,7 @@ class UserController extends BaseController {
 		}> & { user: UserDto },
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.userService.updateProfile(
-				options.user.id,
-				options.body,
-			),
+			payload: await this.userService.updateProfile(options.user, options.body),
 			status: HTTPCode.OK,
 		};
 	}
