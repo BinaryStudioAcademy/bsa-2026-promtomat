@@ -3,7 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import { getTechStackTagSuggestions } from "~/libs/helpers/helpers.js";
 
 import { FIRST_ELEMENT_INDEX } from "../../../workspace-create-form/libs/constants/constants.js";
-import { INDEX_STEP, NO_ACTIVE_SUGGESTION } from "../constants/constants.js";
+import {
+	EMPTY_SELECTION_LENGTH,
+	INDEX_STEP,
+	NO_ACTIVE_SUGGESTION,
+} from "../constants/constants.js";
 
 type UseSuggestionsProperties = {
 	inputValue: string;
@@ -29,7 +33,7 @@ const useSuggestions = ({
 	}, [inputValue, isOpen, selectedTags]);
 
 	useEffect(() => {
-		if (suggestions.length > NO_ACTIVE_SUGGESTION) {
+		if (suggestions.length > EMPTY_SELECTION_LENGTH) {
 			setActiveIndex(FIRST_ELEMENT_INDEX);
 		} else {
 			setActiveIndex(NO_ACTIVE_SUGGESTION);
@@ -79,7 +83,7 @@ const useSuggestions = ({
 	return {
 		activeIndex,
 		getActiveSuggestion,
-		hasSuggestions: suggestions.length > NO_ACTIVE_SUGGESTION,
+		hasSuggestions: suggestions.length > EMPTY_SELECTION_LENGTH,
 		resetActiveIndex,
 		selectNext,
 		selectPrevious,
