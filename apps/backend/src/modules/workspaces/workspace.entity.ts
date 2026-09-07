@@ -1,6 +1,11 @@
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
 
 import { WorkspaceVisibility } from "./libs/enums/enums.js";
+import {
+	type WorkspaceDto,
+	type WorkspaceEntityInitializeNewPayload,
+	type WorkspaceEntityPayload,
+} from "./libs/types/types.js";
 
 class WorkspaceEntity implements Entity {
 	private id: null | number;
@@ -19,13 +24,7 @@ class WorkspaceEntity implements Entity {
 		stackTags,
 		userId,
 		visibility,
-	}: {
-		id: null | number;
-		name: string;
-		stackTags: string[];
-		userId: number;
-		visibility: ValueOf<typeof WorkspaceVisibility>;
-	}) {
+	}: WorkspaceEntityPayload) {
 		this.id = id;
 		this.name = name;
 		this.stackTags = stackTags;
@@ -39,13 +38,7 @@ class WorkspaceEntity implements Entity {
 		stackTags,
 		userId,
 		visibility,
-	}: {
-		id: null | number;
-		name: string;
-		stackTags: string[];
-		userId: number;
-		visibility: ValueOf<typeof WorkspaceVisibility>;
-	}): WorkspaceEntity {
+	}: WorkspaceEntityPayload): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id,
 			name,
@@ -60,12 +53,7 @@ class WorkspaceEntity implements Entity {
 		stackTags = [],
 		userId,
 		visibility = WorkspaceVisibility.PRIVATE,
-	}: {
-		name: string;
-		stackTags?: string[] | undefined;
-		userId: number;
-		visibility?: undefined | ValueOf<typeof WorkspaceVisibility>;
-	}): WorkspaceEntity {
+	}: WorkspaceEntityInitializeNewPayload): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id: null,
 			name,
@@ -75,12 +63,7 @@ class WorkspaceEntity implements Entity {
 		});
 	}
 
-	public toNewObject(): {
-		name: string;
-		stackTags: string[];
-		userId: number;
-		visibility: ValueOf<typeof WorkspaceVisibility>;
-	} {
+	public toNewObject(): Omit<WorkspaceDto, "id"> {
 		return {
 			name: this.name,
 			stackTags: this.stackTags,
@@ -89,13 +72,7 @@ class WorkspaceEntity implements Entity {
 		};
 	}
 
-	public toObject(): {
-		id: number;
-		name: string;
-		stackTags: string[];
-		userId: number;
-		visibility: ValueOf<typeof WorkspaceVisibility>;
-	} {
+	public toObject(): WorkspaceDto {
 		return {
 			id: this.id as number,
 			name: this.name,

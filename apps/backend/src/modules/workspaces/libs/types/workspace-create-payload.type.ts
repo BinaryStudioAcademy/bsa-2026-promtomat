@@ -1,10 +1,10 @@
-import { type WorkspaceCreateRequestDto } from "@promptomat/shared";
+import { type WorkspaceCreateRequestDto } from "./types.js";
 
 type WorkspaceCreatePayload = Omit<
 	WorkspaceCreateRequestDto,
 	"stackTags" | "visibility"
 > &
-	Partial<WorkspaceCreateRequestDto> & {
+	Partial<Pick<WorkspaceCreateRequestDto, "stackTags" | "visibility">> & {
 		userId: number;
 	};
 

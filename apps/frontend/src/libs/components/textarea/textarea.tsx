@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef } from "react";
+import React, { useCallback, useId, useLayoutEffect, useRef } from "react";
 import {
 	type Control,
 	type FieldPath,
@@ -17,7 +17,7 @@ type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 		control: Control<T, null>;
 		descriptionId?: string;
-		disabled?: boolean;
+		isDisabled?: boolean;
 		label: string;
 		maxHeight?: number;
 		name: FieldPath<T>;
@@ -28,7 +28,7 @@ type Properties<T extends FieldValues> =
 const Textarea = <T extends FieldValues>({
 	control,
 	descriptionId,
-	disabled = false,
+	isDisabled = false,
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
@@ -41,7 +41,7 @@ const Textarea = <T extends FieldValues>({
 		fieldState: { error },
 	} = useController({
 		control,
-		disabled,
+		disabled: isDisabled,
 		name,
 	});
 
@@ -56,23 +56,18 @@ const Textarea = <T extends FieldValues>({
 
 	const adjustHeight = useCallback(() => {
 		const textarea = textareaReferance.current;
-		if (textarea) {
-			textarea.style.height = "auto";
-			const scrollHeight = textarea.scrollHeight;
-			textarea.style.height = `${String(scrollHeight)}px`;
 
-			textarea.style.maxHeight = `${String(maxHeight)}px`;
-			textarea.style.overflowY = scrollHeight >= maxHeight ? "auto" : "hidden";
+		if (!textarea) {
+			return;
 		}
-	}, [maxHeight]);
 
-	const handleChange = useCallback(
-		(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-			field.onChange(event);
-			adjustHeight();
-		},
-		[field, adjustHeight],
-	);
+		textarea.style.height = "auto";
+		const height = Math.min(textarea.scrollHeight, maxHeight);
+
+		textarea.style.height = `${String(height)}px`;
+		textarea.style.overflowY =
+			textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+	}, [maxHeight]);
 
 	const handleReference = useCallback(
 		(element: HTMLTextAreaElement | null) => {
@@ -82,7 +77,7 @@ const Textarea = <T extends FieldValues>({
 		[field],
 	);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		adjustHeight();
 	}, [field.value, adjustHeight]);
 
@@ -101,10 +96,9 @@ const Textarea = <T extends FieldValues>({
 						styles["textarea"],
 						styles[size],
 						hasError && styles["error"],
-						styles["autoResize"],
 					)}
 					id={textareaId}
-					onChange={handleChange}
+					onChange={field.onChange}
 					ref={handleReference}
 					rows={rows}
 				/>

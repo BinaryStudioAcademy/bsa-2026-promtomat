@@ -9,13 +9,13 @@ import { getScoreColor } from "./libs/helpers/get-score-color.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	disabled?: boolean;
+	isDisabled?: boolean;
 	label: string;
 	onScoreSelect: (score: number) => () => void;
 };
 
 const ScoreGrid: React.FC<Properties> = ({
-	disabled = false,
+	isDisabled = false,
 	label,
 	onScoreSelect,
 }) => {
@@ -55,7 +55,7 @@ const ScoreGrid: React.FC<Properties> = ({
 					return (
 						<Button
 							className={styles["score-button"]}
-							isDisabled={disabled}
+							isDisabled={isDisabled}
 							key={score}
 							label={String(score)}
 							onBlur={clearActive}

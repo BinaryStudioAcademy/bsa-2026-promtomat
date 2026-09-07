@@ -16,7 +16,7 @@ import styles from "../../styles.module.css";
 import { DEFAULT_RECORD_PROMT_PAYLOAD } from "./libs/constants.js";
 
 const RecordPromptForm: React.FC = () => {
-	const [recordPrompt] = useRecordPromptMutation();
+	const [recordPrompt, { isLoading }] = useRecordPromptMutation();
 	const { data } = useGetWorkspacesQuery({});
 
 	const workspaces = data?.items;
@@ -38,9 +38,11 @@ const RecordPromptForm: React.FC = () => {
 		(score: number) => {
 			return (): void => {
 				setValue("efficiencyScore", score);
-				void handleSubmit((payload: PromptCreateRequestDto) => {
-					void recordPrompt(payload).unwrap();
-					reset();
+				void handleSubmit(async (payload: PromptCreateRequestDto) => {
+					const { data } = await recordPrompt(payload);
+					if (data) {
+						reset();
+					}
 				})();
 			};
 		},
@@ -66,6 +68,7 @@ const RecordPromptForm: React.FC = () => {
 				<div className={styles["input-wrapper"]}>
 					<Select
 						control={control}
+						isDisabled={isLoading}
 						label="Context"
 						name="workspaceId"
 						options={options ?? []}
@@ -73,6 +76,7 @@ const RecordPromptForm: React.FC = () => {
 					/>
 					<Input
 						control={control}
+						isDisabled={isLoading}
 						label="Task Intent"
 						name="taskIntent"
 						placeholder="What were you trying to achieve? (e.g., JWT Authentication on FastAPI)"
@@ -80,12 +84,14 @@ const RecordPromptForm: React.FC = () => {
 					<Textarea
 						autoComplete="off"
 						control={control}
+						isDisabled={isLoading}
 						label="Prompt Body"
 						name="promptBody"
 						placeholder="Paste the exact prompt you sent to your &#10;coding AI tool here..."
 						rows={6}
 					/>
 					<ScoreGrid
+						isDisabled={isLoading}
 						label="Efficiency Score"
 						onScoreSelect={handleScoreSubmit}
 					/>

@@ -18,7 +18,13 @@ Promptomat is an intelligent prompt search, evaluation, and autocomplete system 
 
 - [NodeJS](https://nodejs.org/en) (24.x.x);
 - [pnpm](https://pnpm.io/) (11.x.x);
-- [PostgreSQL](https://www.postgresql.org/) (18.4)
+- [PostgreSQL](https://www.postgresql.org/) (18.x) with [pgvector](https://github.com/pgvector/pgvector)
+
+Supported development systems:
+
+- Windows 11 (PowerShell or WSL2)
+- macOS
+- Linux
 
 The pnpm version is pinned in the `packageManager` field, so `corepack enable pnpm` is enough to get the exact version
 the project expects.
@@ -144,8 +150,8 @@ You should use .env.example files as a reference.
 
 5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 
-Note that pnpm uses `--filter <package-name>` to target a single workspace, while `-w` is a shorthand for
-`--workspace-root` and runs the script of the root `package.json`.
+Note that pnpm uses --filter <package-name> to target a single workspace, while -w is a shorthand for
+--workspace-root and runs the script of the root package.json.
 
 ### 6.2 Worktrees
 
