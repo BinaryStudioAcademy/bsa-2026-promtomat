@@ -14,9 +14,9 @@ import {
 	convertBedrockErrorToTextGenerationError,
 } from "./libs/helpers/helpers.js";
 import {
+	type CommandOptions,
 	type CommandOutput,
-	StructuredGenerationOptions,
-	TextGenerationOptions,
+	type StructuredOutputSchema,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -36,11 +36,12 @@ class Bedrock {
 		this.modelId = modelId;
 	}
 
-	private createBaseConverseCommandInput({
+	private createConverseCommandInput({
 		config,
 		message,
+		schema,
 		systemPrompt,
-	}: TextGenerationOptions): ConverseCommandInput {
+	}: CommandOptions): ConverseCommandInput {
 		const input: ConverseCommandInput = {
 			inferenceConfig: {
 				maxTokens: config?.maxTokens,
@@ -61,42 +62,35 @@ class Bedrock {
 			input.system = [{ text: systemPrompt }];
 		}
 
+		if (schema !== undefined) {
+			input.outputConfig = this.createOutputConfig(schema);
+		}
+
 		return input;
 	}
 
-	private createStructuredConverseCommandInput(
-		options: StructuredGenerationOptions,
-	): ConverseCommandInput {
-		const { schema } = options;
-		const input: ConverseCommandInput = {
-			...this.createBaseConverseCommandInput(options),
-			outputConfig: {
-				textFormat: {
-					structure: {
-						jsonSchema: {
-							description: schema.description,
-							name: schema.name,
-							schema: schema.value,
-						},
+	private createOutputConfig(
+		schema: StructuredOutputSchema,
+	): ConverseCommandInput["outputConfig"] {
+		return {
+			textFormat: {
+				structure: {
+					jsonSchema: {
+						description: schema.description,
+						name: schema.name,
+						schema: schema.value,
 					},
-					type: TEXT_FORMAT_TYPE,
 				},
+				type: TEXT_FORMAT_TYPE,
 			},
 		};
-
-		return input;
 	}
 
-	public async sendCommand(
-		options: StructuredGenerationOptions | TextGenerationOptions,
-	): Promise<CommandOutput> {
+	public async sendCommand(options: CommandOptions): Promise<CommandOutput> {
 		try {
-			const command =
-				"schema" in options
-					? this.createStructuredConverseCommandInput(options)
-					: this.createBaseConverseCommandInput(options);
-
-			const result = await this.client.send(new ConverseCommand(command));
+			const result = await this.client.send(
+				new ConverseCommand(this.createConverseCommandInput(options)),
+			);
 			const text =
 				result.output?.message?.content?.at(FIRST_CONTENT_INDEX)?.text;
 			return {

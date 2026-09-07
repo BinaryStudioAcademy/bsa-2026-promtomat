@@ -1,11 +1,16 @@
 import {
 	type BedrockInterface,
-	type StructuredGenerationOptions,
+	CommandOptions,
 	TextGenerationError,
-	type TextGenerationOptions,
 } from "~/libs/modules/bedrock/bedrock.js";
 
-import { type GeneratorInterface } from "./libs/types/types.js";
+import { getOutputSchema } from "./libs/helpers/helpers.js";
+import {
+	type GeneratorInterface,
+	type SchemaResultMap,
+	type StructuredGenerationOptions,
+	type TextGenerationOptions,
+} from "./libs/types/types.js";
 
 type Constructor = {
 	bedrockService: BedrockInterface;
@@ -18,6 +23,25 @@ class Generator implements GeneratorInterface {
 		this.bedrockService = bedrockService;
 	}
 
+	private createCommandOptions<K extends keyof SchemaResultMap>(
+		options: StructuredGenerationOptions<K>,
+	): CommandOptions {
+		const commandOptions = {
+			message: options.message,
+			schema: getOutputSchema(options.schemaKey),
+		} as CommandOptions;
+
+		if (options.config !== undefined) {
+			commandOptions.config = options.config;
+		}
+
+		if (options.systemPrompt !== undefined) {
+			commandOptions.systemPrompt = options.systemPrompt;
+		}
+
+		return commandOptions;
+	}
+
 	private tryGetContent(text: string | undefined): string {
 		if (text === undefined) {
 			throw TextGenerationError.outputUnusable();
@@ -26,18 +50,21 @@ class Generator implements GeneratorInterface {
 		return text;
 	}
 
-	public async generate<T extends object>(
-		options: StructuredGenerationOptions,
-	): Promise<T> {
-		const result = await this.bedrockService.sendCommand(options);
+	public async generate<K extends keyof SchemaResultMap>(
+		options: StructuredGenerationOptions<K>,
+	): Promise<SchemaResultMap[K]> {
+		const result = await this.bedrockService.sendCommand(
+			this.createCommandOptions(options),
+		);
 
 		if (result.isTextTruncated) {
 			throw TextGenerationError.outputUnusable();
 		}
 
 		const text = this.tryGetContent(result.text);
+
 		try {
-			return JSON.parse(text) as T;
+			return JSON.parse(text) as SchemaResultMap[K];
 		} catch (error) {
 			throw TextGenerationError.outputUnusable(error);
 		}

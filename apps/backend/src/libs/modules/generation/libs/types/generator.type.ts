@@ -1,10 +1,11 @@
-import {
-	StructuredGenerationOptions,
-	TextGenerationOptions,
-} from "~/libs/modules/bedrock/bedrock.js";
+import { type SchemaResultMap } from "./schema-result-map.type.js";
+import { type StructuredGenerationOptions } from "./structured-generation-options.type.js";
+import { type TextGenerationOptions } from "./text-generation-options.type.js";
 
 type GeneratorInterface = {
-	generate<T extends object>(options: StructuredGenerationOptions): Promise<T>;
+	generate<K extends keyof SchemaResultMap>(
+		options: StructuredGenerationOptions<K>,
+	): Promise<SchemaResultMap[K]>;
 	generateText(options: TextGenerationOptions): Promise<string>;
 };
 

@@ -11,6 +11,6 @@ export { bedrock };
 export { TextGenerationError } from "./libs/exceptions/text-generation-error.exception.js";
 export {
 	type BedrockInterface,
-	type StructuredGenerationOptions,
-	type TextGenerationOptions,
+	type CommandOptions,
+	type StructuredOutputSchema,
 } from "./libs/types/types.js";
