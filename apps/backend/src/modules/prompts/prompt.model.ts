@@ -20,6 +20,8 @@ class PromptModel extends AbstractModel {
 
 	public userId!: number;
 
+	public workspace?: WorkspaceModel;
+
 	public workspaceId!: number;
 
 	public static get relationMappings(): RelationMappings {
