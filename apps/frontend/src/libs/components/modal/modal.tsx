@@ -2,9 +2,11 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
+import { Icon } from "~/libs/components/icon/icon.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { KeyboardKey } from "~/libs/enums/enums.js";
+import { type IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { type ValueOf } from "~/libs/types/types.js";
 
 import {
 	FIRST_INDEX,
@@ -21,6 +23,7 @@ type Properties = {
 	onClose: () => void;
 	role?: "alertdialog" | "dialog";
 	title: string;
+	titleIconName?: undefined | ValueOf<typeof IconName>;
 };
 
 const Modal = ({
@@ -30,6 +33,7 @@ const Modal = ({
 	onClose,
 	role = "dialog",
 	title,
+	titleIconName,
 }: Properties) => {
 	const modalId = useId();
 	const titleId = `${modalId}-title`;
@@ -165,7 +169,13 @@ const Modal = ({
 				ref={dialogElementReference}
 				role={role}
 			>
-				<div>
+				<div className={styles["modal-header"]}>
+					{titleIconName !== undefined && (
+						<Icon
+							className={styles["modal-title-icon"]}
+							iconName={titleIconName}
+						/>
+					)}
 					<h2 className={styles["modal-title"]} id={titleId}>
 						{title}
 					</h2>

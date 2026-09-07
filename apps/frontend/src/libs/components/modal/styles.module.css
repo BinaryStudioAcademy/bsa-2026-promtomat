@@ -58,6 +58,16 @@
 	border-radius: var(--radius-lg);
 }
 
+.modal-header {
+	display: flex;
+	gap: var(--space-8);
+	align-items: center;
+}
+
+.modal-title-icon {
+	color: var(--text-strong);
+}
+
 .modal-title {
 	margin: 0;
 	font-size: var(--font-size-body-xl);
