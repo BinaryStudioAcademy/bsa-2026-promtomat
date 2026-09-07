@@ -3,7 +3,6 @@ import { z } from "zod";
 import { PromptScope, PromptValidationRule } from "../enums/enums.js";
 
 const promptGetQuery = z.object({
-	keyword: z.string().trim().optional(),
 	limit: z.coerce.number().int().positive().optional(),
 	page: z.coerce.number().int().positive().optional(),
 	scope: z.enum([PromptScope.MINE, PromptScope.GLOBAL]),

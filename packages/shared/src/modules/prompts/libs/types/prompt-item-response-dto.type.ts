@@ -3,7 +3,6 @@ type PromptItemResponseDto = {
 	createdAt: string;
 	id: string;
 	intent: string;
-	keywords: string[];
 	score: number;
 	workspaceId: string;
 	workspaceName: string;
