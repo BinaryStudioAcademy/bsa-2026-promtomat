@@ -45,7 +45,7 @@ class WorkspaceRepository {
 		userId: number,
 		workspaceName?: string,
 	): Promise<WorkspaceEntity[]> {
-		const query = this.workspaceModel.query().where({ userId });
+		const query = this.workspaceModel.query().where({ userId }).orderBy("id");
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);
