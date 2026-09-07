@@ -4,7 +4,6 @@ export {
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
-export { normalizeWorkspaceTags } from "./libs/helpers/helpers.js";
 export {
 	checkIsValidTechStackTag,
 	getTechStackTagSuggestions,

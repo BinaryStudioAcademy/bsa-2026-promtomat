@@ -61,7 +61,6 @@ export {
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	normalizeWorkspaceTags,
 	TECH_STACK_VARIANTS,
 	TechStackTagSchema,
 	workspaceCreationValidationSchema,
