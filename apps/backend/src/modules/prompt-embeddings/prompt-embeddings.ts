@@ -1,6 +1,7 @@
 import { config } from "~/libs/modules/config/config.js";
 import { embedding } from "~/libs/modules/embedding/embedding.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { scheduler } from "~/libs/modules/scheduler/scheduler.js";
 
 import { PromptEmbeddingModel } from "./prompt-embedding.model.js";
 import { PromptEmbeddingRepository } from "./prompt-embedding.repository.js";
@@ -15,6 +16,7 @@ const promptEmbeddingService = new PromptEmbeddingService({
 	logger,
 	modelId: config.ENV.EMBEDDING.MODEL_ID,
 	promptEmbeddingRepository,
+	scheduler,
 });
 
 export { promptEmbeddingService };

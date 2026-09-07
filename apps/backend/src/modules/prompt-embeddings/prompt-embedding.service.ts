@@ -4,12 +4,16 @@ import {
 	EmbeddingFailedError,
 	EmbeddingNotReadyError,
 	type EmbeddingService,
+	EmbeddingStatus,
 } from "~/libs/modules/embedding/embedding.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type Scheduler } from "~/libs/modules/scheduler/scheduler.js";
 
 import {
 	BACKFILL_BATCH_SIZE,
+	BACKFILL_CRON_EXPRESSION,
 	BACKFILL_PAGE_SIZE,
+	BACKFILL_TIMEZONE,
 } from "./libs/constants/constants.js";
 import { PromptEmbeddingErrorMessage } from "./libs/enums/enums.js";
 import { PromptEmbeddingError } from "./libs/exceptions/exceptions.js";
@@ -34,6 +38,7 @@ type Constructor = {
 	logger: Logger;
 	modelId: string;
 	promptEmbeddingRepository: PromptEmbeddingRepository;
+	scheduler: Scheduler;
 };
 
 class PromptEmbeddingService {
@@ -47,6 +52,8 @@ class PromptEmbeddingService {
 
 	private promptEmbeddingRepository: PromptEmbeddingRepository;
 
+	private scheduler: Scheduler;
+
 	private schemaVerification: null | Promise<void> = null;
 
 	public constructor({
@@ -55,12 +62,14 @@ class PromptEmbeddingService {
 		logger,
 		modelId,
 		promptEmbeddingRepository,
+		scheduler,
 	}: Constructor) {
 		this.dimensions = dimensions;
 		this.embeddingService = embeddingService;
 		this.logger = logger;
 		this.modelId = modelId;
 		this.promptEmbeddingRepository = promptEmbeddingRepository;
+		this.scheduler = scheduler;
 	}
 
 	// Embeds one batch and stores each row on its own, so a failed row costs only itself.
@@ -177,6 +186,31 @@ class PromptEmbeddingService {
 		);
 	}
 
+	private async runScheduledBackfill(): Promise<void> {
+		if (this.embeddingService.status !== EmbeddingStatus.READY) {
+			this.logger.warn(
+				`Scheduled prompt embeddings backfill skipped — the embedding model is ${this.embeddingService.status}; the next run will close the gap.`,
+			);
+
+			return;
+		}
+
+		try {
+			const { embedded, failed, skipped } = await this.backfill();
+
+			this.logger.info("Scheduled prompt embeddings backfill finished.", {
+				embedded,
+				failed,
+				skipped,
+			});
+		} catch (error) {
+			this.logger.error(
+				"Scheduled prompt embeddings backfill stopped on an error.",
+				getErrorDetails(error),
+			);
+		}
+	}
+
 	private async verifySchemaDimension(): Promise<void> {
 		this.schemaVerification ??= this.verifySchemaDimensionOnce();
 
@@ -267,6 +301,17 @@ class PromptEmbeddingService {
 		for (const entity of entities) {
 			await this.promptEmbeddingRepository.createOrUpdate(entity);
 		}
+	}
+
+	public scheduleBackfill(): void {
+		this.scheduler.schedule(
+			{ expression: BACKFILL_CRON_EXPRESSION, timezone: BACKFILL_TIMEZONE },
+			() => this.runScheduledBackfill(),
+		);
+
+		this.logger.info(
+			`Prompt embeddings backfill scheduled: "${BACKFILL_CRON_EXPRESSION}" ${BACKFILL_TIMEZONE}.`,
+		);
 	}
 }
 
