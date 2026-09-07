@@ -21,14 +21,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 					{
 						children: [
 							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<NotFoundPage />
-									</PrivateRoute>
-								),
-								index: true,
-							},
-							{
 								element: <Auth />,
 								path: AppRoute.SIGN_IN,
 							},
