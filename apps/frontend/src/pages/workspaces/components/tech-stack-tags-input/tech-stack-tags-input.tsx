@@ -15,7 +15,7 @@ import {
 } from "react-hook-form";
 
 import { Icon } from "~/libs/components/icon/icon.js";
-import { ControlSize, IconName } from "~/libs/enums/enums.js";
+import { ControlSize, IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -41,7 +41,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 	isDisabled = false,
 	label,
 	name,
-	placeholder = "Type to search...",
+	placeholder = "Enter tags",
 	size = ControlSize.MD,
 }: Properties<T>): React.JSX.Element => {
 	const {
@@ -124,19 +124,19 @@ const TechStackTagsInput = <T extends FieldValues>({
 
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent<HTMLInputElement>) => {
-			if (hasSuggestions && event.key === "ArrowDown") {
+			if (hasSuggestions && event.key === KeyboardKey.ARROW_DOWN) {
 				event.preventDefault();
 				selectNext();
 				return;
 			}
 
-			if (hasSuggestions && event.key === "ArrowUp") {
+			if (hasSuggestions && event.key === KeyboardKey.ARROW_UP) {
 				event.preventDefault();
 				selectPrevious();
 				return;
 			}
 
-			if (event.key === "Enter") {
+			if (event.key === KeyboardKey.ENTER) {
 				event.preventDefault();
 
 				const tagToAdd = getActiveSuggestion();
@@ -148,7 +148,7 @@ const TechStackTagsInput = <T extends FieldValues>({
 				return;
 			}
 
-			if (inputValue === "" && event.key === "Backspace") {
+			if (inputValue === "" && event.key === KeyboardKey.BACKSPACE) {
 				removeLastTag();
 			}
 		},
