@@ -34,6 +34,7 @@
 		"fastify-plugin": "6.0.0",
 		"jose": "6.2.10",
 		"knex": "3.3.0",
+		"node-cron": "4.6.0",
 		"objection": "3.1.5",
 		"pg": "8.22.0",
 		"pino": "10.3.1",
