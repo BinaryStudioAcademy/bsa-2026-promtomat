@@ -8,9 +8,7 @@ const normalizeTechStackTag = (tag: string): string => {
 };
 
 const normalizeTechStackTags = (tags: string[]): string[] => {
-	const normalizedTags = tags.map((tag) => normalizeTechStackTag(tag));
-
-	return normalizedTags;
+	return tags.map((tag) => normalizeTechStackTag(tag));
 };
 
 const normalizeTagName = (tag: string): string => {
