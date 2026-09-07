@@ -1,1 +1,1 @@
-export { AiCodingTool, UsersApiPath } from "@promptomat/shared";
+export { UsersApiPath } from "@promptomat/shared";

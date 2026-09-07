@@ -1,6 +1,6 @@
-import { type Entity, type ValueOf } from "~/libs/types/types.js";
+import { type Entity } from "~/libs/types/types.js";
 
-import { AiCodingTool } from "./libs/enums/enums.js";
+import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
 
 class UserEntity implements Entity {
 	private email: string;
@@ -13,7 +13,7 @@ class UserEntity implements Entity {
 
 	private passwordSalt: string;
 
-	private primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
+	private primaryAiCodingTool: null | PrimaryAiCodingTool;
 
 	private constructor({
 		email,
@@ -28,7 +28,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}) {
 		this.id = id;
 		this.email = email;
@@ -51,7 +51,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -103,7 +103,7 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
-		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	} {
 		return {
 			email: this.email,
@@ -114,12 +114,7 @@ class UserEntity implements Entity {
 		};
 	}
 
-	public toObject(): {
-		email: string;
-		id: number;
-		nickname: string;
-		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
-	} {
+	public toObject(): UserDto {
 		return {
 			email: this.email,
 			id: this.id as number,

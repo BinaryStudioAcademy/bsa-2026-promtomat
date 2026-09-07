@@ -1,11 +1,11 @@
 const AiCodingTool = {
-	CHATGPT: "CHATGPT",
-	CLAUDE_CODE: "CLAUDE_CODE",
-	CURSOR: "CURSOR",
-	GEMINI: "GEMINI",
-	GITHUB_COPILOT: "GITHUB_COPILOT",
-	JETBRAINS_AI: "JETBRAINS_AI",
-	WINDSURF: "WINDSURF",
+	CHATGPT: "chatgpt",
+	CLAUDE_CODE: "claude_code",
+	CURSOR: "cursor",
+	GEMINI: "gemini",
+	GITHUB_COPILOT: "github_copilot",
+	JETBRAINS_AI: "jetbrains_ai",
+	WINDSURF: "windsurf",
 } as const;
 
 export { AiCodingTool };

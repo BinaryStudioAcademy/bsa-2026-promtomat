@@ -32,13 +32,13 @@ import { updateProfileValidationSchema } from "./libs/validation-schemas/validat
  *            type: string
  *            nullable: true
  *            enum:
- *              - CHATGPT
- *              - CLAUDE_CODE
- *              - CURSOR
- *              - GEMINI
- *              - GITHUB_COPILOT
- *              - JETBRAINS_AI
- *              - WINDSURF
+ *              - chatgpt
+ *              - claude_code
+ *              - cursor
+ *              - gemini
+ *              - github_copilot
+ *              - jetbrains_ai
+ *              - windsurf
  */
 class UserController extends BaseController {
 	private userService: UserService;
@@ -113,13 +113,13 @@ class UserController extends BaseController {
 	 *                primaryAiCodingTool:
 	 *                  type: string
 	 *                  enum:
-	 *                    - CHATGPT
-	 *                    - CLAUDE_CODE
-	 *                    - CURSOR
-	 *                    - GEMINI
-	 *                    - GITHUB_COPILOT
-	 *                    - JETBRAINS_AI
-	 *                    - WINDSURF
+	 *                    - chatgpt
+	 *                    - claude_code
+	 *                    - cursor
+	 *                    - gemini
+	 *                    - github_copilot
+	 *                    - jetbrains_ai
+	 *                    - windsurf
 	 *      responses:
 	 *        200:
 	 *          description: Successful operation

@@ -1,11 +1,10 @@
-import { type ValueOf } from "../../../../libs/types/types.js";
-import { AiCodingTool } from "../enums/enums.js";
+import { type PrimaryAiCodingTool } from "./primary-ai-coding-tool.type.js";
 
 type UserDto = {
 	email: string;
 	id: number;
 	nickname: string;
-	primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
+	primaryAiCodingTool: null | PrimaryAiCodingTool;
 };
 
 export { type UserDto };

@@ -1,3 +1,6 @@
+import { UniqueViolationError } from "objection";
+
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
@@ -62,13 +65,21 @@ class UserRepository {
 		id: number,
 		payload: UserUpdateRequestDto,
 	): Promise<UserEntity> {
-		const user = await this.userModel
-			.query()
-			.patchAndFetchById(id, payload)
-			.returning("*")
-			.execute();
+		try {
+			const user = await this.userModel
+				.query()
+				.patchAndFetchById(id, payload)
+				.returning("*")
+				.execute();
 
-		return UserEntity.initialize(user);
+			return UserEntity.initialize(user);
+		} catch (error) {
+			if (error instanceof UniqueViolationError) {
+				throw AuthError.nicknameAlreadyExists();
+			}
+
+			throw error;
+		}
 	}
 }
 
