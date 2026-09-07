@@ -8,6 +8,7 @@ import { type Embedding } from "~/libs/modules/embedding/embedding.js";
 
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import { PromptModel } from "../prompts/prompt.model.js";
+import { PROMPT_RELATION } from "./libs/constants/constants.js";
 import { PromptEmbeddingColumnName } from "./libs/enums/enums.js";
 import {
 	checkIsEmbedding,
@@ -26,7 +27,7 @@ class PromptEmbeddingModel extends AbstractModel {
 
 	public static get relationMappings(): RelationMappings {
 		return {
-			prompt: {
+			[PROMPT_RELATION]: {
 				join: {
 					from: `${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
 					to: `${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,

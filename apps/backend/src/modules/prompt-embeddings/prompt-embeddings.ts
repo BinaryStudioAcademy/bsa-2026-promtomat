@@ -22,5 +22,6 @@ const promptEmbeddingService = new PromptEmbeddingService({
 export { promptEmbeddingService };
 export {
 	type NearestPrompt,
+	type NearestPromptQuery,
 	type PromptEmbeddingSource,
 } from "./libs/types/types.js";

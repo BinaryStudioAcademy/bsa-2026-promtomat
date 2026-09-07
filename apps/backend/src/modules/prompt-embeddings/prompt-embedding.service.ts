@@ -1,6 +1,5 @@
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
-	type Embedding,
 	EmbeddingFailedError,
 	EmbeddingNotReadyError,
 	type EmbeddingService,
@@ -27,6 +26,7 @@ import {
 	type BackfillReport,
 	type IndexedPromptSource,
 	type NearestPrompt,
+	type NearestPromptQuery,
 	type PromptEmbeddingSource,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
@@ -72,7 +72,6 @@ class PromptEmbeddingService {
 		this.scheduler = scheduler;
 	}
 
-	// Embeds one batch and stores each row on its own, so a failed row costs only itself.
 	private async backfillBatch(
 		sources: PromptEmbeddingSource[],
 	): Promise<Pick<BackfillReport, "embedded" | "failed">> {
@@ -275,7 +274,6 @@ class PromptEmbeddingService {
 		return report;
 	}
 
-	// Fire-and-forget: never throws into the caller, every failure is logged.
 	public async embedForPrompt(prompt: PromptEmbeddingSource): Promise<void> {
 		try {
 			await this.regenerateForPrompt(prompt);
@@ -284,11 +282,8 @@ class PromptEmbeddingService {
 		}
 	}
 
-	public findNearest(
-		embedding: Embedding,
-		limit: number,
-	): Promise<NearestPrompt[]> {
-		return this.promptEmbeddingRepository.findNearest(embedding, limit);
+	public findNearest(query: NearestPromptQuery): Promise<NearestPrompt[]> {
+		return this.promptEmbeddingRepository.findNearest(query);
 	}
 
 	public async regenerateForPrompt(

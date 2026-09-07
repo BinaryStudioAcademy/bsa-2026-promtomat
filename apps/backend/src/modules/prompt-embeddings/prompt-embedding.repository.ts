@@ -1,13 +1,13 @@
 import { raw } from "objection";
 
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
-import { type Embedding } from "~/libs/modules/embedding/embedding.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 
 import {
 	COLUMN_TYPE_ALIAS,
 	DISTANCE_ALIAS,
 	PG_ATTRIBUTE_TABLE,
+	PROMPT_RELATION,
 } from "./libs/constants/constants.js";
 import {
 	PgAttributeColumnName,
@@ -21,6 +21,7 @@ import {
 	type ColumnTypeRow,
 	type IndexedPromptSource,
 	type NearestPrompt,
+	type NearestPromptQuery,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
@@ -77,20 +78,23 @@ class PromptEmbeddingRepository {
 			.limit(limit);
 	}
 
-	public async findNearest(
-		embedding: Embedding,
-		limit: number,
-	): Promise<NearestPrompt[]> {
+	public async findNearest({
+		embedding,
+		limit,
+		workspaceId,
+	}: NearestPromptQuery): Promise<NearestPrompt[]> {
 		return await this.promptEmbeddingModel
 			.query()
 			.select(
-				PromptEmbeddingColumnName.PROMPT_ID,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
 				raw("?? <=> ?::vector AS ??", [
-					PromptEmbeddingColumnName.EMBEDDING,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
 					serializeEmbedding(embedding),
 					DISTANCE_ALIAS,
 				]),
 			)
+			.joinRelated(PROMPT_RELATION)
+			.where(`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`, workspaceId)
 			.orderBy(DISTANCE_ALIAS)
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
