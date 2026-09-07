@@ -6,6 +6,7 @@ import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -40,7 +41,7 @@ const workspacesApi = baseApi
 
 			getWorkspaces: builder.query<
 				WorkspaceGetAllResponseDto,
-				{ workspaceName?: string }
+				WorkspaceGetAllRequestDto
 			>({
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (queryPayload) => ({

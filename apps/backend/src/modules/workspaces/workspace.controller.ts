@@ -10,6 +10,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
 import {
 	type WorkspaceCreateRequestDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceRouteParametersDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -64,7 +65,7 @@ class WorkspaceController extends BaseController {
 			handler: (options) =>
 				this.findAllByUserId(
 					options as APIHandlerOptions<{
-						query: { workspaceName?: string };
+						query: WorkspaceGetAllRequestDto;
 					}>,
 				),
 			method: HTTPMethod.GET,
@@ -195,6 +196,7 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
+<<<<<<< HEAD
 	 *        200:
 	 *          description: Workspaces returned successfully
 	 *          content:
@@ -220,10 +222,23 @@ class WorkspaceController extends BaseController {
 	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/ValidationError"
+=======
+	 *         200:
+	 *           description: Successful operation
+	 *           content:
+	 *             application/json:
+	 *               schema:
+	 *                 type: object
+	 *                 properties:
+	 *                   items:
+	 *                     type: array
+	 *                     items:
+	 *                       $ref: "#/components/schemas/Workspace"
+>>>>>>> origin/71-feat-add-prompt-recording
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
-			query: { workspaceName?: string };
+			query: WorkspaceGetAllRequestDto;
 		}>,
 	): Promise<APIHandlerResponse> {
 		return {
