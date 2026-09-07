@@ -12,7 +12,9 @@ import {
 
 import { TextGenerationError } from "../exceptions/exceptions.js";
 
-const toTextGenerationError = (error: unknown): TextGenerationError => {
+const convertBedrockErrortoTextGenerationError = (
+	error: unknown,
+): TextGenerationError => {
 	if (
 		error instanceof InternalServerException ||
 		error instanceof ModelNotReadyException ||
@@ -38,4 +40,4 @@ const toTextGenerationError = (error: unknown): TextGenerationError => {
 	return TextGenerationError.unclassified(error);
 };
 
-export { toTextGenerationError };
+export { convertBedrockErrortoTextGenerationError };
