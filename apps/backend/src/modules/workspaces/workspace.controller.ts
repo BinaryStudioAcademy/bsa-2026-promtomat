@@ -1,6 +1,6 @@
 import { APIPath } from "~/libs/enums/enums.js";
 import {
-	APIHandlerOptions,
+	type APIHandlerOptions,
 	type APIHandlerResponse,
 	BaseController,
 } from "~/libs/modules/controller/controller.js";
@@ -8,8 +8,14 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
-import { type WorkspaceCreateRequestDto } from "./libs/types/types.js";
-import { workspaceCreationValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import {
+	type WorkspaceCreateRequestDto,
+	type WorkspaceGetAllRequestDto,
+} from "./libs/types/types.js";
+import {
+	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
 import { type WorkspaceService } from "./workspace.service.js";
 
 /**
@@ -43,17 +49,25 @@ class WorkspaceController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
-				this.findAllUserWorkspaces(
+				this.findAllByUserId(
 					options as APIHandlerOptions<{
-						query: { search?: string };
+						query: WorkspaceGetAllRequestDto;
 					}>,
 				),
 			method: HTTPMethod.GET,
 			path: WorkspacesApiPath.ROOT,
+			validation: {
+				query: workspaceGetByQueryValidationSchema,
+			},
 		});
 
 		this.addRoute({
-			handler: (options) => this.create(options),
+			handler: (options) =>
+				this.create(
+					options as APIHandlerOptions<{
+						body: WorkspaceCreateRequestDto;
+					}>,
+				),
 			method: HTTPMethod.POST,
 			path: WorkspacesApiPath.ROOT,
 			validation: {
@@ -91,11 +105,17 @@ class WorkspaceController extends BaseController {
 	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/Workspace"
+	 *        409:
+	 *          description: Workspace name already exists
 	 */
-	private async create(options: APIHandlerOptions) {
+	private async create(
+		options: APIHandlerOptions<{
+			body: WorkspaceCreateRequestDto;
+		}>,
+	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.workspaceService.create({
-				...(options.body as WorkspaceCreateRequestDto),
+				...options.body,
 				userId: options.user?.id as number,
 			}),
 			status: HTTPCode.CREATED,
@@ -109,25 +129,34 @@ class WorkspaceController extends BaseController {
 	 *      description: Returns an array of user's workspaces
 	 *      security:
 	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceName
+	 *          schema:
+	 *            type: string
+	 *          description: Search term to filter workspaces by name
 	 *      responses:
-	 *        200:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: array
-	 *                items:
-	 *                  $ref: "#/components/schemas/Workspace"
+	 *         200:
+	 *           description: Successful operation
+	 *           content:
+	 *             application/json:
+	 *               schema:
+	 *                 type: object
+	 *                 properties:
+	 *                   items:
+	 *                     type: array
+	 *                     items:
+	 *                       $ref: "#/components/schemas/Workspace"
 	 */
-	private async findAllUserWorkspaces(
+	private async findAllByUserId(
 		options: APIHandlerOptions<{
-			query: { search?: string };
+			query: WorkspaceGetAllRequestDto;
 		}>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.workspaceService.findAllUserWorkspaces(
+			payload: await this.workspaceService.findAllByUserId(
 				options.user?.id as number,
-				options.query.search,
+				options.query.workspaceName,
 			),
 			status: HTTPCode.OK,
 		};

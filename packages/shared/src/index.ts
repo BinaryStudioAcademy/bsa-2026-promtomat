@@ -65,8 +65,10 @@ export {
 export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,

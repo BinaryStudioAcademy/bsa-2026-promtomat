@@ -27,7 +27,7 @@ resource "aws_secretsmanager_secret_version" "jwt_secret" {
   })
 
   lifecycle {
-    ignore_changes = [ secret_string ]
+    ignore_changes = [secret_string]
   }
 }
 
@@ -38,8 +38,8 @@ resource "aws_ecs_task_definition" "fargate_backend" {
     {
       name      = "backend"
       image     = "${aws_ecr_repository.ecr[var.ecr_backend].repository_url}:${var.image_tag}"
-      cpu       = 256
-      memory    = 512
+      cpu       = 1024
+      memory    = 2048
       essential = true
       portMappings = [
         {
@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "NODE_ENV", value = var.node_env },
         { name = "PORT", value = tostring(var.backend_port) },
         { name = "HOST", value = var.backend_host },
-        { name = "DB_USERNAME", value = var.db_username},
+        { name = "DB_USERNAME", value = var.db_username },
         { name = "DB_HOST", value = aws_db_instance.pg.address },
         { name = "DB_PORT", value = tostring(aws_db_instance.pg.port) },
         { name = "DB_NAME", value = aws_db_instance.pg.db_name },
@@ -61,28 +61,35 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "JWT_EXPIRES_IN", value = var.jwt_expires_in },
         { name = "JWT_ALG", value = var.jwt_alg },
         { name = "SALT_LENGTH", value = tostring(var.salt_length) },
+        { name = "EMBEDDING_MODEL_ID", value = var.embedding_model_id },
+        { name = "EMBEDDING_S3_BUCKET", value = var.embedding_s3_bucket },
+        { name = "EMBEDDING_S3_PREFIX", value = var.embedding_s3_prefix },
+        { name = "EMBEDDING_LOCAL_PATH", value = var.embedding_local_path },
+        { name = "EMBEDDING_DIMENSIONS", value = tostring(var.embedding_dimensions) },
+        { name = "AWS_REGION", value = var.region },
       ]
 
       secrets = [
-        { name = "DB_PASSWORD", valueFrom = "${local.db_secret_arn}:password::"},
-        { name = "JWT_SECRET", valueFrom = "${aws_secretsmanager_secret.jwt.arn}:secret::"}
+        { name = "DB_PASSWORD", valueFrom = "${local.db_secret_arn}:password::" },
+        { name = "JWT_SECRET", valueFrom = "${aws_secretsmanager_secret.jwt.arn}:secret::" }
       ]
 
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-            "awslogs-group"         = aws_cloudwatch_log_group.backend.name
-            "awslogs-region"        = var.region
-            "awslogs-stream-prefix" = "backend"
+          "awslogs-group"         = aws_cloudwatch_log_group.backend.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "backend"
         }
       }
     }
   ])
-  network_mode = "awsvpc"
-  requires_compatibilities = [ "FARGATE" ]
-  cpu = 256
-  memory = 512
-  execution_role_arn = aws_iam_role.ecs_execution_backend.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 2048
+  execution_role_arn       = aws_iam_role.ecs_execution_backend.arn
+  task_role_arn            = aws_iam_role.backend_s3.arn
 }
 
 resource "aws_ecs_task_definition" "fargate_frontend" {
@@ -104,56 +111,56 @@ resource "aws_ecs_task_definition" "fargate_frontend" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-            "awslogs-group"         = aws_cloudwatch_log_group.frontend.name
-            "awslogs-region"        = var.region
-            "awslogs-stream-prefix" = "frontend"
+          "awslogs-group"         = aws_cloudwatch_log_group.frontend.name
+          "awslogs-region"        = var.region
+          "awslogs-stream-prefix" = "frontend"
         }
       }
     }
   ])
-  network_mode = "awsvpc"
-  requires_compatibilities = [ "FARGATE" ]
-  cpu = 256
-  memory = 512
-  execution_role_arn = aws_iam_role.ecs_execution_frontend.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 256
+  memory                   = 512
+  execution_role_arn       = aws_iam_role.ecs_execution_frontend.arn
 }
 
 resource "aws_ecs_service" "fargate_backend" {
-  name = "promptomat-backend"
-  cluster = aws_ecs_cluster.fargate.id
-  task_definition = aws_ecs_task_definition.fargate_backend.arn
-  launch_type = "FARGATE"
-  desired_count = 1
+  name                              = "promptomat-backend"
+  cluster                           = aws_ecs_cluster.fargate.id
+  task_definition                   = aws_ecs_task_definition.fargate_backend.arn
+  launch_type                       = "FARGATE"
+  desired_count                     = 1
   health_check_grace_period_seconds = 60
 
   network_configuration {
-    subnets = [ aws_subnet.private_subnet.id ]
-    security_groups = [ aws_security_group.ecs_backend.id ]
+    subnets         = [aws_subnet.private_subnet.id]
+    security_groups = [aws_security_group.ecs_backend.id]
   }
 
   load_balancer {
     target_group_arn = aws_alb_target_group.backend.arn
-    container_name = "backend"
-    container_port = 3001
+    container_name   = "backend"
+    container_port   = 3001
   }
 
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
 
-  depends_on = [ aws_alb_listener.frontend ]
+  depends_on = [aws_alb_listener.frontend]
 }
 
 resource "aws_ecs_service" "fargate_frontend" {
-  name = "promptomat-frontend"
-  cluster = aws_ecs_cluster.fargate.id
+  name            = "promptomat-frontend"
+  cluster         = aws_ecs_cluster.fargate.id
   task_definition = aws_ecs_task_definition.fargate_frontend.arn
-  launch_type = "FARGATE"
-  desired_count = 1
+  launch_type     = "FARGATE"
+  desired_count   = 1
 
   network_configuration {
-    subnets = [ aws_subnet.private_subnet.id ]
-    security_groups = [ aws_security_group.ecs_frontend.id ]
+    subnets         = [aws_subnet.private_subnet.id]
+    security_groups = [aws_security_group.ecs_frontend.id]
   }
 
   load_balancer {

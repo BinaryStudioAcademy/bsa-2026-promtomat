@@ -3,7 +3,7 @@ import { type Transaction } from "objection";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 
 import {
-	type WorkspaceCreateRequestDto,
+	type WorkspaceCreatePayload,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
 } from "./libs/types/types.js";
@@ -30,13 +30,12 @@ class WorkspaceService {
 		const isOwner = workspace.toObject().userId === userId;
 
 		if (!isOwner) {
-			throw WorkspaceError.noPermissionToAccess();
+			throw WorkspaceError.notFound();
 		}
 	}
 
 	public async create(
-		payload: Omit<WorkspaceCreateRequestDto, "stackTags" | "visibility"> &
-			Partial<WorkspaceCreateRequestDto> & { userId: number },
+		payload: WorkspaceCreatePayload,
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(
@@ -52,13 +51,13 @@ class WorkspaceService {
 		return workspace.toObject();
 	}
 
-	public async findAllUserWorkspaces(
+	public async findAllByUserId(
 		userId: number,
-		search?: string,
+		workspaceName?: string,
 	): Promise<WorkspaceGetAllResponseDto> {
-		const workspaces = await this.workspaceRepository.findAllUserWorkspaces(
+		const workspaces = await this.workspaceRepository.findAllByUserId(
 			userId,
-			search,
+			workspaceName,
 		);
 
 		return {

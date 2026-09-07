@@ -17,7 +17,7 @@ const SEARCH_DELAY_MS = 300;
 const Workspaces: React.FC = () => {
 	const { control, debouncedSearch } = useSearch(SEARCH_DELAY_MS);
 	const { data, isLoading } = useGetWorkspacesQuery({
-		search: debouncedSearch,
+		workspaceName: debouncedSearch,
 	});
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -52,10 +52,9 @@ const Workspaces: React.FC = () => {
 			<div className={styles["list"]}>
 				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 
-				{data &&
-					data.items.map((workspace) => {
-						return <WorkspaceCard key={workspace.id} workspace={workspace} />;
-					})}
+				{data?.items.map((workspace) => {
+					return <WorkspaceCard key={workspace.id} workspace={workspace} />;
+				})}
 			</div>
 
 			<WorkspaceCreateModal isOpen={isModalOpen} onClose={handleModalClose} />
