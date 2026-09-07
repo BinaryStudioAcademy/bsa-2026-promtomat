@@ -1,0 +1,3 @@
+const LAST_DIMENSION_INDEX = -1;
+
+export { LAST_DIMENSION_INDEX };

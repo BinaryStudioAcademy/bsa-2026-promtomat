@@ -21,3 +21,10 @@ allowBuilds:
   simple-git-hooks: true
   # Prints a funding banner only.
   core-js: false
+  # Builds the ONNX runtime native binary used by @huggingface/transformers.
+  onnxruntime-node: true
+  # Its postinstall only regenerates files the package already ships.
+  protobufjs: false
+  # Builds the native image codec @huggingface/transformers pulls in for image
+  # tasks; loaded at import time, so it has to build even for text-only use.
+  sharp: true

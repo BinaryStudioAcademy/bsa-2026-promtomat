@@ -55,7 +55,7 @@ const Input = <T extends FieldValues>({
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const hasError = Boolean(error);
+	const hasError = Boolean(error) || undefined;
 	const errorMessage = error?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
@@ -63,6 +63,8 @@ const Input = <T extends FieldValues>({
 	const isPasswordField = type === InputType.PASSWORD;
 	const inputType =
 		isPasswordField && isPasswordVisible ? InputType.TEXT : type;
+	const iconName = isPasswordVisible ? IconName.EYE_FILLED : IconName.EYE;
+	const buttonAriaLabel = isPasswordVisible ? "Hide password" : "Show password";
 
 	const handleVisibilityToggle = useCallback((): void => {
 		setIsPasswordVisible((previous) => !previous);
@@ -82,7 +84,7 @@ const Input = <T extends FieldValues>({
 				<input
 					{...field}
 					aria-describedby={describedById}
-					aria-invalid={hasError || undefined}
+					aria-invalid={hasError}
 					aria-required={isRequired || undefined}
 					autoComplete={autoComplete}
 					className={getValidClasses(
@@ -99,17 +101,14 @@ const Input = <T extends FieldValues>({
 				/>
 				{isPasswordField && (
 					<button
-						aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+						aria-label={buttonAriaLabel}
 						aria-pressed={isPasswordVisible}
 						className={styles["toggle"]}
 						disabled={field.disabled}
 						onClick={handleVisibilityToggle}
 						type="button"
 					>
-						<Icon
-							className={styles["toggle-icon"]}
-							iconName={isPasswordVisible ? IconName.EYE_FILLED : IconName.EYE}
-						/>
+						<Icon className={styles["toggle-icon"]} iconName={iconName} />
 					</button>
 				)}
 			</div>
