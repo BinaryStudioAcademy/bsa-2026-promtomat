@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { Button } from "~/libs/components/button/button.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { capitalizeFirstLetter } from "~/libs/helpers/helpers.js";
@@ -6,11 +8,19 @@ import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	onConfig: (workspace: WorkspaceDto) => void;
 	workspace: WorkspaceDto;
 };
 
-const WorkspaceCard: React.FC<Properties> = ({ workspace }: Properties) => {
+const WorkspaceCard: React.FC<Properties> = ({
+	onConfig,
+	workspace,
+}: Properties) => {
 	const visibility = capitalizeFirstLetter(workspace.visibility);
+
+	const handleConfigClick = useCallback((): void => {
+		onConfig(workspace);
+	}, [onConfig, workspace]);
 
 	return (
 		<div className={styles["card"]}>
@@ -43,6 +53,7 @@ const WorkspaceCard: React.FC<Properties> = ({ workspace }: Properties) => {
 				/>
 				<Button
 					label="Config"
+					onClick={handleConfigClick}
 					size={ControlSize.SM}
 					type="button"
 					variant={ButtonVariant.SECONDARY}

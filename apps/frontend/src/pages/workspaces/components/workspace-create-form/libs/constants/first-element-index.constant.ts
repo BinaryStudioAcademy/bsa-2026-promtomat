@@ -1,3 +1,0 @@
-const FIRST_ELEMENT_INDEX = 0;
-
-export { FIRST_ELEMENT_INDEX };

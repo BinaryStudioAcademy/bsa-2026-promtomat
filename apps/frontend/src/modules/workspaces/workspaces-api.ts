@@ -1,11 +1,13 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
-import { WorkspacesApiTag } from "./libs/enums/enums.js";
+import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 
 const workspacesApi = baseApi
@@ -34,9 +36,32 @@ const workspacesApi = baseApi
 					url: APIPath.WORKSPACES,
 				}),
 			}),
+
+			updateWorkspace: builder.mutation<
+				WorkspaceDto,
+				{ id: number; payload: WorkspaceUpdateRequestDto }
+			>({
+				extraOptions: { shouldSuppressToast: true },
+				invalidatesTags: [WorkspacesApiTag.WORKSPACE],
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
+						id: String(id),
+					}),
+				}),
+			}),
 		}),
 	});
 
-const { useCreateWorkspaceMutation, useGetWorkspacesQuery } = workspacesApi;
+const {
+	useCreateWorkspaceMutation,
+	useGetWorkspacesQuery,
+	useUpdateWorkspaceMutation,
+} = workspacesApi;
 
-export { useCreateWorkspaceMutation, useGetWorkspacesQuery };
+export {
+	useCreateWorkspaceMutation,
+	useGetWorkspacesQuery,
+	useUpdateWorkspaceMutation,
+};

@@ -6,9 +6,11 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-varian
 import { Loader } from "~/libs/components/loader/loader.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
+import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
+import { WorkspaceConfigModal } from "./components/workspace-config-modal/workspace-config-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import styles from "./styles.module.css";
 
@@ -20,6 +22,8 @@ const Workspaces: React.FC = () => {
 		workspaceName: debouncedSearch,
 	});
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+	const [selectedWorkspace, setSelectedWorkspace] =
+		useState<null | WorkspaceDto>(null);
 
 	const handleModalOpen = useCallback((): void => {
 		setIsModalOpen(true);
@@ -27,6 +31,14 @@ const Workspaces: React.FC = () => {
 
 	const handleModalClose = useCallback((): void => {
 		setIsModalOpen(false);
+	}, []);
+
+	const handleConfigOpen = useCallback((workspace: WorkspaceDto): void => {
+		setSelectedWorkspace(workspace);
+	}, []);
+
+	const handleConfigClose = useCallback((): void => {
+		setSelectedWorkspace(null);
 	}, []);
 
 	return (
@@ -53,11 +65,23 @@ const Workspaces: React.FC = () => {
 				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 
 				{data?.items.map((workspace) => {
-					return <WorkspaceCard key={workspace.id} workspace={workspace} />;
+					return (
+						<WorkspaceCard
+							key={workspace.id}
+							onConfig={handleConfigOpen}
+							workspace={workspace}
+						/>
+					);
 				})}
 			</div>
 
 			<WorkspaceCreateModal isOpen={isModalOpen} onClose={handleModalClose} />
+			{selectedWorkspace && (
+				<WorkspaceConfigModal
+					onClose={handleConfigClose}
+					workspace={selectedWorkspace}
+				/>
+			)}
 		</div>
 	);
 };
