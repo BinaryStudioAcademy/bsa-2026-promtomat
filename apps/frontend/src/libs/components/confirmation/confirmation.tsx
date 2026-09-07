@@ -1,6 +1,7 @@
 import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
 import { ButtonVariant, type IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { ConfirmationLabel } from "./libs/enums/enums.js";
@@ -14,9 +15,10 @@ type Properties = {
 	isDisabled?: boolean;
 	isOpen: boolean;
 	onCancel: () => void;
-	onConfirm: (() => void) | null;
+	onConfirm?: (() => void) | undefined;
 	title: string;
 	titleIconName?: ValueOf<typeof IconName>;
+	tone?: "danger" | "default";
 };
 
 const Confirmation = ({
@@ -30,35 +32,45 @@ const Confirmation = ({
 	onConfirm,
 	title,
 	titleIconName,
+	tone = "default",
 }: Properties) => {
+	const hasConfirmAction = Boolean(onConfirm);
+	const actionsClassName = getValidClasses(
+		styles["confirmation-actions"],
+		hasConfirmAction && styles["confirmation-actions-split"],
+	);
+
 	return (
 		<Modal
+			footer={
+				<div className={actionsClassName}>
+					<Button
+						isDisabled={isDisabled}
+						label={cancelLabel}
+						onClick={onCancel}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
+					{onConfirm && (
+						<Button
+							isDisabled={isDisabled}
+							label={confirmLabel}
+							onClick={onConfirm}
+							type="button"
+							variant={confirmVariant}
+						/>
+					)}
+				</div>
+			}
 			isDismissible={false}
 			isOpen={isOpen}
 			onClose={onCancel}
 			role="alertdialog"
 			title={title}
 			titleIconName={titleIconName}
+			tone={tone}
 		>
 			{children}
-			<div className={styles["confirmation-actions"]}>
-				<Button
-					isDisabled={isDisabled}
-					label={cancelLabel}
-					onClick={onCancel}
-					type="button"
-					variant={ButtonVariant.SECONDARY}
-				/>
-				{onConfirm !== null && (
-					<Button
-						isDisabled={isDisabled}
-						label={confirmLabel}
-						onClick={onConfirm}
-						type="button"
-						variant={confirmVariant}
-					/>
-				)}
-			</div>
 		</Modal>
 	);
 };

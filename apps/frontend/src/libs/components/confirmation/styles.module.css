@@ -1,6 +1,10 @@
 .confirmation-actions {
 	display: flex;
+	flex: 1;
 	gap: var(--space-8);
 	justify-content: flex-end;
-	margin-top: var(--space-16);
+}
+
+.confirmation-actions-split {
+	justify-content: space-between;
 }

@@ -18,25 +18,35 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
+	footer?: React.ReactNode;
 	isDismissible?: boolean;
 	isOpen: boolean;
 	onClose: () => void;
 	role?: "alertdialog" | "dialog";
 	title: string;
 	titleIconName?: undefined | ValueOf<typeof IconName>;
+	tone?: "danger" | "default";
 };
 
 const Modal = ({
 	children,
+	footer,
 	isDismissible = true,
 	isOpen,
 	onClose,
 	role = "dialog",
 	title,
 	titleIconName,
+	tone = "default",
 }: Properties) => {
 	const modalId = useId();
 	const titleId = `${modalId}-title`;
+	const isSectioned = Boolean(footer);
+	const isDangerTone = tone === "danger";
+	const shapeClassName = isSectioned
+		? styles["modal-sectioned"]
+		: styles["modal-flat"];
+
 	const dialogElementReference = useRef<HTMLDivElement | null>(null);
 	const {
 		blockingElement,
@@ -165,22 +175,41 @@ const Modal = ({
 			<div
 				aria-labelledby={titleId}
 				aria-modal="true"
-				className={styles["modal"]}
+				className={getValidClasses(styles["modal"], shapeClassName)}
 				ref={dialogElementReference}
 				role={role}
 			>
-				<div className={styles["modal-header"]}>
-					{titleIconName !== undefined && (
+				<div
+					className={getValidClasses(
+						styles["modal-header"],
+						isSectioned && styles["modal-header-sectioned"],
+					)}
+				>
+					{titleIconName && (
 						<Icon
-							className={styles["modal-title-icon"]}
+							className={getValidClasses(
+								styles["modal-title-icon"],
+								isDangerTone && styles["modal-title-danger"],
+							)}
 							iconName={titleIconName}
 						/>
 					)}
-					<h2 className={styles["modal-title"]} id={titleId}>
+					<h2
+						className={getValidClasses(
+							styles["modal-title"],
+							isDangerTone && styles["modal-title-danger"],
+						)}
+						id={titleId}
+					>
 						{title}
 					</h2>
 				</div>
-				{children}
+				{isSectioned ? (
+					<div className={styles["modal-body"]}>{children}</div>
+				) : (
+					children
+				)}
+				{isSectioned && <div className={styles["modal-footer"]}>{footer}</div>}
 			</div>
 		</div>,
 		blockingElement,

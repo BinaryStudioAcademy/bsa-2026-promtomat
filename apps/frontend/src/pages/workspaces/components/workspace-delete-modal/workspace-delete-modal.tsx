@@ -18,6 +18,7 @@ import {
 	WorkspaceDeleteMessage,
 	WorkspaceFormMessage,
 } from "../../libs/enums/enums.js";
+import styles from "./styles.module.css";
 
 type Properties = {
 	onClose: () => void;
@@ -52,7 +53,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	}, [deleteWorkspace, onClose, workspace.id]);
 
 	const deleteConfirmHandler = hasLastWorkspaceDeletionError
-		? null
+		? undefined
 		: handleDeleteConfirm;
 
 	return (
@@ -67,18 +68,28 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 			onConfirm={deleteConfirmHandler}
 			title={`Delete "${workspace.name}" permanently`}
 			titleIconName={IconName.ALERT_CIRCLE}
+			tone="danger"
 		>
-			{hasLastWorkspaceDeletionError ? (
-				<p>{errorMessage}</p>
-			) : (
-				<>
-					{hasGeneralError && (
-						<FormAlert message={WorkspaceDeleteMessage.FAILURE} />
-					)}
-					<p>{workspace.promptCount} prompts will be destroyed.</p>
-					<p>This cannot be undone.</p>
-				</>
-			)}
+			<div className={styles["content"]}>
+				{hasLastWorkspaceDeletionError ? (
+					<p className={styles["text"]}>{errorMessage}</p>
+				) : (
+					<>
+						{hasGeneralError && (
+							<FormAlert message={WorkspaceDeleteMessage.FAILURE} />
+						)}
+						<div className={styles["consequence"]}>
+							<p className={styles["text"]}>
+								<strong className={styles["impact"]}>
+									{workspace.promptCount} prompts
+								</strong>{" "}
+								will be destroyed.
+							</p>
+							<p className={styles["text"]}>This cannot be undone.</p>
+						</div>
+					</>
+				)}
+			</div>
 		</Confirmation>
 	);
 };
