@@ -1,6 +1,8 @@
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
+import { type UserUpdateRequestDto } from "./libs/types/types.js";
+
 class UserRepository {
 	private userModel: typeof UserModel;
 
@@ -54,6 +56,19 @@ class UserRepository {
 		const user = await this.userModel.query().findOne({ nickname }).execute();
 
 		return user ? UserEntity.initialize(user) : null;
+	}
+
+	public async update(
+		id: number,
+		payload: UserUpdateRequestDto,
+	): Promise<UserEntity> {
+		const user = await this.userModel
+			.query()
+			.patchAndFetchById(id, payload)
+			.returning("*")
+			.execute();
+
+		return UserEntity.initialize(user);
 	}
 }
 
