@@ -1,13 +1,9 @@
-import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
-import {
-	WorkspaceColumnName,
-	WorkspaceVisibility,
-} from "../workspaces/libs/enums/enums.js";
-import { PromptColumnName, PromptScope } from "./libs/enums/enums.js";
+import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import { PromptColumnName } from "./libs/enums/enums.js";
 import { type PromptGetQueryDto } from "./libs/types/types.js";
 
 const DEFAULT_PAGE = 1;
@@ -59,45 +55,12 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 			)
-			.modify((builder) => {
-				if (scope === PromptScope.MINE) {
-					builder.where(`${DatabaseTableName.PROMPTS}.userId`, userId);
-				} else {
-					builder.where((subQuery) => {
-						subQuery
-							.where(
-								`${DatabaseTableName.WORKSPACES}.visibility`,
-								WorkspaceVisibility.PUBLIC,
-							)
-							.orWhere(`${DatabaseTableName.WORKSPACES}.userId`, userId);
-					});
-				}
-
-				if (workspaceId) {
-					builder.where(
-						`${DatabaseTableName.PROMPTS}.workspaceId`,
-						workspaceId,
-					);
-				}
-
-				if (score) {
-					builder.where(`${DatabaseTableName.PROMPTS}.efficiencyScore`, score);
-				}
-
-				if (search) {
-					const escapedSearch = escapeILikePattern(search);
-					builder.where((subQuery) => {
-						subQuery
-							.whereILike(
-								`${DatabaseTableName.PROMPTS}.taskIntent`,
-								`%${escapedSearch}%`,
-							)
-							.orWhereILike(
-								`${DatabaseTableName.PROMPTS}.promptBody`,
-								`%${escapedSearch}%`,
-							);
-					});
-				}
+			.modify("filterByQuery", {
+				scope,
+				score,
+				search,
+				userId,
+				workspaceId,
 			});
 
 		const [aggregation] = (await baseQuery
