@@ -9,7 +9,7 @@ import {
 import { createPortal } from "react-dom";
 import {
 	type Control,
-	type FieldPath,
+	type FieldPathByValue,
 	type FieldValues,
 	useController,
 } from "react-hook-form";
@@ -31,7 +31,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	isDisabled?: boolean;
 	label: string;
-	name: FieldPath<T>;
+	name: FieldPathByValue<T, string[]>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 };
