@@ -25,7 +25,24 @@ the project expects.
 
 ## 4. Database Schema
 
-TODO: add database schema
+`id`, `created_at` and `updated_at` come from the shared `Abstract` model
+(`apps/backend/src/libs/modules/database/abstract.model.ts`), rather than being specific to `users`. The `migrations`
+table is knex's own bookkeeping table, not application data, so it is excluded below.
+
+The diagram reflects the schema produced by the migrations in `apps/backend/src/db/migrations`.
+
+```mermaid
+erDiagram
+    users {
+        int id PK "auto-increment"
+        varchar email UK "not null"
+        text password_hash "not null"
+        text password_salt "not null"
+        varchar nickname UK "not null, max 25"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+```
 
 ## 5. Architecture
 
