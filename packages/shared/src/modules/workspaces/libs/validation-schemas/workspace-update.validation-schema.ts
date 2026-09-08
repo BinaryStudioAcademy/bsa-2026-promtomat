@@ -6,8 +6,8 @@ import { stackTagsField } from "./stack-tags-field.validation-schema.js";
 
 const workspaceUpdate = z
 	.strictObject({
-		name: workspaceNameField.optional(),
-		stackTags: stackTagsField.optional(),
+		name: workspaceNameField.exactOptional(),
+		stackTags: stackTagsField.exactOptional(),
 	})
 	.refine(
 		(value) => value.name !== undefined || value.stackTags !== undefined,

@@ -18,6 +18,7 @@ import {
 	WorkspaceDeleteMessage,
 	WorkspaceFormMessage,
 } from "../../libs/enums/enums.js";
+import { SINGLE_PROMPT_COUNT } from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -32,6 +33,8 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	const [deleteWorkspace, { error, isLoading }] = useDeleteWorkspaceMutation();
 
 	const errorMessage = getErrorMessage(error);
+	const promptCountLabel =
+		workspace.promptCount === SINGLE_PROMPT_COUNT ? "prompt" : "prompts";
 
 	const hasLastWorkspaceDeletionError =
 		isServerError(error) &&
@@ -82,7 +85,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 						<div className={styles["consequence"]}>
 							<p className={styles["text"]}>
 								<strong className={styles["impact"]}>
-									{workspace.promptCount} prompts
+									{workspace.promptCount} {promptCountLabel}
 								</strong>{" "}
 								will be destroyed.
 							</p>

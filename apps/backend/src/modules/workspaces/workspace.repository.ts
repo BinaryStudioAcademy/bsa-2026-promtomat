@@ -1,8 +1,4 @@
-import {
-	type PartialModelObject,
-	type Transaction,
-	UniqueViolationError,
-} from "objection";
+import { type Transaction, UniqueViolationError } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
@@ -121,20 +117,10 @@ class WorkspaceRepository {
 		id: number,
 		payload: WorkspaceUpdateRequestDto,
 	): Promise<null | WorkspaceEntity> {
-		const patch: PartialModelObject<WorkspaceModel> = {};
-
-		if (payload.name !== undefined) {
-			patch.name = payload.name;
-		}
-
-		if (payload.stackTags !== undefined) {
-			patch.stackTags = payload.stackTags;
-		}
-
 		try {
 			const workspace = await this.workspaceModel
 				.query()
-				.patchAndFetchById(id, patch)
+				.patchAndFetchById(id, payload)
 				.castTo<undefined | WorkspaceModel>();
 
 			if (!workspace) {
