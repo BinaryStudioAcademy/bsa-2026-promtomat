@@ -14,15 +14,12 @@ const workspaceAccessHook = (
 
 		const workspaceId = (request.body as { workspaceId: number }).workspaceId;
 
-		const workspace = await workspaceService.findById(workspaceId);
+		const workspace = await workspaceService.findByIdAndOwner(
+			workspaceId,
+			request.user.id,
+		);
 
 		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
-		const isOwner = workspace.userId === request.user.id;
-
-		if (!isOwner) {
 			throw WorkspaceError.notFound();
 		}
 	};

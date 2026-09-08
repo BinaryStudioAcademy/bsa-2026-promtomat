@@ -46,8 +46,14 @@ class WorkspaceService {
 		};
 	}
 
-	public async findById(id: number): Promise<null | WorkspaceDto> {
-		const workspace = await this.workspaceRepository.findById(id);
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			id,
+			userId,
+		);
 
 		return workspace ? workspace.toObject() : null;
 	}
