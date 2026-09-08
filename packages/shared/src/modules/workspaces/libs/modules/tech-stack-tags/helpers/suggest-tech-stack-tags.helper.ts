@@ -2,7 +2,6 @@ import Fuse from "fuse.js";
 
 import {
 	FIRST_ELEMENT_INDEX,
-	MIN_INPUT_LENGTH,
 	SUGGESTION_LIMIT,
 } from "../constants/constants.js";
 import { TECH_STACK_DICTIONARY } from "../enums/dictionary.enum.js";
@@ -19,32 +18,33 @@ const fuseInstance = new Fuse(Object.values(TECH_STACK_DICTIONARY), {
 
 const getTechStackTagSuggestions = (input: string): string[] => {
 	if (!input || typeof input !== "string" || !input.trim()) {
-		return [];
+		return Object.values(TECH_STACK_DICTIONARY);
 	}
 
 	const normalizedName = normalizeTagName(input);
+	const allTags = Object.values(TECH_STACK_DICTIONARY);
 
-	const exactMatch = Object.values(TECH_STACK_DICTIONARY).find(
+	const exactMatch = allTags.find(
 		(tag) => normalizeTagName(tag) === normalizedName,
 	);
 
-	if (exactMatch) {
-		return [exactMatch];
-	}
-
-	if (normalizedName.length < MIN_INPUT_LENGTH) {
-		const prefixMatches = Object.values(TECH_STACK_DICTIONARY)
-			.filter((tag) => normalizeTagName(tag).startsWith(normalizedName))
-			.slice(FIRST_ELEMENT_INDEX, SUGGESTION_LIMIT);
-
-		return prefixMatches;
-	}
+	const prefixMatches = allTags.filter(
+		(tag) =>
+			tag !== exactMatch && normalizeTagName(tag).startsWith(normalizedName),
+	);
 
 	const fuzzyMatches = fuseInstance
 		.search(input, { limit: SUGGESTION_LIMIT })
-		.map((result) => result.item);
+		.map((result) => result.item)
+		.filter((tag) => tag !== exactMatch && !prefixMatches.includes(tag));
 
-	return fuzzyMatches;
+	const orderedMatches = [
+		...(exactMatch ? [exactMatch] : []),
+		...prefixMatches,
+		...fuzzyMatches,
+	];
+
+	return orderedMatches.slice(FIRST_ELEMENT_INDEX, SUGGESTION_LIMIT);
 };
 
 export { getTechStackTagSuggestions };
