@@ -1,7 +1,5 @@
 import { type Transaction } from "objection";
 
-import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
-
 import {
 	type WorkspaceCreatePayload,
 	type WorkspaceDto,
@@ -15,23 +13,6 @@ class WorkspaceService {
 
 	public constructor(workspaceRepository: WorkspaceRepository) {
 		this.workspaceRepository = workspaceRepository;
-	}
-
-	public async checkUserAccess(
-		workspaceId: number,
-		userId: number,
-	): Promise<void> {
-		const workspace = await this.workspaceRepository.findById(workspaceId);
-
-		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
-		const isOwner = workspace.toObject().userId === userId;
-
-		if (!isOwner) {
-			throw WorkspaceError.notFound();
-		}
 	}
 
 	public async create(
@@ -63,6 +44,18 @@ class WorkspaceService {
 		return {
 			items: workspaces.map((workspace) => workspace.toObject()),
 		};
+	}
+
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			id,
+			userId,
+		);
+
+		return workspace ? workspace.toObject() : null;
 	}
 }
 

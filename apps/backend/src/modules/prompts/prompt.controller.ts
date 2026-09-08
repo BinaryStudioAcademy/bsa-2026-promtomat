@@ -8,6 +8,8 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type UserDto } from "~/modules/users/libs/types/types.js";
 
+import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
@@ -61,10 +63,18 @@ import { type PromptService } from "./prompt.service.js";
 class PromptController extends BaseController {
 	private promptService: PromptService;
 
-	public constructor(logger: Logger, promptService: PromptService) {
+	private workspaceService: WorkspaceService;
+
+	public constructor(
+		logger: Logger,
+		promptService: PromptService,
+		workspaceService: WorkspaceService,
+	) {
 		super(logger, APIPath.PROMPTS);
 
 		this.promptService = promptService;
+
+		this.workspaceService = workspaceService;
 
 		this.addRoute({
 			handler: (options) =>
@@ -103,6 +113,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.POST,
 			path: PromptsApiPath.ROOT,
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: promptCreateValidationSchema,
 			},
@@ -143,17 +154,6 @@ class PromptController extends BaseController {
 	 *                $ref: "#/components/schemas/Prompt"
 	 *        401:
 	 *          description: Unauthorized
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  errorType:
-	 *                    type: string
-	 *                  message:
-	 *                    type: string
-	 *        403:
-	 *          description: You do not have permission to access this workspace
 	 *          content:
 	 *            application/json:
 	 *              schema:

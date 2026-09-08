@@ -1,11 +1,6 @@
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
 
 import { WorkspaceVisibility } from "./libs/enums/enums.js";
-import {
-	type WorkspaceDto,
-	type WorkspaceEntityInitializeNewPayload,
-	type WorkspaceEntityPayload,
-} from "./libs/types/types.js";
 
 class WorkspaceEntity implements Entity {
 	private id: null | number;
@@ -24,7 +19,13 @@ class WorkspaceEntity implements Entity {
 		stackTags,
 		userId,
 		visibility,
-	}: WorkspaceEntityPayload) {
+	}: {
+		id: null | number;
+		name: string;
+		stackTags: string[];
+		userId: number;
+		visibility: ValueOf<typeof WorkspaceVisibility>;
+	}) {
 		this.id = id;
 		this.name = name;
 		this.stackTags = stackTags;
@@ -38,7 +39,13 @@ class WorkspaceEntity implements Entity {
 		stackTags,
 		userId,
 		visibility,
-	}: WorkspaceEntityPayload): WorkspaceEntity {
+	}: {
+		id: null | number;
+		name: string;
+		stackTags: string[];
+		userId: number;
+		visibility: ValueOf<typeof WorkspaceVisibility>;
+	}): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id,
 			name,
@@ -53,7 +60,12 @@ class WorkspaceEntity implements Entity {
 		stackTags = [],
 		userId,
 		visibility = WorkspaceVisibility.PRIVATE,
-	}: WorkspaceEntityInitializeNewPayload): WorkspaceEntity {
+	}: {
+		name: string;
+		stackTags?: string[] | undefined;
+		userId: number;
+		visibility?: undefined | ValueOf<typeof WorkspaceVisibility>;
+	}): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id: null,
 			name,
@@ -63,7 +75,12 @@ class WorkspaceEntity implements Entity {
 		});
 	}
 
-	public toNewObject(): Omit<WorkspaceDto, "id"> {
+	public toNewObject(): {
+		name: string;
+		stackTags: string[];
+		userId: number;
+		visibility: ValueOf<typeof WorkspaceVisibility>;
+	} {
 		return {
 			name: this.name,
 			stackTags: this.stackTags,
@@ -72,7 +89,13 @@ class WorkspaceEntity implements Entity {
 		};
 	}
 
-	public toObject(): WorkspaceDto {
+	public toObject(): {
+		id: number;
+		name: string;
+		stackTags: string[];
+		userId: number;
+		visibility: ValueOf<typeof WorkspaceVisibility>;
+	} {
 		return {
 			id: this.id as number,
 			name: this.name,
