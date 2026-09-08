@@ -8,6 +8,7 @@ export {
 	AuthError,
 	HTTPError,
 	ValidationError,
+	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
 export { configureString } from "./libs/helpers/helpers.js";
 export { type Config } from "./libs/modules/config/config.js";
@@ -49,3 +50,14 @@ export {
 	UserErrorMessage,
 	UsersApiPath,
 } from "./modules/users/users.js";
+export {
+	type WorkspaceCreateRequestDto,
+	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
+	type WorkspaceGetAllResponseDto,
+	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
+	WorkspacesApiPath,
+	WorkspacesErrorMessage,
+	WorkspaceVisibility,
+} from "./modules/workspaces/workspaces.js";
