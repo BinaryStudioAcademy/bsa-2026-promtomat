@@ -1,26 +1,18 @@
 import { type Knex } from "knex";
 
 const TABLE_NAME = "workspaces";
-const NO_DROPPED_TAGS = 0;
 const NO_ROWS = 0;
 const BATCH_SIZE = 500;
 const FIRST_ID = 0;
 const LAST_INDEX = -1;
 
 const ColumnName = {
-	DROPPED_STACK_TAGS: "dropped_stack_tags",
 	ID: "id",
 	STACK_TAGS: "stack_tags",
 	UPDATED_AT: "updated_at",
 } as const;
 
-type NormalizeResult = {
-	droppedTags: string[];
-	normalizedTags: string[];
-};
-
 type WorkspaceRow = {
-	[ColumnName.DROPPED_STACK_TAGS]: null | string[];
 	[ColumnName.ID]: number;
 	[ColumnName.STACK_TAGS]: null | string[];
 	[ColumnName.UPDATED_AT]: string;
@@ -492,26 +484,18 @@ const VARIANT_TO_CANONICAL: Record<string, string> = {
 	"ZUSTAND": "Zustand",
 } as const;
 
-const normalizeWorkspaceTags = (
-	originalTags: string[] = [],
-): NormalizeResult => {
+const normalizeWorkspaceTags = (originalTags: string[] = []): string[] => {
 	const validTags: string[] = [];
-	const droppedTags: string[] = [];
 
 	for (const tag of originalTags) {
 		const normalizedTagName = tag.trim().toLowerCase();
 
 		if (Object.hasOwn(VARIANT_TO_CANONICAL, normalizedTagName)) {
 			validTags.push(VARIANT_TO_CANONICAL[normalizedTagName] as string);
-		} else {
-			droppedTags.push(tag);
 		}
 	}
 
-	return {
-		droppedTags,
-		normalizedTags: [...new Set(validTags)],
-	};
+	return [...new Set(validTags)];
 };
 
 async function down(): Promise<void> {}
@@ -541,8 +525,7 @@ async function processBatch(
 				continue;
 			}
 
-			const { droppedTags, normalizedTags } =
-				normalizeWorkspaceTags(originalTags);
+			const normalizedTags = normalizeWorkspaceTags(originalTags);
 
 			const isChanged =
 				JSON.stringify(originalTags) !== JSON.stringify(normalizedTags);
@@ -554,8 +537,6 @@ async function processBatch(
 			await trx(TABLE_NAME)
 				.where(ColumnName.ID, workspace[ColumnName.ID])
 				.update({
-					[ColumnName.DROPPED_STACK_TAGS]:
-						droppedTags.length > NO_DROPPED_TAGS ? droppedTags : null,
 					[ColumnName.STACK_TAGS]: normalizedTags,
 					[ColumnName.UPDATED_AT]: trx.fn.now(),
 				});
