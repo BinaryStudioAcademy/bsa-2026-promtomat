@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { type FieldPath, useFormState } from "react-hook-form";
+import { type FieldPath } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
@@ -44,18 +44,22 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	onClose,
 	workspace,
 }: Properties) => {
-	const { clearErrors, control, handleSubmit, setError } =
-		useAppForm<WorkspaceEditableFields>({
-			defaultValues: {
-				name: workspace.name,
-				stackTags: [...workspace.stackTags],
-			},
-			mode: "onChange",
-			validationSchema: workspaceUpdateValidationSchema,
-		});
+	const {
+		clearErrors,
+		control,
+		formState: { isDirty, isValid },
+		handleSubmit,
+		setError,
+	} = useAppForm<WorkspaceEditableFields>({
+		defaultValues: {
+			name: workspace.name,
+			stackTags: [...workspace.stackTags],
+		},
+		mode: "onChange",
+		validationSchema: workspaceUpdateValidationSchema,
+	});
 
 	const [updateWorkspace, { error, isLoading }] = useUpdateWorkspaceMutation();
-	const { isDirty, isValid } = useFormState({ control });
 	const { hasFieldErrors } = useServerFormErrors({
 		clearErrors,
 		error,
