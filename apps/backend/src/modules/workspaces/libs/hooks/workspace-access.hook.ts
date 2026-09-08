@@ -13,6 +13,10 @@ const createWorkspaceAccessHook = (
 
 		const workspaceId = Number((request.params as { id: string }).id);
 
+		if (Number.isNaN(workspaceId)) {
+			throw WorkspaceError.notFound();
+		}
+
 		const membership = await membershipService.findByUserIdAndWorkspaceId(
 			request.user.id,
 			workspaceId,

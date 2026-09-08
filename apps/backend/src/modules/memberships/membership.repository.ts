@@ -1,10 +1,12 @@
-import { type Transaction } from "objection";
+import { ForeignKeyViolationError, type Transaction } from "objection";
 
+import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { MembershipEntity } from "~/modules/memberships/membership.entity.js";
 import { type MembershipModel } from "~/modules/memberships/membership.model.js";
 
 class MembershipRepository {
 	private membershipModel: typeof MembershipModel;
+
 	public constructor(membershipModel: typeof MembershipModel) {
 		this.membershipModel = membershipModel;
 	}
@@ -13,12 +15,21 @@ class MembershipRepository {
 		entity: MembershipEntity,
 		trx?: Transaction,
 	): Promise<MembershipEntity> {
-		const membership = await this.membershipModel
-			.query(trx)
-			.insert(entity.toNewObject())
-			.returning("*")
-			.execute();
-		return MembershipEntity.initialize(membership);
+		try {
+			const membership = await this.membershipModel
+				.query(trx)
+				.insert(entity.toNewObject())
+				.returning("*")
+				.execute();
+
+			return MembershipEntity.initialize(membership);
+		} catch (error) {
+			if (error instanceof ForeignKeyViolationError) {
+				throw WorkspaceError.userNotFound();
+			}
+
+			throw error;
+		}
 	}
 
 	public async findByUserIdAndWorkspaceId(
@@ -29,6 +40,7 @@ class MembershipRepository {
 			.query()
 			.findOne({ userId, workspaceId })
 			.execute();
+
 		return membership ? MembershipEntity.initialize(membership) : null;
 	}
 }

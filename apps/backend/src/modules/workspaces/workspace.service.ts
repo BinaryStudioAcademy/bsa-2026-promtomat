@@ -46,6 +46,16 @@ class WorkspaceService {
 			throw WorkspaceError.forbidden();
 		}
 
+		const existingMembership =
+			await this.membershipService.findByUserIdAndWorkspaceId(
+				targetUserId,
+				workspaceId,
+			);
+
+		if (existingMembership !== null) {
+			return existingMembership.toObject();
+		}
+
 		const membership = await this.membershipService.create({
 			role: WorkspaceRole.CONTRIBUTOR,
 			userId: targetUserId,
