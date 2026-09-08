@@ -1,24 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { getTechStackTagSuggestions } from "~/libs/helpers/helpers.js";
-
-import { FIRST_ELEMENT_INDEX } from "../../../workspace-create-form/libs/constants/constants.js";
 import {
 	EMPTY_SELECTION_LENGTH,
+	FIRST_ELEMENT_INDEX,
 	INDEX_STEP,
 	NO_ACTIVE_SUGGESTION,
 } from "../constants/constants.js";
-
-type UseSuggestionsProperties = {
-	inputValue: string;
-	isOpen: boolean;
-	selectedTags: string[];
-};
+import { type UseSuggestionsProperties } from "../types/types.js";
 
 const useSuggestions = ({
+	getSuggestions,
 	inputValue,
 	isOpen,
-	selectedTags,
+	selectedValues,
 }: UseSuggestionsProperties) => {
 	const [activeIndex, setActiveIndex] = useState(NO_ACTIVE_SUGGESTION);
 
@@ -27,10 +21,10 @@ const useSuggestions = ({
 			return [];
 		}
 
-		return getTechStackTagSuggestions(inputValue).filter(
-			(tag) => !selectedTags.includes(tag),
+		return getSuggestions(inputValue).filter(
+			(tag) => !selectedValues.includes(tag),
 		);
-	}, [inputValue, isOpen, selectedTags]);
+	}, [getSuggestions, inputValue, isOpen, selectedValues]);
 
 	useEffect(() => {
 		if (suggestions.length > EMPTY_SELECTION_LENGTH) {
