@@ -4,7 +4,6 @@ import {
 	type PromptDto,
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
-	type PromptItemResponseDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -41,22 +40,16 @@ class PromptService {
 		return prompt.toObject();
 	}
 
-	public async findAll({
-		query,
-		userId,
-	}: {
+	public async findAll(options: {
 		query: PromptGetQueryDto;
 		userId: number;
 	}): Promise<PromptGetAllResponseDto> {
-		const { averageScore, items, totalCount } =
-			await this.promptRepository.findAll({
-				query,
-				userId,
-			});
+		const { averageScore, items, page, pageSize, totalCount } =
+			await this.promptRepository.findAll(options);
 
 		return {
 			averageScore,
-			items: items.map((item): PromptItemResponseDto => ({
+			items: items.map((item) => ({
 				body: item.promptBody,
 				createdAt: item.createdAt,
 				id: item.id,
@@ -65,6 +58,8 @@ class PromptService {
 				workspaceId: item.workspaceId,
 				workspaceName: item.workspace?.name ?? "",
 			})),
+			page,
+			pageSize,
 			totalCount,
 		};
 	}

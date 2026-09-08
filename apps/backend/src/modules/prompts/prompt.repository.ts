@@ -35,8 +35,10 @@ class PromptRepository {
 		query: PromptGetQueryDto;
 		userId: number;
 	}): Promise<{
-		averageScore: number;
+		averageScore: null | number;
 		items: PromptModel[];
+		page: number;
+		pageSize: number;
 		totalCount: number;
 	}> {
 		const {
@@ -76,8 +78,11 @@ class PromptRepository {
 		}[];
 
 		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
-		const rawAvg = Number(aggregation?.averageScore ?? ZERO_VALUE);
-		const averageScore = Math.round(rawAvg * ROUND_FACTOR) / ROUND_FACTOR;
+		const rawAvg = aggregation?.averageScore
+			? Number(aggregation.averageScore)
+			: null;
+		const averageScore =
+			rawAvg === null ? null : Math.round(rawAvg * ROUND_FACTOR) / ROUND_FACTOR;
 
 		const offset = (page - DEFAULT_PAGE) * limit;
 
@@ -93,6 +98,8 @@ class PromptRepository {
 		return {
 			averageScore,
 			items,
+			page,
+			pageSize: limit,
 			totalCount,
 		};
 	}
