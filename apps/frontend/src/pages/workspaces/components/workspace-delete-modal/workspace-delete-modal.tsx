@@ -18,7 +18,10 @@ import {
 	WorkspaceDeleteMessage,
 	WorkspaceFormMessage,
 } from "../../libs/enums/enums.js";
-import { SINGLE_PROMPT_COUNT } from "./libs/constants/constants.js";
+import {
+	EMPTY_PROMPT_COUNT,
+	SINGLE_PROMPT_COUNT,
+} from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -31,6 +34,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	workspace,
 }: Properties) => {
 	const [deleteWorkspace, { error, isLoading }] = useDeleteWorkspaceMutation();
+	const hasNoPrompts = workspace.promptCount === EMPTY_PROMPT_COUNT;
 
 	const errorMessage = getErrorMessage(error);
 	const promptCountLabel =
@@ -84,10 +88,16 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 						)}
 						<div className={styles["consequence"]}>
 							<p className={styles["text"]}>
-								<strong className={styles["impact"]}>
-									{workspace.promptCount} {promptCountLabel}
-								</strong>{" "}
-								will be destroyed.
+								{hasNoPrompts ? (
+									WorkspaceDeleteMessage.NO_PROMPTS
+								) : (
+									<>
+										<strong className={styles["impact"]}>
+											{workspace.promptCount} {promptCountLabel}
+										</strong>{" "}
+										will be destroyed.
+									</>
+								)}
 							</p>
 							<p className={styles["text"]}>This cannot be undone.</p>
 						</div>
