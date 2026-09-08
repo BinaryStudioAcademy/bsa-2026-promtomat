@@ -1,4 +1,8 @@
-import { NotFoundError, UniqueViolationError } from "objection";
+import {
+	NotFoundError,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
 
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
@@ -17,13 +21,15 @@ class UserRepository {
 		this.userModel = userModel;
 	}
 
-	public async create(entity: UserEntity): Promise<UserEntity> {
+	public async create(
+		entity: UserEntity,
+		trx?: Transaction,
+	): Promise<UserEntity> {
 		const user = await this.userModel
-			.query()
+			.query(trx)
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
-
 		return UserEntity.initialize(user);
 	}
 
