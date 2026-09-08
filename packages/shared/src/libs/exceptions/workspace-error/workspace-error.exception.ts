@@ -48,6 +48,14 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
+	public static ownerCannotBeRemoved(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			message: WorkspacesErrorMessage.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			status: HTTPCode.FORBIDDEN,
+		});
+	}
+
 	public static userNotFound(): WorkspaceError {
 		return new WorkspaceError({
 			code: WorkspacesErrorCode.WORKSPACE_USER_NOT_FOUND,

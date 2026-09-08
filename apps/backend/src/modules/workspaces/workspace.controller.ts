@@ -76,6 +76,18 @@ class WorkspaceController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
+				this.removeMember(
+					options as APIHandlerOptions<{
+						params: { id: string; userId: string };
+					}>,
+				),
+			method: HTTPMethod.DELETE,
+			path: WorkspacesApiPath.WORKSPACE_MEMBERSHIP,
+			preHandler: createWorkspaceAccessHook(this.membershipService),
+		});
+
+		this.addRoute({
+			handler: (options) =>
 				this.findAllByUserId(
 					options as APIHandlerOptions<{
 						query: WorkspaceGetAllRequestDto;
@@ -202,6 +214,23 @@ class WorkspaceController extends BaseController {
 				options.query.workspaceName,
 			),
 			status: HTTPCode.OK,
+		};
+	}
+
+	private async removeMember(
+		options: APIHandlerOptions<{
+			params: { id: string; userId: string };
+		}>,
+	): Promise<APIHandlerResponse> {
+		await this.workspaceService.removeMember(
+			options.user?.id as number,
+			Number(options.params.id),
+			Number(options.params.userId),
+		);
+
+		return {
+			payload: null,
+			status: HTTPCode.NO_CONTENT,
 		};
 	}
 }

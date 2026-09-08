@@ -95,6 +95,40 @@ class WorkspaceService {
 			items: workspaces.map((workspace) => workspace.toObject()),
 		};
 	}
+	public async removeMember(
+		requesterId: number,
+		workspaceId: number,
+		targetUserId: number,
+	): Promise<void> {
+		const requesterMembership =
+			await this.membershipService.findByUserIdAndWorkspaceId(
+				requesterId,
+				workspaceId,
+			);
+
+		if (
+			requesterMembership === null ||
+			requesterMembership.toObject().role !== WorkspaceRole.OWNER
+		) {
+			throw WorkspaceError.forbidden();
+		}
+
+		const targetMembership =
+			await this.membershipService.findByUserIdAndWorkspaceId(
+				targetUserId,
+				workspaceId,
+			);
+
+		if (targetMembership === null) {
+			throw WorkspaceError.userNotFound();
+		}
+
+		if (targetMembership.toObject().role === WorkspaceRole.OWNER) {
+			throw WorkspaceError.ownerCannotBeRemoved();
+		}
+
+		await this.membershipService.delete(targetUserId, workspaceId);
+	}
 }
 
 export { WorkspaceService };

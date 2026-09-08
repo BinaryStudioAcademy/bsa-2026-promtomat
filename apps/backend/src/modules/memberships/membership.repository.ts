@@ -32,6 +32,14 @@ class MembershipRepository {
 		}
 	}
 
+	public async delete(userId: number, workspaceId: number): Promise<void> {
+		await this.membershipModel
+			.query()
+			.delete()
+			.where({ userId, workspaceId })
+			.execute();
+	}
+
 	public async findByUserIdAndWorkspaceId(
 		userId: number,
 		workspaceId: number,
