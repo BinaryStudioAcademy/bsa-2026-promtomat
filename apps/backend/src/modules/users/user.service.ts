@@ -9,8 +9,14 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
-	type UserServiceConstructorPayload,
 } from "./libs/types/types.js";
+
+type Constructor = {
+	database: Database;
+	hashing: Hashing;
+	userRepository: UserRepository;
+	workspaceService: WorkspaceService;
+};
 
 class UserService {
 	private database: Database;
@@ -26,17 +32,14 @@ class UserService {
 		hashing,
 		userRepository,
 		workspaceService,
-	}: UserServiceConstructorPayload) {
+	}: Constructor) {
 		this.database = database;
 		this.hashing = hashing;
 		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
 	}
 
-	public async create(
-		payload: SignUpRequestDto,
-		trx?: Transaction,
-	): Promise<UserDto> {
+	public async create(payload: SignUpRequestDto): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmailOrNickname(
 			payload.email,
 			payload.nickname,
