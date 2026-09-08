@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from "react";
-import { type FieldPath } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
@@ -26,7 +25,8 @@ import { FormAlert } from "~/pages/auth/components/form-alert/form-alert.js";
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
 import { WorkspaceStackTagsSelect } from "../workspace-stack-tags-select/workspace-stack-tags-select.js";
-import { checkAreStackTagsEqual } from "./libs/helpers/check-are-stack-tags-equal.helper.js";
+import { WORKSPACE_CONFIG_FIELDS } from "./libs/constants/constants.js";
+import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
 
 type Properties = {
 	onClose: () => void;
@@ -34,11 +34,6 @@ type Properties = {
 };
 
 type WorkspaceEditableFields = Pick<WorkspaceDto, "name" | "stackTags">;
-
-const WORKSPACE_CONFIG_FIELDS: FieldPath<WorkspaceEditableFields>[] = [
-	"name",
-	"stackTags",
-];
 
 const WorkspaceConfigForm: React.FC<Properties> = ({
 	onClose,
@@ -76,7 +71,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		hasConflictError || hasFieldErrors || isToastedError ? null : errorMessage;
 
 	useEffect(() => {
-		if (hasConflictError && errorMessage !== null) {
+		if (hasConflictError && errorMessage) {
 			setError("name", { message: errorMessage, type: "server" });
 		}
 	}, [errorMessage, hasConflictError, setError]);
@@ -85,7 +80,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (values: WorkspaceEditableFields) => {
 				const hasNameChanged = values.name !== workspace.name;
-				const hasStackTagsChanged = !checkAreStackTagsEqual(
+				const hasStackTagsChanged = !checkIsStackTagsEqual(
 					values.stackTags,
 					workspace.stackTags,
 				);
@@ -118,9 +113,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		<>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
-					{generalErrorMessage !== null && (
-						<FormAlert message={generalErrorMessage} />
-					)}
+					{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
 					<Input
 						control={control}
 						isDisabled={isLoading}

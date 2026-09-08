@@ -41,8 +41,9 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	const isToastedError =
 		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
 
+	const hasError = Boolean(error);
 	const hasGeneralError =
-		error !== undefined && !hasLastWorkspaceDeletionError && !isToastedError;
+		hasError && !hasLastWorkspaceDeletionError && !isToastedError;
 
 	const handleDeleteConfirm = useCallback((): void => {
 		void deleteWorkspace(workspace.id).then(({ data }) => {

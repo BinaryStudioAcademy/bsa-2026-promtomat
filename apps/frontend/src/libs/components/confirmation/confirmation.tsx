@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
 import { ButtonVariant, type IconName } from "~/libs/enums/enums.js";
@@ -35,6 +37,9 @@ const Confirmation = ({
 	tone = "default",
 }: Properties) => {
 	const hasConfirmAction = Boolean(onConfirm);
+	const handleConfirm = useCallback((): void => {
+		onConfirm?.();
+	}, [onConfirm]);
 	const actionsClassName = getValidClasses(
 		styles["confirmation-actions"],
 		hasConfirmAction && styles["confirmation-actions-split"],
@@ -51,11 +56,11 @@ const Confirmation = ({
 						type="button"
 						variant={ButtonVariant.SECONDARY}
 					/>
-					{onConfirm && (
+					{hasConfirmAction && (
 						<Button
 							isDisabled={isDisabled}
 							label={confirmLabel}
-							onClick={onConfirm}
+							onClick={handleConfirm}
 							type="button"
 							variant={confirmVariant}
 						/>

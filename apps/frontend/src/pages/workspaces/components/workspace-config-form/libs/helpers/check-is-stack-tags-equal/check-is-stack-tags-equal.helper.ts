@@ -1,4 +1,4 @@
-const checkAreStackTagsEqual = (
+const checkIsStackTagsEqual = (
 	stackTags: string[],
 	otherStackTags: string[],
 ): boolean => {
@@ -9,4 +9,4 @@ const checkAreStackTagsEqual = (
 	return stackTags.every((stackTag) => otherStackTags.includes(stackTag));
 };
 
-export { checkAreStackTagsEqual };
+export { checkIsStackTagsEqual };

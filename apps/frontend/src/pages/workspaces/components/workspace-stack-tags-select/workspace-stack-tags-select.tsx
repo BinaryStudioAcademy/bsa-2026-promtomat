@@ -6,7 +6,10 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { WORKSPACE_STACK_TAG_OPTIONS } from "./libs/constants/constants.js";
+import {
+	EMPTY_WORKSPACE_STACK_TAG_OPTION_VALUE,
+	WORKSPACE_STACK_TAG_OPTIONS,
+} from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
@@ -14,8 +17,6 @@ type Properties<T extends FieldValues> = {
 	isDisabled?: boolean;
 	name: FieldPathByValue<T, string[]>;
 };
-
-const EMPTY_OPTION_VALUE = "";
 
 const WorkspaceStackTagsSelect = <T extends FieldValues>({
 	control,
@@ -35,7 +36,9 @@ const WorkspaceStackTagsSelect = <T extends FieldValues>({
 		(event: React.ChangeEvent<HTMLSelectElement>): void => {
 			const { value } = event.target;
 
-			field.onChange(value === EMPTY_OPTION_VALUE ? [] : [value]);
+			field.onChange(
+				value === EMPTY_WORKSPACE_STACK_TAG_OPTION_VALUE ? [] : [value],
+			);
 		},
 		[field],
 	);
@@ -52,9 +55,9 @@ const WorkspaceStackTagsSelect = <T extends FieldValues>({
 				name={field.name}
 				onBlur={field.onBlur}
 				onChange={handleChange}
-				value={selectedStackTag ?? EMPTY_OPTION_VALUE}
+				value={selectedStackTag ?? EMPTY_WORKSPACE_STACK_TAG_OPTION_VALUE}
 			>
-				<option value={EMPTY_OPTION_VALUE}>No tags</option>
+				<option value={EMPTY_WORKSPACE_STACK_TAG_OPTION_VALUE}>No tags</option>
 				{WORKSPACE_STACK_TAG_OPTIONS.map((option) => (
 					<option key={option.value} value={option.value}>
 						{option.label}
