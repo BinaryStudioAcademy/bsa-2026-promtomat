@@ -1,7 +1,7 @@
 import { promptCreateValidationSchema } from "./validation-schemas.js";
 
-const promptUpdate = promptCreateValidationSchema.pick({
+const promptUpdateIntent = promptCreateValidationSchema.pick({
 	taskIntent: true,
 });
 
-export { promptUpdate };
+export { promptUpdateIntent };

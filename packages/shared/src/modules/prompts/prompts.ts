@@ -12,7 +12,7 @@ export {
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
-	type PromptUpdateRequestDto,
+	type PromptUpdateIntentRequestDto,
 } from "./libs/types/types.js";
 export {
 	type PromptGetRecentResponseDto,
@@ -27,7 +27,7 @@ export {
 	promptCreateValidationSchema,
 	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
-	promptUpdateValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
