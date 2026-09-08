@@ -53,8 +53,7 @@ const Select = <T extends FieldValues>({
 
 	const hasError = Boolean(error);
 	const errorMessage = error?.message;
-	const describedById =
-		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
+	const describedById = descriptionId ?? errorMessage ?? errorMessageId;
 
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLSelectElement>): void => {
