@@ -1,11 +1,9 @@
-import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
 	type PromptCreatePayload,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
-	type PromptReadByWorkspacePayload,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -35,12 +33,8 @@ class PromptService {
 	}
 
 	public async findProgress(
-		payload: PromptReadByWorkspacePayload,
+		workspaceId: number,
 	): Promise<PromptProgressResponseDto> {
-		const { userId, workspaceId } = payload;
-
-		await this.workspaceService.checkUserAccess(workspaceId, userId);
-
 		const count =
 			await this.promptRepository.findCountByWorkspaceId(workspaceId);
 
@@ -51,12 +45,8 @@ class PromptService {
 	}
 
 	public async findRecent(
-		payload: PromptReadByWorkspacePayload,
+		workspaceId: number,
 	): Promise<PromptGetRecentResponseDto> {
-		const { userId, workspaceId } = payload;
-
-		await this.workspaceService.checkUserAccess(workspaceId, userId);
-
 		const items = await this.promptRepository.findRecentByWorkspaceId(
 			workspaceId,
 			PromptProgress.RECENT_LIMIT,

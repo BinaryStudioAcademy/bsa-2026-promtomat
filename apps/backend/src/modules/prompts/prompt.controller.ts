@@ -9,6 +9,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type UserDto } from "~/modules/users/libs/types/types.js";
 
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { workspaceQueryAccessHook } from "../workspaces/libs/hooks/workspace-query-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
@@ -81,10 +82,11 @@ class PromptController extends BaseController {
 				this.findProgress(
 					options as APIHandlerOptions<{
 						query: PromptWorkspaceQueryDto;
-					}> & { user: UserDto },
+					}>,
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.PROGRESS,
+			preHandler: workspaceQueryAccessHook(this.workspaceService),
 			validation: {
 				query: promptWorkspaceQueryValidationSchema,
 			},
@@ -95,10 +97,11 @@ class PromptController extends BaseController {
 				this.findRecent(
 					options as APIHandlerOptions<{
 						query: PromptWorkspaceQueryDto;
-					}> & { user: UserDto },
+					}>,
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.RECENT,
+			preHandler: workspaceQueryAccessHook(this.workspaceService),
 			validation: {
 				query: promptWorkspaceQueryValidationSchema,
 			},
@@ -280,15 +283,12 @@ class PromptController extends BaseController {
 	 *                    type: string
 	 */
 	private async findProgress(
-		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }> & {
-			user: UserDto;
-		},
+		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.promptService.findProgress({
-				userId: options.user.id,
-				workspaceId: options.query.workspaceId,
-			}),
+			payload: await this.promptService.findProgress(
+				options.query.workspaceId,
+			),
 			status: HTTPCode.OK,
 		};
 	}
@@ -366,15 +366,12 @@ class PromptController extends BaseController {
 	 *                    type: string
 	 */
 	private async findRecent(
-		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }> & {
-			user: UserDto;
-		},
+		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.promptService.findRecent({
-				userId: options.user.id,
-				workspaceId: options.query.workspaceId,
-			}),
+			payload: await this.promptService.findRecent(
+				options.query.workspaceId,
+			),
 			status: HTTPCode.OK,
 		};
 	}
