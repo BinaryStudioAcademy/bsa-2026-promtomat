@@ -2,4 +2,4 @@ export { promptCreate as promptCreateValidationSchema } from "./create-prompt.va
 export { promptGetQuery as promptGetQueryValidationSchema } from "./prompt-get-query.validation-schema.js";
 export { promptWorkspaceQuery as promptWorkspaceQueryValidationSchema } from "./prompt-workspace-query.validation-schema.js";
 export { searchPrompts as searchPromptsValidationSchema } from "./search-prompts.validation-schema.js";
-export { promptUpdate as promptUpdateValidationSchema } from "./update-prompt.validation-schema.js";
+export { promptUpdateIntent as promptUpdateIntentValidationSchema } from "./update-prompt-intent.validation-schema.js";

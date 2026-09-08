@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-import { promptUpdateValidationSchema } from "../validation-schemas/validation-schemas.js";
+import { promptUpdateIntentValidationSchema } from "../validation-schemas/validation-schemas.js";
 
-type PromptUpdateRequestDto = z.infer<typeof promptUpdateValidationSchema>;
+type PromptUpdateIntentRequestDto = z.infer<
+	typeof promptUpdateIntentValidationSchema
+>;
 
-export { type PromptUpdateRequestDto };
+export { type PromptUpdateIntentRequestDto };

@@ -9,5 +9,5 @@ export { type PromptRecentDto } from "./prompt-recent-dto.type.js";
 export { type PromptSearchRequestDto } from "./prompt-search-request-dto.type.js";
 export { type PromptSearchResponseDto } from "./prompt-search-response-dto.type.js";
 export { type PromptSearchResult } from "./prompt-search-result.type.js";
-export { type PromptUpdateRequestDto } from "./prompt-update-request-dto.type.js";
+export { type PromptUpdateIntentRequestDto } from "./prompt-update-request-dto.type.js";
 export { type PromptWorkspaceQueryDto } from "./prompt-workspace-query-dto.type.js";
