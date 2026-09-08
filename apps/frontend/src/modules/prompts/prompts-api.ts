@@ -5,12 +5,35 @@ import { PromptsApiPath, PromptsApiTag } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetRecentResponseDto,
+	type PromptProgressResponseDto,
+	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
 const promptApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [PromptsApiTag.PROMPT] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getPromptProgress: builder.query<
+				PromptProgressResponseDto,
+				PromptWorkspaceQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ workspaceId }) => ({
+					params: { workspaceId },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.PROGRESS}`,
+				}),
+			}),
+			getPromptRecent: builder.query<
+				PromptGetRecentResponseDto,
+				PromptWorkspaceQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ workspaceId }) => ({
+					params: { workspaceId },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.RECENT}`,
+				}),
+			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
 				invalidatesTags: [PromptsApiTag.PROMPT],
 				query: (payload) => ({
@@ -22,6 +45,14 @@ const promptApi = baseApi
 		}),
 	});
 
-const { useRecordPromptMutation } = promptApi;
+const {
+	useGetPromptProgressQuery,
+	useGetPromptRecentQuery,
+	useRecordPromptMutation,
+} = promptApi;
 
-export { useRecordPromptMutation };
+export {
+	useGetPromptProgressQuery,
+	useGetPromptRecentQuery,
+	useRecordPromptMutation,
+};
