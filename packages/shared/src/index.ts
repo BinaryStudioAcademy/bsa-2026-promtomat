@@ -51,12 +51,16 @@ export {
 	UsersApiPath,
 } from "./modules/users/users.js";
 export {
+	type MembershipDto,
+	type WorkspaceAddMemberRequestDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	workspaceAddMemberValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	WorkspaceRole,
 	WorkspacesApiPath,
 	WorkspacesErrorMessage,
 	WorkspaceVisibility,

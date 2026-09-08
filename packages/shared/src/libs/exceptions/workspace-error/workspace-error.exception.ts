@@ -24,11 +24,27 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
+	public static forbidden(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_ACTION_FORBIDDEN,
+			message: WorkspacesErrorMessage.WORKSPACE_ACTION_FORBIDDEN,
+			status: HTTPCode.FORBIDDEN,
+		});
+	}
+
 	public static nameAlreadyExists(): WorkspaceError {
 		return new WorkspaceError({
 			code: WorkspacesErrorCode.WORKSPACE_ALREADY_EXISTS,
 			message: WorkspacesErrorMessage.WORKSPACE_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
+		});
+	}
+
+	public static notFound(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_ACCESS_DENIED,
+			message: WorkspacesErrorMessage.WORKSPACE_ACCESS_DENIED,
+			status: HTTPCode.NOT_FOUND,
 		});
 	}
 }

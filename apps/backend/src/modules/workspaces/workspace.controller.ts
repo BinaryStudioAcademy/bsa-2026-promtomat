@@ -6,13 +6,17 @@ import {
 } from "~/libs/modules/controller/controller.js";
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type MembershipService } from "~/modules/memberships/membership.service.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
+import { createWorkspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
 import {
+	type WorkspaceAddMemberRequestDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceGetAllRequestDto,
 } from "./libs/types/types.js";
 import {
+	workspaceAddMemberValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -40,12 +44,35 @@ import { type WorkspaceService } from "./workspace.service.js";
  *           type: string
  */
 class WorkspaceController extends BaseController {
+	private membershipService: MembershipService;
+
 	private workspaceService: WorkspaceService;
 
-	public constructor(logger: Logger, workspaceService: WorkspaceService) {
+	public constructor(
+		logger: Logger,
+		membershipService: MembershipService,
+		workspaceService: WorkspaceService,
+	) {
 		super(logger, APIPath.WORKSPACES);
 
+		this.membershipService = membershipService;
 		this.workspaceService = workspaceService;
+
+		this.addRoute({
+			handler: (options) =>
+				this.addMember(
+					options as APIHandlerOptions<{
+						body: WorkspaceAddMemberRequestDto;
+						params: { id: string };
+					}>,
+				),
+			method: HTTPMethod.POST,
+			path: WorkspacesApiPath.WORKSPACE_MEMBERSHIPS,
+			preHandler: createWorkspaceAccessHook(this.membershipService),
+			validation: {
+				body: workspaceAddMemberValidationSchema,
+			},
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -108,6 +135,22 @@ class WorkspaceController extends BaseController {
 	 *        409:
 	 *          description: Workspace name already exists
 	 */
+	private async addMember(
+		options: APIHandlerOptions<{
+			body: WorkspaceAddMemberRequestDto;
+			params: { id: string };
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.workspaceService.addMember(
+				options.user?.id as number,
+				Number(options.params.id),
+				options.body.userId,
+			),
+			status: HTTPCode.CREATED,
+		};
+	}
+
 	private async create(
 		options: APIHandlerOptions<{
 			body: WorkspaceCreateRequestDto;
