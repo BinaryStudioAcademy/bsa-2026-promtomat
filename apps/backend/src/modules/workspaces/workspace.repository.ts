@@ -108,11 +108,11 @@ class WorkspaceRepository {
 		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
 	}
 
-	public async findById(
+	public async findByIdAndUserId(
 		id: number,
-		trx?: Transaction,
+		userId: number,
 	): Promise<null | WorkspaceEntity> {
-		const workspace = await this.workspaceModel.query(trx).findById(id);
+		const workspace = await this.workspaceModel.query().findOne({ id, userId });
 
 		return workspace ? WorkspaceEntity.initialize(workspace) : null;
 	}

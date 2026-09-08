@@ -26,24 +26,6 @@ class WorkspaceService {
 		this.database = database;
 	}
 
-	public async checkUserAccess(
-		workspaceId: number,
-		userId: number,
-		trx?: Transaction,
-	): Promise<void> {
-		const workspace = await this.workspaceRepository.findById(workspaceId, trx);
-
-		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
-		const isOwner = workspace.toObject().userId === userId;
-
-		if (!isOwner) {
-			throw WorkspaceError.notFound();
-		}
-	}
-
 	public async create(
 		payload: WorkspaceCreatePayload,
 		trx?: Transaction,
@@ -62,13 +44,15 @@ class WorkspaceService {
 	}
 
 	public async delete(workspaceId: number, userId: number): Promise<void> {
-		await this.database.transaction(async (trx) => {
-			await this.checkUserAccess(workspaceId, userId, trx);
+		const workspace = await this.findByIdAndOwner(workspaceId, userId);
 
+		if (!workspace) {
+			throw WorkspaceError.notFound();
+		}
+
+		await this.database.transaction(async (trx) => {
 			const workspaces =
 				await this.workspaceRepository.findAllByUserIdForUpdate(userId, trx);
-
-			await this.checkUserAccess(workspaceId, userId, trx);
 
 			if (workspaces.length < MINIMUM_WORKSPACE_COUNT_FOR_DELETION) {
 				throw WorkspaceError.lastWorkspaceDeletionNotAllowed();
@@ -92,12 +76,28 @@ class WorkspaceService {
 		};
 	}
 
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			id,
+			userId,
+		);
+
+		return workspace ? workspace.toObject() : null;
+	}
+
 	public async update(
 		id: number,
 		payload: WorkspaceUpdateRequestDto,
 		userId: number,
 	): Promise<WorkspaceDto> {
-		await this.checkUserAccess(id, userId);
+		const workspace = await this.findByIdAndOwner(id, userId);
+
+		if (!workspace) {
+			throw WorkspaceError.notFound();
+		}
 
 		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
 
