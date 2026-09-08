@@ -99,7 +99,9 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 									</>
 								)}
 							</p>
-							<p className={styles["text"]}>This cannot be undone.</p>
+							<p className={styles["text"]}>
+								{WorkspaceDeleteMessage.DELETION_CANNOT_BE_UNDONE}
+							</p>
 						</div>
 					</>
 				)}
