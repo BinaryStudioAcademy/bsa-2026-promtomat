@@ -196,7 +196,6 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
-<<<<<<< HEAD
 	 *        200:
 	 *          description: Workspaces returned successfully
 	 *          content:
@@ -222,19 +221,6 @@ class WorkspaceController extends BaseController {
 	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/ValidationError"
-=======
-	 *         200:
-	 *           description: Successful operation
-	 *           content:
-	 *             application/json:
-	 *               schema:
-	 *                 type: object
-	 *                 properties:
-	 *                   items:
-	 *                     type: array
-	 *                     items:
-	 *                       $ref: "#/components/schemas/Workspace"
->>>>>>> origin/71-feat-add-prompt-recording
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
