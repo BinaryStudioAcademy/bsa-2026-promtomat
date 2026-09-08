@@ -2,12 +2,8 @@ import { type Transaction } from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
-import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
 
-import {
-	DEFAULT_PROMPT_COUNT,
-	MINIMUM_WORKSPACE_COUNT_FOR_DELETION,
-} from "./libs/constants/workspace.constant.js";
+import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
 import {
 	type WorkspaceCreatePayload,
 	type WorkspaceDto,
@@ -19,17 +15,14 @@ import { type WorkspaceRepository } from "./workspace.repository.js";
 
 class WorkspaceService {
 	private database: Database;
-	private promptRepository: PromptRepository;
 
 	private workspaceRepository: WorkspaceRepository;
 
 	public constructor(
 		workspaceRepository: WorkspaceRepository,
-		promptRepository: PromptRepository,
 		database: Database,
 	) {
 		this.workspaceRepository = workspaceRepository;
-		this.promptRepository = promptRepository;
 		this.database = database;
 	}
 
@@ -89,23 +82,13 @@ class WorkspaceService {
 		userId: number,
 		workspaceName?: string,
 	): Promise<WorkspaceGetAllResponseDto> {
-		const workspaces = await this.workspaceRepository.findAllByUserId(
+		const workspaceItems = await this.workspaceRepository.findAllByUserId(
 			userId,
 			workspaceName,
 		);
 
-		const workspaceDtos = workspaces.map((workspace) => workspace.toObject());
-		const workspaceIds = workspaceDtos.map(({ id }) => id);
-		const promptCountsByWorkspaceId =
-			await this.promptRepository.findCountsByWorkspaceIds(workspaceIds);
-		const workspaceListItems = workspaceDtos.map((workspaceDto) => ({
-			...workspaceDto,
-			promptCount:
-				promptCountsByWorkspaceId.get(workspaceDto.id) ?? DEFAULT_PROMPT_COUNT,
-		}));
-
 		return {
-			items: workspaceListItems,
+			items: workspaceItems,
 		};
 	}
 

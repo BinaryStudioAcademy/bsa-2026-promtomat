@@ -6,8 +6,14 @@ import {
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
+import { DatabaseTableName } from "~/libs/modules/database/database.js";
 
-import { type WorkspaceUpdateRequestDto } from "./libs/types/types.js";
+import { PromptColumnName } from "../prompts/libs/enums/enums.js";
+import { WorkspaceColumnName } from "./libs/enums/enums.js";
+import {
+	type WorkspaceListItemDto,
+	type WorkspaceUpdateRequestDto,
+} from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
 
@@ -44,16 +50,48 @@ class WorkspaceRepository {
 	public async findAllByUserId(
 		userId: number,
 		workspaceName?: string,
-	): Promise<WorkspaceEntity[]> {
-		const query = this.workspaceModel.query().where({ userId }).orderBy("id");
+	): Promise<WorkspaceListItemDto[]> {
+		const query = this.workspaceModel
+			.query()
+			.select(`${DatabaseTableName.WORKSPACES}.*`)
+			.count(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as promptCount`,
+			)
+			.leftJoinRelated("prompts")
+			.where(
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+				userId,
+			)
+			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
+			.orderBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`);
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);
-			query.whereILike("name", `%${escapedWorkspaceName}%`);
+			query.whereILike(
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME}`,
+				`%${escapedWorkspaceName}%`,
+			);
 		}
 
-		const workspaces = await query.execute();
-		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
+		const workspaces = await query
+			.castTo<
+				Array<
+					WorkspaceModel & {
+						promptCount: string;
+					}
+				>
+			>()
+			.execute();
+
+		return workspaces.map((workspace) => {
+			const workspaceDto = WorkspaceEntity.initialize(workspace).toObject();
+			const promptCount = Number(workspace.promptCount);
+
+			return {
+				...workspaceDto,
+				promptCount,
+			};
+		});
 	}
 
 	public async findAllByUserIdForUpdate(
