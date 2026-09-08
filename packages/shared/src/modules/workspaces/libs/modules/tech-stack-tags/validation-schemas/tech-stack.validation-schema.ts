@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { TAGS_ERROR_MESSAGES } from "../enums/enums.js";
+import { TagsErrorMessages } from "../enums/enums.js";
 import {
 	checkIsValidTechStackTag,
 	normalizeTechStackTag,
@@ -12,7 +12,7 @@ const TechStackTagSchema = z
 		(tag) => {
 			return checkIsValidTechStackTag(tag);
 		},
-		{ message: TAGS_ERROR_MESSAGES.INVALID_TAG_ERROR_MESSAGE },
+		{ message: TagsErrorMessages.INVALID_TAG_ERROR_MESSAGE },
 	)
 	.transform((tag) => {
 		return normalizeTechStackTag(tag);

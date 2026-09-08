@@ -3,7 +3,7 @@ export {
 	MIN_INPUT_LENGTH,
 	SUGGESTION_LIMIT,
 } from "./constants/constants.js";
-export { TAGS_ERROR_MESSAGES, TECH_STACK_VARIANTS } from "./enums/enums.js";
+export { TagsErrorMessages, TECH_STACK_VARIANTS } from "./enums/enums.js";
 export {
 	checkIsValidTechStackTag,
 	getTechStackTagSuggestions,
