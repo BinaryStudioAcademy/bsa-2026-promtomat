@@ -5,7 +5,9 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { getTechStackTagSuggestions } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -13,7 +15,6 @@ import {
 	workspaceCreationValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
-import { TechStackTagsInput } from "../tech-stack-tags-input/tech-stack-tags-input.js";
 import { DEFAULT_WORKSPACE_CREATE_PAYLOAD } from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
@@ -58,10 +59,14 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					name="name"
 					placeholder="Name..."
 				/>
-				<TechStackTagsInput
+				<SearchableSelect
 					control={control}
+					getSuggestions={getTechStackTagSuggestions}
+					isDisabled={false}
 					label="Add tags"
 					name={stackTagsField.name}
+					placeholder="Enter tags"
+					size={ControlSize.MD}
 				/>
 				<div className={styles["footer"]}>
 					<Button
