@@ -1,5 +1,5 @@
 const WorkspacesApiPath = {
-	ID: "/:id",
+	ID: "/:workspaceId",
 	ROOT: "/",
 } as const;
 

@@ -44,12 +44,6 @@ class WorkspaceService {
 	}
 
 	public async delete(workspaceId: number, userId: number): Promise<void> {
-		const workspace = await this.findByIdAndOwner(workspaceId, userId);
-
-		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
 		await this.database.transaction(async (trx) => {
 			const workspaces =
 				await this.workspaceRepository.findAllByUserIdForUpdate(userId, trx);
@@ -91,14 +85,7 @@ class WorkspaceService {
 	public async update(
 		id: number,
 		payload: WorkspaceUpdateRequestDto,
-		userId: number,
 	): Promise<WorkspaceDto> {
-		const workspace = await this.findByIdAndOwner(id, userId);
-
-		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
 		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
 
 		if (!updatedWorkspace) {

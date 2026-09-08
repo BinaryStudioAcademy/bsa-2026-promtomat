@@ -3,7 +3,7 @@ import { z } from "zod";
 import { WorkspaceValidationMessage } from "../enums/enums.js";
 
 const workspaceRouteParameters = z.object({
-	id: z.coerce
+	workspaceId: z.coerce
 		.number({
 			error: WorkspaceValidationMessage.ID_INVALID,
 		})

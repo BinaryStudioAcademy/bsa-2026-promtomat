@@ -8,6 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
+import { workspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceGetAllRequestDto,
@@ -98,6 +99,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.DELETE,
 			path: WorkspacesApiPath.ID,
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
 			},
@@ -113,6 +115,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.PATCH,
 			path: WorkspacesApiPath.ID,
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: workspaceUpdateValidationSchema,
 				params: workspaceRouteParametersValidationSchema,
@@ -172,7 +175,7 @@ class WorkspaceController extends BaseController {
 		}>,
 	): Promise<APIHandlerResponse> {
 		await this.workspaceService.delete(
-			options.params.id,
+			options.params.workspaceId,
 			options.user?.id as number,
 		);
 
@@ -238,14 +241,14 @@ class WorkspaceController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /workspaces/{id}:
+	 * /workspaces/{workspaceId}:
 	 *   delete:
 	 *     description: Deletes an owned workspace
 	 *     security:
 	 *       - bearerAuth: []
 	 *     parameters:
 	 *       - in: path
-	 *         name: id
+	 *         name: workspaceId
 	 *         required: true
 	 *         schema:
 	 *           type: integer
@@ -277,7 +280,7 @@ class WorkspaceController extends BaseController {
 	 *       - bearerAuth: []
 	 *     parameters:
 	 *       - in: path
-	 *         name: id
+	 *         name: workspaceId
 	 *         required: true
 	 *         schema:
 	 *           type: integer
@@ -334,9 +337,8 @@ class WorkspaceController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.workspaceService.update(
-				options.params.id,
+				options.params.workspaceId,
 				options.body,
-				options.user?.id as number,
 			),
 			status: HTTPCode.OK,
 		};

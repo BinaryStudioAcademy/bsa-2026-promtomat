@@ -34,7 +34,7 @@ const workspacesApi = baseApi
 				query: (id) => ({
 					method: HTTPMethod.DELETE,
 					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
-						id: String(id),
+						workspaceId: String(id),
 					}),
 				}),
 			}),
@@ -60,7 +60,7 @@ const workspacesApi = baseApi
 					body: payload,
 					method: HTTPMethod.PATCH,
 					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
-						id: String(id),
+						workspaceId: String(id),
 					}),
 				}),
 			}),
