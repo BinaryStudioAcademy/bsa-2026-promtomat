@@ -1,10 +1,14 @@
-import { UniqueViolationError } from "objection";
+import { NotFoundError, UniqueViolationError } from "objection";
 
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
 import { type UserUpdateRequestDto } from "./libs/types/types.js";
+
+const UsersConstraintName = {
+	NICKNAME_UNIQUE: "users_nickname_unique",
+} as const;
 
 class UserRepository {
 	private userModel: typeof UserModel;
@@ -69,13 +73,19 @@ class UserRepository {
 			const user = await this.userModel
 				.query()
 				.patchAndFetchById(id, payload)
-				.returning("*")
-				.execute();
+				.throwIfNotFound();
 
 			return UserEntity.initialize(user);
 		} catch (error) {
-			if (error instanceof UniqueViolationError) {
+			if (
+				error instanceof UniqueViolationError &&
+				error.constraint === UsersConstraintName.NICKNAME_UNIQUE
+			) {
 				throw AuthError.nicknameAlreadyExists();
+			}
+
+			if (error instanceof NotFoundError) {
+				throw AuthError.userNotFound();
 			}
 
 			throw error;

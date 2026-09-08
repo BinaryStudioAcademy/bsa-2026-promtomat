@@ -45,6 +45,14 @@ class AuthError extends HTTPError {
 			status: HTTPCode.CONFLICT,
 		});
 	}
+
+	public static userNotFound(): AuthError {
+		return new AuthError({
+			code: ErrorCode.AUTH_USER_NOT_FOUND,
+			message: UserErrorMessage.USER_NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
+		});
+	}
 }
 
 export { AuthError };

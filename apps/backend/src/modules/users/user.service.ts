@@ -20,7 +20,7 @@ class UserService {
 		this.userRepository = userRepository;
 	}
 
-	private hasProfileChanged(
+	private checkHasProfileChanged(
 		currentUser: UserDto,
 		payload: UserUpdateRequestDto,
 	): boolean {
@@ -85,7 +85,7 @@ class UserService {
 		currentUser: UserDto,
 		payload: UserUpdateRequestDto,
 	): Promise<UserDto> {
-		if (!this.hasProfileChanged(currentUser, payload)) {
+		if (!this.checkHasProfileChanged(currentUser, payload)) {
 			return currentUser;
 		}
 
