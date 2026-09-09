@@ -5,6 +5,7 @@ export {
 	UserValidationMessage,
 } from "./libs/enums/enums.js";
 export {
+	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserGetAllResponseDto,
 	type UserUpdateRequestDto,

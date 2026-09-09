@@ -40,6 +40,16 @@ class UserService {
 		this.workspaceService = workspaceService;
 	}
 
+	private checkHasProfileChanged(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): boolean {
+		return (
+			currentUser.nickname !== payload.nickname ||
+			currentUser.primaryAiCodingTool !== payload.primaryAiCodingTool
+		);
+	}
+
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
 		const existingUser = await this.userRepository.findByEmailOrNickname(
 			payload.email,
@@ -105,36 +115,17 @@ class UserService {
 	}
 
 	public async updateProfile(
-		userId: number,
+		currentUser: UserDto,
 		payload: UserUpdateRequestDto,
 	): Promise<UserDto> {
-		const currentUser = await this.userRepository.findById(userId);
-
-		if (currentUser === null) {
-			throw AuthError.invalidCredentials();
+		if (!this.checkHasProfileChanged(currentUser, payload)) {
+			return currentUser;
 		}
 
-		const currentUserObject = currentUser.toObject();
-
-		const isNicknameChanged = payload.nickname !== currentUserObject.nickname;
-		const isToolChanged =
-			payload.primaryAiCodingTool !== currentUserObject.primaryAiCodingTool;
-
-		if (!isNicknameChanged && !isToolChanged) {
-			return currentUserObject;
-		}
-
-		if (isNicknameChanged) {
-			const existingUser = await this.userRepository.findByNickname(
-				payload.nickname,
-			);
-
-			if (existingUser && existingUser.toObject().id !== userId) {
-				throw AuthError.nicknameAlreadyExists();
-			}
-		}
-
-		const updatedUser = await this.userRepository.update(userId, payload);
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			payload,
+		);
 
 		return updatedUser.toObject();
 	}

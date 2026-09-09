@@ -27,6 +27,7 @@ async function up(knex: Knex): Promise<void> {
 		table
 			.enu(ColumnName.PRIMARY_AI_CODING_TOOL, Object.values(AiCodingTool))
 			.nullable();
+		table.string(ColumnName.PRIMARY_AI_CODING_TOOL).nullable();
 	});
 }
 

@@ -28,6 +28,7 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
 	handleSubmit: UseFormHandleSubmit<T>;
+	isDirty: boolean;
 	reset: UseFormReset<T>;
 	setError: UseFormSetError<T>;
 	setValue: UseFormSetValue<T>;
@@ -68,6 +69,7 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 		control,
 		errors,
 		handleSubmit,
+		isDirty,
 		reset,
 		setError,
 		setValue,
