@@ -1,9 +1,12 @@
 import path from "node:path";
 
-import { checkIsUnsafeDeletePath } from "~/libs/helpers/helpers.js";
+import {
+	checkIsNonEmptyString,
+	checkIsUnsafeDeletePath,
+} from "~/libs/helpers/helpers.js";
 
 const validateEmbeddingLocalPath = (value: unknown): void => {
-	if (typeof value !== "string" || value.trim() === "") {
+	if (!checkIsNonEmptyString(value)) {
 		throw new TypeError("EMBEDDING_LOCAL_PATH must be a non-empty string.");
 	}
 
