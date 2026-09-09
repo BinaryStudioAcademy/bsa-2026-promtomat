@@ -28,6 +28,7 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export {
+	type ForgotPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -36,6 +37,7 @@ export {
 	AuthValidationMessage,
 	AuthValidationRule,
 	ExceptionMessage,
+	forgotPasswordValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,

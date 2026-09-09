@@ -128,6 +128,9 @@ importers:
       knex:
         specifier: 3.3.0
         version: 3.3.0(pg@8.22.0)
+      nodemailer:
+        specifier: 10.0.1
+        version: 10.0.1
       objection:
         specifier: 3.1.5
         version: 3.1.5(knex@3.3.0(pg@8.22.0))
@@ -147,6 +150,9 @@ importers:
       '@types/convict':
         specifier: 6.1.6
         version: 6.1.6
+      '@types/nodemailer':
+        specifier: 8.0.1
+        version: 8.0.1
       '@types/swagger-jsdoc':
         specifier: 6.0.4
         version: 6.0.4
@@ -1681,6 +1687,9 @@ packages:
 
   '@types/node@26.2.0':
     resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
+
+  '@types/nodemailer@8.0.1':
+    resolution: {integrity: sha512-PxpaInm8V1JQDd4j0ds5HfvWQk8JupS1C0Picb96QJsrrRDjBH+DlK7L4ZdNSqNULhiZRQHc40nLVShaGxXAMw==}
 
   '@types/react-dom@19.2.4':
     resolution: {integrity: sha512-Bsc+QHgp+P/F02XDzNCY9jnZNCUuLki36KT7VKrTXXLdHf+vHMNZnW1rVu5DNW/rCK+fya3DATySbLM4yhtKUw==}
@@ -3551,6 +3560,10 @@ packages:
   node-releases@2.0.53:
     resolution: {integrity: sha512-D9UOmYG3UH1V+ENW56t5QXBwJw1YEY18ruVeus89Rw+SyIgjPkCO84bRzO3uNIYosJbNwiabWVn48o3uJLjxFQ==}
     engines: {node: '>=18'}
+
+  nodemailer@10.0.1:
+    resolution: {integrity: sha512-c+gU9cL9HLDax3vjxL88kW+6NOgdtEUWaZ+AUtxdJR6LLhf0kGdCLExof7yiKW7zdO9EfXCSIgmhGyFmUM0mYQ==}
+    engines: {node: '>=20.0.0'}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -5942,6 +5955,10 @@ snapshots:
     dependencies:
       undici-types: 8.3.0
 
+  '@types/nodemailer@8.0.1':
+    dependencies:
+      '@types/node': 26.2.0
+
   '@types/react-dom@19.2.4(@types/react@19.2.18)':
     dependencies:
       '@types/react': 19.2.18
@@ -7917,6 +7934,8 @@ snapshots:
       semver: 6.3.1
 
   node-releases@2.0.53: {}
+
+  nodemailer@10.0.1: {}
 
   normalize-path@3.0.0: {}
 

@@ -8,6 +8,9 @@ const API_VERSION_PREFIX = "/api/v1";
 const SWAGGER_DOCS_PREFIX = "/v1/documentation";
 
 const PUBLIC_ROUTES: PublicRoutes = {
+	[`${API_VERSION_PREFIX}${APIPath.AUTH}${AuthApiPath.FORGOT_PASSWORD}`]: [
+		HTTPMethod.POST,
+	],
 	[`${API_VERSION_PREFIX}${APIPath.AUTH}${AuthApiPath.SIGN_IN}`]: [
 		HTTPMethod.POST,
 	],

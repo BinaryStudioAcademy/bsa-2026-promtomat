@@ -8,6 +8,12 @@ const config: KnipConfig = {
 			"exports",
 			"types",
 		],
+		// The in-memory mail fake is exported ahead of its consumer: password
+		// reset (#83) needs it to assert delivery without SMTP, but the
+		// repository has no test runner yet.
+		// TODO: Delete both lines when one lands.
+		"apps/backend/src/libs/modules/mail/fake-mail.service.ts": ["exports"],
+		"apps/backend/src/libs/modules/mail/mail.ts": ["exports"],
 		// Overlay mechanism for later consumer tickets (#14, #22, #68, #70).
 		// Nothing in the app opens a modal or confirmation in this change.
 		"apps/frontend/src/libs/components/confirmation/**": ["files"],

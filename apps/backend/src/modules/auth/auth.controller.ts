@@ -10,10 +10,12 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
+	ForgotPasswordRequestDto,
 	type SignInRequestDto,
 	type SignUpRequestDto,
 } from "./libs/types/types.js";
 import {
+	forgotPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -59,6 +61,66 @@ class AuthController extends BaseController {
 				body: signUpValidationSchema,
 			},
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.forgotPassword(
+					options as APIHandlerOptions<{
+						body: ForgotPasswordRequestDto;
+					}>,
+				),
+			method: HTTPMethod.POST,
+			path: AuthApiPath.FORGOT_PASSWORD,
+			validation: {
+				body: forgotPasswordValidationSchema,
+			},
+		});
+	}
+
+	/**
+	 * @swagger
+	 * /auth/forgot-password:
+	 *   post:
+	 *     description: >
+	 *       Requests a password reset link. Responds identically whether or not
+	 *       the address belongs to a registered account, so the endpoint cannot
+	 *       be used to discover which emails are registered.
+	 *     requestBody:
+	 *       description: The address to send the reset link to
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               email:
+	 *                 type: string
+	 *                 format: email
+	 *     responses:
+	 *       202:
+	 *         description: >
+	 *           Request accepted. A link is sent only if the address is
+	 *           registered; the response is the same either way.
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               nullable: true
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
+	private async forgotPassword(
+		options: APIHandlerOptions<{ body: ForgotPasswordRequestDto }>,
+	): Promise<APIHandlerResponse> {
+		await this.authService.requestPasswordReset(options.body);
+
+		return {
+			payload: null,
+			status: HTTPCode.ACCEPTED,
+		};
 	}
 
 	/**

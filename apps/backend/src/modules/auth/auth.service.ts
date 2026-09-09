@@ -1,30 +1,116 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
-import { Hashing } from "~/libs/modules/hashing/hashing.js";
+import { type Hashing } from "~/libs/modules/hashing/hashing.js";
+import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type MailService } from "~/libs/modules/mail/mail.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import {
+	createPasswordResetToken,
+	hashPasswordResetToken,
+} from "./libs/helpers/helpers.js";
+import {
+	type ForgotPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
+import { PasswordResetEntity } from "./password-reset.entity.js";
+import { type PasswordResetRepository } from "./password-reset.repository.js";
+
+const MILLISECONDS_IN_MINUTE = 60_000;
+
+const PASSWORD_RESET_SUBJECT = "Reset your Promptomat password";
+
+type Constructor = {
+	hashing: Hashing;
+	linkBaseUrl: string;
+	logger: Logger;
+	mailService: MailService;
+	passwordResetRepository: PasswordResetRepository;
+	tokenService: TokenService;
+	tokenTtlMinutes: number;
+	userService: UserService;
+};
 
 class AuthService {
 	private hashing: Hashing;
 
+	private linkBaseUrl: string;
+
+	private logger: Logger;
+
+	private mailService: MailService;
+
+	private passwordResetRepository: PasswordResetRepository;
+
 	private tokenService: TokenService;
+
+	private tokenTtlMinutes: number;
 
 	private userService: UserService;
 
-	public constructor(
-		hashing: Hashing,
-		tokenService: TokenService,
-		userService: UserService,
-	) {
+	public constructor({
+		hashing,
+		linkBaseUrl,
+		logger,
+		mailService,
+		passwordResetRepository,
+		tokenService,
+		tokenTtlMinutes,
+		userService,
+	}: Constructor) {
 		this.hashing = hashing;
+		this.linkBaseUrl = linkBaseUrl;
+		this.logger = logger;
+		this.mailService = mailService;
+		this.passwordResetRepository = passwordResetRepository;
 		this.tokenService = tokenService;
+		this.tokenTtlMinutes = tokenTtlMinutes;
 		this.userService = userService;
+	}
+
+	private async deliverResetLink(email: string, token: string): Promise<void> {
+		const link = `${this.linkBaseUrl}?token=${token}`;
+
+		try {
+			await this.mailService.send({
+				subject: PASSWORD_RESET_SUBJECT,
+				text: `Open this link to choose a new password. It expires in ${this.tokenTtlMinutes.toString()} minutes.\n\n${link}\n\nIf you did not ask for this, you can ignore this email.`,
+				to: email,
+			});
+		} catch (error) {
+			this.logger.error("Failed to deliver a password reset email.", {
+				message: error instanceof Error ? error.message : String(error),
+			});
+		}
+	}
+
+	public async requestPasswordReset({
+		email,
+	}: ForgotPasswordRequestDto): Promise<void> {
+		const userEntity = await this.userService.findByEmail(email);
+
+		if (!userEntity || !email) {
+			return;
+		}
+
+		const { id } = userEntity.toObject();
+		const token = createPasswordResetToken();
+		const expiresAt = new Date(
+			Date.now() + this.tokenTtlMinutes * MILLISECONDS_IN_MINUTE,
+		);
+
+		await this.passwordResetRepository.create(
+			PasswordResetEntity.initializeNew({
+				expiresAt,
+				tokenHash: hashPasswordResetToken(token),
+				userId: id,
+			}),
+		);
+
+		void this.deliverResetLink(email, token);
 	}
 
 	public async signIn(

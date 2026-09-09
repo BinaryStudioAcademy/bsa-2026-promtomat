@@ -1,4 +1,4 @@
-import type { Knex } from "knex";
+import { type Knex } from "knex";
 
 const TABLE_NAME = "password_reset_tokens";
 

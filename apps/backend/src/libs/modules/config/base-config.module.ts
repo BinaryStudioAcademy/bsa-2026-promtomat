@@ -166,6 +166,52 @@ class BaseConfig implements Config {
 					format: validateJwtSecret,
 				},
 			},
+			MAIL: {
+				FROM: {
+					default: null,
+					doc: "Mail Address sender",
+					env: "MAIL_FROM",
+					format: String,
+				},
+				HOST: {
+					default: null,
+					doc: "Mail Host Address",
+					env: "MAIL_HOST",
+					format: String,
+				},
+				PASSWORD: {
+					default: null,
+					doc: "Mail Server Password",
+					env: "MAIL_PASSWORD",
+					format: String,
+				},
+				PORT: {
+					default: null,
+					doc: "Mail Server Port",
+					env: "MAIL_PORT",
+					format: Number,
+				},
+				USER: {
+					default: null,
+					doc: "Mail User Identity",
+					env: "MAIL_USER",
+					format: String,
+				},
+			},
+			PASSWORD_RESET: {
+				LINK_BASE_URL: {
+					default: null,
+					doc: "Password reset link base URL",
+					env: "PASSWORD_RESET_LINK_BASE_URL",
+					format: String,
+				},
+				TOKEN_TTL_MINUTES: {
+					default: null,
+					doc: "Password reset token time to live in minutes",
+					env: "PASSWORD_RESET_TOKEN_TTL_MINUTES",
+					format: Number,
+				},
+			},
 		});
 	}
 }
