@@ -38,14 +38,8 @@ const useSelectedValues = ({
 		}
 	}, [removeValue, selectedValues]);
 
-	const isValueSelected = useCallback(
-		(value: string) => selectedValues.includes(value),
-		[selectedValues],
-	);
-
 	return {
 		addValue,
-		isValueSelected,
 		removeLastValue,
 		removeValue,
 	};
