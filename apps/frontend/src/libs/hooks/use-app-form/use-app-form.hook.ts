@@ -9,6 +9,7 @@ import {
 	type UseFormProps,
 	type UseFormReset,
 	type UseFormSetError,
+	type UseFormSetValue,
 	type ValidationMode,
 } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -30,6 +31,7 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 	isDirty: boolean;
 	reset: UseFormReset<T>;
 	setError: UseFormSetError<T>;
+	setValue: UseFormSetValue<T>;
 };
 
 const useAppForm = <T extends FieldValues = FieldValues>({
@@ -59,6 +61,7 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 		handleSubmit,
 		reset,
 		setError,
+		setValue,
 	} = useForm<T>(parameters);
 
 	return {
@@ -69,6 +72,7 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 		isDirty,
 		reset,
 		setError,
+		setValue,
 	};
 };
 

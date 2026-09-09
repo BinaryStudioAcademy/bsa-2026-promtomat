@@ -1,7 +1,7 @@
 .field {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: var(--space-4);
 }
 
 .label {
@@ -10,37 +10,20 @@
 	color: var(--text-body);
 }
 
-.required {
-	margin-left: 4px;
-	color: var(--text-accent);
-}
-
 .control {
 	position: relative;
 	display: flex;
 	align-items: center;
 }
 
-.control::after {
-	position: absolute;
-	top: 50%;
-	right: 12px;
-	width: 8px;
-	height: 8px;
-	pointer-events: none;
-	content: "";
-	border-right: var(--border-width-emphasis) solid var(--text-muted);
-	border-bottom: var(--border-width-emphasis) solid var(--text-muted);
-	transform: translateY(-70%) rotate(45deg);
-}
-
 .select {
 	width: 100%;
-	padding: 0 36px 0 12px;
+	padding: 0 var(--space-40) 0 var(--space-12);
 	font-family: inherit;
 	font-size: var(--font-size-body-base);
 	color: var(--text-strong);
 	appearance: none;
+	cursor: pointer;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-md);
@@ -58,6 +41,7 @@
 	color: var(--text-muted);
 	cursor: not-allowed;
 	background-color: var(--state-disabled-tint);
+	opacity: 0.7;
 }
 
 .sm {
@@ -70,7 +54,6 @@
 
 .lg {
 	height: var(--size-control-h-lg);
-	font-size: var(--font-size-body-xl);
 }
 
 .error {
@@ -78,7 +61,21 @@
 }
 
 .message {
-	min-height: 18px;
+	min-height: var(--space-18);
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
+}
+
+.icon {
+	position: absolute;
+	right: var(--space-12);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	color: var(--text-muted);
+	pointer-events: none;
+	background-color: transparent;
+	border: 0;
+	border-radius: var(--radius-sm);
 }
