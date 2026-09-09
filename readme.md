@@ -35,16 +35,47 @@ the project expects.
 (`apps/backend/src/libs/modules/database/abstract.model.ts`), rather than being specific to `users`. The `migrations`
 table is knex's own bookkeeping table, not application data, so it is excluded below.
 
-The diagram reflects the schema produced by the migrations in `apps/backend/src/db/migrations`.
+The diagram reflects the schema produced by the migrations in `apps/backend/src/db/migrations`. The `vector` type of
+`prompt_embeddings.embedding` comes from the [pgvector](https://github.com/pgvector/pgvector) extension, which the
+migrations enable.
 
 ```mermaid
 erDiagram
+    users ||--o{ prompts : "user_id"
+    workspaces ||--o{ prompts : "workspace_id"
+    prompts ||--o| prompt_embeddings : "prompt_id"
+
     users {
         int id PK "auto-increment"
         varchar email UK "not null"
         text password_hash "not null"
         text password_salt "not null"
         varchar nickname UK "not null, max 25"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    workspaces {
+        int id PK "auto-increment"
+    }
+
+    prompts {
+        int id PK "auto-increment"
+        int user_id FK "not null, onDelete CASCADE"
+        int workspace_id FK "not null, onDelete CASCADE"
+        varchar task_intent "not null"
+        text prompt_body "not null"
+        int efficiency_score "not null, check(1-10)"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    prompt_embeddings {
+        int id PK "auto-increment"
+        int prompt_id FK "not null, unique, onDelete CASCADE"
+        vector embedding "not null, vector(1024)"
+        varchar model_id "not null"
+        varchar source_hash "not null, sha256 of the embedded text"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }
@@ -114,6 +145,8 @@ TODO: add application schema
 
 3. modules - separate app features or functionalities
 
+4. scripts - manually run maintenance entry points (`embeddings:backfill:dev`)
+
 ### 5.4 Shared Package
 
 #### 5.4.1 Reason
@@ -138,29 +171,30 @@ You should use .env.example files as a reference.
 1. Install dependencies: `pnpm install`. Git hooks are installed as part of it, they are used to verify code style on
    commit.
 
-2. Run database (Postgres). Choose one option:
+2. Run database (PostgreSQL). The migrations enable the [pgvector](https://github.com/pgvector/pgvector) extension, so it has to be available to the server before step 3; `migrate:dev` then runs `CREATE EXTENSION` itself and no manual SQL is needed. Choose one option:
 
    Option A: Docker Compose
 
-   Prerequisites:
-   - Windows/macOS: Docker Desktop
-   - Linux: Docker Engine + Docker Compose plugin
+   Prerequisites: Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin (Linux). The compose file in `apps/backend` starts `pgvector/pgvector:pg18` with the `DB_*` values from `apps/backend/.env`:
 
-   Start:
-   pnpm db:up
-
-   Stop:
-   pnpm db:down
+   - Start: `pnpm db:up`
+   - Stop: `pnpm db:down`
 
    Option B: native PostgreSQL install
 
-   Install PostgreSQL 18.x on your OS with the [pgvector](https://github.com/pgvector/pgvector) extension
-   (`CREATE EXTENSION vector`), then create a database and credentials matching
-   apps/backend/.env (DB_HOST, DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD).
+   Install PostgreSQL 18.x, create a database and credentials matching `apps/backend/.env` (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`), and make pgvector available:
+
+   - Homebrew: `brew install pgvector`, then restart the postgresql service.
+   - Postgres.app ships pgvector; nothing to do.
+   - Other installations: follow the [pgvector installation notes](https://github.com/pgvector/pgvector#installation).
+
+   If you already have a database from before pgvector was required, only the extension is missing. For a native installation, install it as above; the data stays. A Docker container from the plain `postgres` image has to be replaced: remove it with `docker rm -f <container-name>` and run `pnpm db:up`. The compose volume starts empty, so the migrations rebuild the schema and local data is lost.
 
 3. Apply migrations: `pnpm --filter @promptomat/backend migrate:dev`
 
 4. Run backend: `pnpm --filter @promptomat/backend start:dev`
+
+   The backend repairs its embedded prompt index — prompts with no Embedding, changed text, or a changed embedding model — by itself every night at 03:00 UTC (skipped while the model is not ready). To run the same pass by hand, use `pnpm --filter @promptomat/backend embeddings:backfill:dev`; it is idempotent and reports how many prompts it embedded, skipped, and failed.
 
 5. Run frontend: `pnpm --filter @promptomat/frontend start:dev`
 
