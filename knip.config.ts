@@ -10,6 +10,8 @@ const config: KnipConfig = {
 		"apps/backend/src/libs/modules/bedrock/**": ["files"],
 		// the generator module is currently not consumed
 		"apps/backend/src/libs/modules/generator/**": ["files"],
+		// The composed-prompts module has no service or controller yet.
+		"apps/backend/src/modules/composed-prompts/**": ["files"],
 		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
 		// consumers: the editing flow (regenerate) and search (#77).
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
