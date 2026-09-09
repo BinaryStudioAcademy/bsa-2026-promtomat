@@ -1,9 +1,9 @@
 export {
 	AuthApiPath,
 	AuthErrorCode,
+	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
-	ExceptionMessage,
 } from "./libs/enums/enums.js";
 export {
 	type SignInRequestDto,
@@ -12,6 +12,7 @@ export {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 export {
+	nicknameFieldValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,

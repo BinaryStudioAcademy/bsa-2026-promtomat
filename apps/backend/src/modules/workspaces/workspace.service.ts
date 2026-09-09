@@ -21,15 +21,12 @@ class WorkspaceService {
 		workspaceId: number,
 		userId: number,
 	): Promise<void> {
-		const workspace = await this.workspaceRepository.findById(workspaceId);
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			workspaceId,
+			userId,
+		);
 
 		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
-
-		const isOwner = workspace.toObject().userId === userId;
-
-		if (!isOwner) {
 			throw WorkspaceError.notFound();
 		}
 	}
@@ -63,6 +60,18 @@ class WorkspaceService {
 		return {
 			items: workspaces.map((workspace) => workspace.toObject()),
 		};
+	}
+
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			id,
+			userId,
+		);
+
+		return workspace ? workspace.toObject() : null;
 	}
 }
 

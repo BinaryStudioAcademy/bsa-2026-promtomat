@@ -20,6 +20,7 @@ const apiV1 = new BaseServerApplicationApi(
 	...authController.routes,
 	...healthController.routes,
 	...userController.routes,
+	...promptController.routes,
 	...workspaceController.routes,
 	...promptController.routes,
 );

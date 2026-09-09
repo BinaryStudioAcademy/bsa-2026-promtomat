@@ -1,5 +1,6 @@
 import { Database } from "~/libs/modules/database/database.js";
 import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
+import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { LabelService } from "../labels/labels.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
@@ -15,6 +16,7 @@ type Constructor = {
 	database: Database;
 	generator: GeneratorInterface;
 	labelService: LabelService;
+	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
 	workspaceService: WorkspaceService;
 };
@@ -26,6 +28,8 @@ class PromptService {
 
 	private labelService: LabelService;
 
+	private promptEmbeddingService: PromptEmbeddingService;
+
 	private promptRepository: PromptRepository;
 
 	private workspaceService: WorkspaceService;
@@ -34,6 +38,7 @@ class PromptService {
 		database,
 		generator,
 		labelService,
+		promptEmbeddingService,
 		promptRepository,
 		workspaceService,
 	}: Constructor) {
@@ -42,6 +47,7 @@ class PromptService {
 		this.labelService = labelService;
 		this.generator = generator;
 		this.database = database;
+		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
 	private async generateLabel(prompt: string, workspaceId: number) {
@@ -84,7 +90,11 @@ class PromptService {
 				trx,
 			);
 
-			return prompt.toObject();
+			const promptDto = prompt.toObject();
+
+			await this.promptEmbeddingService.embedForPrompt(promptDto);
+
+			return promptDto;
 		});
 	}
 }

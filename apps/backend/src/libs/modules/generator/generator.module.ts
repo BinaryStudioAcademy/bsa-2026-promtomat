@@ -27,12 +27,6 @@ class Generator implements GeneratorInterface {
 	private createCommandOptions<K extends keyof SchemaResultMap>(
 		options: StructuredGenerationOptions<K>,
 	): CommandOptions {
-		if (options.config.maxTokens > TOKENS_THRESHOLD) {
-			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
-				TOKENS_THRESHOLD,
-			);
-		}
-
 		const commandOptions = {
 			config: options.config,
 			message: options.message,
@@ -46,6 +40,14 @@ class Generator implements GeneratorInterface {
 		return commandOptions;
 	}
 
+	private throwIfExceedsTokenLimit(options: TextGenerationOptions) {
+		if (options.config.maxTokens > TOKENS_THRESHOLD) {
+			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
+				TOKENS_THRESHOLD,
+			);
+		}
+	}
+
 	private tryGetContent(text: string | undefined): string {
 		if (text === undefined) {
 			throw TextGenerationError.outputUnusable();
@@ -57,6 +59,7 @@ class Generator implements GeneratorInterface {
 	public async generate<K extends keyof SchemaResultMap>(
 		options: StructuredGenerationOptions<K>,
 	): Promise<SchemaResultMap[K]> {
+		this.throwIfExceedsTokenLimit(options);
 		const result = await this.bedrockService.sendCommand(
 			this.createCommandOptions(options),
 		);
@@ -76,6 +79,8 @@ class Generator implements GeneratorInterface {
 
 	public async generateText(options: TextGenerationOptions): Promise<string> {
 		const result = await this.bedrockService.sendCommand(options);
+
+		this.throwIfExceedsTokenLimit(options);
 
 		if (result.isTextTruncated) {
 			throw TextGenerationError.outputUnusable();
