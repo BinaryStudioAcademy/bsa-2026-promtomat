@@ -137,7 +137,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						variant={ButtonVariant.SECONDARY}
 					/>
 					<Button
-						isDisabled={!isDirty || !isValid || isLoading}
+						isDisabled={!isDirty || !isValid}
+						isLoading={isLoading}
 						label={
 							isLoading
 								? WorkspaceFormMessage.SAVING

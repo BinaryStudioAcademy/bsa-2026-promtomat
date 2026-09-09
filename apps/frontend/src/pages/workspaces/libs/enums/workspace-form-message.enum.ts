@@ -1,10 +1,10 @@
 const WorkspaceFormMessage = {
 	CREATE: "Create",
-	CREATING: "Creating…",
+	CREATING: "Creating",
 	DELETE: "Delete Workspace",
-	DELETING: "Deleting Workspace…",
+	DELETING: "Deleting Workspace",
 	SAVE: "Save",
-	SAVING: "Saving…",
+	SAVING: "Saving",
 } as const;
 
 export { WorkspaceFormMessage };

@@ -15,6 +15,7 @@ type Properties = {
 	confirmLabel?: string;
 	confirmVariant?: ValueOf<typeof ButtonVariant>;
 	isDisabled?: boolean;
+	isLoading?: boolean;
 	isOpen: boolean;
 	onCancel: () => void;
 	onConfirm?: (() => void) | undefined;
@@ -29,6 +30,7 @@ const Confirmation = ({
 	confirmLabel = ConfirmationLabel.CONFIRM,
 	confirmVariant = ButtonVariant.PRIMARY,
 	isDisabled = false,
+	isLoading = false,
 	isOpen,
 	onCancel,
 	onConfirm,
@@ -59,6 +61,7 @@ const Confirmation = ({
 					{hasConfirmAction && (
 						<Button
 							isDisabled={isDisabled}
+							isLoading={isLoading}
 							label={confirmLabel}
 							onClick={handleConfirm}
 							type="button"

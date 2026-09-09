@@ -71,6 +71,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 			}
 			confirmVariant={ButtonVariant.DANGER}
 			isDisabled={isLoading}
+			isLoading={isLoading}
 			isOpen
 			onCancel={onClose}
 			onConfirm={deleteConfirmHandler}

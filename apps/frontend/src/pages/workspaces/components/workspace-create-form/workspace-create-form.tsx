@@ -67,12 +67,8 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						variant={ButtonVariant.SECONDARY}
 					/>
 					<Button
-						isDisabled={isLoading}
-						label={
-							isLoading
-								? WorkspaceFormMessage.CREATING
-								: WorkspaceFormMessage.CREATE
-						}
+						isLoading={isLoading}
+						label={WorkspaceFormMessage.CREATE}
 						size={ControlSize.MD}
 						type="submit"
 					/>
