@@ -46,6 +46,15 @@ class WorkspaceRepository {
 		const workspaces = await query.execute();
 		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
 	}
+
+	public async findByIdAndUserId(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceEntity> {
+		const workspace = await this.workspaceModel.query().findOne({ id, userId });
+
+		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
 }
 
 export { WorkspaceRepository };

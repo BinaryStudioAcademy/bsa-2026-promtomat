@@ -3,6 +3,7 @@ import { type FunctionComponent, type SVGProps } from "react";
 import AlertCircleIcon from "~/assets/img/alert-circle.svg?react";
 import CheckCircleIcon from "~/assets/img/check-circle.svg?react";
 import CheckIcon from "~/assets/img/check.svg?react";
+import ChevronIcon from "~/assets/img/chevron.svg?react";
 import CircleXIcon from "~/assets/img/circle-x.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
 import EyeFilledIcon from "~/assets/img/eye-filled.svg?react";
@@ -16,6 +17,7 @@ const iconNameToIcon = {
 	[IconName.ALERT_CIRCLE]: AlertCircleIcon,
 	[IconName.CHECK]: CheckIcon,
 	[IconName.CHECK_CIRCLE]: CheckCircleIcon,
+	[IconName.CHEVRON]: ChevronIcon,
 	[IconName.CIRCLE_X]: CircleXIcon,
 	[IconName.CLOSE]: CloseIcon,
 	[IconName.EYE]: EyeIcon,
