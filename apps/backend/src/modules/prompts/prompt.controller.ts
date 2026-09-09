@@ -7,6 +7,8 @@ import {
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
+import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
@@ -71,11 +73,17 @@ import { type PromptService } from "./prompt.service.js";
  */
 class PromptController extends BaseController {
 	private promptService: PromptService;
+	private workspaceService: WorkspaceService;
 
-	public constructor(logger: Logger, promptService: PromptService) {
+	public constructor(
+		logger: Logger,
+		promptService: PromptService,
+		workspaceService: WorkspaceService,
+	) {
 		super(logger, APIPath.PROMPTS);
 
 		this.promptService = promptService;
+		this.workspaceService = workspaceService;
 
 		this.addRoute({
 			handler: (options) =>
@@ -86,6 +94,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.POST,
 			path: PromptsApiPath.ROOT,
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: promptCreateValidationSchema,
 			},
@@ -220,7 +229,7 @@ class PromptController extends BaseController {
 	 *         required: true
 	 *         schema:
 	 *           type: string
-	 *           enum: [mine, global]
+	 *           enum: [mine, all]
 	 *       - in: query
 	 *         name: page
 	 *         schema:
@@ -254,37 +263,8 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/PromptGetAllResponse"
 	 *       401:
 	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 errorType:
-	 *                   type: string
-	 *                 message:
-	 *                   type: string
 	 *       422:
 	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 details:
-	 *                   type: array
-	 *                   items:
-	 *                     type: object
-	 *                     properties:
-	 *                       message:
-	 *                         type: string
-	 *                       path:
-	 *                         type: array
-	 *                         items:
-	 *                           type: string
-	 *                 errorType:
-	 *                   type: string
-	 *                 message:
-	 *                   type: string
 	 */
 	private async findAll(
 		options: APIHandlerOptions<{

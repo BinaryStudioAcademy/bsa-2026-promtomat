@@ -1,5 +1,7 @@
 import { type Entity } from "~/libs/types/types.js";
 
+import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
+
 class UserEntity implements Entity {
 	private email: string;
 
@@ -11,24 +13,29 @@ class UserEntity implements Entity {
 
 	private passwordSalt: string;
 
+	private primaryAiCodingTool: null | PrimaryAiCodingTool;
+
 	private constructor({
 		email,
 		id,
 		nickname,
 		passwordHash,
 		passwordSalt,
+		primaryAiCodingTool,
 	}: {
 		email: string;
 		id: null | number;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}) {
 		this.id = id;
 		this.email = email;
 		this.nickname = nickname;
 		this.passwordHash = passwordHash;
 		this.passwordSalt = passwordSalt;
+		this.primaryAiCodingTool = primaryAiCodingTool;
 	}
 
 	public static initialize({
@@ -37,12 +44,14 @@ class UserEntity implements Entity {
 		nickname,
 		passwordHash,
 		passwordSalt,
+		primaryAiCodingTool,
 	}: {
 		email: string;
 		id: number;
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}): UserEntity {
 		return new UserEntity({
 			email,
@@ -50,6 +59,7 @@ class UserEntity implements Entity {
 			nickname,
 			passwordHash,
 			passwordSalt,
+			primaryAiCodingTool,
 		});
 	}
 
@@ -70,6 +80,7 @@ class UserEntity implements Entity {
 			nickname,
 			passwordHash,
 			passwordSalt,
+			primaryAiCodingTool: null,
 		});
 	}
 
@@ -92,24 +103,23 @@ class UserEntity implements Entity {
 		nickname: string;
 		passwordHash: string;
 		passwordSalt: string;
+		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	} {
 		return {
 			email: this.email,
 			nickname: this.nickname,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
+			primaryAiCodingTool: this.primaryAiCodingTool,
 		};
 	}
 
-	public toObject(): {
-		email: string;
-		id: number;
-		nickname: string;
-	} {
+	public toObject(): UserDto {
 		return {
 			email: this.email,
 			id: this.id as number,
 			nickname: this.nickname,
+			primaryAiCodingTool: this.primaryAiCodingTool,
 		};
 	}
 }

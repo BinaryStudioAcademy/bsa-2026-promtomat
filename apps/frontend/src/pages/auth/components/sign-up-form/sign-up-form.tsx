@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useState } from "react";
 import { useFormState, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
@@ -14,13 +15,12 @@ import {
 } from "~/modules/auth/auth.js";
 
 import styles from "../../styles.module.css";
-import { FormAlert } from "../form-alert/form-alert.js";
 import { PasswordRules } from "../password-rules/password-rules.js";
 import { DEFAULT_SIGN_UP_PAYLOAD } from "./libs/constants.js";
 import { SignUpFormMessage } from "./libs/enums/enums.js";
 
 type Properties = {
-	errorMessage: null | string;
+	error: unknown;
 	hasConflictError: boolean;
 	isLoading: boolean;
 	isSuccess: boolean;
@@ -28,7 +28,7 @@ type Properties = {
 };
 
 const SignUpForm: React.FC<Properties> = ({
-	errorMessage,
+	error,
 	hasConflictError,
 	isLoading,
 	isSuccess,
@@ -67,7 +67,7 @@ const SignUpForm: React.FC<Properties> = ({
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign up</h1>
-			{errorMessage && <FormAlert message={errorMessage} />}
+			<FormAlert error={error} />
 			{isSuccess ? (
 				<FormAlert message={SignUpFormMessage.SUCCESS} variant="success" />
 			) : null}

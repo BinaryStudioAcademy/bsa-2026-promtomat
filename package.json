@@ -10,6 +10,8 @@
 	"scripts": {
 		"git:hook:precommit": "lint-staged",
 		"git:hook:commit": "pnpm exec commitlint --edit",
+		"db:up": "pnpm --filter @promptomat/backend run db:up",
+		"db:down": "pnpm --filter @promptomat/backend run db:down",
 		"build:shared": "pnpm --filter @promptomat/shared run build",
 		"build:frontend": "pnpm --filter @promptomat/frontend run build",
 		"build:backend": "pnpm --filter @promptomat/backend run build",
