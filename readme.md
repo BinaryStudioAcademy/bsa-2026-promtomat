@@ -39,6 +39,7 @@ The diagram reflects the schema produced by the migrations in `apps/backend/src/
 
 ```mermaid
 erDiagram
+    users ||--o{ workspaces : "user_id"
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
 
@@ -54,6 +55,12 @@ erDiagram
 
     workspaces {
         int id PK "auto-increment"
+        int user_id FK "not null, onDelete CASCADE"
+        varchar name "not null, unique together with user_id"
+        text_array stack_tags "not null, defaults to {}"
+        varchar visibility "not null, defaults to private"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
     }
 
     prompts {
