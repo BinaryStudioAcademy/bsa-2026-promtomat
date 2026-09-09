@@ -2,6 +2,14 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
+		// Ignoring the bedrock files below also hides the sole import of
+		// `ApplicationError`: `TextGenerationError` extends it, and nothing
+		// else in the repository references it.
+		"apps/backend/src/libs/exceptions/exceptions.ts": ["exports"],
+		// the bedrock module is currently not consumed
+		"apps/backend/src/libs/modules/bedrock/**": ["files"],
+		// the generator module is currently not consumed
+		"apps/backend/src/libs/modules/generator/**": ["files"],
 		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
 		// consumers: the editing flow (regenerate) and search (#77).
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
@@ -30,7 +38,11 @@ const config: KnipConfig = {
 		".": {},
 		"apps/backend": {
 			entry: ["src/db/migrations/*.ts"],
-			ignoreDependencies: ["pg"],
+			// The AWS SDK is imported only from the ignored bedrock files, so
+			// knip cannot see that usage. knex resolves its driver at runtime
+			// from `DB_DIALECT`, so nothing imports `pg` either; removing it
+			// makes knex throw on the first connection.
+			ignoreDependencies: ["@aws-sdk/client-bedrock-runtime", "pg"],
 		},
 		"apps/frontend": {
 			entry: ["src/libs/hooks/**/*.hook.ts"],

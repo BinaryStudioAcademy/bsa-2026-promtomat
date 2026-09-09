@@ -10,6 +10,11 @@
 	color: var(--text-body);
 }
 
+.required {
+	margin-left: 4px;
+	color: var(--text-accent);
+}
+
 .input {
 	width: 100%;
 	padding: 0 12px;
