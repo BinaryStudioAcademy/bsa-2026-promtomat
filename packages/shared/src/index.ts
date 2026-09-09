@@ -39,7 +39,6 @@ export {
 	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
-	ExceptionMessage,
 	forgotPasswordValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,

@@ -2,9 +2,6 @@ import {
 	AbstractModel,
 	DatabaseTableName,
 } from "~/libs/modules/database/database.js";
-import { type ValueOf } from "~/libs/types/types.js";
-
-import { AiCodingTool } from "./libs/enums/enums.js";
 
 import { type PrimaryAiCodingTool } from "./libs/types/types.js";
 

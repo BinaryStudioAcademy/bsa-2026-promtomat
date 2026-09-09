@@ -10,17 +10,17 @@ const config: KnipConfig = {
 		"apps/backend/src/libs/modules/bedrock/**": ["files"],
 		// the generator module is currently not consumed
 		"apps/backend/src/libs/modules/generator/**": ["files"],
-		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
-		// consumers: the editing flow (regenerate) and search (#77).
-		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
-			"types",
-		],
 		// The in-memory mail fake is exported ahead of its consumer: password
 		// reset (#83) needs it to assert delivery without SMTP, but the
 		// repository has no test runner yet.
 		// TODO: Delete both lines when one lands.
 		"apps/backend/src/libs/modules/mail/fake-mail.service.ts": ["exports"],
 		"apps/backend/src/libs/modules/mail/mail.ts": ["exports"],
+		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
+		// consumers: the editing flow (regenerate) and search (#77).
+		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
+			"types",
+		],
 		// Overlay mechanism for later consumer tickets (#14, #22, #68, #70).
 		// Nothing in the app opens a modal or confirmation in this change.
 		"apps/frontend/src/libs/components/confirmation/**": ["files"],

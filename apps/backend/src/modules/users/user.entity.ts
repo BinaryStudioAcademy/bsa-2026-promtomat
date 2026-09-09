@@ -1,6 +1,4 @@
-import { type Entity, type ValueOf } from "~/libs/types/types.js";
-
-import { AiCodingTool } from "./libs/enums/enums.js";
+import { type Entity } from "~/libs/types/types.js";
 
 import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
 
@@ -116,12 +114,6 @@ class UserEntity implements Entity {
 		};
 	}
 
-	public toObject(): {
-		email: string;
-		id: number;
-		nickname: string;
-		primaryAiCodingTool: null | ValueOf<typeof AiCodingTool>;
-	} {
 	public toObject(): UserDto {
 		return {
 			email: this.email,

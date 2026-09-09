@@ -1,4 +1,3 @@
-import React, { useId } from "react";
 import React, { useCallback, useId } from "react";
 import {
 	type Control,
@@ -17,10 +16,9 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
-	isDisabled?: boolean;
-	isRequired?: boolean;
 	descriptionId?: string;
 	isDisabled?: boolean;
+	isRequired?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	options: SelectOption[];
