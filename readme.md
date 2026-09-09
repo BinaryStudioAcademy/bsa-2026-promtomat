@@ -35,13 +35,16 @@ the project expects.
 (`apps/backend/src/libs/modules/database/abstract.model.ts`), rather than being specific to `users`. The `migrations`
 table is knex's own bookkeeping table, not application data, so it is excluded below.
 
-The diagram reflects the schema produced by the migrations in `apps/backend/src/db/migrations`.
+The diagram reflects the schema produced by the migrations in `apps/backend/src/db/migrations`. The `vector` type of
+`prompt_embeddings.embedding` comes from the [pgvector](https://github.com/pgvector/pgvector) extension, which the
+migrations enable.
 
 ```mermaid
 erDiagram
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
     users ||--o{ workspaces : "user_id"
+    prompts ||--o| prompt_embeddings : "prompt_id"
 
     users {
         int id PK "auto-increment"
@@ -70,6 +73,16 @@ erDiagram
         varchar task_intent "not null"
         text prompt_body "not null"
         int efficiency_score "not null, check(1-10)"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    prompt_embeddings {
+        int id PK "auto-increment"
+        int prompt_id FK "not null, unique, onDelete CASCADE"
+        vector embedding "not null, vector(1024)"
+        varchar model_id "not null"
+        varchar source_hash "not null, sha256 of the embedded text"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }
