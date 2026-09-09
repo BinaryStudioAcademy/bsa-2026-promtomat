@@ -9,6 +9,7 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserProfileSummaryResponseDto,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -37,6 +38,26 @@ class UserService {
 		this.hashing = hashing;
 		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
+	}
+
+	private getPromptSummary(): {
+		averageScore: number;
+		totalPrompts: number;
+	} {
+		return {
+			averageScore: 7.8,
+			totalPrompts: 42,
+		};
+	}
+
+	private getUserSummary(): {
+		memberSince: string;
+		primaryAiCodingTool: string;
+	} {
+		return {
+			memberSince: new Date().toString(),
+			primaryAiCodingTool: "claude_code",
+		};
 	}
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
@@ -101,6 +122,20 @@ class UserService {
 		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
+	}
+
+	public getProfileSummary(user: UserDto): UserProfileSummaryResponseDto {
+		const { averageScore, totalPrompts } = this.getPromptSummary();
+
+		const { memberSince, primaryAiCodingTool } = this.getUserSummary();
+
+		return {
+			averageScore,
+			memberSince,
+			nickname: user.nickname,
+			primaryAiCodingTool,
+			totalPrompts,
+		};
 	}
 }
 

@@ -53,6 +53,7 @@ export {
 export {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserProfileSummaryResponseDto,
 	UserErrorMessage,
 	UsersApiPath,
 } from "./modules/users/users.js";
