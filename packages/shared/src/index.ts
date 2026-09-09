@@ -5,6 +5,7 @@ export {
 	ErrorCode,
 } from "./libs/enums/enums.js";
 export {
+	ApplicationError,
 	AuthError,
 	HTTPError,
 	ValidationError,
@@ -51,11 +52,16 @@ export {
 	PromptsApiPath,
 } from "./modules/prompts/prompts.js";
 export {
+	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserGetAllResponseDto,
 	type UserProfileSummaryResponseDto,
+	type UserUpdateRequestDto,
+	AiCodingTool,
+	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
+	UserValidationMessage,
 } from "./modules/users/users.js";
 export {
 	type WorkspaceCreateRequestDto,

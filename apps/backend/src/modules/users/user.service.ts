@@ -10,6 +10,7 @@ import {
 	type UserDto,
 	type UserGetAllResponseDto,
 	type UserProfileSummaryResponseDto,
+	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -40,6 +41,16 @@ class UserService {
 		this.workspaceService = workspaceService;
 	}
 
+	private checkHasProfileChanged(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): boolean {
+		return (
+			currentUser.nickname !== payload.nickname ||
+			currentUser.primaryAiCodingTool !== payload.primaryAiCodingTool
+		);
+	}
+
 	private getPromptSummary(): {
 		averageScore: number;
 		totalPrompts: number;
@@ -47,16 +58,6 @@ class UserService {
 		return {
 			averageScore: 7.8,
 			totalPrompts: 42,
-		};
-	}
-
-	private getUserSummary(): {
-		memberSince: string;
-		primaryAiCodingTool: string;
-	} {
-		return {
-			memberSince: new Date().toString(),
-			primaryAiCodingTool: "claude_code",
 		};
 	}
 
@@ -127,15 +128,29 @@ class UserService {
 	public getProfileSummary(user: UserDto): UserProfileSummaryResponseDto {
 		const { averageScore, totalPrompts } = this.getPromptSummary();
 
-		const { memberSince, primaryAiCodingTool } = this.getUserSummary();
-
 		return {
 			averageScore,
-			memberSince,
+			memberSince: new Date().toString(),
 			nickname: user.nickname,
-			primaryAiCodingTool,
+			primaryAiCodingTool: user.primaryAiCodingTool,
 			totalPrompts,
 		};
+	}
+
+	public async updateProfile(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): Promise<UserDto> {
+		if (!this.checkHasProfileChanged(currentUser, payload)) {
+			return currentUser;
+		}
+
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			payload,
+		);
+
+		return updatedUser.toObject();
 	}
 }
 

@@ -1,8 +1,10 @@
+import { type PrimaryAiCodingTool } from "./primary-ai-coding-tool.type.js";
+
 type UserProfileSummaryResponseDto = {
 	averageScore: null | number;
 	memberSince: string;
 	nickname: string;
-	primaryAiCodingTool: null | string;
+	primaryAiCodingTool: null | PrimaryAiCodingTool;
 	totalPrompts: number;
 };
 

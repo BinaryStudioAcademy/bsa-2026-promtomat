@@ -56,6 +56,24 @@ class BaseConfig implements Config {
 					format: Number,
 				},
 			},
+			AWS: {
+				REGION: {
+					default: null,
+					doc: "Region for AWS resources",
+					env: "AWS_REGION",
+					format: String,
+				},
+			},
+			BEDROCK: {
+				MODEL: {
+					ID: {
+						default: null,
+						doc: "Id of the model",
+						env: "BEDROCK_MODEL_ID",
+						format: String,
+					},
+				},
+			},
 			DB: {
 				DIALECT: {
 					default: null,
