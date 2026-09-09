@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
+
 import {
 	EMPTY_SELECTION_LENGTH,
-	FIRST_ELEMENT_INDEX,
 	INDEX_STEP,
 	NO_ACTIVE_SUGGESTION,
 } from "../constants/constants.js";

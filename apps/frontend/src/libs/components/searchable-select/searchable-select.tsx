@@ -14,6 +14,7 @@ import {
 	useController,
 } from "react-hook-form";
 
+import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 import { ControlSize, IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -21,7 +22,6 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { Icon } from "../icon/icon.js";
 import {
 	EMPTY_SELECTION_LENGTH,
-	FIRST_ELEMENT_INDEX,
 	SUGGESTIONS_GAP_PX,
 } from "./libs/constants/constants.js";
 import { useSelectedValues, useSuggestions } from "./libs/hooks/hooks.js";

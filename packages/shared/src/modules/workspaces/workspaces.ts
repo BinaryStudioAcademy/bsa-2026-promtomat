@@ -6,6 +6,7 @@ export {
 } from "./libs/enums/enums.js";
 export {
 	checkIsValidTechStackTag,
+	FIRST_ELEMENT_INDEX,
 	getTechStackTagSuggestions,
 	MAX_TAGS_COUNT,
 	normalizeTagName,
