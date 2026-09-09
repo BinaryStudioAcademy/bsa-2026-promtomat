@@ -1,0 +1,3 @@
+const MAX_SUGGESTIONS = 5;
+
+export { MAX_SUGGESTIONS };

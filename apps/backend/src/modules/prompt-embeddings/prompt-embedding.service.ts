@@ -1,3 +1,4 @@
+import { PromptSearchError } from "~/libs/exceptions/exceptions.js";
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
 	EmbeddingFailedError,
@@ -284,6 +285,38 @@ class PromptEmbeddingService {
 
 	public findNearest(query: NearestPromptQuery): Promise<NearestPrompt[]> {
 		return this.promptEmbeddingRepository.findNearest(query);
+	}
+
+	public async findNearestByQuery(
+		query: string,
+		limit: number,
+		workspaceId: number,
+	): Promise<NearestPrompt[]> {
+		try {
+			const embeddings = await this.embeddingService.embed([query]);
+			const [embedding] = embeddings;
+
+			if (!embedding) {
+				throw new PromptEmbeddingError(
+					PromptEmbeddingErrorMessage.EMPTY_RESULT,
+				);
+			}
+
+			return await this.findNearest({
+				embedding,
+				limit,
+				workspaceId,
+			});
+		} catch (error) {
+			if (
+				error instanceof EmbeddingNotReadyError ||
+				error instanceof EmbeddingFailedError
+			) {
+				throw PromptSearchError.unavailable();
+			}
+
+			throw error;
+		}
 	}
 
 	public async regenerateForPrompt(

@@ -9,9 +9,18 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
+import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
-import { type PromptCreateRequestDto } from "./libs/types/types.js";
-import { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import {
+	type PromptCreateRequestDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptSearchResult,
+} from "./libs/types/types.js";
+import {
+	promptCreateValidationSchema,
+	searchPromptsValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
 /*** @swagger
@@ -65,6 +74,16 @@ class PromptController extends BaseController {
 			validation: {
 				body: promptCreateValidationSchema,
 			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.searchCandidates(
+					options as APIHandlerOptions<{ query: PromptSearchRequestDto }>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.SEARCH,
+			validation: { query: searchPromptsValidationSchema },
 		});
 	}
 
@@ -155,6 +174,117 @@ class PromptController extends BaseController {
 		return {
 			payload: await this.promptService.create(payload),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/search:
+	 *    get:
+	 *      description: Returns ranked prompt candidates for a task description within a workspace
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: description
+	 *          required: true
+	 *          schema:
+	 *            type: string
+	 *          description: Task description to search for
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *          description: Workspace to search within
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  items:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        promptId:
+	 *                          type: number
+	 *                        taskIntent:
+	 *                          type: string
+	 *                        efficiencyScore:
+	 *                          type: number
+	 *                          minimum: 1
+	 *                          maximum: 10
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        404:
+	 *          description: Workspace not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  details:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        message:
+	 *                          type: string
+	 *                        path:
+	 *                          type: array
+	 *                          items:
+	 *                            type: string
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 */
+	private async searchCandidates(
+		options: APIHandlerOptions<{ query: PromptSearchRequestDto }>,
+	): Promise<APIHandlerResponse> {
+		const promptCandidates = await this.promptService.findCandidates({
+			...options.query,
+			limit: MAX_SUGGESTIONS,
+			userId: options.user?.id as number,
+		});
+
+		const payload: PromptSearchResponseDto = {
+			items: promptCandidates.map((promptCandidate): PromptSearchResult => {
+				return {
+					efficiencyScore: promptCandidate.efficiencyScore,
+					promptId: promptCandidate.promptId,
+					taskIntent: promptCandidate.taskIntent,
+				};
+			}),
+		};
+
+		return {
+			payload,
+			status: HTTPCode.OK,
 		};
 	}
 }
