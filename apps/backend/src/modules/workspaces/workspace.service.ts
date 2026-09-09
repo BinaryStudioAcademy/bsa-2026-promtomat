@@ -60,13 +60,13 @@ class WorkspaceService {
 		userId: number,
 		workspaceName?: string,
 	): Promise<WorkspaceGetAllResponseDto> {
-		const workspaceItems = await this.workspaceRepository.findAllByUserId(
+		const workspaces = await this.workspaceRepository.findAllByUserId(
 			userId,
 			workspaceName,
 		);
 
 		return {
-			items: workspaceItems,
+			items: workspaces,
 		};
 	}
 
