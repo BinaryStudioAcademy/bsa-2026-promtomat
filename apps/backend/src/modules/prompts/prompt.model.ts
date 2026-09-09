@@ -8,10 +8,7 @@ import {
 
 import { UserColumnName } from "../users/libs/enums/enums.js";
 import { UserModel } from "../users/user.model.js";
-import {
-	WorkspaceColumnName,
-	WorkspaceVisibility,
-} from "../workspaces/libs/enums/enums.js";
+import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
 import { WorkspaceModel } from "../workspaces/workspace.model.js";
 import { PromptColumnName, PromptScope } from "./libs/enums/enums.js";
 
@@ -51,14 +48,7 @@ class PromptModel extends AbstractModel {
 				if (scope === PromptScope.MINE) {
 					builder.where(`${DatabaseTableName.PROMPTS}.userId`, userId);
 				} else {
-					builder.where((subQuery) => {
-						subQuery
-							.where(
-								`${DatabaseTableName.WORKSPACES}.visibility`,
-								WorkspaceVisibility.PUBLIC,
-							)
-							.orWhere(`${DatabaseTableName.WORKSPACES}.userId`, userId);
-					});
+					builder.where(`${DatabaseTableName.WORKSPACES}.userId`, userId);
 				}
 
 				if (workspaceId) {

@@ -3,13 +3,17 @@ import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import {
+	DEFAULT_LIMIT,
+	DEFAULT_PAGE,
+	ROUND_FACTOR,
+	ZERO_VALUE,
+} from "./libs/constants/constants.js";
 import { PromptColumnName } from "./libs/enums/enums.js";
-import { type PromptGetQueryDto } from "./libs/types/types.js";
-
-const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 10;
-const ZERO_VALUE = 0;
-const ROUND_FACTOR = 10;
+import {
+	type PromptGetQueryDto,
+	type PromptRepositoryFindAllResponseDto,
+} from "./libs/types/types.js";
 
 class PromptRepository {
 	private promptModel: typeof PromptModel;
@@ -34,13 +38,7 @@ class PromptRepository {
 	}: {
 		query: PromptGetQueryDto;
 		userId: number;
-	}): Promise<{
-		averageScore: null | number;
-		items: PromptModel[];
-		page: number;
-		pageSize: number;
-		totalCount: number;
-	}> {
+	}): Promise<PromptRepositoryFindAllResponseDto> {
 		const {
 			limit = DEFAULT_LIMIT,
 			page = DEFAULT_PAGE,
@@ -65,17 +63,19 @@ class PromptRepository {
 				workspaceId,
 			});
 
-		const [aggregation] = (await baseQuery
+		const [aggregation] = await baseQuery
 			.clone()
 			.clearSelect()
 			.clearOrder()
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
-			.avg(
-				`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`,
-			)) as unknown as {
-			averageScore: null | number | string;
-			count: number | string;
-		}[];
+			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
+			.castTo<
+				{
+					averageScore: null | number | string;
+					count: number | string;
+				}[]
+			>()
+			.execute();
 
 		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
 		const rawAvg = aggregation?.averageScore

@@ -1,5 +1,5 @@
 const PromptScope = {
-	GLOBAL: "global",
+	ALL: "all",
 	MINE: "mine",
 } as const;
 
