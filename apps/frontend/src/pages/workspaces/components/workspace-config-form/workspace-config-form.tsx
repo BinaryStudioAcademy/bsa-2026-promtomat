@@ -7,6 +7,7 @@ import {
 	ButtonVariant,
 	ControlSize,
 	ErrorCode,
+	FormValidationMode,
 	HTTPCode,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
@@ -50,7 +51,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 			name: workspace.name,
 			stackTags: [...workspace.stackTags],
 		},
-		mode: "onChange",
+		mode: FormValidationMode.ON_CHANGE,
 		validationSchema: workspaceUpdateValidationSchema,
 	});
 
