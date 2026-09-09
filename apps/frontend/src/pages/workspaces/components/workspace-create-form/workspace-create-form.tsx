@@ -6,8 +6,11 @@ import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
-import { getTechStackTagSuggestions } from "~/libs/helpers/helpers.js";
+import {
+	ButtonVariant,
+	ControlSize,
+	TechStackTechDictionary,
+} from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -61,12 +64,12 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 				/>
 				<SearchableSelect
 					control={control}
-					getSuggestions={getTechStackTagSuggestions}
 					isDisabled={false}
 					label="Add tags"
 					name={stackTagsField.name}
 					placeholder="Enter tags"
 					size={ControlSize.MD}
+					valuesDictionary={Object.values(TechStackTechDictionary)}
 				/>
 				<div className={styles["footer"]}>
 					<Button

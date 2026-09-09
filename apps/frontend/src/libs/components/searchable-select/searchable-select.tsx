@@ -29,22 +29,99 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
-	getSuggestions: (inpurValue: string) => string[];
 	isDisabled?: boolean;
 	label: string;
 	name: FieldPathByValue<T, string[]>;
 	placeholder: string;
 	size?: ValueOf<typeof ControlSize>;
+	valuesDictionary: string[];
 };
+
+type SuggestionsListProperties = {
+	activeIndex: number;
+	activeSuggestionReference: React.RefObject<HTMLLIElement | null>;
+	inputRect: DOMRect;
+	onSuggestionMouseDown: (value: string) => (event: React.MouseEvent) => void;
+	onSuggestionMouseMove: (index: number) => () => void;
+	suggestions: string[];
+	suggestionsListId: string;
+};
+
+const SuggestionsList = ({
+	activeIndex,
+	activeSuggestionReference,
+	inputRect,
+	onSuggestionMouseDown,
+	onSuggestionMouseMove,
+	suggestions,
+	suggestionsListId,
+}: SuggestionsListProperties): React.ReactPortal =>
+	createPortal(
+		<ul
+			className={styles["suggestions"]}
+			id={suggestionsListId}
+			role="listbox"
+			style={{
+				left: inputRect.left,
+				position: "fixed",
+				top: inputRect.bottom + SUGGESTIONS_GAP_PX,
+				width: inputRect.width,
+			}}
+		>
+			{suggestions.map((value, index) => (
+				<li
+					aria-selected={index === activeIndex}
+					className={getValidClasses(
+						styles["suggestion"],
+						index === activeIndex && styles["suggestion-active"],
+					)}
+					id={`${suggestionsListId}-option-${String(index)}`}
+					key={value}
+					onMouseDown={onSuggestionMouseDown(value)}
+					onMouseMove={onSuggestionMouseMove(index)}
+					ref={index === activeIndex ? activeSuggestionReference : undefined}
+					role="option"
+				>
+					{value}
+				</li>
+			))}
+		</ul>,
+		document.body,
+	);
+
+type SelectedValueChipProperties = {
+	isDisabled: boolean;
+	onRemove: (value: string) => () => void;
+	value: string;
+};
+
+const SelectedValueChip = ({
+	isDisabled,
+	onRemove,
+	value,
+}: SelectedValueChipProperties): React.JSX.Element => (
+	<li className={styles["value"]}>
+		<span className={styles["value-text"]}>{value}</span>
+		<button
+			aria-label={`Remove ${value}`}
+			className={styles["remove"]}
+			disabled={isDisabled}
+			onClick={onRemove(value)}
+			type="button"
+		>
+			<Icon className={styles["remove-icon"]} iconName={IconName.CLOSE} />
+		</button>
+	</li>
+);
 
 const SearchableSelect = <T extends FieldValues>({
 	control,
-	getSuggestions,
 	isDisabled = false,
 	label,
 	name,
 	placeholder,
 	size = ControlSize.MD,
+	valuesDictionary,
 }: Properties<T>): React.JSX.Element => {
 	const {
 		field: { onBlur, onChange, value: fieldValue },
@@ -81,10 +158,10 @@ const SearchableSelect = <T extends FieldValues>({
 		setActiveIndexDirectly,
 		suggestions,
 	} = useSuggestions({
-		getSuggestions,
 		inputValue,
 		isOpen: isSuggestionsOpen,
 		selectedValues,
+		valuesDictionary,
 	});
 
 	useLayoutEffect(() => {
@@ -202,21 +279,12 @@ const SearchableSelect = <T extends FieldValues>({
 			>
 				<ul className={styles["values"]}>
 					{selectedValues.map((value) => (
-						<li className={styles["value"]} key={value}>
-							<span className={styles["value-text"]}>{value}</span>
-							<button
-								aria-label={`Remove ${value}`}
-								className={styles["remove"]}
-								disabled={isDisabled}
-								onClick={handleRemoveValueClick(value)}
-								type="button"
-							>
-								<Icon
-									className={styles["remove-icon"]}
-									iconName={IconName.CLOSE}
-								/>
-							</button>
-						</li>
+						<SelectedValueChip
+							isDisabled={isDisabled}
+							key={value}
+							onRemove={handleRemoveValueClick}
+							value={value}
+						/>
 					))}
 				</ul>
 
@@ -231,7 +299,7 @@ const SearchableSelect = <T extends FieldValues>({
 					aria-describedby={
 						errorMessage === undefined ? undefined : errorMessageId
 					}
-					aria-expanded={suggestions.length > FIRST_ELEMENT_INDEX}
+					aria-expanded={hasSuggestions}
 					aria-invalid={hasError || undefined}
 					className={styles["input"]}
 					disabled={isDisabled}
@@ -249,42 +317,17 @@ const SearchableSelect = <T extends FieldValues>({
 				/>
 			</div>
 
-			{suggestions.length > FIRST_ELEMENT_INDEX &&
-				inputRect &&
-				createPortal(
-					<ul
-						className={styles["suggestions"]}
-						id={suggestionsListId}
-						role="listbox"
-						style={{
-							left: inputRect.left,
-							position: "fixed",
-							top: inputRect.bottom + SUGGESTIONS_GAP_PX,
-							width: inputRect.width,
-						}}
-					>
-						{suggestions.map((value, index) => (
-							<li
-								aria-selected={index === activeIndex}
-								className={getValidClasses(
-									styles["suggestion"],
-									index === activeIndex && styles["suggestion-active"],
-								)}
-								id={`${suggestionsListId}-option-${String(index)}`}
-								key={value}
-								onMouseDown={handleSuggestionMouseDown(value)}
-								onMouseMove={handleSuggestionMouseMove(index)}
-								ref={
-									index === activeIndex ? activeSuggestionReference : undefined
-								}
-								role="option"
-							>
-								{value}
-							</li>
-						))}
-					</ul>,
-					document.body,
-				)}
+			{hasSuggestions && inputRect && (
+				<SuggestionsList
+					activeIndex={activeIndex}
+					activeSuggestionReference={activeSuggestionReference}
+					inputRect={inputRect}
+					onSuggestionMouseDown={handleSuggestionMouseDown}
+					onSuggestionMouseMove={handleSuggestionMouseMove}
+					suggestions={suggestions}
+					suggestionsListId={suggestionsListId}
+				/>
+			)}
 
 			<span className={styles["message"]} id={errorMessageId}>
 				{errorMessage}

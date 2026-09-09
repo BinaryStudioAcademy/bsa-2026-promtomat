@@ -7,13 +7,14 @@ import {
 	INDEX_STEP,
 	NO_ACTIVE_SUGGESTION,
 } from "../constants/constants.js";
+import { getValuesSuggestions } from "../helpers/helpers.js";
 import { type UseSuggestionsProperties } from "../types/types.js";
 
 const useSuggestions = ({
-	getSuggestions,
 	inputValue,
 	isOpen,
 	selectedValues,
+	valuesDictionary,
 }: UseSuggestionsProperties) => {
 	const [activeIndex, setActiveIndex] = useState(NO_ACTIVE_SUGGESTION);
 
@@ -22,10 +23,10 @@ const useSuggestions = ({
 			return [];
 		}
 
-		return getSuggestions(inputValue).filter(
+		return getValuesSuggestions(inputValue, valuesDictionary).filter(
 			(tag) => !selectedValues.includes(tag),
 		);
-	}, [getSuggestions, inputValue, isOpen, selectedValues]);
+	}, [inputValue, isOpen, valuesDictionary, selectedValues]);
 
 	useEffect(() => {
 		setActiveIndex(
