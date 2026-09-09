@@ -40,7 +40,7 @@ The diagram reflects the schema produced by the migrations in `apps/backend/src/
 ```mermaid
 erDiagram
     users ||--o{ prompts : "user_id"
-    workspaces ||--o{ prompts : "prompt_id"
+    workspaces ||--o{ prompts : "workspace_id"
 
     users {
         int id PK "auto-increment"
