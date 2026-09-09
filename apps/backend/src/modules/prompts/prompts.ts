@@ -10,9 +10,12 @@ import { PromptService } from "./prompt.service.js";
 const promptRepository = new PromptRepository(PromptModel);
 const promptService = new PromptService(
 	promptRepository,
-	workspaceService,
 	promptEmbeddingService,
 );
-const promptController = new PromptController(logger, promptService);
+const promptController = new PromptController(
+	logger,
+	promptService,
+	workspaceService,
+);
 
 export { promptController };

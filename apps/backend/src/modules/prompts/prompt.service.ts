@@ -1,6 +1,5 @@
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
-import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import {
 	type PromptCreatePayload,
 	type PromptDto,
@@ -13,23 +12,17 @@ class PromptService {
 
 	private promptRepository: PromptRepository;
 
-	private workspaceService: WorkspaceService;
-
 	public constructor(
 		promptRepository: PromptRepository,
-		workspaceService: WorkspaceService,
 		promptEmbeddingService: PromptEmbeddingService,
 	) {
 		this.promptRepository = promptRepository;
-		this.workspaceService = workspaceService;
 		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
 		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
 			payload;
-
-		await this.workspaceService.checkUserAccess(workspaceId, userId);
 
 		const prompt = await this.promptRepository.create(
 			PromptEntity.initializeNew({
