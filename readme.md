@@ -39,12 +39,30 @@ The diagram reflects the schema produced by the migrations in `apps/backend/src/
 
 ```mermaid
 erDiagram
+    users ||--o{ prompts : "user_id"
+    workspaces ||--o{ prompts : "workspace_id"
+
     users {
         int id PK "auto-increment"
         varchar email UK "not null"
         text password_hash "not null"
         text password_salt "not null"
         varchar nickname UK "not null, max 25"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    workspaces {
+        int id PK "auto-increment"
+    }
+
+    prompts {
+        int id PK "auto-increment"
+        int user_id FK "not null, onDelete CASCADE"
+        int workspace_id FK "not null, onDelete CASCADE"
+        varchar task_intent "not null"
+        text prompt_body "not null"
+        int efficiency_score "not null, check(1-10)"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }
