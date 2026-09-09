@@ -14,7 +14,11 @@ type Properties = {
 	isDisabled?: boolean;
 	isLoading?: boolean;
 	label: string;
+	onBlur?: () => void;
 	onClick?: () => void;
+	onFocus?: () => void;
+	onMouseEnter?: () => void;
+	onMouseLeave?: () => void;
 	size?: ValueOf<typeof ControlSize>;
 	type: "button" | "submit";
 	variant?: ValueOf<typeof ButtonVariant>;
@@ -25,7 +29,11 @@ const Button: React.FC<Properties> = ({
 	isDisabled = false,
 	isLoading = false,
 	label,
+	onBlur,
 	onClick,
+	onFocus,
+	onMouseEnter,
+	onMouseLeave,
 	size = ControlSize.MD,
 	type,
 	variant = ButtonVariant.PRIMARY,
@@ -38,7 +46,11 @@ const Button: React.FC<Properties> = ({
 			className,
 		)}
 		disabled={isDisabled || isLoading}
+		onBlur={onBlur}
 		onClick={onClick}
+		onFocus={onFocus}
+		onMouseEnter={onMouseEnter}
+		onMouseLeave={onMouseLeave}
 		type={type}
 	>
 		{label}

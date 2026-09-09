@@ -34,9 +34,9 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
-	ExceptionMessage,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
@@ -44,6 +44,12 @@ export {
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
+export {
+	type PromptCreateRequestDto,
+	type PromptDto,
+	promptCreateValidationSchema,
+	PromptsApiPath,
+} from "./modules/prompts/prompts.js";
 export {
 	type UserDto,
 	type UserGetAllResponseDto,
