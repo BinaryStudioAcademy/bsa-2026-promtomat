@@ -51,10 +51,15 @@ export {
 	PromptsApiPath,
 } from "./modules/prompts/prompts.js";
 export {
+	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
+	AiCodingTool,
+	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
+	UserValidationMessage,
 } from "./modules/users/users.js";
 export {
 	type WorkspaceCreateRequestDto,
