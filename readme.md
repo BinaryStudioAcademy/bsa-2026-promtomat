@@ -41,6 +41,7 @@ The diagram reflects the schema produced by the migrations in `apps/backend/src/
 erDiagram
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
+    users ||--o{ workspaces : "user_id"
 
     users {
         int id PK "auto-increment"
