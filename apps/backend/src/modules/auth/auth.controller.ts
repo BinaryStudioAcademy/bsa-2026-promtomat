@@ -112,10 +112,10 @@ class AuthController extends BaseController {
 	 *             schema:
 	 *               $ref: "#/components/schemas/ValidationError"
 	 */
-	private async forgotPassword(
+	private forgotPassword(
 		options: APIHandlerOptions<{ body: ForgotPasswordRequestDto }>,
-	): Promise<APIHandlerResponse> {
-		await this.authService.requestPasswordReset(options.body);
+	): APIHandlerResponse {
+		this.authService.requestPasswordReset(options.body);
 
 		return {
 			payload: null,

@@ -87,30 +87,38 @@ class AuthService {
 		}
 	}
 
-	public async requestPasswordReset({
-		email,
-	}: ForgotPasswordRequestDto): Promise<void> {
-		const userEntity = await this.userService.findByEmail(email);
+	private async issueResetToken(email: string): Promise<void> {
+		try {
+			const userEntity = await this.userService.findByEmail(email);
 
-		if (!userEntity || !email) {
-			return;
+			if (!userEntity) {
+				return;
+			}
+
+			const { id } = userEntity.toObject();
+			const token = createPasswordResetToken();
+			const expiresAt = new Date(
+				Date.now() + this.tokenTtlMinutes * MILLISECONDS_IN_MINUTE,
+			);
+
+			await this.passwordResetRepository.create(
+				PasswordResetEntity.initializeNew({
+					expiresAt,
+					tokenHash: hashPasswordResetToken(token),
+					userId: id,
+				}),
+			);
+
+			await this.deliverResetLink(email, token);
+		} catch (error) {
+			this.logger.error("Failed to issue a password reset token.", {
+				message: error instanceof Error ? error.message : String(error),
+			});
 		}
+	}
 
-		const { id } = userEntity.toObject();
-		const token = createPasswordResetToken();
-		const expiresAt = new Date(
-			Date.now() + this.tokenTtlMinutes * MILLISECONDS_IN_MINUTE,
-		);
-
-		await this.passwordResetRepository.create(
-			PasswordResetEntity.initializeNew({
-				expiresAt,
-				tokenHash: hashPasswordResetToken(token),
-				userId: id,
-			}),
-		);
-
-		void this.deliverResetLink(email, token);
+	public requestPasswordReset({ email }: ForgotPasswordRequestDto): void {
+		void this.issueResetToken(email);
 	}
 
 	public async signIn(

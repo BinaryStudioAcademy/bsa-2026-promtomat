@@ -38,6 +38,10 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.SETTINGS,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
 										<Workspaces />
 									</PrivateRoute>
 								),
