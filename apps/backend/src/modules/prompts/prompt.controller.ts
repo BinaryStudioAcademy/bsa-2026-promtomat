@@ -1,4 +1,5 @@
 import { APIPath } from "~/libs/enums/enums.js";
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { BaseController } from "~/libs/modules/controller/base-controller.module.js";
 import {
 	type APIHandlerOptions,
@@ -6,7 +7,6 @@ import {
 } from "~/libs/modules/controller/controller.js";
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
-import { type UserDto } from "~/modules/users/libs/types/types.js";
 
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { workspaceQueryAccessHook } from "../workspaces/libs/hooks/workspace-query-access.hook.js";
@@ -112,7 +112,7 @@ class PromptController extends BaseController {
 				this.create(
 					options as APIHandlerOptions<{
 						body: PromptCreateRequestDto;
-					}> & { user: UserDto },
+					}>,
 				),
 			method: HTTPMethod.POST,
 			path: PromptsApiPath.ROOT,
@@ -201,10 +201,12 @@ class PromptController extends BaseController {
 	 *                    type: string
 	 */
 	private async create(
-		options: APIHandlerOptions<{ body: PromptCreateRequestDto }> & {
-			user: UserDto;
-		},
+		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
+		if (options.user === null) {
+			throw AuthError.unauthorized();
+		}
+
 		const payload = {
 			...options.body,
 			userId: options.user.id,
@@ -286,9 +288,7 @@ class PromptController extends BaseController {
 		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.promptService.findProgress(
-				options.query.workspaceId,
-			),
+			payload: await this.promptService.findProgress(options.query.workspaceId),
 			status: HTTPCode.OK,
 		};
 	}
@@ -369,9 +369,7 @@ class PromptController extends BaseController {
 		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.promptService.findRecent(
-				options.query.workspaceId,
-			),
+			payload: await this.promptService.findRecent(options.query.workspaceId),
 			status: HTTPCode.OK,
 		};
 	}

@@ -9,13 +9,13 @@ type Properties = {
 	items: PromptRecentDto[];
 };
 
-const RecentInjections: React.FC<Properties> = ({ items }: Properties) => {
-	const [firstItem] = items;
+const EMPTY_ITEMS_LENGTH = 0;
 
+const RecentInjections: React.FC<Properties> = ({ items }: Properties) => {
 	return (
 		<section className={styles["section"]}>
 			<h2 className={styles["heading"]}>{RecentInjectionsMessage.TITLE}</h2>
-			{firstItem ? (
+			{items.length > EMPTY_ITEMS_LENGTH ? (
 				<ul className={styles["list"]}>
 					{items.map((item) => {
 						return (
