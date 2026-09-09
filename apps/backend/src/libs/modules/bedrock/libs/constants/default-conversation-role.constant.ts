@@ -1,0 +1,3 @@
+const DEFAULT_CONVERSATION_ROLE = "user" as const;
+
+export { DEFAULT_CONVERSATION_ROLE };

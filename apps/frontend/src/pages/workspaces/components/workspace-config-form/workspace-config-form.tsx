@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import {
 	ButtonVariant,
@@ -20,7 +21,6 @@ import {
 	useUpdateWorkspaceMutation,
 	workspaceUpdateValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
-import { FormAlert } from "~/pages/auth/components/form-alert/form-alert.js";
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";

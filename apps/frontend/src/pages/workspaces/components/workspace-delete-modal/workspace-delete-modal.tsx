@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import {
 	ButtonVariant,
 	ErrorCode,
@@ -12,7 +13,6 @@ import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.h
 import { WorkspacesErrorCode } from "~/modules/workspaces/libs/enums/enums.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import { useDeleteWorkspaceMutation } from "~/modules/workspaces/workspaces.js";
-import { FormAlert } from "~/pages/auth/components/form-alert/form-alert.js";
 
 import {
 	WorkspaceDeleteMessage,
