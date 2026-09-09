@@ -43,6 +43,7 @@ migrations enable.
 erDiagram
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
+    users ||--o{ workspaces : "user_id"
     prompts ||--o| prompt_embeddings : "prompt_id"
 
     users {
@@ -57,6 +58,12 @@ erDiagram
 
     workspaces {
         int id PK "auto-increment"
+        int user_id FK "not null, onDelete CASCADE, unique with name"
+        varchar name "not null, unique with user_id"
+        text[] stack_tags "not null, default {}"
+        varchar visibility "not null, default 'private'"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
     }
 
     prompts {
