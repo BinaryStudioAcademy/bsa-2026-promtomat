@@ -8,6 +8,7 @@ export {
 	ApplicationError,
 	AuthError,
 	HTTPError,
+	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
@@ -48,8 +49,13 @@ export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptSearchResult,
 	promptCreateValidationSchema,
 	PromptsApiPath,
+	PromptsErrorMessage,
+	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,
