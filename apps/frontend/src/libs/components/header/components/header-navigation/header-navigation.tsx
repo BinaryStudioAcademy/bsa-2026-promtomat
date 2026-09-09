@@ -35,6 +35,10 @@ const HeaderNavigation: React.FC<Properties> = ({
 						<Link to={AppRoute.ROOT}>Home</Link>
 					</li>
 					<li>
+						<Link to={AppRoute.WORKSPACES}>Workspaces</Link>
+					</li>
+
+					<li>
 						<Link to={AppRoute.TRAINING}>Training</Link>
 					</li>
 					<li className={styles["identity-label"]}>{user.email}</li>
