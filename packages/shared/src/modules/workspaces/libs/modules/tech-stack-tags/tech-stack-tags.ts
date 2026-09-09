@@ -4,10 +4,9 @@ export {
 	MIN_INPUT_LENGTH,
 	SUGGESTION_LIMIT,
 } from "./constants/constants.js";
-export { TagsErrorMessages, TECH_STACK_VARIANTS } from "./enums/enums.js";
+export { TagsErrorMessages, TechStackTechDictionary } from "./enums/enums.js";
 export {
 	checkIsValidTechStackTag,
-	getTechStackTagSuggestions,
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,

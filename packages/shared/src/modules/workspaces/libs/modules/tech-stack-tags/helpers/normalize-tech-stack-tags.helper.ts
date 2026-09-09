@@ -1,8 +1,8 @@
-import { VARIANT_TO_CANONICAL } from "../enums/enums.js";
+import { VariantToCanonical } from "../enums/enums.js";
 
 const normalizeTechStackTag = (tag: string): string => {
 	const normalizedTag = normalizeTagName(tag);
-	const canonicalTag = VARIANT_TO_CANONICAL[normalizedTag];
+	const canonicalTag = VariantToCanonical[normalizedTag];
 
 	return canonicalTag ?? tag;
 };

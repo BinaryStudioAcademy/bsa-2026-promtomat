@@ -1,4 +1,4 @@
-const TECH_STACK_DICTIONARY = {
+const TechStackTechDictionary = {
 	ADONIS_JS: "AdonisJS",
 	ALPINE_JS: "Alpine.js",
 	AMQP: "AMQP",
@@ -177,4 +177,4 @@ const TECH_STACK_DICTIONARY = {
 	ZUSTAND: "Zustand",
 } as const;
 
-export { TECH_STACK_DICTIONARY };
+export { TechStackTechDictionary };

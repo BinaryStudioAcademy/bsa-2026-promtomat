@@ -7,13 +7,12 @@ export {
 export {
 	checkIsValidTechStackTag,
 	FIRST_ELEMENT_INDEX,
-	getTechStackTagSuggestions,
 	MAX_TAGS_COUNT,
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	TECH_STACK_VARIANTS,
 	TechStackTagSchema,
+	TechStackTechDictionary,
 } from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {
 	type WorkspaceCreateRequestDto,
