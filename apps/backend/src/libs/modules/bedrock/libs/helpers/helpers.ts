@@ -1,2 +1,2 @@
 export { checkIsTextTruncated } from "./check-is-text-truncated.helper.js";
-export { convertBedrockErrorToTextGenerationError } from "./convert-bedrock-error-to-text-generation-error.helper.js";
+export { convertToBedrockServiceError } from "./convert-to-bedrock-service-error.helper.js";

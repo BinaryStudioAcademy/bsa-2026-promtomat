@@ -11,7 +11,7 @@ import {
 } from "./libs/constants/constants.js";
 import {
 	checkIsTextTruncated,
-	convertBedrockErrorToTextGenerationError,
+	convertToBedrockServiceError,
 } from "./libs/helpers/helpers.js";
 import {
 	type CommandOptions,
@@ -98,7 +98,7 @@ class Bedrock {
 				text,
 			};
 		} catch (error) {
-			throw convertBedrockErrorToTextGenerationError(error);
+			throw convertToBedrockServiceError(error);
 		}
 	}
 }

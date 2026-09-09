@@ -1,4 +1,8 @@
-export { PromptsApiPath } from "./libs/enums/enums.js";
+export {
+	PromptsApiPath,
+	PromptsErrorCode,
+	PromptsErrorMessage,
+} from "./libs/enums/enums.js";
 export {
 	type PromptCreateRequestDto,
 	type PromptDto,

@@ -1,0 +1,3 @@
+const LABEL_GENERATION_TOPP = 1;
+
+export { LABEL_GENERATION_TOPP };

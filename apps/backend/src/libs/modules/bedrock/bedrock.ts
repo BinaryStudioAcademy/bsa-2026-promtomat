@@ -8,9 +8,10 @@ const bedrock = new Bedrock({
 });
 
 export { bedrock };
-export { TextGenerationError } from "./libs/exceptions/text-generation-error.exception.js";
+export { BedrockServiceError } from "./libs/exceptions/exceptions.js";
 export {
 	type BedrockInterface,
 	type CommandOptions,
+	type CommandOutput,
 	type StructuredOutputSchema,
 } from "./libs/types/types.js";

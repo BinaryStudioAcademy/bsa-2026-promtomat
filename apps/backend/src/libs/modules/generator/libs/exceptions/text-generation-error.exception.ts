@@ -24,14 +24,6 @@ class TextGenerationError extends ApplicationError {
 		this.code = code;
 	}
 
-	public static configInvalid(cause?: unknown): TextGenerationError {
-		return new TextGenerationError({
-			cause,
-			code: TextGenerationErrorCode.CONFIG_INVALID,
-			message: TextGenerationErrorMessage.CONFIG_INVALID,
-		});
-	}
-
 	public static maxTokensExceedsAllowedThreshold(
 		maxTokens: number,
 		cause?: unknown,
@@ -43,35 +35,21 @@ class TextGenerationError extends ApplicationError {
 		});
 	}
 
-	public static outputUnusable(cause?: unknown): TextGenerationError {
+	public static unableToGenerateStructure(
+		cause?: unknown,
+	): TextGenerationError {
 		return new TextGenerationError({
 			cause,
-			code: TextGenerationErrorCode.OUTPUT_UNUSABLE,
-			message: TextGenerationErrorMessage.OUTPUT_UNUSABLE,
+			code: TextGenerationErrorCode.UNABLE_TO_GENERATE_STRUCTURE,
+			message: TextGenerationErrorMessage.UNABLE_TO_GENERATE_STRUCTURE,
 		});
 	}
 
-	public static unavailable(cause?: unknown): TextGenerationError {
+	public static unableToGenerateText(cause?: unknown): TextGenerationError {
 		return new TextGenerationError({
 			cause,
-			code: TextGenerationErrorCode.UNAVAILABLE,
-			message: TextGenerationErrorMessage.UNAVAILABLE,
-		});
-	}
-
-	public static unclassified(cause?: unknown): TextGenerationError {
-		return new TextGenerationError({
-			cause,
-			code: TextGenerationErrorCode.UNCLASSIFIED,
-			message: TextGenerationErrorMessage.UNCLASSIFIED,
-		});
-	}
-
-	public static validationFailed(cause?: unknown): TextGenerationError {
-		return new TextGenerationError({
-			cause,
-			code: TextGenerationErrorCode.VALIDATION_FAILED,
-			message: TextGenerationErrorMessage.VALIDATION_FAILED,
+			code: TextGenerationErrorCode.UNABLE_TO_GENERATE_TEXT,
+			message: TextGenerationErrorMessage.UNABLE_TO_GENERATE_TEXT,
 		});
 	}
 }

@@ -10,11 +10,9 @@ import {
 	ValidationException,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { TextGenerationError } from "../exceptions/exceptions.js";
+import { BedrockServiceError } from "../exceptions/exceptions.js";
 
-const convertBedrockErrorToTextGenerationError = (
-	error: unknown,
-): TextGenerationError => {
+const convertToBedrockServiceError = (error: unknown): BedrockServiceError => {
 	if (
 		error instanceof InternalServerException ||
 		error instanceof ModelNotReadyException ||
@@ -22,7 +20,7 @@ const convertBedrockErrorToTextGenerationError = (
 		error instanceof ServiceUnavailableException ||
 		error instanceof ThrottlingException
 	) {
-		return TextGenerationError.unavailable(error);
+		return BedrockServiceError.unavailable(error);
 	}
 
 	if (
@@ -30,14 +28,14 @@ const convertBedrockErrorToTextGenerationError = (
 		error instanceof ResourceNotFoundException ||
 		error instanceof ServiceQuotaExceededException
 	) {
-		return TextGenerationError.configInvalid(error);
+		return BedrockServiceError.configInvalid(error);
 	}
 
 	if (error instanceof ValidationException) {
-		return TextGenerationError.validationFailed(error);
+		return BedrockServiceError.validationFailed(error);
 	}
 
-	return TextGenerationError.unclassified(error);
+	return BedrockServiceError.unclassified(error);
 };
 
-export { convertBedrockErrorToTextGenerationError };
+export { convertToBedrockServiceError };

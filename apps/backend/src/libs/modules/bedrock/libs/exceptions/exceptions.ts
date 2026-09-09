@@ -1,1 +1,1 @@
-export { TextGenerationError } from "./text-generation-error.exception.js";
+export { BedrockServiceError } from "./bedrock-service-error.exception.js";

@@ -1,11 +1,11 @@
 import { Transaction } from "objection";
 
+import {
+	CREATE_LABEL_CONFLICT_COLUMNS,
+	CREATE_LABEL_MERGE_COLUMNS,
+} from "./constants/constants.js";
 import { LabelEntity } from "./label.entity.js";
 import { type LabelModel } from "./label.model.js";
-
-const CONFLICT_COLUMNS = ["workspaceId", "name"];
-
-const MERGE_COLUMNS = ["name"];
 
 class LabelRepository {
 	private labelModel: typeof LabelModel;
@@ -36,8 +36,8 @@ class LabelRepository {
 		const label = await this.labelModel
 			.query(trx)
 			.insert(entity.toNewObject())
-			.onConflict(CONFLICT_COLUMNS)
-			.merge(MERGE_COLUMNS)
+			.onConflict(CREATE_LABEL_CONFLICT_COLUMNS)
+			.merge(CREATE_LABEL_MERGE_COLUMNS)
 			.returning("*")
 			.execute();
 

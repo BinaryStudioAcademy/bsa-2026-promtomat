@@ -1,9 +1,19 @@
+import { PromptError } from "@promptomat/shared";
+
 import { Database } from "~/libs/modules/database/database.js";
-import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
+import {
+	GeneratorInterface,
+	SchemaKey,
+	TextGenerationError,
+} from "~/libs/modules/generator/generator.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { LabelService } from "../labels/labels.js";
-import { type WorkspaceService } from "../workspaces/workspace.service.js";
+import {
+	LABEL_GENERATION_MAX_TOKENS,
+	LABEL_GENERATION_TEMPERATURE,
+	LABEL_GENERATION_TOPP,
+} from "./libs/constants/constants.js";
 import { createGenerateLabelMessage } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreatePayload,
@@ -18,7 +28,6 @@ type Constructor = {
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
-	workspaceService: WorkspaceService;
 };
 
 class PromptService {
@@ -32,18 +41,14 @@ class PromptService {
 
 	private promptRepository: PromptRepository;
 
-	private workspaceService: WorkspaceService;
-
 	public constructor({
 		database,
 		generator,
 		labelService,
 		promptEmbeddingService,
 		promptRepository,
-		workspaceService,
 	}: Constructor) {
 		this.promptRepository = promptRepository;
-		this.workspaceService = workspaceService;
 		this.labelService = labelService;
 		this.generator = generator;
 		this.database = database;
@@ -51,28 +56,35 @@ class PromptService {
 	}
 
 	private async generateLabel(prompt: string, workspaceId: number) {
-		const labels = await this.labelService.findAll(workspaceId);
-		const generatedLabel = await this.generator.generateText({
-			config: {
-				maxTokens: 200,
-				temperature: 0.5,
-				topP: 1,
-			},
-			message: createGenerateLabelMessage(prompt, labels),
-		});
+		try {
+			const labels = await this.labelService.findAll(workspaceId);
+			const result = await this.generator.generate({
+				config: {
+					maxTokens: LABEL_GENERATION_MAX_TOKENS,
+					temperature: LABEL_GENERATION_TEMPERATURE,
+					topP: LABEL_GENERATION_TOPP,
+				},
+				message: createGenerateLabelMessage(prompt, labels),
+				schemaKey: SchemaKey.LABEL,
+			});
 
-		return generatedLabel;
+			return result.label;
+		} catch (error) {
+			if (error instanceof TextGenerationError) {
+				throw PromptError.failedToCreate();
+			}
+
+			throw error;
+		}
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
 		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
 			payload;
 
-		await this.workspaceService.checkUserAccess(workspaceId, userId);
-
 		const generatedLabel = await this.generateLabel(promptBody, workspaceId);
 
-		return await this.database.transaction(async (trx) => {
+		const prompt = await this.database.transaction(async (trx) => {
 			const label = await this.labelService.getOrCreate(
 				{ name: generatedLabel, workspaceId },
 				trx,
@@ -90,12 +102,12 @@ class PromptService {
 				trx,
 			);
 
-			const promptDto = prompt.toObject();
-
-			await this.promptEmbeddingService.embedForPrompt(promptDto);
-
-			return promptDto;
+			return prompt.toObject();
 		});
+
+		await this.promptEmbeddingService.embedForPrompt(prompt);
+
+		return prompt;
 	}
 }
 

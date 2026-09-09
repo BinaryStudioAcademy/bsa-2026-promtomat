@@ -8,6 +8,7 @@ export {
 	ApplicationError,
 	AuthError,
 	HTTPError,
+	PromptError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";

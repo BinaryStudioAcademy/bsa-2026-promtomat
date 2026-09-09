@@ -17,7 +17,6 @@ const promptService = new PromptService({
 	labelService,
 	promptEmbeddingService,
 	promptRepository,
-	workspaceService,
 });
 
 const promptController = new PromptController(
