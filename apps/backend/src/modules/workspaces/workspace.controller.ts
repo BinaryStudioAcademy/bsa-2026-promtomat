@@ -98,7 +98,7 @@ class WorkspaceController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.DELETE,
-			path: WorkspacesApiPath.ID,
+			path: WorkspacesApiPath.$WORKSPACE_ID,
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
@@ -114,7 +114,7 @@ class WorkspaceController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.PATCH,
-			path: WorkspacesApiPath.ID,
+			path: WorkspacesApiPath.$WORKSPACE_ID,
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: workspaceUpdateValidationSchema,

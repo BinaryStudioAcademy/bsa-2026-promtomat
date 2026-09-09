@@ -36,9 +36,13 @@ const workspacesApi = baseApi
 				},
 				query: (id) => ({
 					method: HTTPMethod.DELETE,
-					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
-						workspaceId: String(id),
-					}),
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID,
+						{
+							workspaceId: String(id),
+						},
+					),
 				}),
 			}),
 
@@ -62,9 +66,13 @@ const workspacesApi = baseApi
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
-					url: configureString(APIPath.WORKSPACES, WorkspacesApiPath.ID, {
-						workspaceId: String(id),
-					}),
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID,
+						{
+							workspaceId: String(id),
+						},
+					),
 				}),
 			}),
 		}),

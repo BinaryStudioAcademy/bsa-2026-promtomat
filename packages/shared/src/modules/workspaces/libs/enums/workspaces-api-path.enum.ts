@@ -1,5 +1,5 @@
 const WorkspacesApiPath = {
-	ID: "/:workspaceId",
+	$WORKSPACE_ID: "/:workspaceId",
 	ROOT: "/",
 } as const;
 
