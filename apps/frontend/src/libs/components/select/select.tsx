@@ -1,4 +1,5 @@
 import React, { useId } from "react";
+import React, { useCallback, useId } from "react";
 import {
 	type Control,
 	type FieldPath,
@@ -6,17 +7,19 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { ControlSize } from "~/libs/enums/enums.js";
+import { Icon } from "~/libs/components/icon/icon.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { type SelectOption } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	isDisabled?: boolean;
 	isRequired?: boolean;
+	descriptionId?: string;
+	isDisabled?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	options: SelectOption[];
@@ -28,6 +31,15 @@ const Select = <T extends FieldValues>({
 	control,
 	isDisabled = false,
 	isRequired = false,
+type SelectOption = {
+	label: string;
+	value: number | string;
+};
+
+const Select = <T extends FieldValues>({
+	control,
+	descriptionId,
+	isDisabled = false,
 	label,
 	name,
 	options,
@@ -35,7 +47,7 @@ const Select = <T extends FieldValues>({
 	size = ControlSize.MD,
 }: Properties<T>): React.JSX.Element => {
 	const {
-		field,
+		field: { onChange, ...restField },
 		fieldState: { error },
 	} = useController({
 		control,
@@ -45,35 +57,45 @@ const Select = <T extends FieldValues>({
 
 	const errorMessageId = useId();
 	const selectId = useId();
+
 	const hasError = Boolean(error);
 	const errorMessage = error?.message;
-	const describedById = errorMessage === undefined ? undefined : errorMessageId;
+	const describedById = descriptionId ?? errorMessage ?? errorMessageId;
+
+	const handleChange = useCallback(
+		(event: React.ChangeEvent<HTMLSelectElement>): void => {
+			const stringValue = event.target.value;
+
+			const selectedOption = options.find(
+				(option) => String(option.value) === stringValue,
+			);
+
+			onChange(selectedOption ? selectedOption.value : stringValue);
+		},
+		[onChange, options],
+	);
 
 	return (
 		<div className={styles["field"]}>
 			<label className={styles["label"]} htmlFor={selectId}>
 				{label}
-				{isRequired ? (
-					<span aria-hidden="true" className={styles["required"]}>
-						*
-					</span>
-				) : null}
 			</label>
 			<div className={styles["control"]}>
 				<select
-					{...field}
+					{...restField}
 					aria-describedby={describedById}
 					aria-invalid={hasError || undefined}
-					aria-required={isRequired || undefined}
 					className={getValidClasses(
 						styles["select"],
 						styles[size],
 						hasError && styles["error"],
 					)}
 					id={selectId}
+					onChange={handleChange}
+					value={restField.value ?? ""}
 				>
-					{placeholder === undefined ? null : (
-						<option disabled value="">
+					{placeholder && (
+						<option disabled hidden value="">
 							{placeholder}
 						</option>
 					)}
@@ -83,10 +105,13 @@ const Select = <T extends FieldValues>({
 						</option>
 					))}
 				</select>
+				<Icon className={styles["icon"]} iconName={IconName.CHEVRON} />
 			</div>
-			<span className={styles["message"]} id={errorMessageId}>
-				{errorMessage}
-			</span>
+			{!descriptionId && (
+				<span className={styles["message"]} id={errorMessageId}>
+					{errorMessage}
+				</span>
+			)}
 		</div>
 	);
 };
