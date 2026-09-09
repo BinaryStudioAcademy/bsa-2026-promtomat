@@ -125,7 +125,10 @@ const SignUpForm: React.FC<Properties> = ({
 				/>
 			</form>
 			<p className={styles["footer"]}>
-				Already have an account? <Link to={AppRoute.SIGN_IN}>Sign in</Link>
+				Already have an account?{" "}
+				<Link className={styles["inline-link"]} to={AppRoute.SIGN_IN}>
+					Sign in
+				</Link>
 			</p>
 		</>
 	);
