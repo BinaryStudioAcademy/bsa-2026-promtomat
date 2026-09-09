@@ -7,6 +7,8 @@ class PromptEntity implements Entity {
 
 	private id: null | number;
 
+	private labelId: number;
+
 	private promptBody: string;
 
 	private taskIntent: string;
@@ -21,6 +23,7 @@ class PromptEntity implements Entity {
 		createdAt,
 		efficiencyScore,
 		id,
+		labelId,
 		promptBody,
 		taskIntent,
 		updatedAt,
@@ -30,6 +33,7 @@ class PromptEntity implements Entity {
 		createdAt: string;
 		efficiencyScore: number;
 		id: null | number;
+		labelId: number;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -44,12 +48,14 @@ class PromptEntity implements Entity {
 		this.workspaceId = workspaceId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.labelId = labelId;
 	}
 
 	public static initialize({
 		createdAt,
 		efficiencyScore,
 		id,
+		labelId,
 		promptBody,
 		taskIntent,
 		updatedAt,
@@ -59,6 +65,7 @@ class PromptEntity implements Entity {
 		createdAt: string;
 		efficiencyScore: number;
 		id: number;
+		labelId: number;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -69,6 +76,7 @@ class PromptEntity implements Entity {
 			createdAt,
 			efficiencyScore,
 			id,
+			labelId,
 			promptBody,
 			taskIntent,
 			updatedAt,
@@ -79,12 +87,14 @@ class PromptEntity implements Entity {
 
 	public static initializeNew({
 		efficiencyScore,
+		labelId,
 		promptBody,
 		taskIntent,
 		userId,
 		workspaceId,
 	}: {
 		efficiencyScore: number;
+		labelId: number;
 		promptBody: string;
 		taskIntent: string;
 		userId: number;
@@ -94,6 +104,7 @@ class PromptEntity implements Entity {
 			createdAt: new Date().toISOString(),
 			efficiencyScore,
 			id: null,
+			labelId,
 			promptBody,
 			taskIntent,
 			updatedAt: new Date().toISOString(),
@@ -104,6 +115,7 @@ class PromptEntity implements Entity {
 
 	public toNewObject(): {
 		efficiencyScore: number;
+		labelId: number;
 		promptBody: string;
 		taskIntent: string;
 		userId: number;
@@ -111,6 +123,7 @@ class PromptEntity implements Entity {
 	} {
 		return {
 			efficiencyScore: this.efficiencyScore,
+			labelId: this.labelId,
 			promptBody: this.promptBody,
 			taskIntent: this.taskIntent,
 			userId: this.userId,
@@ -122,6 +135,7 @@ class PromptEntity implements Entity {
 		createdAt: string;
 		efficiencyScore: number;
 		id: number;
+		labelId: number;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -132,6 +146,7 @@ class PromptEntity implements Entity {
 			createdAt: this.createdAt,
 			efficiencyScore: this.efficiencyScore,
 			id: this.id as number,
+			labelId: this.labelId,
 			promptBody: this.promptBody,
 			taskIntent: this.taskIntent,
 			updatedAt: this.updatedAt,

@@ -14,6 +14,8 @@ import { PromptColumnName } from "./libs/enums/enums.js";
 class PromptModel extends AbstractModel {
 	public efficiencyScore!: number;
 
+	public labelId!: number;
+
 	public promptBody!: string;
 
 	public taskIntent!: string;
