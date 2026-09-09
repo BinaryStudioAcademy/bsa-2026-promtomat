@@ -28,11 +28,11 @@ const useSuggestions = ({
 	}, [getSuggestions, inputValue, isOpen, selectedValues]);
 
 	useEffect(() => {
-		if (suggestions.length > EMPTY_SELECTION_LENGTH) {
-			setActiveIndex(FIRST_ELEMENT_INDEX);
-		} else {
-			setActiveIndex(NO_ACTIVE_SUGGESTION);
-		}
+		setActiveIndex(
+			suggestions.length > EMPTY_SELECTION_LENGTH
+				? FIRST_ELEMENT_INDEX
+				: NO_ACTIVE_SUGGESTION,
+		);
 	}, [suggestions]);
 
 	const resetActiveIndex = () => {
