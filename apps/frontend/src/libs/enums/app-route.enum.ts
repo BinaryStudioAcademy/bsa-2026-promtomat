@@ -5,6 +5,7 @@ const AppRoute = {
 	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",
 	SIGN_UP: "/sign-up",
+	WORKSPACES: "/workspaces",
 } as const;
 
 export { AppRoute };

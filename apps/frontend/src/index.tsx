@@ -14,6 +14,7 @@ import { Home } from "~/pages/home/home.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
+import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -37,6 +38,10 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.SETTINGS,
+										<Workspaces />
+									</PrivateRoute>
+								),
+								path: AppRoute.WORKSPACES,
 							},
 							{
 								element: <Auth />,

@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
@@ -10,13 +12,15 @@ class UserRepository {
 		this.userModel = userModel;
 	}
 
-	public async create(entity: UserEntity): Promise<UserEntity> {
+	public async create(
+		entity: UserEntity,
+		trx?: Transaction,
+	): Promise<UserEntity> {
 		const user = await this.userModel
-			.query()
+			.query(trx)
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
-
 		return UserEntity.initialize(user);
 	}
 
