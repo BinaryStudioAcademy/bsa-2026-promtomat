@@ -13,6 +13,8 @@ import { ErrorPage } from "~/pages/error/error.js";
 import { Home } from "~/pages/home/home.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { SettingsPage } from "~/pages/settings/settings.js";
+import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
@@ -33,10 +35,26 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: (
 									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<SettingsPage />
+									</PrivateRoute>
+								),
+								path: AppRoute.SETTINGS,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
 										<Workspaces />
 									</PrivateRoute>
 								),
 								path: AppRoute.WORKSPACES,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<Training />
+									</PrivateRoute>
+								),
+								path: AppRoute.TRAINING,
 							},
 							{
 								element: <Auth />,

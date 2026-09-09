@@ -5,6 +5,7 @@ export {
 	ErrorCode,
 } from "./libs/enums/enums.js";
 export {
+	ApplicationError,
 	AuthError,
 	HTTPError,
 	ValidationError,
@@ -34,9 +35,9 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
-	ExceptionMessage,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
@@ -45,10 +46,21 @@ export {
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type PromptCreateRequestDto,
+	type PromptDto,
+	promptCreateValidationSchema,
+	PromptsApiPath,
+} from "./modules/prompts/prompts.js";
+export {
+	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
+	AiCodingTool,
+	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
+	UserValidationMessage,
 } from "./modules/users/users.js";
 export {
 	type MembershipDto,

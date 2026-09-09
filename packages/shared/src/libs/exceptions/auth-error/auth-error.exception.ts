@@ -1,5 +1,6 @@
 import { ErrorCode } from "../../../libs/enums/enums.js";
 import { HTTPCode } from "../../../libs/modules/http/http.js";
+import { AuthErrorMessage } from "../../../modules/auth/auth.js";
 import { AuthValidationMessage } from "../../../modules/auth/libs/enums/auth-validation-message.enum.js";
 import { UserErrorMessage } from "../../../modules/users/users.js";
 import { type ValueOf } from "../../types/value-of.type.js";
@@ -43,6 +44,22 @@ class AuthError extends HTTPError {
 			code: ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS,
 			message: AuthValidationMessage.NICKNAME_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
+		});
+	}
+
+	public static unauthorized(): AuthError {
+		return new AuthError({
+			code: ErrorCode.UNAUTHENTICATED,
+			message: AuthErrorMessage.UNAUTHORIZED,
+			status: HTTPCode.UNAUTHORIZED,
+		});
+	}
+
+	public static userNotFound(): AuthError {
+		return new AuthError({
+			code: ErrorCode.AUTH_USER_NOT_FOUND,
+			message: UserErrorMessage.USER_NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
 		});
 	}
 }

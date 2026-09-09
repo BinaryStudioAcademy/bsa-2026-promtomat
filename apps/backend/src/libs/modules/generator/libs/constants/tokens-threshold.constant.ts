@@ -1,0 +1,3 @@
+const TOKENS_THRESHOLD = 2048;
+
+export { TOKENS_THRESHOLD };

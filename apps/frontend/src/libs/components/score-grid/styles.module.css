@@ -1,0 +1,41 @@
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.label {
+	font-size: var(--font-size-body-sm);
+	font-weight: 500;
+	color: var(--text-body);
+}
+
+.control {
+	display: grid;
+	grid-template-columns: repeat(
+		auto-fill,
+		minmax(clamp(var(--space-48), 15vw, var(--space-64)), 1fr)
+	);
+	gap: var(--space-6);
+}
+
+.message {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-faint);
+}
+
+.danger-outline {
+	color: var(--fg-danger);
+}
+
+.warning-outline {
+	color: var(--fg-warning);
+}
+
+.success-outline {
+	color: var(--fg-success);
+}
+
+.score-button {
+	height: var(--size-control-h-xl);
+}

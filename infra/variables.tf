@@ -122,3 +122,8 @@ variable "embedding_dimensions" {
   type    = number
   default = 1024
 }
+
+variable "bedrock_model_id" {
+  type = string
+  default = "qwen.qwen3-32b-v1:0"
+}

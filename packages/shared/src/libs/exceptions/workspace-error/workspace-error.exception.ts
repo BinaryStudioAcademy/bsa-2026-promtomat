@@ -42,8 +42,8 @@ class WorkspaceError extends HTTPError {
 
 	public static notFound(): WorkspaceError {
 		return new WorkspaceError({
-			code: WorkspacesErrorCode.WORKSPACE_ACCESS_DENIED,
-			message: WorkspacesErrorMessage.WORKSPACE_ACCESS_DENIED,
+			code: WorkspacesErrorCode.WORKSPACE_NOT_FOUND,
+			message: WorkspacesErrorMessage.WORKSPACE_NOT_FOUND,
 			status: HTTPCode.NOT_FOUND,
 		});
 	}

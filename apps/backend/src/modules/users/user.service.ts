@@ -9,7 +9,15 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 import {
 	type UserDto,
 	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
+
+type Constructor = {
+	database: Database;
+	hashing: Hashing;
+	userRepository: UserRepository;
+	workspaceService: WorkspaceService;
+};
 
 class UserService {
 	private database: Database;
@@ -25,16 +33,21 @@ class UserService {
 		hashing,
 		userRepository,
 		workspaceService,
-	}: {
-		database: Database;
-		hashing: Hashing;
-		userRepository: UserRepository;
-		workspaceService: WorkspaceService;
-	}) {
+	}: Constructor) {
 		this.database = database;
 		this.hashing = hashing;
 		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
+	}
+
+	private checkHasProfileChanged(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): boolean {
+		return (
+			currentUser.nickname !== payload.nickname ||
+			currentUser.primaryAiCodingTool !== payload.primaryAiCodingTool
+		);
 	}
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
@@ -99,6 +112,22 @@ class UserService {
 		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
+	}
+
+	public async updateProfile(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): Promise<UserDto> {
+		if (!this.checkHasProfileChanged(currentUser, payload)) {
+			return currentUser;
+		}
+
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			payload,
+		);
+
+		return updatedUser.toObject();
 	}
 }
 
