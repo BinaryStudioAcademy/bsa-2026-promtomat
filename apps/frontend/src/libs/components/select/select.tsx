@@ -18,7 +18,6 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
-	isRequired?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	options: SelectOption[];
