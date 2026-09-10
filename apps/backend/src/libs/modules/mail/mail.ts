@@ -11,5 +11,4 @@ const mail = new NodemailerMailService({
 });
 
 export { mail };
-export { FakeMailService } from "./fake-mail.service.js";
 export { type MailService } from "./libs/types/types.js";
