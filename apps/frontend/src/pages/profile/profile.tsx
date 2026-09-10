@@ -8,6 +8,7 @@ import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute, ErrorCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { AI_CODING_TOOL_LABELS } from "~/modules/users/users.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
 
 import styles from "./styles.module.css";
@@ -61,7 +62,9 @@ const Profile: React.FC = () => {
 		undefined,
 		MEMBER_SINCE_DATE_FORMAT,
 	);
-	const primaryAiCodingToolLabel = primaryAiCodingTool ?? "Not specified";
+	const primaryAiCodingToolLabel = primaryAiCodingTool
+		? AI_CODING_TOOL_LABELS[primaryAiCodingTool]
+		: "Not specified";
 
 	return (
 		<main className={styles["page"]}>
