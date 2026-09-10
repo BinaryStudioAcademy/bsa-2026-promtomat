@@ -1,4 +1,8 @@
-import { type Modifiers, type QueryBuilder, RelationMappings } from "objection";
+import {
+	type Modifiers,
+	type QueryBuilder,
+	type RelationMappings,
+} from "objection";
 
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import {
