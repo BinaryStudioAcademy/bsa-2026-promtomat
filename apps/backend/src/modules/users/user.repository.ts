@@ -1,5 +1,18 @@
+import {
+	NotFoundError,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
+
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
+
+import { type UserUpdateRequestDto } from "./libs/types/types.js";
+
+const UsersConstraintName = {
+	NICKNAME_UNIQUE: "users_nickname_unique",
+} as const;
 
 class UserRepository {
 	private userModel: typeof UserModel;
@@ -8,13 +21,15 @@ class UserRepository {
 		this.userModel = userModel;
 	}
 
-	public async create(entity: UserEntity): Promise<UserEntity> {
+	public async create(
+		entity: UserEntity,
+		trx?: Transaction,
+	): Promise<UserEntity> {
 		const user = await this.userModel
-			.query()
+			.query(trx)
 			.insert(entity.toNewObject())
 			.returning("*")
 			.execute();
-
 		return UserEntity.initialize(user);
 	}
 
@@ -54,6 +69,33 @@ class UserRepository {
 		const user = await this.userModel.query().findOne({ nickname }).execute();
 
 		return user ? UserEntity.initialize(user) : null;
+	}
+
+	public async update(
+		id: number,
+		payload: UserUpdateRequestDto,
+	): Promise<UserEntity> {
+		try {
+			const user = await this.userModel
+				.query()
+				.patchAndFetchById(id, payload)
+				.throwIfNotFound();
+
+			return UserEntity.initialize(user);
+		} catch (error) {
+			if (
+				error instanceof UniqueViolationError &&
+				error.constraint === UsersConstraintName.NICKNAME_UNIQUE
+			) {
+				throw AuthError.nicknameAlreadyExists();
+			}
+
+			if (error instanceof NotFoundError) {
+				throw AuthError.userNotFound();
+			}
+
+			throw error;
+		}
 	}
 }
 

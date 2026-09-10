@@ -9,6 +9,14 @@ type EnvironmentSchema = {
 		HOST: string;
 		PORT: number;
 	};
+	AWS: {
+		REGION: string;
+	};
+	BEDROCK: {
+		MODEL: {
+			ID: string;
+		};
+	};
 	DB: {
 		DIALECT: string;
 		HOST: string;
