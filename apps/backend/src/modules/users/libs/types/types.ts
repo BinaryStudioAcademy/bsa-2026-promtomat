@@ -1,1 +1,5 @@
-export { type UserDto } from "@promptomat/shared";
+export {
+	type PrimaryAiCodingTool,
+	type UserDto,
+	type UserUpdateRequestDto,
+} from "@promptomat/shared";

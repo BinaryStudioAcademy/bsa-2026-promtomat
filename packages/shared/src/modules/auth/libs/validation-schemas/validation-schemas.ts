@@ -1,3 +1,4 @@
+export { nicknameField as nicknameFieldValidationSchema } from "./nickname-field.validation-schema.js";
 export { passwordBoundarySpaces as passwordBoundarySpacesValidationSchema } from "./password-boundary-spaces.validation-schema.js";
 export { passwordField as passwordFieldValidationSchema } from "./password-field.validation-schema.js";
 export { passwordLength as passwordLengthValidationSchema } from "./password-length.validation-schema.js";

@@ -1,2 +1,12 @@
-export { UserErrorMessage } from "./libs/enums/enums.js";
-export { type UserDto } from "./libs/types/types.js";
+export {
+	AiCodingTool,
+	UserErrorMessage,
+	UsersApiPath,
+	UserValidationMessage,
+} from "./libs/enums/enums.js";
+export {
+	type PrimaryAiCodingTool,
+	type UserDto,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
+export { updateProfileValidationSchema } from "./libs/validation-schemas/validation-schemas.js";

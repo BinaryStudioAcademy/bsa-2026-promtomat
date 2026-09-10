@@ -5,9 +5,11 @@ export {
 	ErrorCode,
 } from "./libs/enums/enums.js";
 export {
+	ApplicationError,
 	AuthError,
 	HTTPError,
 	ValidationError,
+	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
 export { configureString } from "./libs/helpers/helpers.js";
 export { type Config } from "./libs/modules/config/config.js";
@@ -33,9 +35,9 @@ export {
 	type SignUpRequestDto,
 	type SignUpResponseDto,
 	AuthApiPath,
+	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
-	ExceptionMessage,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
@@ -43,4 +45,30 @@ export {
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
-export { type UserDto, UserErrorMessage } from "./modules/users/users.js";
+export {
+	type PromptCreateRequestDto,
+	type PromptDto,
+	promptCreateValidationSchema,
+	PromptsApiPath,
+} from "./modules/prompts/prompts.js";
+export {
+	type PrimaryAiCodingTool,
+	type UserDto,
+	type UserUpdateRequestDto,
+	AiCodingTool,
+	updateProfileValidationSchema,
+	UserErrorMessage,
+	UsersApiPath,
+	UserValidationMessage,
+} from "./modules/users/users.js";
+export {
+	type WorkspaceCreateRequestDto,
+	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
+	type WorkspaceGetAllResponseDto,
+	workspaceCreationValidationSchema,
+	workspaceGetByQueryValidationSchema,
+	WorkspacesApiPath,
+	WorkspacesErrorMessage,
+	WorkspaceVisibility,
+} from "./modules/workspaces/workspaces.js";

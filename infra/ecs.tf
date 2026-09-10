@@ -67,6 +67,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "EMBEDDING_LOCAL_PATH", value = var.embedding_local_path },
         { name = "EMBEDDING_DIMENSIONS", value = tostring(var.embedding_dimensions) },
         { name = "AWS_REGION", value = var.region },
+        { name = "BEDROCK_MODEL_ID", value = var.bedrock_model_id },
       ]
 
       secrets = [

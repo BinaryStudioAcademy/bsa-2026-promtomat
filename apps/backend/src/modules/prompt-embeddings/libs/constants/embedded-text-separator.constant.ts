@@ -1,0 +1,3 @@
+const EMBEDDED_TEXT_SEPARATOR = "\n";
+
+export { EMBEDDED_TEXT_SEPARATOR };
