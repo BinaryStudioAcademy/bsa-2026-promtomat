@@ -8,14 +8,17 @@ import {
 	NO_ACTIVE_SUGGESTION,
 } from "../constants/constants.js";
 import { getValuesSuggestions } from "../helpers/helpers.js";
-import { type UseSuggestionsProperties } from "../types/types.js";
+import {
+	type UseSuggestionsProperties,
+	type UseSuggestionsResult,
+} from "../types/types.js";
 
 const useSuggestions = ({
 	inputValue,
 	isOpen,
 	selectedValues,
 	valuesDictionary,
-}: UseSuggestionsProperties) => {
+}: UseSuggestionsProperties): UseSuggestionsResult => {
 	const [activeIndex, setActiveIndex] = useState(NO_ACTIVE_SUGGESTION);
 
 	const suggestions = useMemo(() => {
@@ -36,15 +39,15 @@ const useSuggestions = ({
 		);
 	}, [suggestions]);
 
-	const resetActiveIndex = () => {
+	const resetActiveIndex = (): void => {
 		setActiveIndex(NO_ACTIVE_SUGGESTION);
 	};
 
-	const setActiveIndexDirectly = (index: number) => {
+	const setActiveIndexDirectly = (index: number): void => {
 		setActiveIndex(index);
 	};
 
-	const selectNext = () => {
+	const selectNext = (): void => {
 		setActiveIndex((previous) => {
 			if (suggestions.length === NO_ACTIVE_SUGGESTION) {
 				return NO_ACTIVE_SUGGESTION;
@@ -55,7 +58,7 @@ const useSuggestions = ({
 		});
 	};
 
-	const selectPrevious = () => {
+	const selectPrevious = (): void => {
 		setActiveIndex((previous) => {
 			if (suggestions.length === NO_ACTIVE_SUGGESTION) {
 				return NO_ACTIVE_SUGGESTION;
@@ -68,7 +71,7 @@ const useSuggestions = ({
 		});
 	};
 
-	const getActiveSuggestion = () => {
+	const getActiveSuggestion = (): string | undefined => {
 		if (activeIndex === NO_ACTIVE_SUGGESTION) {
 			return suggestions[FIRST_ELEMENT_INDEX];
 		}

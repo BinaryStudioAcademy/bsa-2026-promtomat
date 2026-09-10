@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 
 import { FUZZY_MATCH_LIMIT } from "../constants/constants.js";
 
-const buildFuseInstance = (valuesDictionary: string[]) =>
+const buildFuseInstance = (valuesDictionary: string[]): Fuse<string> =>
 	new Fuse(valuesDictionary, {
 		distance: 100,
 		ignoreLocation: true,
@@ -12,7 +12,7 @@ const buildFuseInstance = (valuesDictionary: string[]) =>
 		threshold: 0.3,
 	});
 
-const normalizeString = (input: string) => input.trim().toLowerCase();
+const normalizeString = (input: string): string => input.trim().toLowerCase();
 
 const getValuesSuggestions = (
 	input: string,

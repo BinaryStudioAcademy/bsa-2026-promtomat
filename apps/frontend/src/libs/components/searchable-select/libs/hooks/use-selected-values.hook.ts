@@ -4,21 +4,24 @@ import {
 	EMPTY_SELECTION_LENGTH,
 	NO_ACTIVE_SUGGESTION,
 } from "../constants/constants.js";
-import { type UseSelectedValuesParameters } from "../types/types.js";
+import {
+	type UseSelectedValuesParameters,
+	type UseSelectedValuesResult,
+} from "../types/types.js";
 
 const useSelectedValues = ({
 	onChange,
 	selectedValues,
-}: UseSelectedValuesParameters) => {
+}: UseSelectedValuesParameters): UseSelectedValuesResult => {
 	const addValue = useCallback(
-		(value: string) => {
+		(value: string): void => {
 			onChange([...selectedValues, value]);
 		},
 		[onChange, selectedValues],
 	);
 
 	const removeValue = useCallback(
-		(value: string) => {
+		(value: string): void => {
 			onChange(
 				selectedValues.filter((selectedValue) => selectedValue !== value),
 			);
@@ -26,7 +29,7 @@ const useSelectedValues = ({
 		[onChange, selectedValues],
 	);
 
-	const removeLastValue = useCallback(() => {
+	const removeLastValue = useCallback((): void => {
 		if (selectedValues.length === EMPTY_SELECTION_LENGTH) {
 			return;
 		}
