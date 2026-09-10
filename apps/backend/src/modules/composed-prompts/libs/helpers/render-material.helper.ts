@@ -2,9 +2,9 @@ import {
 	FIRST_SOURCE_NUMBER,
 	LANGUAGE_REMINDER,
 } from "../constants/constants.js";
-import { type PromptCandidate } from "../types/types.js";
+import { type PromptCandidateDto } from "../types/types.js";
 
-const renderSource = (candidate: PromptCandidate, index: number): string =>
+const renderSource = (candidate: PromptCandidateDto, index: number): string =>
 	[
 		`Source ${(index + FIRST_SOURCE_NUMBER).toString()}`,
 		`Task intent: ${candidate.taskIntent}`,
@@ -14,7 +14,7 @@ const renderSource = (candidate: PromptCandidate, index: number): string =>
 	].join("\n");
 
 const renderMaterial = (
-	candidates: PromptCandidate[],
+	candidates: PromptCandidateDto[],
 	description: string,
 ): string =>
 	[

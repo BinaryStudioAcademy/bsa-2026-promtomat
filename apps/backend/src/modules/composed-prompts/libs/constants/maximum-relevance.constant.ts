@@ -1,3 +1,0 @@
-const MAXIMUM_RELEVANCE = 1;
-
-export { MAXIMUM_RELEVANCE };

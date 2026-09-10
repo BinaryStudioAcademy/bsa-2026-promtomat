@@ -3,4 +3,8 @@ export { ComposedPromptErrorMessage } from "./composed-prompt-error-message.enum
 export { ModelCallOutcome } from "./model-call-outcome.enum.js";
 export { PromptSearchErrorMessage } from "./prompt-search-error-message.enum.js";
 export { SourceColumnName as ComposedPromptSourceColumnName } from "./source-column-name.enum.js";
-export { ComposeResultKind, FallbackReason } from "@promptomat/shared";
+export {
+	ComposedPromptsApiPath,
+	ComposeResultKind,
+	FallbackReason,
+} from "@promptomat/shared";

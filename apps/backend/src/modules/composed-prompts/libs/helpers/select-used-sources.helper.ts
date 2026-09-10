@@ -1,11 +1,11 @@
 import { FIRST_SOURCE_NUMBER } from "../constants/constants.js";
 import {
 	type ComposedPromptSourceDto,
-	type PromptCandidate,
+	type PromptCandidateDto,
 } from "../types/types.js";
 
 const selectUsedSources = (
-	candidates: PromptCandidate[],
+	candidates: PromptCandidateDto[],
 	usedSources: number[],
 ): ComposedPromptSourceDto[] => {
 	const selected = new Set(

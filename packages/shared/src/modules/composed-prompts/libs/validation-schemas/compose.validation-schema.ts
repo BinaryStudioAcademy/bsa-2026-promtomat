@@ -17,8 +17,8 @@ const compose = z.object({
 		),
 	workspaceId: z
 		.number(ComposedPromptValidationMessage.INVALID_WORKSPACE)
-		.int()
-		.positive(),
+		.int(ComposedPromptValidationMessage.INVALID_WORKSPACE)
+		.positive(ComposedPromptValidationMessage.INVALID_WORKSPACE),
 });
 
 export { compose };

@@ -29,12 +29,7 @@ const config: KnipConfig = {
 	workspaces: {
 		".": {},
 		"apps/backend": {
-			// The composed-prompts barrel is an entry until its controller imports it
-			// from the server application.
-			entry: [
-				"src/db/migrations/*.ts",
-				"src/modules/composed-prompts/composed-prompts.ts",
-			],
+			entry: ["src/db/migrations/*.ts"],
 			// knex resolves its driver at runtime from `DB_DIALECT`, so nothing
 			// imports `pg`; removing it makes knex throw on the first connection.
 			ignoreDependencies: ["pg"],

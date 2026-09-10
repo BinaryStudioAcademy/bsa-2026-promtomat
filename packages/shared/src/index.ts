@@ -47,10 +47,12 @@ export {
 } from "./modules/auth/auth.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,
+	composedPromptIdParametersValidationSchema,
 	ComposedPromptsApiPath,
 	ComposedPromptsErrorCode,
 	ComposedPromptsErrorMessage,

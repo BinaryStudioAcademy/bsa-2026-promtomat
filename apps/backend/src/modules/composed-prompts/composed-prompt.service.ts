@@ -37,7 +37,6 @@ import {
 	type ComposeResult,
 	type GenerationOutcome,
 	type ModelCallLog,
-	type PromptCandidate,
 	type PromptCandidateDto,
 	type PromptSearchService,
 	type StoreResult,
@@ -55,10 +54,10 @@ type Constructor = {
 };
 
 type Material = {
-	candidates: PromptCandidate[];
+	candidates: PromptCandidateDto[];
 	descriptionHash: string;
 	payload: ComposePayload;
-	topCandidate: PromptCandidate;
+	topCandidate: PromptCandidateDto;
 };
 
 class ComposedPromptService {
@@ -126,7 +125,7 @@ class ComposedPromptService {
 				isCreated: false,
 				response: {
 					kind: ComposeResultKind.FALLBACK,
-					prompt: this.toCandidateDto(topCandidate),
+					prompt: topCandidate,
 					reason,
 				},
 			};
@@ -227,15 +226,6 @@ class ComposedPromptService {
 
 			return { entity: winner, isCreated: false };
 		}
-	}
-
-	private toCandidateDto({
-		efficiencyScore,
-		promptBody,
-		promptId,
-		taskIntent,
-	}: PromptCandidate): PromptCandidateDto {
-		return { efficiencyScore, promptBody, promptId, taskIntent };
 	}
 
 	private toComposedResult(

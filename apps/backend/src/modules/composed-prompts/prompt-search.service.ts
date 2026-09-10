@@ -1,18 +1,15 @@
 // Temporary retrieval adapter. Delete this file, `DISTANCE_THRESHOLD` and the
-// `PromptCandidate` / `PromptSearchService` types in `libs/types`.
+// `PromptSearchService` type in `libs/types`
 import { ApplicationError } from "~/libs/exceptions/exceptions.js";
 import { type EmbeddingService } from "~/libs/modules/embedding/embedding.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
-import {
-	DISTANCE_THRESHOLD,
-	MAXIMUM_RELEVANCE,
-} from "./libs/constants/constants.js";
+import { DISTANCE_THRESHOLD } from "./libs/constants/constants.js";
 import { PromptSearchErrorMessage } from "./libs/enums/enums.js";
 import {
 	type FindCandidatesQuery,
-	type PromptCandidate,
+	type PromptCandidateDto,
 	type PromptSearchService,
 } from "./libs/types/types.js";
 
@@ -41,7 +38,7 @@ class TemporaryPromptSearchService implements PromptSearchService {
 
 	public async findCandidates(
 		query: FindCandidatesQuery,
-	): Promise<PromptCandidate[]> {
+	): Promise<PromptCandidateDto[]> {
 		const [embedding] = await this.embeddingService.embed([query.description]);
 
 		if (!embedding) {
@@ -70,7 +67,7 @@ class TemporaryPromptSearchService implements PromptSearchService {
 		);
 		const promptsById = new Map(prompts.map((prompt) => [prompt.id, prompt]));
 
-		return closeEnough.flatMap(({ distance, promptId }) => {
+		return closeEnough.flatMap(({ promptId }) => {
 			const prompt = promptsById.get(promptId);
 
 			if (!prompt) {
@@ -79,11 +76,9 @@ class TemporaryPromptSearchService implements PromptSearchService {
 
 			return [
 				{
-					distance,
 					efficiencyScore: prompt.efficiencyScore,
 					promptBody: prompt.promptBody,
 					promptId,
-					relevance: MAXIMUM_RELEVANCE - distance,
 					taskIntent: prompt.taskIntent,
 				},
 			];
