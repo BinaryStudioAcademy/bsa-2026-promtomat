@@ -1,11 +1,18 @@
+import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { AppRoute } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
 
 import styles from "./styles.module.css";
 
 const NO_PROMPTS_COUNT = 0;
+const MEMBER_SINCE_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+	day: "numeric",
+	month: "short",
+	year: "numeric",
+};
 
 const Profile: React.FC = () => {
 	const { data, isLoading } = useGetProfileSummaryQuery(undefined);
@@ -20,13 +27,18 @@ const Profile: React.FC = () => {
 
 	const {
 		averageScore,
+		id,
 		memberSince,
 		nickname,
 		primaryAiCodingTool,
 		totalPrompts,
 	} = data;
 	const hasPrompts = totalPrompts > NO_PROMPTS_COUNT;
-	const memberSinceLabel = new Date(memberSince).toLocaleDateString();
+	const memberSinceLabel = new Date(memberSince).toLocaleDateString(
+		undefined,
+		MEMBER_SINCE_DATE_FORMAT,
+	);
+	const primaryAiCodingToolLabel = primaryAiCodingTool ?? "Not specified";
 
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
@@ -36,13 +48,23 @@ const Profile: React.FC = () => {
 
 			<section className={styles["card"]}>
 				<div className={styles["detail-row"]}>
+					<span className={styles["detail-label"]}>ID</span>
+					<span className={styles["detail-value"]}>{id}</span>
+				</div>
+				<div className={styles["detail-row"]}>
 					<span className={styles["detail-label"]}>Nickname</span>
-					<span className={styles["detail-value"]}>{nickname}</span>
+					<span className={styles["detail-value"]}>
+						{nickname}
+						<span className={styles["detail-value-separator"]}>·</span>
+						<Link to={AppRoute.SETTINGS}>Manage in Settings →</Link>
+					</span>
 				</div>
 				<div className={styles["detail-row"]}>
 					<span className={styles["detail-label"]}>Primary AI coding tool</span>
 					<span className={styles["detail-value"]}>
-						{primaryAiCodingTool ?? "Not set yet"}
+						{primaryAiCodingToolLabel}
+						<span className={styles["detail-value-separator"]}>·</span>
+						<Link to={AppRoute.SETTINGS}>Manage in Settings →</Link>
 					</span>
 				</div>
 				<div className={styles["detail-row"]}>
@@ -66,12 +88,13 @@ const Profile: React.FC = () => {
 					</div>
 				) : (
 					<div className={styles["empty-state"]}>
-						<p className={styles["empty-state-text"]}>
-							You haven&apos;t recorded any prompts yet.
-						</p>
+						<p className={styles["empty-state-text"]}>No Prompts Yet</p>
 						<p className={styles["empty-state-subtext"]}>
 							Once you do, your totals and average score will show up here.
 						</p>
+						<Link className={styles["empty-state-cta"]} to={AppRoute.TRAINING}>
+							Create one to get started
+						</Link>
 					</div>
 				)}
 			</section>

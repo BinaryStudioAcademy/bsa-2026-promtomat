@@ -25,6 +25,12 @@
 	border-radius: var(--radius-lg);
 }
 
+.card-header {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: var(--space-8);
+}
+
 .section-title {
 	margin: 0 0 var(--space-16);
 	font-size: var(--font-size-body-xl);
@@ -99,4 +105,10 @@
 	margin: 0;
 	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
+}
+
+.empty-state-cta {
+	display: inline-block;
+	margin-top: var(--space-16);
+	font-weight: bold;
 }

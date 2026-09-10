@@ -52,12 +52,12 @@ class UserService {
 	}
 
 	private getPromptSummary(): {
-		averageScore: number;
+		averageScore: null | number;
 		totalPrompts: number;
 	} {
 		return {
-			averageScore: 7.8,
-			totalPrompts: 42,
+			averageScore: null,
+			totalPrompts: 0,
 		};
 	}
 
@@ -125,14 +125,25 @@ class UserService {
 		return user ? user.toObject() : null;
 	}
 
-	public getProfileSummary(user: UserDto): UserProfileSummaryResponseDto {
+	public async getProfileSummary(
+		userId: number,
+	): Promise<UserProfileSummaryResponseDto> {
+		const user = await this.userRepository.findById(userId);
+
+		if (!user) {
+			throw AuthError.userNotFound();
+		}
+
 		const { averageScore, totalPrompts } = this.getPromptSummary();
+		const { createdAt, nickname, primaryAiCodingTool } =
+			user.toProfileSummaryObject();
 
 		return {
 			averageScore,
-			memberSince: new Date().toString(),
-			nickname: user.nickname,
-			primaryAiCodingTool: user.primaryAiCodingTool,
+			id: userId,
+			memberSince: createdAt,
+			nickname,
+			primaryAiCodingTool,
 			totalPrompts,
 		};
 	}

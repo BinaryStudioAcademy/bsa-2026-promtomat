@@ -114,6 +114,8 @@ class UserController extends BaseController {
 	 *              schema:
 	 *                type: object
 	 *                properties:
+	 *                  id:
+	 *                    type: number
 	 *                  nickname:
 	 *                    type: string
 	 *                  primaryAiCodingTool:
@@ -130,9 +132,13 @@ class UserController extends BaseController {
 	 *        401:
 	 *          description: Unauthorized
 	 */
-	private getProfileSummary(options: APIHandlerOptions): APIHandlerResponse {
+	private async getProfileSummary(
+		options: APIHandlerOptions,
+	): Promise<APIHandlerResponse> {
 		return {
-			payload: this.userService.getProfileSummary(options.user as UserDto),
+			payload: await this.userService.getProfileSummary(
+				options.user?.id as number,
+			),
 			status: HTTPCode.OK,
 		};
 	}
