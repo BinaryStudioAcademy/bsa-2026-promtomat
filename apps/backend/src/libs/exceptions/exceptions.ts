@@ -1,6 +1,7 @@
 export {
 	ApplicationError,
 	AuthError,
+	LabelError,
 	PromptError,
 	ValidationError,
 	WorkspaceError,

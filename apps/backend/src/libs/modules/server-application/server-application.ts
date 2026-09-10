@@ -3,6 +3,7 @@ import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { authController } from "~/modules/auth/auth.js";
 import { healthController } from "~/modules/health/health.js";
+import { labelController } from "~/modules/labels/labels.js";
 import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
 import { workspaceController } from "~/modules/workspaces/workspaces.js";
@@ -19,10 +20,10 @@ const apiV1 = new BaseServerApplicationApi(
 	config,
 	...authController.routes,
 	...healthController.routes,
+	...labelController.routes,
 	...userController.routes,
 	...promptController.routes,
 	...workspaceController.routes,
-	...promptController.routes,
 );
 const serverApplication = new BaseServerApplication({
 	apis: [apiV1],

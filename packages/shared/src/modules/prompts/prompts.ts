@@ -6,5 +6,9 @@ export {
 export {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllRequestDto,
 } from "./libs/types/types.js";
-export { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+export {
+	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
