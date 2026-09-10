@@ -1,5 +1,6 @@
-import { Icon } from "~/libs/components/icon/icon.js";
+import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import styles from "./styles.module.css";
 
@@ -17,15 +18,13 @@ const SelectedValue = ({
 	return (
 		<li className={styles["value"]}>
 			<span className={styles["value-text"]}>{value}</span>
-			<button
-				aria-label={`Remove ${value}`}
-				className={styles["remove"]}
-				disabled={isDisabled}
+			<IconButton
+				ariaLabel={`Remove ${value}`}
+				className={getValidClasses(styles["remove"])}
+				iconName={IconName.CLOSE}
+				isDisabled={isDisabled}
 				onClick={onRemove(value)}
-				type="button"
-			>
-				<Icon className={styles["remove-icon"]} iconName={IconName.CLOSE} />
-			</button>
+			/>
 		</li>
 	);
 };
