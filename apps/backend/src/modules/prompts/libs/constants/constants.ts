@@ -10,3 +10,4 @@ export { LABEL_ID } from "./label-id.constant.js";
 export { PROMPT_ID } from "./prompt-id.constant.js";
 export { PROMPT_LABEL_ID } from "./prompt-label-id.constant.js";
 export { PROMPT_WORKSPACE_ID } from "./prompt-workspace-id.constant.js";
+export { UNEXPECTED_ERROR } from "./unexpected-error.constant.js";

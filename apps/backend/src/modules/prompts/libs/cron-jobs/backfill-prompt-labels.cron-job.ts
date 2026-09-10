@@ -11,6 +11,7 @@ import {
 	BACKFILL_CRON_EXPRESSION,
 	BACKFILL_LABELS_LIMIT,
 	BACKFILL_TIMEZONE,
+	UNEXPECTED_ERROR,
 } from "../constants/constants.js";
 import { type PromptLabelSource } from "../types/types.js";
 
@@ -44,9 +45,7 @@ class BackFillPromptLabelsJob {
 
 	private logError(error: unknown, prompt: PromptLabelSource): void {
 		const reason =
-			error instanceof TextGenerationError
-				? "text generation failed"
-				: "an unexpected error occurred";
+			error instanceof TextGenerationError ? error.message : UNEXPECTED_ERROR;
 
 		this.logger.error(
 			`failed to backfill label for prompt ${prompt.id.toString()}: ${reason}.`,
