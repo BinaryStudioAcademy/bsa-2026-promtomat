@@ -3,4 +3,5 @@ export {
 	type PromptDto,
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
+	type PromptItemResponseDto,
 } from "@promptomat/shared";

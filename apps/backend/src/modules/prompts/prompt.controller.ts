@@ -85,8 +85,6 @@ class PromptController extends BaseController {
 		this.promptService = promptService;
 		this.workspaceService = workspaceService;
 
-		this.workspaceService = workspaceService;
-
 		this.addRoute({
 			handler: (options) =>
 				this.create(
