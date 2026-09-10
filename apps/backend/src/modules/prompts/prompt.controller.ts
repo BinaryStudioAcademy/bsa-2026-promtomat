@@ -11,8 +11,8 @@ import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.h
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
-	type PromptGetAllRequestDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
@@ -64,7 +64,7 @@ class PromptController extends BaseController {
 			handler: (options) =>
 				this.findAllByWorkspace(
 					options as APIHandlerOptions<{
-						query: PromptGetAllRequestDto;
+						query: GetPromptsRequestDto;
 					}>,
 				),
 			method: HTTPMethod.GET,
@@ -210,15 +210,10 @@ class PromptController extends BaseController {
 	 *                  $ref: "#/components/schemas/Prompt"
 	 */
 	private async findAllByWorkspace(
-		options: APIHandlerOptions<{ query: PromptGetAllRequestDto }>,
+		options: APIHandlerOptions<{ query: GetPromptsRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		const { labelId, workspaceId } = options.query;
-
 		return {
-			payload: await this.promptService.findAllByWorkspace(
-				workspaceId,
-				labelId,
-			),
+			payload: await this.promptService.findByWorkspace(options.query),
 			status: HTTPCode.OK,
 		};
 	}

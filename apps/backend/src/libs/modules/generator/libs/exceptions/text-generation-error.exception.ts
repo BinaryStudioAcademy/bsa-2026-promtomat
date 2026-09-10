@@ -25,13 +25,12 @@ class TextGenerationError extends ApplicationError {
 	}
 
 	public static maxTokensExceedsAllowedThreshold(
-		maxTokens: number,
 		cause?: unknown,
 	): TextGenerationError {
 		return new TextGenerationError({
 			cause,
 			code: TextGenerationErrorCode.MAX_TOKENS_EXCEEDS_THRESHOLD,
-			message: `${TextGenerationErrorMessage.TOKENS_THRESHOLD_EXCEEDED} ${maxTokens.toString()}`,
+			message: TextGenerationErrorMessage.TOKENS_THRESHOLD_EXCEEDED,
 		});
 	}
 

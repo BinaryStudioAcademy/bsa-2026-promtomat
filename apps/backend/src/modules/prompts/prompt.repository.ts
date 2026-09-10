@@ -2,20 +2,21 @@ import { type Transaction } from "objection";
 
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
+import {
+	FIRST_PAGE,
+	LABEL_ALIAS,
+	LABEL_ID,
+	PROMPT_ID,
+	PROMPT_LABEL_ID,
+	PROMPT_WORKSPACE_ID,
+} from "~/modules/prompts/libs/constants/constants.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
-import { type PromptDto } from "~/modules/prompts/libs/types/types.js";
+import {
+	type PromptDto,
+	type PromptFindByWorkspacePayload,
+} from "~/modules/prompts/libs/types/types.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
-
-const LABEL_ALIAS = "label";
-
-const LABEL_ID = `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`;
-
-const PROMPT_ID = `${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`;
-
-const PROMPT_LABEL_ID = `${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`;
-
-const PROMPT_WORKSPACE_ID = `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`;
 
 class PromptRepository {
 	private promptModel: typeof PromptModel;
@@ -37,10 +38,12 @@ class PromptRepository {
 		return PromptEntity.initialize(prompt);
 	}
 
-	public async findAllByWorkspace(
-		workspaceId: number,
-		labelId?: number,
-	): Promise<PromptDto[]> {
+	public async findByWorkspace({
+		labelId,
+		page,
+		size,
+		workspaceId,
+	}: PromptFindByWorkspacePayload): Promise<PromptDto[]> {
 		const query = this.promptModel
 			.knex()
 			.select<PromptDto[]>(
@@ -53,6 +56,8 @@ class PromptRepository {
 				PROMPT_WORKSPACE_ID,
 			)
 			.from(DatabaseTableName.PROMPTS)
+			.offset(page)
+			.limit((page - FIRST_PAGE) * size)
 			.innerJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
 			.where(PROMPT_WORKSPACE_ID, "=", workspaceId)
 			.orderBy(PROMPT_ID, "desc");

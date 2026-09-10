@@ -2,8 +2,8 @@ import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/generator/generator.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
-	type CronJob,
 	type ScheduleOptions,
+	type Scheduler,
 } from "~/libs/modules/scheduler/scheduler.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
@@ -19,16 +19,27 @@ const INITIAL_AFTER_ID = 0;
 type Constructor = {
 	logger: Logger;
 	promptService: PromptService;
+	scheduler: Scheduler;
 };
 
-class BackFillPromptLabelsJob implements CronJob {
+class BackFillPromptLabelsJob {
 	private logger: Logger;
 
 	private promptService: PromptService;
 
-	public constructor({ logger, promptService }: Constructor) {
+	private scheduler: Scheduler;
+
+	public constructor({ logger, promptService, scheduler }: Constructor) {
 		this.logger = logger;
 		this.promptService = promptService;
+		this.scheduler = scheduler;
+	}
+
+	private getOptions(): ScheduleOptions {
+		return {
+			expression: BACKFILL_CRON_EXPRESSION,
+			timezone: BACKFILL_TIMEZONE,
+		};
 	}
 
 	private logError(error: unknown, prompt: PromptLabelSource): void {
@@ -41,13 +52,6 @@ class BackFillPromptLabelsJob implements CronJob {
 			`failed to backfill label for prompt ${prompt.id.toString()}: ${reason}.`,
 			getErrorDetails(error),
 		);
-	}
-
-	public getOptions(): ScheduleOptions {
-		return {
-			expression: BACKFILL_CRON_EXPRESSION,
-			timezone: BACKFILL_TIMEZONE,
-		};
 	}
 
 	public async run(): Promise<void> {
@@ -73,6 +77,10 @@ class BackFillPromptLabelsJob implements CronJob {
 				}
 			}
 		} while (prompts.length === BACKFILL_LABELS_LIMIT);
+	}
+
+	public scheduleBackfill() {
+		this.scheduler.schedule(this.getOptions(), () => this.run());
 	}
 }
 

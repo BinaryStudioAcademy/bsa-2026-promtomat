@@ -42,23 +42,7 @@ class Generator implements GeneratorInterface {
 		return commandOptions;
 	}
 
-	private async sendStructuredCommand(
-		options: CommandOptions,
-	): Promise<CommandOutput> {
-		try {
-			return await this.bedrockService.sendCommand(options);
-		} catch (error) {
-			if (error instanceof BedrockServiceError) {
-				throw TextGenerationError.unableToGenerateStructure(error);
-			}
-
-			throw error;
-		}
-	}
-
-	private async sendTextCommand(
-		options: CommandOptions,
-	): Promise<CommandOutput> {
+	private async sendCommand(options: CommandOptions): Promise<CommandOutput> {
 		try {
 			return await this.bedrockService.sendCommand(options);
 		} catch (error) {
@@ -72,9 +56,7 @@ class Generator implements GeneratorInterface {
 
 	private throwIfExceedsTokenLimit(options: TextGenerationOptions): void {
 		if (options.config.maxTokens > TOKENS_THRESHOLD) {
-			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
-				TOKENS_THRESHOLD,
-			);
+			throw TextGenerationError.maxTokensExceedsAllowedThreshold();
 		}
 	}
 
@@ -83,9 +65,7 @@ class Generator implements GeneratorInterface {
 	): Promise<SchemaResultMap[K]> {
 		this.throwIfExceedsTokenLimit(options);
 
-		const result = await this.sendStructuredCommand(
-			this.createCommandOptions(options),
-		);
+		const result = await this.sendCommand(this.createCommandOptions(options));
 
 		if (result.isTextTruncated || result.text === undefined) {
 			throw TextGenerationError.unableToGenerateStructure();
@@ -101,7 +81,7 @@ class Generator implements GeneratorInterface {
 	public async generateText(options: TextGenerationOptions): Promise<string> {
 		this.throwIfExceedsTokenLimit(options);
 
-		const result = await this.sendTextCommand(options);
+		const result = await this.sendCommand(options);
 
 		if (result.isTextTruncated || result.text === undefined) {
 			throw TextGenerationError.unableToGenerateText();

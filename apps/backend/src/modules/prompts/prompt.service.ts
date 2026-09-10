@@ -10,7 +10,7 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 import {
 	LABEL_REUSE_SET_LIMIT,
 	LabelService,
-	normalizeLabel,
+	normalizePromptLabel,
 } from "../labels/labels.js";
 import {
 	LABEL_GENERATION_MAX_TOKENS,
@@ -21,6 +21,7 @@ import { createGenerateLabelMessage } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptFindByWorkspacePayload,
 	type PromptGenerateLabelPayload,
 	PromptLabelSource,
 } from "./libs/types/types.js";
@@ -62,7 +63,7 @@ class PromptService {
 
 	private async generateAndNormalizeLabel(prompt: PromptGenerateLabelPayload) {
 		const label = await this.generateLabel(prompt);
-		const normalized = normalizeLabel(label);
+		const normalized = normalizePromptLabel(label);
 
 		if (normalized === null) {
 			throw PromptError.failedToCreate();
@@ -149,11 +150,10 @@ class PromptService {
 		return prompt;
 	}
 
-	public async findAllByWorkspace(
-		workspaceId: number,
-		labelId?: number,
+	public async findByWorkspace(
+		payload: PromptFindByWorkspacePayload,
 	): Promise<PromptDto[]> {
-		return await this.promptRepository.findAllByWorkspace(workspaceId, labelId);
+		return await this.promptRepository.findByWorkspace(payload);
 	}
 
 	public async findPromptsWithoutLabels(

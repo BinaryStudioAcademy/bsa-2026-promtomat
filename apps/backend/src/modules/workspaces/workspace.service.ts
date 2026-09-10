@@ -1,7 +1,5 @@
 import { type Transaction } from "objection";
 
-import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
-
 import {
 	type WorkspaceCreatePayload,
 	type WorkspaceDto,
@@ -15,20 +13,6 @@ class WorkspaceService {
 
 	public constructor(workspaceRepository: WorkspaceRepository) {
 		this.workspaceRepository = workspaceRepository;
-	}
-
-	public async checkUserAccess(
-		workspaceId: number,
-		userId: number,
-	): Promise<void> {
-		const workspace = await this.workspaceRepository.findByIdAndUserId(
-			workspaceId,
-			userId,
-		);
-
-		if (!workspace) {
-			throw WorkspaceError.notFound();
-		}
 	}
 
 	public async create(

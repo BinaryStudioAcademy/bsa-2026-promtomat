@@ -22,4 +22,4 @@ export {
 	LABEL_MAX_LENGTH,
 	LABEL_REUSE_SET_LIMIT,
 } from "./libs/constants/constants.js";
-export { normalizeLabel } from "./libs/helpers/helpers.js";
+export { normalizePromptLabel } from "./libs/helpers/helpers.js";

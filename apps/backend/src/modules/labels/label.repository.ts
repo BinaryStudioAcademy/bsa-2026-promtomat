@@ -1,36 +1,24 @@
 import { type Transaction } from "objection";
 
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
-import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 
 import { LabelEntity } from "./label.entity.js";
 import { type LabelModel } from "./label.model.js";
 import {
 	CREATE_LABEL_CONFLICT_COLUMNS,
 	CREATE_LABEL_MERGE_COLUMNS,
+	LABEL_ID,
+	LABEL_NAME,
+	LABEL_WORKSPACE_ID,
+	PROMPT_COUNT_ALIAS,
+	PROMPT_ID,
+	PROMPT_LABEL_ID,
+	USAGE_COUNT_ALIAS,
 } from "./libs/constants/constants.js";
-import { LabelColumnName } from "./libs/enums/enums.js";
-import { type LabelWithPromptCountDto } from "./libs/types/types.js";
-
-const LABEL_ID = `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`;
-
-const LABEL_NAME = `${DatabaseTableName.LABELS}.${LabelColumnName.NAME}`;
-
-const LABEL_WORKSPACE_ID = `${DatabaseTableName.LABELS}.${LabelColumnName.WORKSPACE_ID}`;
-
-const PROMPT_ID = `${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`;
-
-const PROMPT_LABEL_ID = `${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`;
-
-const PROMPT_COUNT_ALIAS = "promptCount";
-
-type LabelCountRow = {
-	id: number;
-	name: string;
-	promptCount: string;
-};
-
-const USAGE_COUNT_ALIAS = "usageCount";
+import {
+	type LabelCountRow,
+	type LabelWithPromptCountDto,
+} from "./libs/types/types.js";
 
 class LabelRepository {
 	private labelModel: typeof LabelModel;

@@ -1,1 +1,1 @@
-export { normalizeLabel } from "./normalize-label.helper.js";
+export { normalizePromptLabel } from "./normalize-label.helper.js";

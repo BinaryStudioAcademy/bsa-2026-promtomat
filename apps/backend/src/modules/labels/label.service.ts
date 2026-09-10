@@ -4,7 +4,7 @@ import { LabelError } from "~/libs/exceptions/exceptions.js";
 
 import { LabelEntity } from "./label.entity.js";
 import { type LabelRepository } from "./label.repository.js";
-import { normalizeLabel } from "./libs/helpers/helpers.js";
+import { normalizePromptLabel } from "./libs/helpers/helpers.js";
 import {
 	type LabelCreatePayload,
 	type LabelDto,
@@ -35,7 +35,7 @@ class LabelService {
 		payload: LabelCreatePayload,
 		trx?: Transaction,
 	): Promise<LabelDto> {
-		const normalizedName = normalizeLabel(payload.name);
+		const normalizedName = normalizePromptLabel(payload.name);
 
 		if (normalizedName === null) {
 			throw LabelError.unusableName();

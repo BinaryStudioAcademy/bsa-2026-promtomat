@@ -4,9 +4,9 @@ export {
 	PromptsErrorMessage,
 } from "./libs/enums/enums.js";
 export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
-	type PromptGetAllRequestDto,
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,

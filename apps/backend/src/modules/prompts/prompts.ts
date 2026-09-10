@@ -1,6 +1,7 @@
 import { database } from "~/libs/modules/database/database.js";
 import { generator } from "~/libs/modules/generator/generator.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { scheduler } from "~/libs/modules/scheduler/scheduler.js";
 import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embeddings.js";
 
 import { labelService } from "../labels/labels.js";
@@ -23,6 +24,7 @@ const promptService = new PromptService({
 const backFillPromptLabelsJob = new BackFillPromptLabelsJob({
 	logger,
 	promptService,
+	scheduler,
 });
 
 const promptController = new PromptController(

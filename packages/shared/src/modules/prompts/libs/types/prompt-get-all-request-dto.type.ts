@@ -1,6 +1,8 @@
-type PromptGetAllRequestDto = {
+type GetPromptsRequestDto = {
 	labelId?: number;
+	page: number;
+	size: number;
 	workspaceId: number;
 };
 
-export { type PromptGetAllRequestDto };
+export { GetPromptsRequestDto };

@@ -54,9 +54,9 @@ export {
 	LabelsApiPath,
 } from "./modules/labels/labels.js";
 export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
-	type PromptGetAllRequestDto,
 	promptCreateValidationSchema,
 	promptGetByQueryValidationSchema,
 	PromptsApiPath,
