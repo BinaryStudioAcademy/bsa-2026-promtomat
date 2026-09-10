@@ -28,7 +28,6 @@ const workspacesApi = baseApi
 			}),
 
 			deleteWorkspace: builder.mutation<null, number>({
-				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
 
