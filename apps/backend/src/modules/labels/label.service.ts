@@ -1,55 +1,48 @@
-import { Transaction } from "objection";
+import { type Transaction } from "objection";
 
-import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
+import { LabelError } from "~/libs/exceptions/exceptions.js";
 
 import { LabelEntity } from "./label.entity.js";
 import { type LabelRepository } from "./label.repository.js";
-import { type LabelCreatePayload, LabelDto } from "./libs/types/types.js";
+import { normalizeLabel } from "./libs/helpers/helpers.js";
+import {
+	type LabelCreatePayload,
+	type LabelDto,
+	type LabelWithCountDto,
+} from "./libs/types/types.js";
 
 class LabelService {
-	private generator: GeneratorInterface;
 	private labelRepository: LabelRepository;
 
-	public constructor(
-		labelRepository: LabelRepository,
-		generator: GeneratorInterface,
-	) {
+	public constructor(labelRepository: LabelRepository) {
 		this.labelRepository = labelRepository;
-		this.generator = generator;
 	}
 
-	public async create(
-		payload: LabelCreatePayload,
-		trx?: Transaction,
-	): Promise<LabelDto> {
-		const label = await this.labelRepository.create(
-			LabelEntity.initializeNew(payload),
-			trx,
-		);
-
-		return label.toObject();
-	}
-
-	public async findAll(workspaceId: number) {
-		const labels = await this.labelRepository.findAll(workspaceId);
-
-		return labels.map((label) => label.toObject().name);
-	}
-
-	public findByName(
-		name: string,
+	public async findAllWithPromptCounts(
 		workspaceId: number,
-		trx?: Transaction,
-	): Promise<LabelEntity | null> {
-		return this.labelRepository.findByName(name, workspaceId, trx);
+	): Promise<LabelWithCountDto[]> {
+		return await this.labelRepository.findAllWithPromptCounts(workspaceId);
+	}
+
+	public async findMostUsedNames(
+		workspaceId: number,
+		limit: number,
+	): Promise<string[]> {
+		return await this.labelRepository.findMostUsedNames(workspaceId, limit);
 	}
 
 	public async getOrCreate(
 		payload: LabelCreatePayload,
 		trx?: Transaction,
 	): Promise<LabelDto> {
+		const normalizedName = normalizeLabel(payload.name);
+
+		if (normalizedName === null) {
+			throw LabelError.unusableName();
+		}
+
 		const label = await this.labelRepository.createIfAbsent(
-			LabelEntity.initializeNew(payload),
+			LabelEntity.initializeNew({ ...payload, name: normalizedName }),
 			trx,
 		);
 
