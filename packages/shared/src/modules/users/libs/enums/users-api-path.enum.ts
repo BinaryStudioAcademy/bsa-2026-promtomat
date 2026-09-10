@@ -1,4 +1,5 @@
 const UsersApiPath = {
+	ME: "/me",
 	ROOT: "/",
 } as const;
 

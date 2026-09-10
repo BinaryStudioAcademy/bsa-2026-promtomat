@@ -1,1 +1,6 @@
-export { AuthError, ValidationError } from "@promptomat/shared";
+export {
+	ApplicationError,
+	AuthError,
+	ValidationError,
+	WorkspaceError,
+} from "@promptomat/shared";
