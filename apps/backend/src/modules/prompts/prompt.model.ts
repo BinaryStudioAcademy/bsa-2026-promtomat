@@ -1,5 +1,6 @@
-import { type RelationMappings } from "objection";
+import { type Modifiers, type QueryBuilder, RelationMappings } from "objection";
 
+import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import {
 	AbstractModel,
 	DatabaseTableName,
@@ -9,7 +10,7 @@ import { UserColumnName } from "../users/libs/enums/enums.js";
 import { UserModel } from "../users/user.model.js";
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
 import { WorkspaceModel } from "../workspaces/workspace.model.js";
-import { PromptColumnName } from "./libs/enums/enums.js";
+import { PromptColumnName, PromptScope } from "./libs/enums/enums.js";
 
 class PromptModel extends AbstractModel {
 	public efficiencyScore!: number;
@@ -20,7 +21,64 @@ class PromptModel extends AbstractModel {
 
 	public userId!: number;
 
+	public workspace?: WorkspaceModel;
+
 	public workspaceId!: number;
+
+	public static override get modifiers(): Modifiers<
+		QueryBuilder<PromptModel, PromptModel[]>
+	> {
+		return {
+			filterByQuery(
+				builder,
+				{
+					scope,
+					score,
+					search,
+					userId,
+					workspaceId,
+				}: {
+					scope?: string;
+					score?: number;
+					search?: string;
+					userId: number;
+					workspaceId?: number;
+				},
+			) {
+				if (scope === PromptScope.MINE) {
+					builder.where(`${DatabaseTableName.PROMPTS}.userId`, userId);
+				} else {
+					builder.where(`${DatabaseTableName.WORKSPACES}.userId`, userId);
+				}
+
+				if (workspaceId) {
+					builder.where(
+						`${DatabaseTableName.PROMPTS}.workspaceId`,
+						workspaceId,
+					);
+				}
+
+				if (score) {
+					builder.where(`${DatabaseTableName.PROMPTS}.efficiencyScore`, score);
+				}
+
+				if (search) {
+					const escapedSearch = escapeILikePattern(search);
+					builder.where((subQuery) => {
+						subQuery
+							.whereILike(
+								`${DatabaseTableName.PROMPTS}.taskIntent`,
+								`%${escapedSearch}%`,
+							)
+							.orWhereILike(
+								`${DatabaseTableName.PROMPTS}.promptBody`,
+								`%${escapedSearch}%`,
+							);
+					});
+				}
+			},
+		};
+	}
 
 	public static get relationMappings(): RelationMappings {
 		return {

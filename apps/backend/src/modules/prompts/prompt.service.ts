@@ -1,15 +1,24 @@
+import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+
 import {
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
+	private promptEmbeddingService: PromptEmbeddingService;
 	private promptRepository: PromptRepository;
 
-	public constructor(promptRepository: PromptRepository) {
+	public constructor(
+		promptRepository: PromptRepository,
+		promptEmbeddingService: PromptEmbeddingService,
+	) {
 		this.promptRepository = promptRepository;
+		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
@@ -26,7 +35,42 @@ class PromptService {
 			}),
 		);
 
-		return prompt.toObject();
+		const promptDto = prompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptDto);
+
+		return promptDto;
+	}
+
+	public async findAll(options: {
+		query: PromptGetQueryDto;
+		userId: number;
+	}): Promise<PromptGetAllResponseDto> {
+		const { averageScore, items, page, pageSize, totalCount } =
+			await this.promptRepository.findAll(options);
+
+		return {
+			averageScore,
+			items: items.map((item) => ({
+				body: item.promptBody,
+				createdAt: item.createdAt,
+				id: item.id,
+				intent: item.taskIntent,
+				score: item.efficiencyScore,
+				workspaceId: item.workspaceId,
+				workspaceName: item.workspace?.name ?? "",
+			})),
+			page,
+			pageSize,
+			totalCount,
+		};
+	}
+
+	public async findUserPromptSummary(userId: number): Promise<{
+		averageScore: null | number;
+		totalCount: number;
+	}> {
+		return await this.promptRepository.findUserPromptSummary(userId);
 	}
 }
 

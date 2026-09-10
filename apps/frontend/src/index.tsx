@@ -14,6 +14,7 @@ import { Home } from "~/pages/home/home.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { Profile } from "~/pages/profile/profile.js";
+import { PromptHistory } from "~/pages/prompt-history/prompt-history.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
@@ -64,6 +65,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.TRAINING,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<PromptHistory />
+									</PrivateRoute>
+								),
+								path: AppRoute.PROMPT_HISTORY,
 							},
 							{
 								element: <Auth />,

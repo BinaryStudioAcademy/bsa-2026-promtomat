@@ -131,6 +131,9 @@ importers:
       knex:
         specifier: 3.3.0
         version: 3.3.0(pg@8.22.0)
+      node-cron:
+        specifier: 4.6.0
+        version: 4.6.0
       objection:
         specifier: 3.1.5
         version: 3.1.5(knex@3.3.0(pg@8.22.0))
@@ -3570,6 +3573,10 @@ packages:
 
   node-cleanup@2.1.2:
     resolution: {integrity: sha512-qN8v/s2PAJwGUtr1/hYTpNKlD6Y9rc4p8KSmJXyGdYGZsDGKXrGThikLFP9OCHFeLeEpQzPwiAtdIvBLqm//Hw==}
+
+  node-cron@4.6.0:
+    resolution: {integrity: sha512-Si/bzYiKRHOB8/a99T2+SDGN582ONDMSTlJr5oCkT6GtnqPjZ2s10eoQRYkW9ZHwjVxONL+W8Fb+qR0AHMQsdg==}
+    engines: {node: '>=20'}
 
   node-exports-info@1.6.2:
     resolution: {integrity: sha512-kXs9Go0cah0qHVV2v389IXQLdLCeE1xfFtjOAF+iobu0OIoG1pje8At2vMHyaPMiPMnG/LWP50twML21eMcAag==}
@@ -7997,6 +8004,8 @@ snapshots:
       tslib: 2.8.1
 
   node-cleanup@2.1.2: {}
+
+  node-cron@4.6.0: {}
 
   node-exports-info@1.6.2:
     dependencies:
