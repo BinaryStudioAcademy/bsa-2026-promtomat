@@ -1,6 +1,8 @@
 const AppRoute = {
 	ANY: "*",
+	FORGOT_PASSWORD: "/forgot-password",
 	NO_ACCESS: "/no-access",
+	RESET_PASSWORD: "/reset-password",
 	ROOT: "/",
 	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",
