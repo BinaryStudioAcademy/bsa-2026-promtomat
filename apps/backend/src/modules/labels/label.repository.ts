@@ -10,7 +10,7 @@ import {
 	CREATE_LABEL_MERGE_COLUMNS,
 } from "./libs/constants/constants.js";
 import { LabelColumnName } from "./libs/enums/enums.js";
-import { type LabelWithCountDto } from "./libs/types/types.js";
+import { type LabelWithPromptCountDto } from "./libs/types/types.js";
 
 const LABEL_ID = `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`;
 
@@ -56,7 +56,7 @@ class LabelRepository {
 
 	public async findAllWithPromptCounts(
 		workspaceId: number,
-	): Promise<LabelWithCountDto[]> {
+	): Promise<LabelWithPromptCountDto[]> {
 		const rows = (await this.labelModel
 			.knex()
 			.select(LABEL_ID, LABEL_NAME)

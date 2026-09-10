@@ -3,10 +3,10 @@ import { serverApplication } from "~/libs/modules/server-application/server-appl
 import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embeddings.js";
 
 import { scheduler } from "./libs/modules/scheduler/scheduler.js";
-import { backFillCronJob } from "./modules/prompts/prompts.js";
+import { backFillPromptLabelsJob } from "./modules/prompts/prompts.js";
 
 embedding.init();
 promptEmbeddingService.scheduleBackfill();
-scheduler.scheduleJob(backFillCronJob);
+scheduler.scheduleJob(backFillPromptLabelsJob);
 
 await serverApplication.init();

@@ -1,3 +1,3 @@
-const LABEL_MAX_LENGTH = 24;
+const LABEL_MAX_LENGTH = 15;
 
 export { LABEL_MAX_LENGTH };

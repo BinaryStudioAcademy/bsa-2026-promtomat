@@ -48,8 +48,8 @@ export {
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
-	type LabelGetAllRequestDto,
-	type LabelWithCountDto,
+	type GetLabelsRequestDto,
+	type LabelWithPromptCountDto,
 	labelGetByQueryValidationSchema,
 	LabelsApiPath,
 } from "./modules/labels/labels.js";

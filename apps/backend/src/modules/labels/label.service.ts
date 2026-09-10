@@ -8,7 +8,7 @@ import { normalizeLabel } from "./libs/helpers/helpers.js";
 import {
 	type LabelCreatePayload,
 	type LabelDto,
-	type LabelWithCountDto,
+	type LabelWithPromptCountDto,
 } from "./libs/types/types.js";
 
 class LabelService {
@@ -20,7 +20,7 @@ class LabelService {
 
 	public async findAllWithPromptCounts(
 		workspaceId: number,
-	): Promise<LabelWithCountDto[]> {
+	): Promise<LabelWithPromptCountDto[]> {
 		return await this.labelRepository.findAllWithPromptCounts(workspaceId);
 	}
 

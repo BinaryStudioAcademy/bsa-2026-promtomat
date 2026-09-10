@@ -1,5 +1,5 @@
-type LabelGetAllRequestDto = {
+type GetLabelsRequestDto = {
 	workspaceId: number;
 };
 
-export { type LabelGetAllRequestDto };
+export { type GetLabelsRequestDto };

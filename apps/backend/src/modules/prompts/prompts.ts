@@ -20,7 +20,7 @@ const promptService = new PromptService({
 	promptRepository,
 });
 
-const backFillCronJob = new BackFillPromptLabelsJob({
+const backFillPromptLabelsJob = new BackFillPromptLabelsJob({
 	logger,
 	promptService,
 });
@@ -31,4 +31,4 @@ const promptController = new PromptController(
 	workspaceService,
 );
 
-export { backFillCronJob, promptController };
+export { backFillPromptLabelsJob, promptController };

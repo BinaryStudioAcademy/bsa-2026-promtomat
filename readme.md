@@ -41,6 +41,8 @@ The diagram reflects the schema produced by the migrations in `apps/backend/src/
 erDiagram
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
+    workspaces ||--o{ labels : "workspace_id"
+    labels |o--o{ prompts : "label_id"
 
     users {
         int id PK "auto-increment"
@@ -56,10 +58,19 @@ erDiagram
         int id PK "auto-increment"
     }
 
+    labels {
+        int id PK "auto-increment"
+        varchar name "not null, unique per workspace"
+        int workspace_id FK "not null, onDelete CASCADE"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
     prompts {
         int id PK "auto-increment"
         int user_id FK "not null, onDelete CASCADE"
         int workspace_id FK "not null, onDelete CASCADE"
+        int label_id FK "nullable, indexed, onDelete SET NULL"
         varchar task_intent "not null"
         text prompt_body "not null"
         int efficiency_score "not null, check(1-10)"

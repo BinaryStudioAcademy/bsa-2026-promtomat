@@ -1,3 +1,3 @@
-const BACKFILL_CRON_EXPRESSION = "0 3 * * *";
+const BACKFILL_CRON_EXPRESSION = "0 4 * * *";
 
 export { BACKFILL_CRON_EXPRESSION };

@@ -15,7 +15,7 @@ import {
 import {
 	LABEL_GENERATION_MAX_TOKENS,
 	LABEL_GENERATION_TEMPERATURE,
-	LABEL_GENERATION_TOPP,
+	LABEL_GENERATION_TOP_P,
 } from "./libs/constants/constants.js";
 import { createGenerateLabelMessage } from "./libs/helpers/helpers.js";
 import {
@@ -60,6 +60,17 @@ class PromptService {
 		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
+	private async generateAndNormalizeLabel(prompt: PromptGenerateLabelPayload) {
+		const label = await this.generateLabel(prompt);
+		const normalized = normalizeLabel(label);
+
+		if (normalized === null) {
+			throw PromptError.failedToCreate();
+		}
+
+		return normalized;
+	}
+
 	private async generateLabel(
 		prompt: PromptGenerateLabelPayload,
 	): Promise<string> {
@@ -72,7 +83,7 @@ class PromptService {
 				config: {
 					maxTokens: LABEL_GENERATION_MAX_TOKENS,
 					temperature: LABEL_GENERATION_TEMPERATURE,
-					topP: LABEL_GENERATION_TOPP,
+					topP: LABEL_GENERATION_TOP_P,
 				},
 				message: createGenerateLabelMessage({
 					existingLabels: labels,
@@ -82,13 +93,7 @@ class PromptService {
 				schemaKey: SchemaKey.LABEL,
 			});
 
-			const normalized = normalizeLabel(result.label);
-
-			if (normalized === null) {
-				throw PromptError.failedToCreate();
-			}
-
-			return normalized;
+			return result.label;
 		} catch (error) {
 			if (error instanceof TextGenerationError) {
 				throw PromptError.failedToCreate();
@@ -102,7 +107,7 @@ class PromptService {
 		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
 			payload;
 
-		const generatedLabel = await this.generateLabel({
+		const generatedLabel = await this.generateAndNormalizeLabel({
 			promptBody,
 			taskIntent,
 			workspaceId,
@@ -163,7 +168,7 @@ class PromptService {
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
-		const generatedLabel = await this.generateLabel({
+		const generatedLabel = await this.generateAndNormalizeLabel({
 			promptBody: prompt.promptBody,
 			taskIntent: prompt.taskIntent,
 			workspaceId: prompt.workspaceId,

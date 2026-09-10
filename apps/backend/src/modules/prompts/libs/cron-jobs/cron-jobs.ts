@@ -1,1 +1,1 @@
-export { BackFillPromptLabelsJob } from "./backfill-promt-labels.cron-job.js";
+export { BackFillPromptLabelsJob } from "./backfill-prompt-labels.cron-job.js";

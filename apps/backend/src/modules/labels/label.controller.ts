@@ -11,7 +11,7 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import { type LabelService } from "./label.service.js";
 import { LabelsApiPath } from "./libs/enums/enums.js";
-import { type LabelGetAllRequestDto } from "./libs/types/types.js";
+import { type GetLabelsRequestDto } from "./libs/types/types.js";
 import { labelGetByQueryValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
 /*** @swagger
@@ -48,7 +48,7 @@ class LabelController extends BaseController {
 			handler: (options) =>
 				this.findAllWithPromptCounts(
 					options as APIHandlerOptions<{
-						query: LabelGetAllRequestDto;
+						query: GetLabelsRequestDto;
 					}>,
 				),
 			method: HTTPMethod.GET,
@@ -84,7 +84,7 @@ class LabelController extends BaseController {
 	 *                  $ref: "#/components/schemas/LabelWithCount"
 	 */
 	private async findAllWithPromptCounts(
-		options: APIHandlerOptions<{ query: LabelGetAllRequestDto }>,
+		options: APIHandlerOptions<{ query: GetLabelsRequestDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.labelService.findAllWithPromptCounts(

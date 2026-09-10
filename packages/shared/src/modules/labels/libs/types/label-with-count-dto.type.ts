@@ -1,7 +1,7 @@
-type LabelWithCountDto = {
+type LabelWithPromptCountDto = {
 	id: number;
 	name: string;
 	promptCount: number;
 };
 
-export { type LabelWithCountDto };
+export { type LabelWithPromptCountDto };

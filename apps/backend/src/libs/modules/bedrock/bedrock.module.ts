@@ -20,8 +20,11 @@ import {
 } from "./libs/types/types.js";
 
 type Constructor = {
+	connectionTimeoutMs: number;
+	maxAttempts: number;
 	modelId: string;
 	region: string;
+	requestTimeoutMs: number;
 };
 
 class Bedrock {
@@ -29,9 +32,21 @@ class Bedrock {
 
 	private modelId: string;
 
-	public constructor({ modelId, region }: Constructor) {
+	public constructor({
+		connectionTimeoutMs,
+		maxAttempts,
+		modelId,
+		region,
+		requestTimeoutMs,
+	}: Constructor) {
 		this.client = new BedrockRuntimeClient({
+			maxAttempts,
 			region,
+			requestHandler: {
+				connectionTimeout: connectionTimeoutMs,
+				requestTimeout: requestTimeoutMs,
+				throwOnRequestTimeout: true,
+			},
 		});
 		this.modelId = modelId;
 	}

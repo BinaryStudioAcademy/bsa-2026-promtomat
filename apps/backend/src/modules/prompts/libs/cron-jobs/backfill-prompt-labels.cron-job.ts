@@ -1,3 +1,4 @@
+import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/generator/generator.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
@@ -38,10 +39,7 @@ class BackFillPromptLabelsJob implements CronJob {
 
 		this.logger.error(
 			`failed to backfill label for prompt ${prompt.id.toString()}: ${reason}.`,
-			{
-				message: error instanceof Error ? error.message : String(error),
-				stack: error instanceof Error ? error.stack : undefined,
-			},
+			getErrorDetails(error),
 		);
 	}
 
@@ -67,6 +65,9 @@ class BackFillPromptLabelsJob implements CronJob {
 
 				try {
 					await this.promptService.regenerateLabel(prompt);
+					this.logger.info(
+						`Generated a label for prompt ${prompt.id.toString()}.`,
+					);
 				} catch (error) {
 					this.logError(error, prompt);
 				}
