@@ -13,6 +13,7 @@ import { ErrorPage } from "~/pages/error/error.js";
 import { Home } from "~/pages/home/home.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { PasswordReset } from "~/pages/password-reset/password-reset.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
@@ -63,6 +64,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: <Auth />,
 								path: AppRoute.SIGN_UP,
+							},
+							{
+								element: <PasswordReset />,
+								path: AppRoute.FORGOT_PASSWORD,
+							},
+							{
+								element: <PasswordReset />,
+								path: AppRoute.RESET_PASSWORD,
 							},
 							{
 								element: (
