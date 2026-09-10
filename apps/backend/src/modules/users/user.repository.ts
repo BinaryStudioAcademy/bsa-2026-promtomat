@@ -106,9 +106,10 @@ class UserRepository {
 	public async updatePassword(
 		id: number,
 		payload: PasswordPayload,
+		trx?: Transaction,
 	): Promise<UserEntity> {
 		const user = await this.userModel
-			.query()
+			.query(trx)
 			.patchAndFetchById(id, payload)
 			.throwIfNotFound();
 

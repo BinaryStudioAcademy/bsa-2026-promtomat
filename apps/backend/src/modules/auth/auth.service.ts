@@ -1,4 +1,5 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
+import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type MailService } from "~/libs/modules/mail/mail.js";
@@ -27,6 +28,7 @@ const MILLISECONDS_IN_MINUTE = 60_000;
 const PASSWORD_RESET_SUBJECT = "Reset your Promptomat password";
 
 type Constructor = {
+	database: Database;
 	hashing: Hashing;
 	linkBaseUrl: string;
 	logger: Logger;
@@ -39,6 +41,8 @@ type Constructor = {
 };
 
 class AuthService {
+	private database: Database;
+
 	private hashing: Hashing;
 
 	private linkBaseUrl: string;
@@ -58,6 +62,7 @@ class AuthService {
 	private userService: UserService;
 
 	public constructor({
+		database,
 		hashing,
 		linkBaseUrl,
 		logger,
@@ -68,6 +73,7 @@ class AuthService {
 		tokenTtlMinutes,
 		userService,
 	}: Constructor) {
+		this.database = database;
 		this.hashing = hashing;
 		this.linkBaseUrl = linkBaseUrl;
 		this.logger = logger;
@@ -153,13 +159,15 @@ class AuthService {
 			throw AuthError.resetTokenExpired();
 		}
 
-		const isClaimed = await this.passwordResetRepository.delete(id);
+		await this.database.transaction(async (trx) => {
+			const isClaimed = await this.passwordResetRepository.delete(id, trx);
 
-		if (!isClaimed) {
-			throw AuthError.resetTokenInvalid();
-		}
+			if (!isClaimed) {
+				throw AuthError.resetTokenInvalid();
+			}
 
-		await this.userService.updatePassword(userId, password);
+			await this.userService.updatePassword(userId, password, trx);
+		});
 	}
 
 	public async signIn(

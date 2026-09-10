@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
@@ -114,13 +116,21 @@ class UserService {
 		return user ? user.toObject() : null;
 	}
 
-	public async updatePassword(userId: number, password: string): Promise<void> {
+	public async updatePassword(
+		userId: number,
+		password: string,
+		trx?: Transaction,
+	): Promise<void> {
 		const { hash, salt } = await this.hashing.hash(password);
 
-		await this.userRepository.updatePassword(userId, {
-			passwordHash: hash,
-			passwordSalt: salt,
-		});
+		await this.userRepository.updatePassword(
+			userId,
+			{
+				passwordHash: hash,
+				passwordSalt: salt,
+			},
+			trx,
+		);
 	}
 
 	public async updateProfile(

@@ -2,6 +2,8 @@ import { type RateLimitService } from "./libs/types/types.js";
 
 const NO_ATTEMPTS = 0;
 
+const NOTHING_TO_EVICT = 0;
+
 type Constructor = {
 	intervalMs: number;
 	limit: number;
@@ -11,11 +13,13 @@ type Constructor = {
 // Counters live in this process only. They reset on restart, and each instance
 // keeps its own map, so behind a load balancer the effective limit becomes
 // limit x instance count. Adequate for a single instance; not a shared limit.
-// TODO: Replace with a shared store (Redis or a table) before scaling out.
+// TODO: Replace with a shared store (Redis or a table) before scaling out in the future.
 class InMemoryRateLimitService implements RateLimitService {
 	private attempts = new Map<string, number[]>();
 
 	private intervalMs: number;
+
+	private lastSweptAt = NOTHING_TO_EVICT;
 
 	private limit: number;
 
@@ -27,7 +31,25 @@ class InMemoryRateLimitService implements RateLimitService {
 		this.maximumTrackedKeys = maximumTrackedKeys;
 	}
 
-	private sweep(cutoff: number): void {
+	private evictOldest(): void {
+		while (this.attempts.size >= this.maximumTrackedKeys) {
+			const [oldestKey] = this.attempts.keys();
+
+			if (oldestKey === undefined) {
+				return;
+			}
+
+			this.attempts.delete(oldestKey);
+		}
+	}
+
+	private sweep(now: number, cutoff: number): void {
+		if (now - this.lastSweptAt < this.intervalMs) {
+			return;
+		}
+
+		this.lastSweptAt = now;
+
 		for (const [key, timestamps] of this.attempts) {
 			const recent = timestamps.filter((timestamp) => timestamp > cutoff);
 
@@ -39,12 +61,19 @@ class InMemoryRateLimitService implements RateLimitService {
 		}
 	}
 
+	private touch(key: string, timestamps: number[]): void {
+		this.attempts.delete(key);
+		this.attempts.set(key, timestamps);
+	}
+
 	public consume(key: string): boolean {
 		const now = Date.now();
 		const cutoff = now - this.intervalMs;
+		const isKnownKey = this.attempts.has(key);
 
-		if (this.attempts.size > this.maximumTrackedKeys) {
-			this.sweep(cutoff);
+		if (!isKnownKey && this.attempts.size >= this.maximumTrackedKeys) {
+			this.sweep(now, cutoff);
+			this.evictOldest();
 		}
 
 		const recent = (this.attempts.get(key) ?? []).filter(
@@ -52,13 +81,13 @@ class InMemoryRateLimitService implements RateLimitService {
 		);
 
 		if (recent.length >= this.limit) {
-			this.attempts.set(key, recent);
+			this.touch(key, recent);
 
 			return false;
 		}
 
 		recent.push(now);
-		this.attempts.set(key, recent);
+		this.touch(key, recent);
 
 		return true;
 	}

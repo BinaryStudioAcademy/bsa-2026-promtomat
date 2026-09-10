@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { PasswordResetEntity } from "./password-reset.entity.js";
 import { type PasswordResetModel } from "./password-reset.model.js";
 
@@ -24,9 +26,9 @@ class PasswordResetRepository {
 		return PasswordResetEntity.initialize(token);
 	}
 
-	public async delete(id: number): Promise<boolean> {
+	public async delete(id: number, trx?: Transaction): Promise<boolean> {
 		const deletedRows = await this.passwordResetModel
-			.query()
+			.query(trx)
 			.deleteById(id)
 			.execute();
 
