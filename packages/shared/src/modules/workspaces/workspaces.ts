@@ -6,7 +6,9 @@ export {
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
 export {
+	type ContributorDto,
 	type MembershipDto,
+	type WorkspaceAddContributorRequestDto,
 	type WorkspaceAddMemberRequestDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
@@ -14,6 +16,7 @@ export {
 	type WorkspaceGetAllResponseDto,
 } from "./libs/types/types.js";
 export {
+	workspaceAddContributorValidationSchema,
 	workspaceAddMemberValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
