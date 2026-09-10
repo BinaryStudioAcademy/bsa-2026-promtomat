@@ -40,6 +40,23 @@
 	opacity: 0.6;
 }
 
+.error {
+	border-color: var(--surface-danger);
+}
+
+.message {
+	min-height: var(--space-18);
+	font-size: var(--font-size-label-sm);
+	color: var(--fg-danger);
+}
+
+.values {
+	display: contents;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
 .input {
 	flex: 1;
 	min-width: 80px;
