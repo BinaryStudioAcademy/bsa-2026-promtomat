@@ -546,6 +546,85 @@ class PromptController extends BaseController {
 			status: HTTPCode.OK,
 		};
 	}
+
+	/**
+	 * @swagger
+	 * /prompts/{promptId}/intent:
+	 *   patch:
+	 *     description: Updates the intent of a prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: promptId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       description: New prompt intent
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               taskIntent:
+	 *                 type: string
+	 *                 minLength: 5
+	 *                 maxLength: 255
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 details:
+	 *                   type: array
+	 *                   items:
+	 *                     type: object
+	 *                     properties:
+	 *                       message:
+	 *                         type: string
+	 *                       path:
+	 *                         type: array
+	 *                         items:
+	 *                           type: string
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 */
 	private async updateIntent(
 		options: APIHandlerOptions<{
 			body: PromptUpdateIntentRequestDto;
