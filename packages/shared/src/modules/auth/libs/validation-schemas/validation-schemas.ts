@@ -1,4 +1,5 @@
 export { forgotPassword as forgotPasswordValidationSchema } from "./forgot-password.validation-schema.js";
+export { newPassword as newPasswordValidationSchema } from "./new-password.validation-schema.js";
 export { nicknameField as nicknameFieldValidationSchema } from "./nickname-field.validation-schema.js";
 export { passwordBoundarySpaces as passwordBoundarySpacesValidationSchema } from "./password-boundary-spaces.validation-schema.js";
 export { passwordField as passwordFieldValidationSchema } from "./password-field.validation-schema.js";
