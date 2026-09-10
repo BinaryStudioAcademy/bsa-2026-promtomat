@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
 
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
+import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { AppRoute, ErrorCode } from "~/libs/enums/enums.js";
+import { AppRoute, ErrorCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
@@ -70,6 +71,7 @@ const Profile: React.FC = () => {
 
 				<div className={styles["content"]}>
 					<section className={styles["card"]}>
+						<h3 className={styles["section-title"]}>Account details</h3>
 						<div className={styles["detail-row"]}>
 							<span className={styles["detail-label"]}>ID</span>
 							<span className={styles["detail-value"]}>{id}</span>
@@ -77,13 +79,14 @@ const Profile: React.FC = () => {
 						<div className={styles["detail-row"]}>
 							<span className={styles["detail-label"]}>Nickname</span>
 							<Link
-								className={styles["detail-value-link"]}
+								className={styles["detail-value-group"]}
 								to={AppRoute.SETTINGS}
 							>
-								<span className={styles["detail-value-link-text"]}>
-									{nickname}
-								</span>
-								<span className={styles["detail-value-hint"]}>Edit</span>
+								<Icon
+									className={styles["edit-icon"]}
+									iconName={IconName.EDIT}
+								/>
+								<span className={styles["detail-value"]}>{nickname}</span>
 							</Link>
 						</div>
 						<div className={styles["detail-row"]}>
@@ -91,20 +94,21 @@ const Profile: React.FC = () => {
 								Primary AI coding tool
 							</span>
 							<Link
-								className={styles["detail-value-link"]}
+								className={styles["detail-value-group"]}
 								to={AppRoute.SETTINGS}
 							>
-								<span className={styles["detail-value-link-text"]}>
+								<Icon
+									className={styles["edit-icon"]}
+									iconName={IconName.EDIT}
+								/>
+								<span className={styles["detail-value"]}>
 									{primaryAiCodingToolLabel}
 								</span>
-								<span className={styles["detail-value-hint"]}>Edit</span>
 							</Link>
 						</div>
 						<div className={styles["detail-row"]}>
 							<span className={styles["detail-label"]}>Member since</span>
-							<span className={styles["detail-value"]}>
-								{memberSinceLabel}
-							</span>
+							<span className={styles["detail-value"]}>{memberSinceLabel}</span>
 						</div>
 					</section>
 
@@ -113,26 +117,19 @@ const Profile: React.FC = () => {
 						{hasPrompts ? (
 							<div className={styles["stats-grid"]}>
 								<div className={styles["stat-tile"]}>
-									<span className={styles["stat-value"]}>
-										{totalPrompts}
-									</span>
+									<span className={styles["stat-value"]}>{totalPrompts}</span>
 									<span className={styles["stat-label"]}>Total prompts</span>
 								</div>
 								<div className={styles["stat-tile"]}>
-									<span className={styles["stat-value"]}>
-										{averageScore}
-									</span>
-									<span className={styles["stat-label"]}>
-										Average score
-									</span>
+									<span className={styles["stat-value"]}>{averageScore}</span>
+									<span className={styles["stat-label"]}>Average score</span>
 								</div>
 							</div>
 						) : (
 							<div className={styles["empty-state"]}>
 								<p className={styles["empty-state-text"]}>No Prompts Yet</p>
 								<p className={styles["empty-state-subtext"]}>
-									Once you do, your totals and average score will show up
-									here.
+									Once you do, your totals and average score will show up here.
 								</p>
 								<Link
 									className={styles["empty-state-cta"]}
