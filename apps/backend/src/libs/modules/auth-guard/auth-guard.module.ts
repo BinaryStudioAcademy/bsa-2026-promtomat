@@ -22,9 +22,6 @@ class AuthGuard {
 		this.userService = userService;
 	}
 
-	// A token issued before the password changed belongs to a session opened
-	// with the old credentials, so a reset evicts it. iat is whole seconds, so a
-	// token minted in the same second as the change survives; nothing issues one.
 	private assertTokenPredatesNoPasswordChange(
 		payload: AuthPayload,
 		passwordChangedAt: null | string,
