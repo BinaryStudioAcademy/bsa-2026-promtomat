@@ -10,6 +10,8 @@ import { BEARER } from "./libs/constants/constants.js";
 import { AuthErrorMesssage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
+const MILLISECONDS_IN_SECOND = 1000;
+
 class AuthGuard {
 	private readonly tokenService: TokenService;
 
@@ -18,6 +20,26 @@ class AuthGuard {
 	public constructor(tokenService: TokenService, userService: UserService) {
 		this.tokenService = tokenService;
 		this.userService = userService;
+	}
+
+	// A token issued before the password changed belongs to a session opened
+	// with the old credentials, so a reset evicts it. iat is whole seconds, so a
+	// token minted in the same second as the change survives; nothing issues one.
+	private assertTokenPredatesNoPasswordChange(
+		payload: AuthPayload,
+		passwordChangedAt: null | string,
+	): void {
+		if (passwordChangedAt === null || payload.iat === undefined) {
+			return;
+		}
+
+		const changedAtSeconds = Math.floor(
+			new Date(passwordChangedAt).getTime() / MILLISECONDS_IN_SECOND,
+		);
+
+		if (payload.iat < changedAtSeconds) {
+			this.throwUnauthorized(AuthErrorMesssage.PASSWORD_CHANGED);
+		}
 	}
 
 	private extractBearerToken(header?: string): null | string {
@@ -58,13 +80,18 @@ class AuthGuard {
 
 		const payload = await this.verifyToken(token);
 
-		const user = await this.userService.findById(payload.userId);
+		const userEntity = await this.userService.findEntityById(payload.userId);
 
-		if (!user) {
+		if (!userEntity) {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
-		return user;
+		this.assertTokenPredatesNoPasswordChange(
+			payload,
+			userEntity.toAuthObject().passwordChangedAt,
+		);
+
+		return userEntity.toObject();
 	}
 }
 

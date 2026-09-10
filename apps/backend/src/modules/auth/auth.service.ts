@@ -25,6 +25,8 @@ import { type PasswordResetRepository } from "./password-reset.repository.js";
 
 const MILLISECONDS_IN_MINUTE = 60_000;
 
+const PASSWORD_CHANGED_SUBJECT = "Your Promptomat password was changed";
+
 const PASSWORD_RESET_SUBJECT = "Reset your Promptomat password";
 
 type Constructor = {
@@ -83,6 +85,26 @@ class AuthService {
 		this.tokenService = tokenService;
 		this.tokenTtlMinutes = tokenTtlMinutes;
 		this.userService = userService;
+	}
+
+	private async deliverPasswordChangedNotice(userId: number): Promise<void> {
+		try {
+			const user = await this.userService.findById(userId);
+
+			if (!user) {
+				return;
+			}
+
+			await this.mailService.send({
+				subject: PASSWORD_CHANGED_SUBJECT,
+				text: "Your password was just changed. You have been signed out everywhere else, so you will need to sign in again on your other devices.\n\nIf this was not you, request a new reset link immediately and contact support.",
+				to: user.email,
+			});
+		} catch (error) {
+			this.logger.error("Failed to deliver a password changed notice.", {
+				message: error instanceof Error ? error.message : String(error),
+			});
+		}
 	}
 
 	private async deliverResetLink(email: string, token: string): Promise<void> {
@@ -168,6 +190,8 @@ class AuthService {
 
 			await this.userService.updatePassword(userId, password, trx);
 		});
+
+		void this.deliverPasswordChangedNotice(userId);
 	}
 
 	public async signIn(

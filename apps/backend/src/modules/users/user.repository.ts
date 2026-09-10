@@ -15,6 +15,7 @@ const UsersConstraintName = {
 } as const;
 
 type PasswordPayload = {
+	passwordChangedAt: string;
 	passwordHash: string;
 	passwordSalt: string;
 };

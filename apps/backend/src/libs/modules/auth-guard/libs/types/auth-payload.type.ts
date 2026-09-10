@@ -1,4 +1,5 @@
 type AuthPayload = {
+	iat?: number;
 	userId: number;
 };
 

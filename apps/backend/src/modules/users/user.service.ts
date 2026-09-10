@@ -116,6 +116,10 @@ class UserService {
 		return user ? user.toObject() : null;
 	}
 
+	public async findEntityById(id: number): Promise<null | UserEntity> {
+		return await this.userRepository.findById(id);
+	}
+
 	public async updatePassword(
 		userId: number,
 		password: string,
@@ -126,6 +130,7 @@ class UserService {
 		await this.userRepository.updatePassword(
 			userId,
 			{
+				passwordChangedAt: new Date().toISOString(),
 				passwordHash: hash,
 				passwordSalt: salt,
 			},
