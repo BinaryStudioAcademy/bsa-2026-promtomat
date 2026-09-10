@@ -9,7 +9,6 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
-import { workspaceQueryAccessHook } from "../workspaces/libs/hooks/workspace-query-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
@@ -86,7 +85,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.PROGRESS,
-			preHandler: workspaceQueryAccessHook(this.workspaceService),
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				query: promptWorkspaceQueryValidationSchema,
 			},
@@ -101,7 +100,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.RECENT,
-			preHandler: workspaceQueryAccessHook(this.workspaceService),
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				query: promptWorkspaceQueryValidationSchema,
 			},
