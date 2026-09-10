@@ -11,6 +11,7 @@ import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
+import { type SelectOption } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
@@ -22,11 +23,6 @@ type Properties<T extends FieldValues> = {
 	options: SelectOption[];
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
-};
-
-type SelectOption = {
-	label: string;
-	value: number | string;
 };
 
 const Select = <T extends FieldValues>({

@@ -1,0 +1,3 @@
+const BACKFILL_BATCH_SIZE = 16;
+
+export { BACKFILL_BATCH_SIZE };
