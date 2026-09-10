@@ -114,6 +114,15 @@ class UserService {
 		return user ? user.toObject() : null;
 	}
 
+	public async updatePassword(userId: number, password: string): Promise<void> {
+		const { hash, salt } = await this.hashing.hash(password);
+
+		await this.userRepository.updatePassword(userId, {
+			passwordHash: hash,
+			passwordSalt: salt,
+		});
+	}
+
 	public async updateProfile(
 		currentUser: UserDto,
 		payload: UserUpdateRequestDto,

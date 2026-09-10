@@ -13,6 +13,7 @@ import {
 } from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -130,6 +131,35 @@ class AuthService {
 		}
 
 		void this.issueResetToken(email);
+	}
+
+	public async resetPassword({
+		password,
+		token,
+	}: ResetPasswordRequestDto): Promise<void> {
+		const tokenEntity = await this.passwordResetRepository.findByTokenHash(
+			hashPasswordResetToken(token),
+		);
+
+		if (!tokenEntity) {
+			throw AuthError.resetTokenInvalid();
+		}
+
+		const { expiresAt, id, userId } = tokenEntity.toObject();
+
+		if (expiresAt <= new Date()) {
+			await this.passwordResetRepository.delete(id);
+
+			throw AuthError.resetTokenExpired();
+		}
+
+		const isClaimed = await this.passwordResetRepository.delete(id);
+
+		if (!isClaimed) {
+			throw AuthError.resetTokenInvalid();
+		}
+
+		await this.userService.updatePassword(userId, password);
 	}
 
 	public async signIn(

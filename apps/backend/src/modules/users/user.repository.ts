@@ -14,6 +14,11 @@ const UsersConstraintName = {
 	NICKNAME_UNIQUE: "users_nickname_unique",
 } as const;
 
+type PasswordPayload = {
+	passwordHash: string;
+	passwordSalt: string;
+};
+
 class UserRepository {
 	private userModel: typeof UserModel;
 
@@ -96,6 +101,18 @@ class UserRepository {
 
 			throw error;
 		}
+	}
+
+	public async updatePassword(
+		id: number,
+		payload: PasswordPayload,
+	): Promise<UserEntity> {
+		const user = await this.userModel
+			.query()
+			.patchAndFetchById(id, payload)
+			.throwIfNotFound();
+
+		return UserEntity.initialize(user);
 	}
 }
 

@@ -47,6 +47,22 @@ class AuthError extends HTTPError {
 		});
 	}
 
+	public static resetTokenExpired(): AuthError {
+		return new AuthError({
+			code: ErrorCode.AUTH_RESET_TOKEN_EXPIRED,
+			message: AuthErrorMessage.RESET_TOKEN_EXPIRED,
+			status: HTTPCode.UNPROCESSED_ENTITY,
+		});
+	}
+
+	public static resetTokenInvalid(): AuthError {
+		return new AuthError({
+			code: ErrorCode.AUTH_RESET_TOKEN_INVALID,
+			message: AuthErrorMessage.RESET_TOKEN_INVALID,
+			status: HTTPCode.UNPROCESSED_ENTITY,
+		});
+	}
+
 	public static unauthorized(): AuthError {
 		return new AuthError({
 			code: ErrorCode.UNAUTHENTICATED,

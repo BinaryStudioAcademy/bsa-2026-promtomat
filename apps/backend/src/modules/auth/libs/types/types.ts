@@ -1,5 +1,6 @@
 export {
 	type ForgotPasswordRequestDto,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,

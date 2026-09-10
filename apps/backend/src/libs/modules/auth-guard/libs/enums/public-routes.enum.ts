@@ -11,6 +11,9 @@ const PUBLIC_ROUTES: PublicRoutes = {
 	[`${API_VERSION_PREFIX}${APIPath.AUTH}${AuthApiPath.FORGOT_PASSWORD}`]: [
 		HTTPMethod.POST,
 	],
+	[`${API_VERSION_PREFIX}${APIPath.AUTH}${AuthApiPath.RESET_PASSWORD}`]: [
+		HTTPMethod.POST,
+	],
 	[`${API_VERSION_PREFIX}${APIPath.AUTH}${AuthApiPath.SIGN_IN}`]: [
 		HTTPMethod.POST,
 	],

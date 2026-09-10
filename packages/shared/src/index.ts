@@ -31,6 +31,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	type ForgotPasswordRequestDto,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -43,6 +44,7 @@ export {
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
+	resetPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";

@@ -10,12 +10,14 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
-	ForgotPasswordRequestDto,
+	type ForgotPasswordRequestDto,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignUpRequestDto,
 } from "./libs/types/types.js";
 import {
 	forgotPasswordValidationSchema,
+	resetPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -73,6 +75,20 @@ class AuthController extends BaseController {
 			path: AuthApiPath.FORGOT_PASSWORD,
 			validation: {
 				body: forgotPasswordValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.resetPassword(
+					options as APIHandlerOptions<{
+						body: ResetPasswordRequestDto;
+					}>,
+				),
+			method: HTTPMethod.POST,
+			path: AuthApiPath.RESET_PASSWORD,
+			validation: {
+				body: resetPasswordValidationSchema,
 			},
 		});
 	}
@@ -185,6 +201,46 @@ class AuthController extends BaseController {
 	private getAuthenticatedUser(options: APIHandlerOptions): APIHandlerResponse {
 		return {
 			payload: options.user,
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /auth/reset-password:
+	 *   post:
+	 *     description: Sets a new password using a token from a reset email.
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               password:
+	 *                 type: string
+	 *               token:
+	 *                 type: string
+	 *     responses:
+	 *       200:
+	 *         description: Password changed. The token cannot be used again.
+	 *       422:
+	 *         description: >
+	 *           Validation failed, or the token is expired
+	 *           (AUTH_RESET_TOKEN_EXPIRED) or no longer valid
+	 *           (AUTH_RESET_TOKEN_INVALID).
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 */
+	private async resetPassword(
+		options: APIHandlerOptions<{ body: ResetPasswordRequestDto }>,
+	): Promise<APIHandlerResponse> {
+		await this.authService.resetPassword(options.body);
+
+		return {
+			payload: null,
 			status: HTTPCode.OK,
 		};
 	}
