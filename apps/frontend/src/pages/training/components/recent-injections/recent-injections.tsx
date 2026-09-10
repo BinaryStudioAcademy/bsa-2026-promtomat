@@ -1,5 +1,6 @@
 import React from "react";
 
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type PromptRecentDto } from "~/modules/prompts/libs/types/types.js";
 
 import { RecentInjectionsMessage } from "./libs/enums/enums.js";
@@ -9,13 +10,11 @@ type Properties = {
 	items: PromptRecentDto[];
 };
 
-const EMPTY_ITEMS_LENGTH = 0;
-
 const RecentInjections: React.FC<Properties> = ({ items }: Properties) => {
 	return (
 		<section className={styles["section"]}>
 			<h2 className={styles["heading"]}>{RecentInjectionsMessage.TITLE}</h2>
-			{items.length > EMPTY_ITEMS_LENGTH ? (
+			{items.length > EMPTY_LENGTH ? (
 				<ul className={styles["list"]}>
 					{items.map((item) => {
 						return (

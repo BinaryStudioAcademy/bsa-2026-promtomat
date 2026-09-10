@@ -1,3 +1,4 @@
+import { SortOrder } from "~/libs/enums/enums.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
@@ -32,7 +33,7 @@ class PromptRepository {
 			.query()
 			.select("efficiencyScore", "id", "taskIntent")
 			.where({ workspaceId })
-			.orderBy("createdAt", "desc")
+			.orderBy("createdAt", SortOrder.DESC)
 			.limit(limit)
 			.execute();
 

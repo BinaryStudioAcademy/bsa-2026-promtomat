@@ -1,5 +1,4 @@
-const PERCENTAGE_SCALE = 100;
-const EMPTY_TARGET = 0;
+import { EMPTY_TARGET, PERCENTAGE_SCALE } from "../constants/constants.js";
 
 const getProgressPercentage = (count: number, target: number): number => {
 	if (target <= EMPTY_TARGET) {
@@ -9,4 +8,4 @@ const getProgressPercentage = (count: number, target: number): number => {
 	return Math.min(PERCENTAGE_SCALE, (count / target) * PERCENTAGE_SCALE);
 };
 
-export { EMPTY_TARGET, getProgressPercentage, PERCENTAGE_SCALE };
+export { getProgressPercentage };

@@ -1,10 +1,7 @@
 import React from "react";
 
-import {
-	EMPTY_TARGET,
-	getProgressPercentage,
-	PERCENTAGE_SCALE,
-} from "./libs/helpers/helpers.js";
+import { EMPTY_TARGET, PERCENTAGE_SCALE } from "./libs/constants/constants.js";
+import { getProgressPercentage } from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
