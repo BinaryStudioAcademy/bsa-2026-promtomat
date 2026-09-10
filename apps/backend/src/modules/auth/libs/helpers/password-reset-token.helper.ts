@@ -10,4 +10,8 @@ const hashPasswordResetToken = (token: string): string => {
 	return createHash("sha256").update(token).digest("hex");
 };
 
-export { createPasswordResetToken, hashPasswordResetToken };
+const hashThrottleKey = (email: string): string => {
+	return createHash("sha256").update(email).digest("hex");
+};
+
+export { createPasswordResetToken, hashPasswordResetToken, hashThrottleKey };

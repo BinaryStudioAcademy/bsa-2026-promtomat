@@ -223,10 +223,22 @@ class BaseConfig implements Config {
 					env: "PASSWORD_RESET_LINK_BASE_URL",
 					format: String,
 				},
+				REQUEST_LIMIT: {
+					default: null,
+					doc: "Password reset requests allowed per address per window",
+					env: "PASSWORD_RESET_REQUEST_LIMIT",
+					format: Number,
+				},
 				TOKEN_TTL_MINUTES: {
 					default: null,
 					doc: "Password reset token time to live in minutes",
 					env: "PASSWORD_RESET_TOKEN_TTL_MINUTES",
+					format: Number,
+				},
+				WINDOW_MINUTES: {
+					default: null,
+					doc: "Length in minutes of the password reset throttle window",
+					env: "PASSWORD_RESET_WINDOW_MINUTES",
 					format: Number,
 				},
 			},

@@ -51,7 +51,9 @@ type EnvironmentSchema = {
 	};
 	PASSWORD_RESET: {
 		LINK_BASE_URL: string;
+		REQUEST_LIMIT: number;
 		TOKEN_TTL_MINUTES: number;
+		WINDOW_MINUTES: number;
 	};
 };
 
