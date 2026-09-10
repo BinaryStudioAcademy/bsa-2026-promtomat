@@ -23,8 +23,8 @@ const SuggestionsList = ({
 	onSuggestionMouseMove,
 	suggestions,
 	suggestionsListId,
-}: SuggestionsListProperties): React.ReactPortal =>
-	createPortal(
+}: SuggestionsListProperties): React.ReactPortal => {
+	return createPortal(
 		<ul
 			className={styles["suggestions"]}
 			id={suggestionsListId}
@@ -56,5 +56,6 @@ const SuggestionsList = ({
 		</ul>,
 		document.body,
 	);
+};
 
 export { SuggestionsList };

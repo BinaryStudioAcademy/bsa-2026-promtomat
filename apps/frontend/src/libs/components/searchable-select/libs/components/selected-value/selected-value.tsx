@@ -13,19 +13,21 @@ const SelectedValue = ({
 	isDisabled,
 	onRemove,
 	value,
-}: SelectedValueProperties): React.JSX.Element => (
-	<li className={styles["value"]}>
-		<span className={styles["value-text"]}>{value}</span>
-		<button
-			aria-label={`Remove ${value}`}
-			className={styles["remove"]}
-			disabled={isDisabled}
-			onClick={onRemove(value)}
-			type="button"
-		>
-			<Icon className={styles["remove-icon"]} iconName={IconName.CLOSE} />
-		</button>
-	</li>
-);
+}: SelectedValueProperties): React.JSX.Element => {
+	return (
+		<li className={styles["value"]}>
+			<span className={styles["value-text"]}>{value}</span>
+			<button
+				aria-label={`Remove ${value}`}
+				className={styles["remove"]}
+				disabled={isDisabled}
+				onClick={onRemove(value)}
+				type="button"
+			>
+				<Icon className={styles["remove-icon"]} iconName={IconName.CLOSE} />
+			</button>
+		</li>
+	);
+};
 
 export { SelectedValue };
