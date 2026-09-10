@@ -56,8 +56,8 @@ class PromptRepository {
 				PROMPT_WORKSPACE_ID,
 			)
 			.from(DatabaseTableName.PROMPTS)
-			.offset(page)
-			.limit((page - FIRST_PAGE) * size)
+			.offset((page - FIRST_PAGE) * size)
+			.limit(size)
 			.innerJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
 			.where(PROMPT_WORKSPACE_ID, "=", workspaceId)
 			.orderBy(PROMPT_ID, "desc");
