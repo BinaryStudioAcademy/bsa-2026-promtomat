@@ -22,6 +22,33 @@ class PromptRepository {
 		this.promptModel = promptModel;
 	}
 
+	private async findAggregate(
+		baseQuery: ReturnType<typeof this.promptModel.query>,
+	): Promise<{ averageScore: null | number; totalCount: number }> {
+		const [aggregation] = await baseQuery
+			.clone()
+			.clearSelect()
+			.clearOrder()
+			.count(`${DatabaseTableName.PROMPTS}.id as count`)
+			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
+			.castTo<
+				{
+					averageScore: null | number | string;
+					count: number | string;
+				}[]
+			>()
+			.execute();
+
+		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
+		const rawAvg = aggregation?.averageScore
+			? Number(aggregation.averageScore)
+			: null;
+		const averageScore =
+			rawAvg === null ? null : Math.round(rawAvg * ROUND_FACTOR) / ROUND_FACTOR;
+
+		return { averageScore, totalCount };
+	}
+
 	public async create(entity: PromptEntity): Promise<PromptEntity> {
 		const prompt = await this.promptModel
 			.query()
@@ -63,26 +90,7 @@ class PromptRepository {
 				workspaceId,
 			});
 
-		const [aggregation] = await baseQuery
-			.clone()
-			.clearSelect()
-			.clearOrder()
-			.count(`${DatabaseTableName.PROMPTS}.id as count`)
-			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
-			.castTo<
-				{
-					averageScore: null | number | string;
-					count: number | string;
-				}[]
-			>()
-			.execute();
-
-		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
-		const rawAvg = aggregation?.averageScore
-			? Number(aggregation.averageScore)
-			: null;
-		const averageScore =
-			rawAvg === null ? null : Math.round(rawAvg * ROUND_FACTOR) / ROUND_FACTOR;
+		const { averageScore, totalCount } = await this.findAggregate(baseQuery);
 
 		const offset = (page - DEFAULT_PAGE) * limit;
 
@@ -102,6 +110,16 @@ class PromptRepository {
 			pageSize: limit,
 			totalCount,
 		};
+	}
+
+	public async findUserPromptSummary(
+		userId: number,
+	): Promise<{ averageScore: null | number; totalCount: number }> {
+		const baseQuery = this.promptModel
+			.query()
+			.modify("filterByQuery", { userId });
+
+		return await this.findAggregate(baseQuery);
 	}
 }
 
