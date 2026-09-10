@@ -7,6 +7,7 @@ export {
 } from "./libs/enums/enums.js";
 export {
 	type ForgotPasswordRequestDto,
+	type NewPasswordFormValues,
 	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
@@ -15,6 +16,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	forgotPasswordValidationSchema,
+	newPasswordValidationSchema,
 	nicknameFieldValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,

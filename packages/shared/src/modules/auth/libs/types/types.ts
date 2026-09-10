@@ -1,4 +1,5 @@
 export { type ForgotPasswordRequestDto } from "./forgot-password-request-dto.type.js";
+export { type NewPasswordFormValues } from "./new-password-form-values.type.js";
 export { type ResetPasswordRequestDto } from "./reset-password-request-dto.type.js";
 export { type SignInRequestDto } from "./sign-in-request-dto.type.js";
 export { type SignInResponseDto } from "./sign-in-response-dto.type.js";
