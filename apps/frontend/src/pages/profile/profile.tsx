@@ -53,19 +53,21 @@ const Profile: React.FC = () => {
 				</div>
 				<div className={styles["detail-row"]}>
 					<span className={styles["detail-label"]}>Nickname</span>
-					<span className={styles["detail-value"]}>
-						{nickname}
-						<span className={styles["detail-value-separator"]}>·</span>
-						<Link to={AppRoute.SETTINGS}>Manage in Settings →</Link>
-					</span>
+					<Link className={styles["detail-value-link"]} to={AppRoute.SETTINGS}>
+						<span className={styles["detail-value-link-text"]}>
+							{nickname}
+						</span>
+						<span className={styles["detail-value-hint"]}>Edit</span>
+					</Link>
 				</div>
 				<div className={styles["detail-row"]}>
 					<span className={styles["detail-label"]}>Primary AI coding tool</span>
-					<span className={styles["detail-value"]}>
-						{primaryAiCodingToolLabel}
-						<span className={styles["detail-value-separator"]}>·</span>
-						<Link to={AppRoute.SETTINGS}>Manage in Settings →</Link>
-					</span>
+					<Link className={styles["detail-value-link"]} to={AppRoute.SETTINGS}>
+						<span className={styles["detail-value-link-text"]}>
+							{primaryAiCodingToolLabel}
+						</span>
+						<span className={styles["detail-value-hint"]}>Edit</span>
+					</Link>
 				</div>
 				<div className={styles["detail-row"]}>
 					<span className={styles["detail-label"]}>Member since</span>

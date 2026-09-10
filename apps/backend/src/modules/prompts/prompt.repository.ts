@@ -9,7 +9,7 @@ import {
 	ROUND_FACTOR,
 	ZERO_VALUE,
 } from "./libs/constants/constants.js";
-import { PromptColumnName } from "./libs/enums/enums.js";
+import { PromptColumnName, PromptScope } from "./libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
 	type PromptRepositoryFindAllResponseDto,
@@ -117,7 +117,7 @@ class PromptRepository {
 	): Promise<{ averageScore: null | number; totalCount: number }> {
 		const baseQuery = this.promptModel
 			.query()
-			.modify("filterByQuery", { userId });
+			.modify("filterByQuery", { scope: PromptScope.MINE, userId });
 
 		return await this.findAggregate(baseQuery);
 	}
