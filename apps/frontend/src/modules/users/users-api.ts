@@ -4,7 +4,6 @@ import { baseApi } from "~/libs/modules/api/base-api.js";
 import { UsersApiPath, UsersApiTag } from "./libs/enums/enums.js";
 import {
 	type UserDto,
-	type UserGetAllResponseDto,
 	type UserProfileSummaryResponseDto,
 	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -20,10 +19,6 @@ const usersApi = baseApi
 				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.USERS}${UsersApiPath.ME_SUMMARY}`,
 			}),
-			getUsers: builder.query<UserGetAllResponseDto, undefined>({
-				providesTags: [UsersApiTag.USER],
-				query: () => `${APIPath.USERS}${UsersApiPath.ROOT}`,
-			}),
 			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
@@ -35,11 +30,6 @@ const usersApi = baseApi
 		}),
 	});
 
-const { useGetProfileSummaryQuery, useGetUsersQuery, useUpdateProfileMutation } =
-	usersApi;
+const { useGetProfileSummaryQuery, useUpdateProfileMutation } = usersApi;
 
-export {
-	useGetProfileSummaryQuery,
-	useGetUsersQuery,
-	useUpdateProfileMutation,
-};
+export { useGetProfileSummaryQuery, useUpdateProfileMutation };

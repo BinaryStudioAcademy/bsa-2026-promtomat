@@ -9,7 +9,6 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import {
 	type UserDto,
-	type UserGetAllResponseDto,
 	type UserProfileSummaryResponseDto,
 	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -95,14 +94,6 @@ class UserService {
 
 			return userDto;
 		});
-	}
-
-	public async findAll(): Promise<UserGetAllResponseDto> {
-		const users = await this.userRepository.findAll();
-
-		return {
-			items: users.map((user) => user.toObject()),
-		};
 	}
 
 	public async findByEmail(email: string): Promise<null | UserEntity> {
