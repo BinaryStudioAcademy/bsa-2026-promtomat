@@ -1,6 +1,8 @@
 import React from "react";
 
-import { EMPTY_TARGET, PERCENTAGE_SCALE } from "./libs/constants/constants.js";
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+
+import { PERCENTAGE_SCALE } from "./libs/constants/constants.js";
 import { getProgressPercentage } from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
@@ -27,7 +29,7 @@ const ProgressBar: React.FC<Properties> = ({
 			<div
 				aria-label={label}
 				aria-valuemax={PERCENTAGE_SCALE}
-				aria-valuemin={EMPTY_TARGET}
+				aria-valuemin={EMPTY_LENGTH}
 				aria-valuenow={percentage}
 				className={styles["track"]}
 				role="progressbar"

@@ -1,3 +1,1 @@
-const EMPTY_LENGTH = 0;
-
-export { EMPTY_LENGTH };
+export { EMPTY_LENGTH } from "@promptomat/shared";

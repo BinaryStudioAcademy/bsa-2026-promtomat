@@ -29,19 +29,13 @@ class PromptRepository {
 		workspaceId: number,
 		limit: number,
 	): Promise<PromptRecentDto[]> {
-		const prompts = await this.promptModel
+		return await this.promptModel
 			.query()
 			.select("efficiencyScore", "id", "taskIntent")
 			.where({ workspaceId })
 			.orderBy("createdAt", SortOrder.DESC)
 			.limit(limit)
 			.execute();
-
-		return prompts.map((prompt) => ({
-			efficiencyScore: prompt.efficiencyScore,
-			id: prompt.id,
-			taskIntent: prompt.taskIntent,
-		}));
 	}
 }
 
