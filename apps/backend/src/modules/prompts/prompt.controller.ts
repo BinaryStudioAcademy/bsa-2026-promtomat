@@ -10,8 +10,14 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
-import { type PromptCreateRequestDto } from "./libs/types/types.js";
-import { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import {
+	type PromptCreateRequestDto,
+	type PromptGetAllRequestDto,
+} from "./libs/types/types.js";
+import {
+	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
 /*** @swagger
@@ -23,6 +29,8 @@ import { type PromptService } from "./prompt.service.js";
  *          id:
  *            type: number
  *            minimum: 1
+ *          label:
+ *            type: string
  *          efficiencyScore:
  *            type: number
  *            minimum: 1
@@ -54,6 +62,21 @@ class PromptController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
+				this.findAllByWorkspace(
+					options as APIHandlerOptions<{
+						query: PromptGetAllRequestDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.ROOT,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				query: promptGetByQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
 				this.create(
 					options as APIHandlerOptions<{
 						body: PromptCreateRequestDto;
@@ -66,6 +89,19 @@ class PromptController extends BaseController {
 				body: promptCreateValidationSchema,
 			},
 		});
+	}
+
+	private async create(
+		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			userId: options.user?.id as number,
+		};
+		return {
+			payload: await this.promptService.create(payload),
+			status: HTTPCode.CREATED,
+		};
 	}
 
 	/**
@@ -145,16 +181,45 @@ class PromptController extends BaseController {
 	 *                  message:
 	 *                    type: string
 	 */
-	private async create(
-		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
+	/**
+	 * @swagger
+	 * /prompts:
+	 *    get:
+	 *      description: Returns the prompts of a workspace, optionally narrowed to one label
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *        - in: query
+	 *          name: labelId
+	 *          required: false
+	 *          schema:
+	 *            type: number
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: array
+	 *                items:
+	 *                  $ref: "#/components/schemas/Prompt"
+	 */
+	private async findAllByWorkspace(
+		options: APIHandlerOptions<{ query: PromptGetAllRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		const payload = {
-			...options.body,
-			userId: options.user?.id as number,
-		};
+		const { labelId, workspaceId } = options.query;
+
 		return {
-			payload: await this.promptService.create(payload),
-			status: HTTPCode.CREATED,
+			payload: await this.promptService.findAllByWorkspace(
+				workspaceId,
+				labelId,
+			),
+			status: HTTPCode.OK,
 		};
 	}
 }

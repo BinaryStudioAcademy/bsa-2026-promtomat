@@ -4,7 +4,7 @@ const labelOutputSchema = {
 	value: JSON.stringify({
 		additionalProperties: false,
 		properties: { label: { type: "string" } },
-		required: ["text"],
+		required: ["label"],
 		type: "object",
 	}),
 } as const;

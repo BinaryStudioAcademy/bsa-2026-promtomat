@@ -5,6 +5,7 @@ import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embed
 
 import { labelService } from "../labels/labels.js";
 import { workspaceService } from "../workspaces/workspaces.js";
+import { BackFillPromptLabelsJob } from "./libs/cron-jobs/cron-jobs.js";
 import { PromptController } from "./prompt.controller.js";
 import { PromptModel } from "./prompt.model.js";
 import { PromptRepository } from "./prompt.repository.js";
@@ -19,10 +20,15 @@ const promptService = new PromptService({
 	promptRepository,
 });
 
+const backFillCronJob = new BackFillPromptLabelsJob({
+	logger,
+	promptService,
+});
+
 const promptController = new PromptController(
 	logger,
 	promptService,
 	workspaceService,
 );
 
-export { promptController };
+export { backFillCronJob, promptController };
