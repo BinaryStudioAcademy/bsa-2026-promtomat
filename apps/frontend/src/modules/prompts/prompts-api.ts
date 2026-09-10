@@ -1,4 +1,5 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
@@ -12,6 +13,7 @@ import {
 	type PromptProgressResponseDto,
 	type PromptSearchRequestDto,
 	type PromptSearchResponseDto,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
@@ -63,6 +65,19 @@ const promptApi = baseApi
 				query: (queryPayload) => ({
 					params: queryPayload,
 					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
+				}),
+			}),
+			updateTaskIntent: builder.mutation<
+				PromptDto,
+				{ id: number; payload: PromptUpdateIntentRequestDto }
+			>({
+				invalidatesTags: [PromptsApiTag.PROMPT],
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(APIPath.PROMPTS, PromptsApiPath.INTENT, {
+						promptId: String(id),
+					}),
 				}),
 			}),
 		}),

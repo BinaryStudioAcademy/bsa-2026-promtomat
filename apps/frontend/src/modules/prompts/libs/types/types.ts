@@ -10,5 +10,6 @@ export {
 	type PromptSearchRequestDto,
 	type PromptSearchResponseDto,
 	type PromptSearchResult,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";
