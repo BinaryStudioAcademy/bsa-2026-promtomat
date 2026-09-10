@@ -49,12 +49,6 @@ class UserController extends BaseController {
 		this.userService = userService;
 
 		this.addRoute({
-			handler: () => this.findAll(),
-			method: HTTPMethod.GET,
-			path: UsersApiPath.ROOT,
-		});
-
-		this.addRoute({
 			handler: (options) =>
 				this.updateProfile(
 					options as APIHandlerOptions<{
@@ -67,30 +61,6 @@ class UserController extends BaseController {
 				body: updateProfileValidationSchema,
 			},
 		});
-	}
-
-	/**
-	 * @swagger
-	 * /users:
-	 *    get:
-	 *      description: Returns an array of users
-	 *      security:
-	 *        - bearerAuth: []
-	 *      responses:
-	 *        200:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: array
-	 *                items:
-	 *                  $ref: "#/components/schemas/User"
-	 */
-	private async findAll(): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.userService.findAll(),
-			status: HTTPCode.OK,
-		};
 	}
 
 	/**
