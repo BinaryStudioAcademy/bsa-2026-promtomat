@@ -17,6 +17,12 @@ class PromptRepository {
 
 		return PromptEntity.initialize(prompt);
 	}
+
+	public async findAllByIds(ids: number[]): Promise<PromptEntity[]> {
+		const prompts = await this.promptModel.query().findByIds(ids).execute();
+
+		return prompts.map((prompt) => PromptEntity.initialize(prompt));
+	}
 }
 
 export { PromptRepository };

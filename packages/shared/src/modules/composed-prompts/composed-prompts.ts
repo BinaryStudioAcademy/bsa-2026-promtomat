@@ -1,5 +1,7 @@
 export {
 	ComposedPromptsApiPath,
+	ComposedPromptsErrorCode,
+	ComposedPromptsErrorMessage,
 	ComposedPromptValidationMessage,
 	ComposeResultKind,
 	FallbackReason,

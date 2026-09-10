@@ -1,6 +1,9 @@
+import { UniqueViolationError } from "objection";
+
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
 import { SOURCES_GRAPH } from "./libs/constants/constants.js";
+import { ComposedPromptDuplicateError } from "./libs/exceptions/exceptions.js";
 
 class ComposedPromptRepository {
 	private composedPromptModel: typeof ComposedPromptModel;
@@ -34,20 +37,28 @@ class ComposedPromptRepository {
 	public async create(
 		entity: ComposedPromptEntity,
 	): Promise<ComposedPromptEntity> {
-		return await this.composedPromptModel.transaction(async (transaction) => {
-			const { id } = await this.composedPromptModel
-				.query(transaction)
-				.insertGraph(entity.toNewObject())
-				.execute();
-			const composedPrompt = await this.composedPromptModel
-				.query(transaction)
-				.findById(id)
-				.withGraphFetched(SOURCES_GRAPH)
-				.throwIfNotFound()
-				.execute();
+		try {
+			return await this.composedPromptModel.transaction(async (transaction) => {
+				const { id } = await this.composedPromptModel
+					.query(transaction)
+					.insertGraph(entity.toNewObject())
+					.execute();
+				const composedPrompt = await this.composedPromptModel
+					.query(transaction)
+					.findById(id)
+					.withGraphFetched(SOURCES_GRAPH)
+					.throwIfNotFound()
+					.execute();
 
-			return this.initializeEntity(composedPrompt);
-		});
+				return this.initializeEntity(composedPrompt);
+			});
+		} catch (error) {
+			if (error instanceof UniqueViolationError) {
+				throw new ComposedPromptDuplicateError(error);
+			}
+
+			throw error;
+		}
 	}
 
 	public async findById(id: number): Promise<ComposedPromptEntity | null> {

@@ -9,6 +9,7 @@ const bedrock = new Bedrock({
 });
 
 export { bedrock };
+export { TextGenerationErrorCode } from "./libs/enums/enums.js";
 export { TextGenerationError } from "./libs/exceptions/text-generation-error.exception.js";
 export { checkIsTimeoutError } from "./libs/helpers/helpers.js";
 export {

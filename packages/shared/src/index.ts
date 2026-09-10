@@ -7,6 +7,7 @@ export {
 export {
 	ApplicationError,
 	AuthError,
+	ComposedPromptError,
 	HTTPError,
 	ValidationError,
 	WorkspaceError,
@@ -51,6 +52,8 @@ export {
 	type ComposeResponseDto,
 	type PromptCandidateDto,
 	ComposedPromptsApiPath,
+	ComposedPromptsErrorCode,
+	ComposedPromptsErrorMessage,
 	ComposedPromptValidationMessage,
 	ComposeResultKind,
 	composeValidationSchema,

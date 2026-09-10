@@ -40,6 +40,12 @@ class PromptService {
 
 		return promptDto;
 	}
+
+	public async findAllByIds(ids: number[]): Promise<PromptDto[]> {
+		const prompts = await this.promptRepository.findAllByIds(ids);
+
+		return prompts.map((prompt) => prompt.toObject());
+	}
 }
 
 export { PromptService };

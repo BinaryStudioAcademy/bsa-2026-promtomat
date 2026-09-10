@@ -2,16 +2,6 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
-		// Ignoring the bedrock files below also hides the sole import of
-		// `ApplicationError`: `TextGenerationError` extends it, and nothing
-		// else in the repository references it.
-		"apps/backend/src/libs/exceptions/exceptions.ts": ["exports"],
-		// the bedrock module is currently not consumed
-		"apps/backend/src/libs/modules/bedrock/**": ["files"],
-		// the generator module is currently not consumed
-		"apps/backend/src/libs/modules/generator/**": ["files"],
-		// The composed-prompts module has no service or controller yet.
-		"apps/backend/src/modules/composed-prompts/**": ["files"],
 		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
 		// consumers: the editing flow (regenerate) and search (#77).
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
@@ -39,12 +29,15 @@ const config: KnipConfig = {
 	workspaces: {
 		".": {},
 		"apps/backend": {
-			entry: ["src/db/migrations/*.ts"],
-			// The AWS SDK is imported only from the ignored bedrock files, so
-			// knip cannot see that usage. knex resolves its driver at runtime
-			// from `DB_DIALECT`, so nothing imports `pg` either; removing it
-			// makes knex throw on the first connection.
-			ignoreDependencies: ["@aws-sdk/client-bedrock-runtime", "pg"],
+			// The composed-prompts barrel is an entry until its controller imports it
+			// from the server application.
+			entry: [
+				"src/db/migrations/*.ts",
+				"src/modules/composed-prompts/composed-prompts.ts",
+			],
+			// knex resolves its driver at runtime from `DB_DIALECT`, so nothing
+			// imports `pg`; removing it makes knex throw on the first connection.
+			ignoreDependencies: ["pg"],
 		},
 		"apps/frontend": {
 			entry: ["src/libs/hooks/**/*.hook.ts"],
