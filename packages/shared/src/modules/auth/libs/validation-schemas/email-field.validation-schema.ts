@@ -9,6 +9,9 @@ const emailField = z
 	.min(AuthValidationRule.EMAIL_MINIMUM_LENGTH, {
 		error: AuthValidationMessage.EMAIL_REQUIRED,
 	})
+	.max(AuthValidationRule.EMAIL_MAXIMUM_LENGTH, {
+		error: AuthValidationMessage.EMAIL_TOO_LONG,
+	})
 	.pipe(
 		z.email({
 			error: AuthValidationMessage.EMAIL_INVALID,
