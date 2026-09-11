@@ -66,9 +66,7 @@ export {
 } from "./modules/users/users.js";
 export {
 	type ContributorDto,
-	type MembershipDto,
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceAddMemberRequestDto,
 	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorRouteParametersDto,
@@ -79,6 +77,7 @@ export {
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceListItemDto,
 	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 	type WorkspaceUserSummaryDto,
 	checkIsValidTechStackTag,
 	ContributorsErrorCode,
@@ -91,7 +90,6 @@ export {
 	TechStackTagSchema,
 	TechStackTechDictionary,
 	workspaceAddContributorValidationSchema,
-	workspaceAddMemberValidationSchema,
 	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
@@ -100,6 +98,8 @@ export {
 	WorkspaceRole,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
+	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	workspaceUpdateValidationSchema,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

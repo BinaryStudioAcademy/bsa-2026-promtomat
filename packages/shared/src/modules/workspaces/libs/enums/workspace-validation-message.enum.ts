@@ -6,6 +6,7 @@ const WorkspaceValidationMessage = {
 		"Name must not start or end with a space",
 	NAME_TOO_LONG: `Workspace name must be at most ${String(WorkspaceValidationRule.NAME_MAXIMUM_LENGTH)} characters`,
 	NAME_TOO_SHORT: `Workspace name must be at least ${String(WorkspaceValidationRule.NAME_MINIMUM_LENGTH)} characters`,
+	UPDATE_REQUIRES_FIELD: "At least one field must be provided",
 	VISIBILITY_INVALID: "Visibility is invalid",
 } as const;
 

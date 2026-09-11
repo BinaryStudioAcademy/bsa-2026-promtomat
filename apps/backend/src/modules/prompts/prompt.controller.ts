@@ -7,8 +7,8 @@ import {
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
-import { type MembershipService } from "../memberships/membership.service.js";
-import { createWorkspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "./libs/types/types.js";
 import { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
@@ -37,20 +37,20 @@ import { type PromptService } from "./prompt.service.js";
  *            type: number
  */
 class PromptController extends BaseController {
-	private membershipService: MembershipService;
-
 	private promptService: PromptService;
+
+	private workspaceService: WorkspaceService;
 
 	public constructor(
 		logger: Logger,
 		promptService: PromptService,
-		membershipService: MembershipService,
+		workspaceService: WorkspaceService,
 	) {
 		super(logger, APIPath.PROMPTS);
 
 		this.promptService = promptService;
 
-		this.membershipService = membershipService;
+		this.workspaceService = workspaceService;
 
 		this.addRoute({
 			handler: (options) =>
@@ -61,7 +61,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.POST,
 			path: PromptsApiPath.ROOT,
-			preHandler: createWorkspaceAccessHook(this.membershipService),
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: promptCreateValidationSchema,
 			},

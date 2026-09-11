@@ -1,68 +1,29 @@
-import { type MembershipDto, WorkspaceRole } from "@promptomat/shared";
 import { type Transaction } from "objection";
 
-import {
-	ContributorError,
-	WorkspaceError,
-} from "~/libs/exceptions/exceptions.js";
-import { type MembershipService } from "~/modules/memberships/membership.service.js";
+import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { type Database } from "~/libs/modules/database/database.js";
 
+import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
 import {
 	type WorkspaceCreatePayload,
 	type WorkspaceDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceRepository } from "./workspace.repository.js";
 
 class WorkspaceService {
-	private membershipService: MembershipService;
+	private database: Database;
 
 	private workspaceRepository: WorkspaceRepository;
 
 	public constructor(
-		membershipService: MembershipService,
 		workspaceRepository: WorkspaceRepository,
+		database: Database,
 	) {
-		this.membershipService = membershipService;
 		this.workspaceRepository = workspaceRepository;
-	}
-
-	public async addMember(
-		requesterId: number,
-		workspaceId: number,
-		targetUserId: number,
-	): Promise<MembershipDto> {
-		const requesterMembership =
-			await this.membershipService.findByUserIdAndWorkspaceId(
-				requesterId,
-				workspaceId,
-			);
-
-		if (
-			requesterMembership === null ||
-			requesterMembership.toObject().role !== WorkspaceRole.OWNER
-		) {
-			throw WorkspaceError.forbidden();
-		}
-
-		const existingMembership =
-			await this.membershipService.findByUserIdAndWorkspaceId(
-				targetUserId,
-				workspaceId,
-			);
-
-		if (existingMembership !== null) {
-			return existingMembership.toObject();
-		}
-
-		const membership = await this.membershipService.create({
-			role: WorkspaceRole.CONTRIBUTOR,
-			userId: targetUserId,
-			workspaceId,
-		});
-
-		return membership.toObject();
+		this.database = database;
 	}
 
 	public async create(
@@ -82,6 +43,19 @@ class WorkspaceService {
 		return workspace.toObject();
 	}
 
+	public async delete(workspaceId: number, userId: number): Promise<void> {
+		await this.database.transaction(async (trx) => {
+			const workspaceCount =
+				await this.workspaceRepository.findCountByUserIdWithLock(userId, trx);
+
+			if (workspaceCount < MINIMUM_WORKSPACE_COUNT_FOR_DELETION) {
+				throw WorkspaceError.lastWorkspaceDeletionNotAllowed();
+			}
+
+			await this.workspaceRepository.deleteById(workspaceId, trx);
+		});
+	}
+
 	public async findAllByUserId(
 		userId: number,
 		workspaceName?: string,
@@ -92,42 +66,29 @@ class WorkspaceService {
 		);
 
 		return {
-			items: workspaces.map((workspace) => workspace.toObject()),
+			items: workspaces,
 		};
 	}
-	public async removeMember(
-		requesterId: number,
-		workspaceId: number,
-		targetUserId: number,
-	): Promise<void> {
-		const requesterMembership =
-			await this.membershipService.findByUserIdAndWorkspaceId(
-				requesterId,
-				workspaceId,
-			);
 
-		if (
-			requesterMembership === null ||
-			requesterMembership.toObject().role !== WorkspaceRole.OWNER
-		) {
-			throw WorkspaceError.forbidden();
-		}
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace = await this.workspaceRepository.findByIdAndUserId(
+			id,
+			userId,
+		);
 
-		const targetMembership =
-			await this.membershipService.findByUserIdAndWorkspaceId(
-				targetUserId,
-				workspaceId,
-			);
+		return workspace ? workspace.toObject() : null;
+	}
 
-		if (targetMembership === null) {
-			throw ContributorError.notFound();
-		}
+	public async update(
+		id: number,
+		payload: WorkspaceUpdateRequestDto,
+	): Promise<WorkspaceDto> {
+		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
 
-		if (targetMembership.toObject().role === WorkspaceRole.OWNER) {
-			throw WorkspaceError.ownerCannotBeRemoved();
-		}
-
-		await this.membershipService.delete(targetUserId, workspaceId);
+		return updatedWorkspace.toObject();
 	}
 }
 

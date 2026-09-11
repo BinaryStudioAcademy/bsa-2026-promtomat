@@ -1,4 +1,6 @@
 const WorkspacesErrorMessage = {
+	LAST_WORKSPACE_DELETION_NOT_ALLOWED:
+		"You cannot delete your last workspace. Create another workspace first.",
 	WORKSPACE_ACTION_FORBIDDEN:
 		"You do not have permission to perform this action",
 	WORKSPACE_ALREADY_EXISTS: "Workspace with this name already exists",

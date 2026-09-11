@@ -1,33 +1,35 @@
 import { type preHandlerAsyncHookHandler } from "fastify";
 
 import { AuthError, WorkspaceError } from "~/libs/exceptions/exceptions.js";
-import { type MembershipService } from "~/modules/memberships/membership.service.js";
 
-const createWorkspaceAccessHook = (
-	membershipService: MembershipService,
+import { type WorkspaceService } from "../../workspace.service.js";
+
+const workspaceAccessHook = (
+	workspaceService: WorkspaceService,
 ): preHandlerAsyncHookHandler => {
 	return async (request) => {
 		if (!request.user) {
 			throw AuthError.unauthorized();
 		}
 
-		const routeParameters = request.params as { id?: string };
+		const routeParameters = request.params as { workspaceId?: number };
 		const requestBody = request.body as null | { workspaceId?: number };
-		const workspaceId = Number(routeParameters.id ?? requestBody?.workspaceId);
 
-		if (Number.isNaN(workspaceId)) {
+		const workspaceId = routeParameters.workspaceId ?? requestBody?.workspaceId;
+
+		if (!workspaceId) {
 			throw WorkspaceError.notFound();
 		}
 
-		const membership = await membershipService.findByUserIdAndWorkspaceId(
-			request.user.id,
+		const workspace = await workspaceService.findByIdAndOwner(
 			workspaceId,
+			request.user.id,
 		);
 
-		if (membership === null) {
+		if (!workspace) {
 			throw WorkspaceError.notFound();
 		}
 	};
 };
 
-export { createWorkspaceAccessHook };
+export { workspaceAccessHook };

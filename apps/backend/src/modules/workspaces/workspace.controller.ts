@@ -6,19 +6,20 @@ import {
 } from "~/libs/modules/controller/controller.js";
 import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
-import { type MembershipService } from "~/modules/memberships/membership.service.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
-import { createWorkspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
+import { workspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
 import {
-	type WorkspaceAddMemberRequestDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceGetAllRequestDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import {
-	workspaceAddMemberValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	workspaceRouteParametersValidationSchema,
+	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type WorkspaceService } from "./workspace.service.js";
 
@@ -42,49 +43,24 @@ import { type WorkspaceService } from "./workspace.service.js";
  *           type: number
  *         visibility:
  *           type: string
+ *     WorkspaceListItem:
+ *       allOf:
+ *         - $ref: "#/components/schemas/Workspace"
+ *         - type: object
+ *           required:
+ *             - promptCount
+ *           properties:
+ *             promptCount:
+ *               type: integer
+ *               minimum: 0
  */
 class WorkspaceController extends BaseController {
-	private membershipService: MembershipService;
-
 	private workspaceService: WorkspaceService;
 
-	public constructor(
-		logger: Logger,
-		membershipService: MembershipService,
-		workspaceService: WorkspaceService,
-	) {
+	public constructor(logger: Logger, workspaceService: WorkspaceService) {
 		super(logger, APIPath.WORKSPACES);
 
-		this.membershipService = membershipService;
 		this.workspaceService = workspaceService;
-
-		this.addRoute({
-			handler: (options) =>
-				this.addMember(
-					options as APIHandlerOptions<{
-						body: WorkspaceAddMemberRequestDto;
-						params: { id: string };
-					}>,
-				),
-			method: HTTPMethod.POST,
-			path: WorkspacesApiPath.WORKSPACE_MEMBERSHIPS,
-			preHandler: createWorkspaceAccessHook(this.membershipService),
-			validation: {
-				body: workspaceAddMemberValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.removeMember(
-					options as APIHandlerOptions<{
-						params: { id: string; userId: string };
-					}>,
-				),
-			method: HTTPMethod.DELETE,
-			path: WorkspacesApiPath.WORKSPACE_MEMBERSHIP,
-			preHandler: createWorkspaceAccessHook(this.membershipService),
-		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -111,6 +87,38 @@ class WorkspaceController extends BaseController {
 			path: WorkspacesApiPath.ROOT,
 			validation: {
 				body: workspaceCreationValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.delete(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.DELETE,
+			path: WorkspacesApiPath.$WORKSPACE_ID,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.update(
+					options as APIHandlerOptions<{
+						body: WorkspaceUpdateRequestDto;
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: WorkspacesApiPath.$WORKSPACE_ID,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				body: workspaceUpdateValidationSchema,
+				params: workspaceRouteParametersValidationSchema,
 			},
 		});
 	}
@@ -147,21 +155,6 @@ class WorkspaceController extends BaseController {
 	 *        409:
 	 *          description: Workspace name already exists
 	 */
-	private async addMember(
-		options: APIHandlerOptions<{
-			body: WorkspaceAddMemberRequestDto;
-			params: { id: string };
-		}>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.workspaceService.addMember(
-				options.user?.id as number,
-				Number(options.params.id),
-				options.body.userId,
-			),
-			status: HTTPCode.CREATED,
-		};
-	}
 
 	private async create(
 		options: APIHandlerOptions<{
@@ -174,6 +167,22 @@ class WorkspaceController extends BaseController {
 				userId: options.user?.id as number,
 			}),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	private async delete(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		await this.workspaceService.delete(
+			options.params.workspaceId,
+			options.user?.id as number,
+		);
+
+		return {
+			payload: null,
+			status: HTTPCode.NO_CONTENT,
 		};
 	}
 
@@ -191,17 +200,31 @@ class WorkspaceController extends BaseController {
 	 *            type: string
 	 *          description: Search term to filter workspaces by name
 	 *      responses:
-	 *         200:
-	 *           description: Successful operation
-	 *           content:
-	 *             application/json:
-	 *               schema:
-	 *                 type: object
-	 *                 properties:
-	 *                   items:
-	 *                     type: array
-	 *                     items:
-	 *                       $ref: "#/components/schemas/Workspace"
+	 *        200:
+	 *          description: Workspaces returned successfully
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                required:
+	 *                  - items
+	 *                properties:
+	 *                  items:
+	 *                    type: array
+	 *                    items:
+	 *                      $ref: "#/components/schemas/WorkspaceListItem"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Invalid query parameters
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
 	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions<{
@@ -217,20 +240,108 @@ class WorkspaceController extends BaseController {
 		};
 	}
 
-	private async removeMember(
+	/**
+	 * @swagger
+	 * /workspaces/{workspaceId}:
+	 *   delete:
+	 *     description: Deletes an owned workspace
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       204:
+	 *         description: Workspace deleted successfully
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       409:
+	 *         description: The last owned workspace cannot be deleted
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Invalid workspace id
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 *   patch:
+	 *     description: Updates an owned workspace
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             additionalProperties: false
+	 *             minProperties: 1
+	 *             properties:
+	 *               name:
+	 *                 type: string
+	 *                 minLength: 3
+	 *                 maxLength: 50
+	 *               stackTags:
+	 *                 type: array
+	 *                 items:
+	 *                   type: string
+	 *     responses:
+	 *       200:
+	 *         description: Workspace updated successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Workspace"
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       409:
+	 *         description: Workspace with this name already exists
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
+
+	private async update(
 		options: APIHandlerOptions<{
-			params: { id: string; userId: string };
+			body: WorkspaceUpdateRequestDto;
+			params: WorkspaceRouteParametersDto;
 		}>,
 	): Promise<APIHandlerResponse> {
-		await this.workspaceService.removeMember(
-			options.user?.id as number,
-			Number(options.params.id),
-			Number(options.params.userId),
-		);
-
 		return {
-			payload: null,
-			status: HTTPCode.NO_CONTENT,
+			payload: await this.workspaceService.update(
+				options.params.workspaceId,
+				options.body,
+			),
+			status: HTTPCode.OK,
 		};
 	}
 }

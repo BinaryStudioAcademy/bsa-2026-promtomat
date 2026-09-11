@@ -1,5 +1,6 @@
 export {
-	workspaceAddMemberValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	workspaceRouteParametersValidationSchema,
+	workspaceUpdateValidationSchema,
 } from "@promptomat/shared";

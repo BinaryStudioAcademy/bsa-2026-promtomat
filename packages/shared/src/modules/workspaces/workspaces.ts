@@ -20,9 +20,7 @@ export {
 } from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {
 	type ContributorDto,
-	type MembershipDto,
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceAddMemberRequestDto,
 	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorRouteParametersDto,
@@ -33,14 +31,15 @@ export {
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceListItemDto,
 	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 	type WorkspaceUserSummaryDto,
 } from "./libs/types/types.js";
 export {
 	workspaceAddContributorValidationSchema,
-	workspaceAddMemberValidationSchema,
 	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
+	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

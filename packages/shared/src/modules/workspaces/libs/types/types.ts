@@ -1,7 +1,5 @@
 export { type ContributorDto } from "./contributor-dto.type.js";
-export { type MembershipDto } from "./membership-dto.type.js";
 export { type WorkspaceAddContributorRequestDto } from "./workspace-add-contributor-request-dto.type.js";
-export { type WorkspaceAddMemberRequestDto } from "./workspace-add-member-request-dto.type.js";
 export { type WorkspaceContributorCandidatesQueryDto } from "./workspace-contributor-candidates-query-dto.type.js";
 export { type WorkspaceContributorCandidatesResponseDto } from "./workspace-contributor-candidates-response-dto.type.js";
 export { type WorkspaceContributorRouteParametersDto } from "./workspace-contributor-route-parameters-dto.type.js";
@@ -12,4 +10,5 @@ export { type WorkspaceGetAllRequestDto } from "./workspace-get-all-request-dto.
 export { type WorkspaceGetAllResponseDto } from "./workspace-get-all-response-dto.type.js";
 export { type WorkspaceListItemDto } from "./workspace-list-item-dto.type.js";
 export { type WorkspaceRouteParametersDto } from "./workspace-route-parameters-dto.type.js";
+export { type WorkspaceUpdateRequestDto } from "./workspace-update-request-dto.type.js";
 export { type WorkspaceUserSummaryDto } from "./workspace-user-summary-dto.type.js";

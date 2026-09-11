@@ -1,7 +1,7 @@
 import { logger } from "~/libs/modules/logger/logger.js";
 import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embeddings.js";
 
-import { membershipService } from "../memberships/memberships.js";
+import { workspaceService } from "../workspaces/workspaces.js";
 import { PromptController } from "./prompt.controller.js";
 import { PromptModel } from "./prompt.model.js";
 import { PromptRepository } from "./prompt.repository.js";
@@ -15,7 +15,7 @@ const promptService = new PromptService(
 const promptController = new PromptController(
 	logger,
 	promptService,
-	membershipService,
+	workspaceService,
 );
 
 export { promptController };
