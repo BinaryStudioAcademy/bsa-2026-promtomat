@@ -12,4 +12,5 @@ export {
 	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,
+	TechStackTechDictionary,
 } from "@promptomat/shared";

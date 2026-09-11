@@ -3,12 +3,14 @@ import { useCallback, useEffect } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import {
 	ButtonVariant,
 	ControlSize,
 	ErrorCode,
 	FormValidationMode,
 	HTTPCode,
+	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
@@ -25,7 +27,6 @@ import {
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
-import { WorkspaceStackTagsSelect } from "../workspace-stack-tags-select/workspace-stack-tags-select.js";
 import { WORKSPACE_CONFIG_FIELDS } from "./libs/constants/constants.js";
 import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
 
@@ -122,10 +123,14 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						name="name"
 						placeholder="Name..."
 					/>
-					<WorkspaceStackTagsSelect
+					<SearchableSelect
 						control={control}
 						isDisabled={isLoading}
+						label="Add tags"
 						name="stackTags"
+						placeholder="Enter tags"
+						size={ControlSize.MD}
+						valuesDictionary={Object.values(TechStackTechDictionary)}
 					/>
 				</div>
 				<div className={styles["footer"]}>

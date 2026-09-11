@@ -13,7 +13,12 @@ const WorkspaceConfigModal: React.FC<Properties> = ({
 	workspace,
 }: Properties) => {
 	return (
-		<Modal isOpen onClose={onClose} title="Edit workspace">
+		<Modal
+			isBackdropDismissible={false}
+			isOpen
+			onClose={onClose}
+			title="Edit workspace"
+		>
 			<WorkspaceConfigForm onClose={onClose} workspace={workspace} />
 		</Modal>
 	);

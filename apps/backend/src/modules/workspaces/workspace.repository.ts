@@ -67,10 +67,19 @@ class WorkspaceRepository {
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);
-			query.whereILike(
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME}`,
-				`%${escapedWorkspaceName}%`,
-			);
+			const searchPattern = `%${escapedWorkspaceName}%`;
+
+			query.where((builder) => {
+				builder
+					.whereILike(
+						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME}`,
+						searchPattern,
+					)
+					.orWhereRaw(
+						"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
+						[searchPattern],
+					);
+			});
 		}
 
 		const workspaces = await query.castTo<WorkspaceListRow[]>().execute();

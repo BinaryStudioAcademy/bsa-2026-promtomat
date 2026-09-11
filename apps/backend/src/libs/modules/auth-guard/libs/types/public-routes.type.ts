@@ -1,4 +1,4 @@
-import type { HTTPMethod } from "~/libs/modules/http/http.js";
+import { type HTTPMethod } from "~/libs/modules/http/http.js";
 
 type HttpMethodValue = (typeof HTTPMethod)[keyof typeof HTTPMethod];
 

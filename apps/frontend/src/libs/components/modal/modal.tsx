@@ -19,6 +19,7 @@ import styles from "./styles.module.css";
 type Properties = {
 	children: React.ReactNode;
 	footer?: React.ReactNode;
+	isBackdropDismissible?: boolean;
 	isDismissible?: boolean;
 	isOpen: boolean;
 	onClose: () => void;
@@ -31,6 +32,7 @@ type Properties = {
 const Modal = ({
 	children,
 	footer,
+	isBackdropDismissible = true,
 	isDismissible = true,
 	isOpen,
 	onClose,
@@ -157,7 +159,7 @@ const Modal = ({
 
 	return createPortal(
 		<div className={styles["modal-layer"]} inert={!isTopBlocking}>
-			{isDismissible ? (
+			{isDismissible && isBackdropDismissible ? (
 				<Button
 					className={getValidClasses(styles["modal-backdrop"])}
 					label={ModalLabel.CLOSE_DIALOG}

@@ -10,7 +10,12 @@ const WorkspaceCreateModal: React.FC<Properties> = ({
 	onClose,
 }: Properties) => {
 	return (
-		<Modal isOpen onClose={onClose} title="Create workspace">
+		<Modal
+			isBackdropDismissible={false}
+			isOpen
+			onClose={onClose}
+			title="Create workspace"
+		>
 			<WorkspaceCreateForm onClose={onClose} />
 		</Modal>
 	);
