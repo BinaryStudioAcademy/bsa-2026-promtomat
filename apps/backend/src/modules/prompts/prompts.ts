@@ -11,7 +11,6 @@ const promptRepository = new PromptRepository(PromptModel);
 const promptService = new PromptService(
 	promptRepository,
 	promptEmbeddingService,
-	workspaceService,
 );
 const promptController = new PromptController(
 	logger,

@@ -12,7 +12,13 @@ const workspaceAccessHook = (
 			throw AuthError.unauthorized();
 		}
 
-		const workspaceId = (request.body as { workspaceId: number }).workspaceId;
+		const requestBody = request.body as undefined | { workspaceId?: number };
+		const requestQuery = request.query as undefined | { workspaceId?: number };
+		const workspaceId = requestBody?.workspaceId ?? requestQuery?.workspaceId;
+
+		if (workspaceId === undefined) {
+			throw WorkspaceError.notFound();
+		}
 
 		const workspace = await workspaceService.findByIdAndOwner(
 			workspaceId,

@@ -293,8 +293,7 @@ class PromptEmbeddingService {
 		workspaceId: number,
 	): Promise<NearestPrompt[]> {
 		try {
-			const embeddings = await this.embeddingService.embed([query]);
-			const [embedding] = embeddings;
+			const [embedding] = await this.embeddingService.embed([query]);
 
 			if (!embedding) {
 				throw new PromptEmbeddingError(

@@ -6,6 +6,8 @@ import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	COLUMN_TYPE_ALIAS,
 	DISTANCE_ALIAS,
+	MAX_EFFICIENCY_SCORE,
+	MAX_SIMILARITY,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
 	SIMILARITY_THRESHOLD,
@@ -13,6 +15,7 @@ import {
 import {
 	PgAttributeColumnName,
 	PromptEmbeddingColumnName,
+	RelevanceWeights,
 } from "./libs/enums/enums.js";
 import {
 	parseVectorDimension,
@@ -99,6 +102,8 @@ class PromptEmbeddingRepository {
 					DISTANCE_ALIAS,
 				]),
 			)
+			.joinRelated(PROMPT_RELATION)
+			.where(`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`, workspaceId)
 			.where(
 				raw("?? <=> ?::vector", [
 					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
@@ -107,9 +112,19 @@ class PromptEmbeddingRepository {
 				"<",
 				SIMILARITY_THRESHOLD,
 			)
-			.joinRelated(PROMPT_RELATION)
-			.where(`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`, workspaceId)
-			.orderBy(PromptColumnName.EFFICIENCY_SCORE, "DESC")
+			.orderByRaw(
+				"(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) DESC",
+				[
+					RelevanceWeights.SIMILARITY_WEIGHT,
+					MAX_SIMILARITY,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+					SIMILARITY_THRESHOLD,
+					RelevanceWeights.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					MAX_EFFICIENCY_SCORE,
+				],
+			)
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();

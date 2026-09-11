@@ -11,11 +11,10 @@ import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.h
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
+import { toPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
-	type PromptSearchResult,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
@@ -83,6 +82,7 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.SEARCH,
+			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: { query: searchPromptsValidationSchema },
 		});
 	}
@@ -272,15 +272,7 @@ class PromptController extends BaseController {
 			userId: options.user?.id as number,
 		});
 
-		const payload: PromptSearchResponseDto = {
-			items: promptCandidates.map((promptCandidate): PromptSearchResult => {
-				return {
-					efficiencyScore: promptCandidate.efficiencyScore,
-					promptId: promptCandidate.promptId,
-					taskIntent: promptCandidate.taskIntent,
-				};
-			}),
-		};
+		const payload = toPromptSearchResponseDto(promptCandidates);
 
 		return {
 			payload,
