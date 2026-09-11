@@ -1,4 +1,8 @@
-import { type Transaction, UniqueViolationError } from "objection";
+import {
+	NotFoundError,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
@@ -122,22 +126,21 @@ class WorkspaceRepository {
 	public async update(
 		id: number,
 		payload: WorkspaceUpdateRequestDto,
-	): Promise<null | WorkspaceEntity> {
+	): Promise<WorkspaceEntity> {
 		try {
 			const workspace = await this.workspaceModel
 				.query()
 				.patchAndFetchById(id, payload)
-				// Objection types this result as WorkspaceModel, but it can return undefined when no workspace matches the id
-				.castTo<undefined | WorkspaceModel>();
-
-			if (!workspace) {
-				return null;
-			}
+				.throwIfNotFound();
 
 			return WorkspaceEntity.initialize(workspace);
 		} catch (error) {
 			if (error instanceof UniqueViolationError) {
 				throw WorkspaceError.nameAlreadyExists();
+			}
+
+			if (error instanceof NotFoundError) {
+				throw WorkspaceError.notFound();
 			}
 
 			throw error;

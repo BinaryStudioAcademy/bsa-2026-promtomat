@@ -88,10 +88,6 @@ class WorkspaceService {
 	): Promise<WorkspaceDto> {
 		const updatedWorkspace = await this.workspaceRepository.update(id, payload);
 
-		if (!updatedWorkspace) {
-			throw WorkspaceError.notFound();
-		}
-
 		return updatedWorkspace.toObject();
 	}
 }
