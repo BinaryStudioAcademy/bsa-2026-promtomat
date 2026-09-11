@@ -1,5 +1,5 @@
 export {
-	createPasswordResetToken,
-	hashPasswordResetToken,
-} from "./password-reset-token.helper.js";
+	checkIsExpiredTokenError,
+	checkIsTokenSuperseded,
+} from "./reset-token-guards.helper.js";
 export { resolveThrottleKey } from "./resolve-throttle-key.helper.js";
