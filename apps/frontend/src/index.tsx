@@ -12,11 +12,11 @@ import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { Profile } from "~/pages/profile/profile.js";
+import { PromptHistory } from "~/pages/prompt-history/prompt-history.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
-
-import { PromptHistory } from "./pages/prompt-history/prompt-history.js";
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -40,6 +40,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.WORKSPACES,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<Profile />
+									</PrivateRoute>
+								),
+								path: AppRoute.PROFILE,
 							},
 							{
 								element: (

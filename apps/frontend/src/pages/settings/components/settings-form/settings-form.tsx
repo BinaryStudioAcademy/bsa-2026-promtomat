@@ -1,10 +1,11 @@
 import { useCallback } from "react";
+import { Navigate } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
@@ -28,7 +29,8 @@ type Properties = {
 };
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
-	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
+	const [updateProfile, { error, isLoading, isSuccess }] =
+		useUpdateProfileMutation();
 	const { control, handleSubmit, isDirty, reset } =
 		useAppForm<SettingsFormValues>({
 			defaultValues: getSettingsFormValues(user),
@@ -65,6 +67,10 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		},
 		[handleSave, handleSubmit],
 	);
+
+	if (isSuccess) {
+		return <Navigate replace to={AppRoute.PROFILE} />;
+	}
 
 	return (
 		<section className={styles["card"]}>

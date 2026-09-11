@@ -65,6 +65,13 @@ class PromptService {
 			totalCount,
 		};
 	}
+
+	public async findUserPromptSummary(userId: number): Promise<{
+		averageScore: null | number;
+		totalCount: number;
+	}> {
+		return await this.promptRepository.findUserPromptSummary(userId);
+	}
 }
 
 export { PromptService };
