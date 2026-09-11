@@ -1,10 +1,13 @@
-import { AI_CODING_TOOL_LABELS, AiCodingTool } from "~/modules/users/users.js";
+import {
+	AiCodingTool,
+	aiCodingToolToLabel,
+} from "~/modules/users/users.js";
 
 const EMPTY_AI_CODING_TOOL = "" as const;
 
 const AI_CODING_TOOL_OPTIONS = Object.values(AiCodingTool).map((value) => {
 	return {
-		label: AI_CODING_TOOL_LABELS[value],
+		label: aiCodingToolToLabel[value],
 		value,
 	};
 });
