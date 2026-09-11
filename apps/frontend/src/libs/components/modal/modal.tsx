@@ -2,9 +2,11 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { Button } from "~/libs/components/button/button.js";
+import { Icon } from "~/libs/components/icon/icon.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { KeyboardKey } from "~/libs/enums/enums.js";
+import { type IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { type ValueOf } from "~/libs/types/types.js";
 
 import {
 	FIRST_INDEX,
@@ -16,23 +18,37 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	children: React.ReactNode;
+	footer?: React.ReactNode;
+	isBackdropDismissible?: boolean;
 	isDismissible?: boolean;
 	isOpen: boolean;
 	onClose: () => void;
 	role?: "alertdialog" | "dialog";
 	title: string;
+	titleIconName?: undefined | ValueOf<typeof IconName>;
+	tone?: "danger" | "default";
 };
 
 const Modal = ({
 	children,
+	footer,
+	isBackdropDismissible = true,
 	isDismissible = true,
 	isOpen,
 	onClose,
 	role = "dialog",
 	title,
+	titleIconName,
+	tone = "default",
 }: Properties) => {
 	const modalId = useId();
 	const titleId = `${modalId}-title`;
+	const isSectioned = Boolean(footer);
+	const isDangerTone = tone === "danger";
+	const shapeClassName = isSectioned
+		? styles["modal-sectioned"]
+		: styles["modal-flat"];
+
 	const dialogElementReference = useRef<HTMLDivElement | null>(null);
 	const {
 		blockingElement,
@@ -143,7 +159,7 @@ const Modal = ({
 
 	return createPortal(
 		<div className={styles["modal-layer"]} inert={!isTopBlocking}>
-			{isDismissible ? (
+			{isDismissible && isBackdropDismissible ? (
 				<Button
 					className={getValidClasses(styles["modal-backdrop"])}
 					label={ModalLabel.CLOSE_DIALOG}
@@ -161,16 +177,41 @@ const Modal = ({
 			<div
 				aria-labelledby={titleId}
 				aria-modal="true"
-				className={styles["modal"]}
+				className={getValidClasses(styles["modal"], shapeClassName)}
 				ref={dialogElementReference}
 				role={role}
 			>
-				<div>
-					<h2 className={styles["modal-title"]} id={titleId}>
+				<div
+					className={getValidClasses(
+						styles["modal-header"],
+						isSectioned && styles["modal-header-sectioned"],
+					)}
+				>
+					{titleIconName && (
+						<Icon
+							className={getValidClasses(
+								styles["modal-title-icon"],
+								isDangerTone && styles["modal-title-danger"],
+							)}
+							iconName={titleIconName}
+						/>
+					)}
+					<h2
+						className={getValidClasses(
+							styles["modal-title"],
+							isDangerTone && styles["modal-title-danger"],
+						)}
+						id={titleId}
+					>
 						{title}
 					</h2>
 				</div>
-				{children}
+				{isSectioned ? (
+					<div className={styles["modal-body"]}>{children}</div>
+				) : (
+					children
+				)}
+				{isSectioned && <div className={styles["modal-footer"]}>{footer}</div>}
 			</div>
 		</div>,
 		blockingElement,
