@@ -5,19 +5,26 @@ import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
+import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptsQuery } from "~/modules/prompts/prompts-api.js";
 import { PromptScope } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
+import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
 import styles from "./styles.module.css";
 
 const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
-	const { control, handleScopeChange, handleScoreChange, queryPayload } =
-		usePromptFilters();
+	const {
+		control,
+		handlePageChange,
+		handleScopeChange,
+		handleScoreChange,
+		queryPayload,
+	} = usePromptFilters();
 
-	const { data: promptsData } = useGetPromptsQuery(queryPayload);
+	const { data: promptsData, isFetching } = useGetPromptsQuery(queryPayload);
 	const { data: workspacesData } = useGetWorkspacesQuery({});
 
 	const workspaces = workspacesData?.items ?? [];
@@ -29,8 +36,10 @@ const PromptHistory: React.FC = () => {
 		})),
 	];
 
+	const items = promptsData?.items ?? [];
 	const totalPrompts = promptsData?.totalCount ?? ZERO_VALUE;
 	const averageScore = promptsData?.averageScore ?? ZERO_VALUE;
+	const hasMore = items.length < totalPrompts;
 
 	const handleMineScopeClick = useCallback((): void => {
 		handleScopeChange(PromptScope.MINE);
@@ -45,23 +54,27 @@ const PromptHistory: React.FC = () => {
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["header"]}>
 					<h1 className={styles["title"]}>Prompt Log History</h1>
-					<div className={styles["tabs"]}>
+					<div className={styles["tabs"]} role="tablist">
 						<button
+							aria-selected={queryPayload.scope === PromptScope.MINE}
 							className={getValidClasses(
 								styles["tab"],
 								queryPayload.scope === PromptScope.MINE && styles["tab-active"],
 							)}
 							onClick={handleMineScopeClick}
+							role="tab"
 							type="button"
 						>
 							My Injections
 						</button>
 						<button
+							aria-selected={queryPayload.scope === PromptScope.ALL}
 							className={getValidClasses(
 								styles["tab"],
 								queryPayload.scope === PromptScope.ALL && styles["tab-active"],
 							)}
 							onClick={handleAllScopeClick}
+							role="tab"
 							type="button"
 						>
 							Workspace
@@ -98,7 +111,28 @@ const PromptHistory: React.FC = () => {
 					</div>
 				</div>
 
-				<div className={styles["list"]}>{/* Компонент списку */}</div>
+				<div className={styles["list"]}>
+					{!isFetching && items.length === ZERO_VALUE ? (
+						<div className={styles["empty-state"]}>
+							No prompts match the current filters.
+						</div>
+					) : (
+						items.map((item: PromptItemResponseDto) => (
+							<PromptListItem key={item.id} prompt={item} />
+						))
+					)}
+				</div>
+
+				{hasMore && (
+					<button
+						className={styles["load-more"]}
+						disabled={isFetching}
+						onClick={handlePageChange}
+						type="button"
+					>
+						{isFetching ? "Loading..." : "Load More"}
+					</button>
+				)}
 			</div>
 		</main>
 	);
