@@ -20,6 +20,8 @@ type PasswordPayload = {
 	passwordSalt: string;
 };
 
+const NO_UPDATED_ROWS = 0;
+
 class UserRepository {
 	private userModel: typeof UserModel;
 
@@ -109,6 +111,24 @@ class UserRepository {
 			.throwIfNotFound();
 
 		return UserEntity.initialize(user);
+	}
+
+	public async updatePasswordIfUnchangedSince(
+		id: number,
+		payload: PasswordPayload,
+		issuedAt: Date,
+	): Promise<boolean> {
+		const updatedRows = await this.userModel
+			.query()
+			.patch(payload)
+			.where("id", id)
+			.where((builder) => {
+				void builder
+					.whereNull("passwordChangedAt")
+					.orWhere("passwordChangedAt", "<", issuedAt);
+			});
+
+		return updatedRows !== NO_UPDATED_ROWS;
 	}
 }
 
