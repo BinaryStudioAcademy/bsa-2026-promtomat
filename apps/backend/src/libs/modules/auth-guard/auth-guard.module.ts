@@ -64,6 +64,10 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
+		if (payload.purpose !== undefined) {
+			this.throwUnauthorized(AuthErrorMesssage.WRONG_PURPOSE);
+		}
+
 		return payload;
 	}
 
