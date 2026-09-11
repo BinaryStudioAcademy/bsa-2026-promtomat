@@ -1,4 +1,7 @@
 export {
+	ContributorsErrorCode,
+	ContributorsErrorMessage,
+	WorkspaceListScope,
 	WorkspaceRole,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
@@ -20,14 +23,24 @@ export {
 	type MembershipDto,
 	type WorkspaceAddContributorRequestDto,
 	type WorkspaceAddMemberRequestDto,
+	type WorkspaceContributorCandidatesQueryDto,
+	type WorkspaceContributorCandidatesResponseDto,
+	type WorkspaceContributorRouteParametersDto,
+	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUserSummaryDto,
 } from "./libs/types/types.js";
 export {
 	workspaceAddContributorValidationSchema,
 	workspaceAddMemberValidationSchema,
+	workspaceContributorCandidatesQueryValidationSchema,
+	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	workspaceRouteParametersValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

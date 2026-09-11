@@ -55,14 +55,6 @@ class WorkspaceError extends HTTPError {
 			status: HTTPCode.FORBIDDEN,
 		});
 	}
-
-	public static userNotFound(): WorkspaceError {
-		return new WorkspaceError({
-			code: WorkspacesErrorCode.WORKSPACE_USER_NOT_FOUND,
-			message: WorkspacesErrorMessage.WORKSPACE_USER_NOT_FOUND,
-			status: HTTPCode.NOT_FOUND,
-		});
-	}
 }
 
 export { WorkspaceError };

@@ -1,10 +1,10 @@
-import {
-	type MembershipDto,
-	WorkspaceError,
-	WorkspaceRole,
-} from "@promptomat/shared";
+import { type MembershipDto, WorkspaceRole } from "@promptomat/shared";
 import { type Transaction } from "objection";
 
+import {
+	ContributorError,
+	WorkspaceError,
+} from "~/libs/exceptions/exceptions.js";
 import { type MembershipService } from "~/modules/memberships/membership.service.js";
 
 import {
@@ -120,7 +120,7 @@ class WorkspaceService {
 			);
 
 		if (targetMembership === null) {
-			throw WorkspaceError.userNotFound();
+			throw ContributorError.notFound();
 		}
 
 		if (targetMembership.toObject().role === WorkspaceRole.OWNER) {

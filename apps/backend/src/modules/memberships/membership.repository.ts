@@ -1,6 +1,6 @@
 import { ForeignKeyViolationError, type Transaction } from "objection";
 
-import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { UserError } from "~/libs/exceptions/exceptions.js";
 import { MembershipEntity } from "~/modules/memberships/membership.entity.js";
 import { type MembershipModel } from "~/modules/memberships/membership.model.js";
 
@@ -25,7 +25,7 @@ class MembershipRepository {
 			return MembershipEntity.initialize(membership);
 		} catch (error) {
 			if (error instanceof ForeignKeyViolationError) {
-				throw WorkspaceError.userNotFound();
+				throw UserError.notFound();
 			}
 
 			throw error;
