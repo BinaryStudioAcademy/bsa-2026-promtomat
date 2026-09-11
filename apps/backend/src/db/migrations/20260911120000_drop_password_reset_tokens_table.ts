@@ -13,10 +13,6 @@ const ColumnName = {
 
 const USERS_TABLE_NAME = "users";
 
-// Reset links are now signed tokens rather than stored rows, so the table has
-// no reader. Dropping it destroys any pending reset requests: a user who has
-// asked for a link and not yet used it has to request another one. The links
-// themselves keep working, since their validity comes from the signature.
 async function down(knex: Knex): Promise<void> {
 	await knex.schema.createTable(TABLE_NAME, (table) => {
 		table.increments(ColumnName.ID).primary();
