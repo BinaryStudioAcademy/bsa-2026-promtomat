@@ -1,0 +1,3 @@
+const FUZZY_MATCH_LIMIT = 10;
+
+export { FUZZY_MATCH_LIMIT };

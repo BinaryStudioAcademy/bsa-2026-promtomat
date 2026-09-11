@@ -6,11 +6,7 @@ import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
-import {
-	type UserDto,
-	type UserGetAllResponseDto,
-	type UserUpdateRequestDto,
-} from "./libs/types/types.js";
+import { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
 
 type Constructor = {
 	database: Database;
@@ -88,14 +84,6 @@ class UserService {
 
 			return userDto;
 		});
-	}
-
-	public async findAll(): Promise<UserGetAllResponseDto> {
-		const users = await this.userRepository.findAll();
-
-		return {
-			items: users.map((user) => user.toObject()),
-		};
 	}
 
 	public async findByEmail(email: string): Promise<null | UserEntity> {

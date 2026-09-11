@@ -107,6 +107,10 @@
 	letter-spacing: 0;
 }
 
+.inline-link {
+	text-decoration: underline;
+}
+
 .password-field {
 	display: flex;
 	flex-direction: column;
