@@ -1,4 +1,5 @@
 import { APIPath } from "~/libs/enums/enums.js";
+import { config } from "~/libs/modules/config/config.js";
 import {
 	type APIHandlerOptions,
 	type APIHandlerResponse,
@@ -9,6 +10,7 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { type AuthService } from "./auth.service.js";
 import { AuthApiPath } from "./libs/enums/enums.js";
+import { resolveThrottleKey } from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
 	type ResetPasswordRequestDto,
@@ -65,6 +67,13 @@ class AuthController extends BaseController {
 		});
 
 		this.addRoute({
+			config: {
+				rateLimit: {
+					keyGenerator: resolveThrottleKey,
+					max: config.ENV.PASSWORD_RESET.REQUEST_LIMIT,
+					timeWindow: `${config.ENV.PASSWORD_RESET.WINDOW_MINUTES.toString()} minutes`,
+				},
+			},
 			handler: (options) =>
 				this.forgotPassword(
 					options as APIHandlerOptions<{
