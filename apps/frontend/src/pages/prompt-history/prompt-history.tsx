@@ -1,13 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 
+import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptsQuery } from "~/modules/prompts/prompts-api.js";
-import { PromptScope } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
@@ -16,20 +15,14 @@ import styles from "./styles.module.css";
 const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
-	const {
-		control,
-		handlePageChange,
-		handleScopeChange,
-		handleScoreChange,
-		queryPayload,
-	} = usePromptFilters();
+	const { control, handlePageChange, handleScoreChange, queryPayload } =
+		usePromptFilters();
 
 	const { data: promptsData, isFetching } = useGetPromptsQuery(queryPayload);
-	const { data: workspacesData } = useGetWorkspacesQuery({});
+	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
 
-	const workspaces = workspacesData?.items ?? [];
 	const workspaceOptions = [
-		{ label: "All Workspaces", value: "" },
+		{ label: "All Workspaces", value: "all" },
 		...workspaces.map(({ id, name }) => ({
 			label: name,
 			value: id,
@@ -41,45 +34,11 @@ const PromptHistory: React.FC = () => {
 	const averageScore = promptsData?.averageScore ?? ZERO_VALUE;
 	const hasMore = items.length < totalPrompts;
 
-	const handleMineScopeClick = useCallback((): void => {
-		handleScopeChange(PromptScope.MINE);
-	}, [handleScopeChange]);
-
-	const handleAllScopeClick = useCallback((): void => {
-		handleScopeChange(PromptScope.ALL);
-	}, [handleScopeChange]);
-
 	return (
 		<main className={styles["container"]}>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["header"]}>
 					<h1 className={styles["title"]}>Prompt Log History</h1>
-					<div className={styles["tabs"]} role="tablist">
-						<button
-							aria-selected={queryPayload.scope === PromptScope.MINE}
-							className={getValidClasses(
-								styles["tab"],
-								queryPayload.scope === PromptScope.MINE && styles["tab-active"],
-							)}
-							onClick={handleMineScopeClick}
-							role="tab"
-							type="button"
-						>
-							My Injections
-						</button>
-						<button
-							aria-selected={queryPayload.scope === PromptScope.ALL}
-							className={getValidClasses(
-								styles["tab"],
-								queryPayload.scope === PromptScope.ALL && styles["tab-active"],
-							)}
-							onClick={handleAllScopeClick}
-							role="tab"
-							type="button"
-						>
-							Workspace
-						</button>
-					</div>
 				</header>
 
 				<div className={styles["metrics"]}>
@@ -124,14 +83,15 @@ const PromptHistory: React.FC = () => {
 				</div>
 
 				{hasMore && (
-					<button
-						className={styles["load-more"]}
-						disabled={isFetching}
-						onClick={handlePageChange}
-						type="button"
-					>
-						{isFetching ? "Loading..." : "Load More"}
-					</button>
+					<div className={styles["load-more-wrapper"]}>
+						<Button
+							isDisabled={isFetching}
+							label={isFetching ? "Loading..." : "Load More"}
+							onClick={handlePageChange}
+							type="button"
+							variant="secondary"
+						/>
+					</div>
 				)}
 			</div>
 		</main>

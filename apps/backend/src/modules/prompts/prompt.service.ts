@@ -3,8 +3,8 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 import {
 	type PromptCreatePayload,
 	type PromptDto,
+	PromptFindAllOptions,
 	type PromptGetAllResponseDto,
-	type PromptGetQueryDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -42,10 +42,9 @@ class PromptService {
 		return promptDto;
 	}
 
-	public async findAll(options: {
-		query: PromptGetQueryDto;
-		userId: number;
-	}): Promise<PromptGetAllResponseDto> {
+	public async findAll(
+		options: PromptFindAllOptions,
+	): Promise<PromptGetAllResponseDto> {
 		const { averageScore, items, page, pageSize, totalCount } =
 			await this.promptRepository.findAll(options);
 

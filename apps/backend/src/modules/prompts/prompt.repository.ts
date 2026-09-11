@@ -1,17 +1,13 @@
+import { PaginationValue } from "@promptomat/shared";
+
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
-import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import { ROUND_FACTOR, ZERO_VALUE } from "./libs/constants/constants.js";
 import {
-	DEFAULT_LIMIT,
-	DEFAULT_PAGE,
-	ROUND_FACTOR,
-	ZERO_VALUE,
-} from "./libs/constants/constants.js";
-import { PromptColumnName } from "./libs/enums/enums.js";
-import {
-	type PromptGetQueryDto,
+	type PromptAggregateRow,
+	type PromptFindAllOptions,
 	type PromptRepositoryFindAllResponseDto,
 } from "./libs/types/types.js";
 
@@ -31,12 +27,7 @@ class PromptRepository {
 			.clearOrder()
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
 			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
-			.castTo<
-				{
-					averageScore: null | number | string;
-					count: number | string;
-				}[]
-			>()
+			.castTo<PromptAggregateRow[]>()
 			.execute();
 
 		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
@@ -62,37 +53,25 @@ class PromptRepository {
 	public async findAll({
 		query,
 		userId,
-	}: {
-		query: PromptGetQueryDto;
-		userId: number;
-	}): Promise<PromptRepositoryFindAllResponseDto> {
+	}: PromptFindAllOptions): Promise<PromptRepositoryFindAllResponseDto> {
 		const {
-			limit = DEFAULT_LIMIT,
-			page = DEFAULT_PAGE,
-			scope,
+			limit = PaginationValue.DEFAULT_LIMIT,
+			page = PaginationValue.DEFAULT_PAGE,
 			score,
 			search,
 			workspaceId,
 		} = query;
 
-		const baseQuery = this.promptModel
-			.query()
-			.leftJoin(
-				DatabaseTableName.WORKSPACES,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-			)
-			.modify("filterByQuery", {
-				scope,
-				score,
-				search,
-				userId,
-				workspaceId,
-			});
+		const baseQuery = this.promptModel.query().modify("filterByQuery", {
+			score,
+			search,
+			userId,
+			workspaceId,
+		});
 
 		const { averageScore, totalCount } = await this.findAggregate(baseQuery);
 
-		const offset = (page - DEFAULT_PAGE) * limit;
+		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
 
 		const items = await baseQuery
 			.clone()

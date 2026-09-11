@@ -3,6 +3,7 @@ export {
 	AppEnvironment,
 	ContentType,
 	ErrorCode,
+	PaginationValue,
 } from "./libs/enums/enums.js";
 export {
 	ApplicationError,
@@ -54,7 +55,6 @@ export {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
 	PromptsApiPath,
-	PromptScope,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,
