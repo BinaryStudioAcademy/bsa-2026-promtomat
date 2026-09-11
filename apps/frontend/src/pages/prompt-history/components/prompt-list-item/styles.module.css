@@ -53,6 +53,15 @@
 }
 
 .chevron {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	font-size: var(--font-size-body-xs);
+	line-height: 1;
+	color: var(--text-muted);
+	user-select: none;
 	transition: transform var(--motion-duration-fast);
 }
 

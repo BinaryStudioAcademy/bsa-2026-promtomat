@@ -59,7 +59,14 @@ const PromptHistory: React.FC = () => {
 						name="search"
 						placeholder="Search logs..."
 					/>
-					<ScoreGrid label="Score:" onScoreSelect={handleScoreChange} />
+					<ScoreGrid
+						isRadio
+						label="Score:"
+						onScoreSelect={handleScoreChange}
+						selectedScore={
+							typeof queryPayload.score === "number" ? queryPayload.score : null
+						}
+					/>
 					<div className={styles["workspace-filter"]}>
 						<Select
 							control={control}

@@ -3,7 +3,7 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 import {
 	type PromptCreatePayload,
 	type PromptDto,
-	PromptFindAllOptions,
+	type PromptFindAllOptions,
 	type PromptGetAllResponseDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";

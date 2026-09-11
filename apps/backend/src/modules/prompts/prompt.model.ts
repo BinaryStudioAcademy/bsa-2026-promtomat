@@ -47,17 +47,23 @@ class PromptModel extends AbstractModel {
 					workspaceId?: number;
 				},
 			) {
-				builder.where(`${DatabaseTableName.PROMPTS}.userId`, userId);
+				builder.where(
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+					userId,
+				);
 
 				if (workspaceId) {
 					builder.where(
-						`${DatabaseTableName.PROMPTS}.workspaceId`,
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 						workspaceId,
 					);
 				}
 
 				if (score) {
-					builder.where(`${DatabaseTableName.PROMPTS}.efficiencyScore`, score);
+					builder.where(
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+						score,
+					);
 				}
 
 				if (search) {
@@ -65,11 +71,11 @@ class PromptModel extends AbstractModel {
 					builder.where((subQuery) => {
 						subQuery
 							.whereILike(
-								`${DatabaseTableName.PROMPTS}.taskIntent`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
 								`%${escapedSearch}%`,
 							)
 							.orWhereILike(
-								`${DatabaseTableName.PROMPTS}.promptBody`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
 								`%${escapedSearch}%`,
 							);
 					});
@@ -78,11 +84,11 @@ class PromptModel extends AbstractModel {
 		};
 	}
 
-	public static get relationMappings(): RelationMappings {
+	public static override get relationMappings(): RelationMappings {
 		return {
 			user: {
 				join: {
-					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+					from: `${DatabaseTableName.PROMPTS}.userId`,
 					to: `${DatabaseTableName.USERS}.${UserColumnName.ID}`,
 				},
 				modelClass: UserModel,
@@ -90,7 +96,7 @@ class PromptModel extends AbstractModel {
 			},
 			workspace: {
 				join: {
-					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+					from: `${DatabaseTableName.PROMPTS}.workspaceId`,
 					to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 				},
 				modelClass: WorkspaceModel,

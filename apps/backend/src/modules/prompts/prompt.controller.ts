@@ -226,12 +226,6 @@ class PromptController extends BaseController {
 	 *       - bearerAuth: []
 	 *     parameters:
 	 *       - in: query
-	 *         name: scope
-	 *         required: true
-	 *         schema:
-	 *           type: string
-	 *           enum: [mine, all]
-	 *       - in: query
 	 *         name: page
 	 *         schema:
 	 *           type: integer

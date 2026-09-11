@@ -46,10 +46,10 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 	const handleScoreChange = useCallback(
 		(score: number | string) => {
 			return (): void => {
-				setValue("score", score);
+				setValue("score", formValues.score === score ? "" : score);
 			};
 		},
-		[setValue],
+		[formValues.score, setValue],
 	);
 
 	const queryPayload: PromptGetQueryDto = {
