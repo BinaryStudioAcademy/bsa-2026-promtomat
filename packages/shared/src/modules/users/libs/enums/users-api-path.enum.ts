@@ -1,5 +1,5 @@
 const UsersApiPath = {
-	ROOT: "/",
+	ME: "/me",
 } as const;
 
 export { UsersApiPath };

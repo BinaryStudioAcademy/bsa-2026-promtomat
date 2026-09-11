@@ -7,6 +7,7 @@ export {
 	SortOrder,
 } from "./libs/enums/enums.js";
 export {
+	ApplicationError,
 	AuthError,
 	HTTPError,
 	ValidationError,
@@ -59,19 +60,37 @@ export {
 	promptWorkspaceQueryValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
+	type PrimaryAiCodingTool,
 	type UserDto,
-	type UserGetAllResponseDto,
+	type UserUpdateRequestDto,
+	AiCodingTool,
+	updateProfileValidationSchema,
 	UserErrorMessage,
 	UsersApiPath,
+	UserValidationMessage,
 } from "./modules/users/users.js";
 export {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
+	checkIsValidTechStackTag,
+	FIRST_ELEMENT_INDEX,
+	MAX_TAGS_COUNT,
+	normalizeTagName,
+	normalizeTechStackTag,
+	normalizeTechStackTags,
+	TechStackTagSchema,
+	TechStackTechDictionary,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
+	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	workspaceUpdateValidationSchema,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

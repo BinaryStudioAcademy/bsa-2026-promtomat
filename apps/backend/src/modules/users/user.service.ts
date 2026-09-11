@@ -6,10 +6,7 @@ import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
-import {
-	type UserDto,
-	type UserGetAllResponseDto,
-} from "./libs/types/types.js";
+import { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
 
 type Constructor = {
 	database: Database;
@@ -37,6 +34,16 @@ class UserService {
 		this.hashing = hashing;
 		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
+	}
+
+	private checkHasProfileChanged(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): boolean {
+		return (
+			currentUser.nickname !== payload.nickname ||
+			currentUser.primaryAiCodingTool !== payload.primaryAiCodingTool
+		);
 	}
 
 	public async create(payload: SignUpRequestDto): Promise<UserDto> {
@@ -79,14 +86,6 @@ class UserService {
 		});
 	}
 
-	public async findAll(): Promise<UserGetAllResponseDto> {
-		const users = await this.userRepository.findAll();
-
-		return {
-			items: users.map((user) => user.toObject()),
-		};
-	}
-
 	public async findByEmail(email: string): Promise<null | UserEntity> {
 		return await this.userRepository.findByEmail(email);
 	}
@@ -101,6 +100,22 @@ class UserService {
 		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
+	}
+
+	public async updateProfile(
+		currentUser: UserDto,
+		payload: UserUpdateRequestDto,
+	): Promise<UserDto> {
+		if (!this.checkHasProfileChanged(currentUser, payload)) {
+			return currentUser;
+		}
+
+		const updatedUser = await this.userRepository.update(
+			currentUser.id,
+			payload,
+		);
+
+		return updatedUser.toObject();
 	}
 }
 

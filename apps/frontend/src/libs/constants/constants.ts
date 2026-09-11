@@ -1,1 +1,1 @@
-export { EMPTY_LENGTH } from "@promptomat/shared";
+export { EMPTY_LENGTH, FIRST_ELEMENT_INDEX } from "@promptomat/shared";

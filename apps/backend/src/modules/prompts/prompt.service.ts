@@ -1,3 +1,5 @@
+import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
 	type PromptCreatePayload,
@@ -9,10 +11,16 @@ import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
+	private promptEmbeddingService: PromptEmbeddingService;
+
 	private promptRepository: PromptRepository;
 
-	public constructor(promptRepository: PromptRepository) {
+	public constructor(
+		promptRepository: PromptRepository,
+		promptEmbeddingService: PromptEmbeddingService,
+	) {
 		this.promptRepository = promptRepository;
+		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
@@ -29,7 +37,11 @@ class PromptService {
 			}),
 		);
 
-		return prompt.toObject();
+		const promptDto = prompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptDto);
+
+		return promptDto;
 	}
 
 	public async findProgress(
