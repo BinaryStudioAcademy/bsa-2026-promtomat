@@ -1,0 +1,3 @@
+const NO_ACTIVE_SUGGESTION = -1;
+
+export { NO_ACTIVE_SUGGESTION };
