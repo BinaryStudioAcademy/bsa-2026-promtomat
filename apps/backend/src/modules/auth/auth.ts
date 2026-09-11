@@ -3,7 +3,6 @@ import { database } from "~/libs/modules/database/database.js";
 import { hashing } from "~/libs/modules/hashing/hashing.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { mail } from "~/libs/modules/mail/mail.js";
-import { passwordResetRateLimit } from "~/libs/modules/rate-limit/rate-limit.js";
 import { token } from "~/libs/modules/token/token.js";
 import { userService } from "~/modules/users/users.js";
 
@@ -21,7 +20,6 @@ const authService = new AuthService({
 	logger,
 	mailService: mail,
 	passwordResetRepository,
-	rateLimitService: passwordResetRateLimit,
 	tokenService: token,
 	tokenTtlMinutes: config.ENV.PASSWORD_RESET.TOKEN_TTL_MINUTES,
 	userService,

@@ -3,14 +3,12 @@ import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type MailService } from "~/libs/modules/mail/mail.js";
-import { type RateLimitService } from "~/libs/modules/rate-limit/rate-limit.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import {
 	createPasswordResetToken,
 	hashPasswordResetToken,
-	hashThrottleKey,
 } from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
@@ -36,7 +34,6 @@ type Constructor = {
 	logger: Logger;
 	mailService: MailService;
 	passwordResetRepository: PasswordResetRepository;
-	rateLimitService: RateLimitService;
 	tokenService: TokenService;
 	tokenTtlMinutes: number;
 	userService: UserService;
@@ -55,8 +52,6 @@ class AuthService {
 
 	private passwordResetRepository: PasswordResetRepository;
 
-	private rateLimitService: RateLimitService;
-
 	private tokenService: TokenService;
 
 	private tokenTtlMinutes: number;
@@ -70,7 +65,6 @@ class AuthService {
 		logger,
 		mailService,
 		passwordResetRepository,
-		rateLimitService,
 		tokenService,
 		tokenTtlMinutes,
 		userService,
@@ -81,7 +75,6 @@ class AuthService {
 		this.logger = logger;
 		this.mailService = mailService;
 		this.passwordResetRepository = passwordResetRepository;
-		this.rateLimitService = rateLimitService;
 		this.tokenService = tokenService;
 		this.tokenTtlMinutes = tokenTtlMinutes;
 		this.userService = userService;
@@ -154,10 +147,6 @@ class AuthService {
 	}
 
 	public requestPasswordReset({ email }: ForgotPasswordRequestDto): void {
-		if (!this.rateLimitService.consume(hashThrottleKey(email))) {
-			return;
-		}
-
 		void this.issueResetToken(email);
 	}
 
