@@ -4,6 +4,7 @@ const AuthValidationMessage = {
 	EMAIL_INVALID: "Email is invalid",
 	EMAIL_REQUIRED: "Email is required",
 	EMAIL_TOO_LONG: `Email must be at most ${String(AuthValidationRule.EMAIL_MAXIMUM_LENGTH)} characters`,
+	EMAIL_TOO_SHORT: `Email must be at least ${String(AuthValidationRule.EMAIL_MINIMUM_LENGTH)} characters`,
 	NICKNAME_ALREADY_EXISTS: "This nickname is already taken",
 	NICKNAME_INVALID:
 		"Nickname can contain only Latin letters, numbers, and underscores",
