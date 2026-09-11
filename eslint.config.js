@@ -104,6 +104,28 @@ const importConfig = {
 	},
 };
 
+// Cross-application contracts reach an app through its libs/** barrels, so only
+// those barrels name the package and every other file imports the barrel.
+/** @type {Config} */
+const sharedContractsImportConfig = {
+	files: ["src/**/*.{ts,tsx}"],
+	ignores: ["src/**/libs/**"],
+	rules: {
+		"no-restricted-imports": [
+			"error",
+			{
+				patterns: [
+					{
+						group: ["@promptomat/shared", "@promptomat/shared/*"],
+						message:
+							"Import the libs/** barrel (libs/enums/enums.js, libs/types/types.js) instead of @promptomat/shared.",
+					},
+				],
+			},
+		],
+	},
+};
+
 /** @type {Config} */
 const sonarConfig = {
 	plugins: {
@@ -265,6 +287,7 @@ const config = [
 	ignoresConfig,
 	jsConfig,
 	importConfig,
+	sharedContractsImportConfig,
 	sonarConfig,
 	unicornConfig,
 	perfectionistConfig,
