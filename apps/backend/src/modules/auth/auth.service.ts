@@ -1,47 +1,42 @@
 import { AuthError } from "~/libs/exceptions/exceptions.js";
-import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type MailService } from "~/libs/modules/mail/mail.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
+import { TokenPurpose } from "./libs/enums/enums.js";
 import {
-	createPasswordResetToken,
-	hashPasswordResetToken,
+	checkIsExpiredTokenError,
+	checkIsTokenSuperseded,
 } from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
+	type PasswordResetTokenClaims,
+	type PasswordResetTokenPayload,
 	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
 	type SignUpResponseDto,
+	type VerifiedResetToken,
 } from "./libs/types/types.js";
-import { PasswordResetEntity } from "./password-reset.entity.js";
-import { type PasswordResetRepository } from "./password-reset.repository.js";
-
-const MILLISECONDS_IN_MINUTE = 60_000;
 
 const PASSWORD_CHANGED_SUBJECT = "Your Promptomat password was changed";
 
 const PASSWORD_RESET_SUBJECT = "Reset your Promptomat password";
 
 type Constructor = {
-	database: Database;
 	hashing: Hashing;
 	linkBaseUrl: string;
 	logger: Logger;
 	mailService: MailService;
-	passwordResetRepository: PasswordResetRepository;
 	tokenService: TokenService;
 	tokenTtlMinutes: number;
 	userService: UserService;
 };
 
 class AuthService {
-	private database: Database;
-
 	private hashing: Hashing;
 
 	private linkBaseUrl: string;
@@ -50,8 +45,6 @@ class AuthService {
 
 	private mailService: MailService;
 
-	private passwordResetRepository: PasswordResetRepository;
-
 	private tokenService: TokenService;
 
 	private tokenTtlMinutes: number;
@@ -59,22 +52,18 @@ class AuthService {
 	private userService: UserService;
 
 	public constructor({
-		database,
 		hashing,
 		linkBaseUrl,
 		logger,
 		mailService,
-		passwordResetRepository,
 		tokenService,
 		tokenTtlMinutes,
 		userService,
 	}: Constructor) {
-		this.database = database;
 		this.hashing = hashing;
 		this.linkBaseUrl = linkBaseUrl;
 		this.logger = logger;
 		this.mailService = mailService;
-		this.passwordResetRepository = passwordResetRepository;
 		this.tokenService = tokenService;
 		this.tokenTtlMinutes = tokenTtlMinutes;
 		this.userService = userService;
@@ -125,17 +114,12 @@ class AuthService {
 			}
 
 			const { id } = userEntity.toObject();
-			const token = createPasswordResetToken();
-			const expiresAt = new Date(
-				Date.now() + this.tokenTtlMinutes * MILLISECONDS_IN_MINUTE,
-			);
-
-			await this.passwordResetRepository.create(
-				PasswordResetEntity.initializeNew({
-					expiresAt,
-					tokenHash: hashPasswordResetToken(token),
+			const token = await this.tokenService.create<PasswordResetTokenPayload>(
+				{
+					purpose: TokenPurpose.PASSWORD_RESET,
 					userId: id,
-				}),
+				},
+				{ expiresIn: `${this.tokenTtlMinutes.toString()}m` },
 			);
 
 			await this.deliverResetLink(email, token);
@@ -146,6 +130,29 @@ class AuthService {
 		}
 	}
 
+	private async verifyResetToken(token: string): Promise<VerifiedResetToken> {
+		let claims: PasswordResetTokenClaims;
+
+		try {
+			claims = await this.tokenService.verify<PasswordResetTokenClaims>(token);
+		} catch (error) {
+			if (checkIsExpiredTokenError(error)) {
+				throw AuthError.resetTokenExpired();
+			}
+
+			throw AuthError.resetTokenInvalid();
+		}
+
+		if (
+			claims.purpose !== TokenPurpose.PASSWORD_RESET ||
+			typeof claims.userId !== "number"
+		) {
+			throw AuthError.resetTokenInvalid();
+		}
+
+		return { iat: claims.iat, userId: claims.userId };
+	}
+
 	public requestPasswordReset({ email }: ForgotPasswordRequestDto): void {
 		void this.issueResetToken(email);
 	}
@@ -154,31 +161,21 @@ class AuthService {
 		password,
 		token,
 	}: ResetPasswordRequestDto): Promise<void> {
-		const tokenEntity = await this.passwordResetRepository.findByTokenHash(
-			hashPasswordResetToken(token),
-		);
+		const { iat, userId } = await this.verifyResetToken(token);
 
-		if (!tokenEntity) {
+		const userEntity = await this.userService.findEntityById(userId);
+
+		if (!userEntity) {
 			throw AuthError.resetTokenInvalid();
 		}
 
-		const { expiresAt, id, userId } = tokenEntity.toObject();
+		const { passwordChangedAt } = userEntity.toAuthObject();
 
-		if (expiresAt <= new Date()) {
-			await this.passwordResetRepository.delete(id);
-
-			throw AuthError.resetTokenExpired();
+		if (checkIsTokenSuperseded(iat, passwordChangedAt)) {
+			throw AuthError.resetTokenInvalid();
 		}
 
-		await this.database.transaction(async (trx) => {
-			const isClaimed = await this.passwordResetRepository.delete(id, trx);
-
-			if (!isClaimed) {
-				throw AuthError.resetTokenInvalid();
-			}
-
-			await this.userService.updatePassword(userId, password, trx);
-		});
+		await this.userService.updatePassword(userId, password);
 
 		void this.deliverPasswordChangedNotice(userId);
 	}
