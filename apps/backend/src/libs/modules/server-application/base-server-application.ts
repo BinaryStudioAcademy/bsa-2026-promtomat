@@ -216,9 +216,9 @@ class BaseServerApplication implements ServerApplication {
 			method,
 			...(preHandler && { preHandler }),
 			schema: {
-				body: validation?.body,
-				params: validation?.params,
-				querystring: validation?.query,
+				...(validation?.body && { body: validation.body }),
+				...(validation?.params && { params: validation.params }),
+				...(validation?.query && { querystring: validation.query }),
 			},
 			url: path,
 		});
