@@ -6,7 +6,7 @@ import { type UserService } from "~/modules/users/user.service.js";
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
 import { BEARER } from "./libs/constants/constants.js";
-import { AuthErrorMesssage } from "./libs/enums/enums.js";
+import { AuthErrorMesssage, AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
 const MILLISECONDS_IN_SECOND = 1000;
@@ -25,16 +25,26 @@ class AuthGuard {
 		payload: AuthPayload,
 		passwordChangedAt: null | string,
 	): void {
-		if (passwordChangedAt === null || payload.iat === undefined) {
+		if (passwordChangedAt === null) {
 			return;
 		}
 
+		if (payload.iat === undefined) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
+
+		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
+
+		if (Number.isNaN(changedAtMilliseconds)) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
+
 		const changedAtSeconds = Math.floor(
-			new Date(passwordChangedAt).getTime() / MILLISECONDS_IN_SECOND,
+			changedAtMilliseconds / MILLISECONDS_IN_SECOND,
 		);
 
-		if (payload.iat < changedAtSeconds) {
-			this.throwUnauthorized(AuthErrorMesssage.PASSWORD_CHANGED);
+		if (payload.iat <= changedAtSeconds) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
 		}
 	}
 
