@@ -6,10 +6,7 @@ import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { TokenPurpose } from "./libs/enums/enums.js";
-import {
-	checkIsExpiredTokenError,
-	checkIsTokenSuperseded,
-} from "./libs/helpers/helpers.js";
+import { checkIsExpiredTokenError } from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
 	type PasswordResetTokenClaims,
@@ -21,6 +18,8 @@ import {
 	type SignUpResponseDto,
 	type VerifiedResetToken,
 } from "./libs/types/types.js";
+
+const MILLISECONDS_IN_SECOND = 1000;
 
 const PASSWORD_CHANGED_SUBJECT = "Your Promptomat password was changed";
 
@@ -145,12 +144,16 @@ class AuthService {
 
 		if (
 			claims.purpose !== TokenPurpose.PASSWORD_RESET ||
-			typeof claims.userId !== "number"
+			typeof claims.userId !== "number" ||
+			claims.iat === undefined
 		) {
 			throw AuthError.resetTokenInvalid();
 		}
 
-		return { iat: claims.iat, userId: claims.userId };
+		return {
+			issuedAt: new Date(claims.iat * MILLISECONDS_IN_SECOND),
+			userId: claims.userId,
+		};
 	}
 
 	public requestPasswordReset({ email }: ForgotPasswordRequestDto): void {
@@ -161,21 +164,17 @@ class AuthService {
 		password,
 		token,
 	}: ResetPasswordRequestDto): Promise<void> {
-		const { iat, userId } = await this.verifyResetToken(token);
+		const { issuedAt, userId } = await this.verifyResetToken(token);
 
-		const userEntity = await this.userService.findEntityById(userId);
+		const isClaimed = await this.userService.updatePasswordForReset(
+			userId,
+			password,
+			issuedAt,
+		);
 
-		if (!userEntity) {
+		if (!isClaimed) {
 			throw AuthError.resetTokenInvalid();
 		}
-
-		const { passwordChangedAt } = userEntity.toAuthObject();
-
-		if (checkIsTokenSuperseded(iat, passwordChangedAt)) {
-			throw AuthError.resetTokenInvalid();
-		}
-
-		await this.userService.updatePassword(userId, password);
 
 		void this.deliverPasswordChangedNotice(userId);
 	}
