@@ -104,12 +104,13 @@ const importConfig = {
 	},
 };
 
-// Cross-application contracts reach an app through its libs/** barrels, so only
-// those barrels name the package and every other file imports the barrel.
+// Cross-application contracts reach an app through the barrels sitting directly
+// in a libs/<category> folder, so only those name the package and every other
+// file — implementation code nested deeper under libs/ included — imports them.
 /** @type {Config} */
 const sharedContractsImportConfig = {
 	files: ["src/**/*.{ts,tsx}"],
-	ignores: ["src/**/libs/**"],
+	ignores: ["src/**/libs/*/*.ts"],
 	rules: {
 		"no-restricted-imports": [
 			"error",

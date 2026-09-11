@@ -40,8 +40,8 @@ a neighboring file before writing a new one.
 - Type imports use the inline modifier, as in `import { type UserDto } from "…";`.
 - Do not import `@promptomat/shared` directly. A `libs/**` barrel re-exports what the app needs — `libs/enums/enums.ts`,
   `libs/types/types.ts`, a feature's `libs/validation-schemas/validation-schemas.ts` — and every other file imports from
-  that barrel. `no-restricted-imports` enforces this: outside `src/**/libs/**`, naming `@promptomat/shared` in an
-  import list fails `lint:js` even though it compiles.
+  that barrel. `no-restricted-imports` enforces this: anywhere but a `libs/<category>/` barrel folder, naming
+  `@promptomat/shared` in an import list fails `lint:js` even though it compiles.
 
 ## Language
 
