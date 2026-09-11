@@ -1,5 +1,5 @@
 type VerifiedResetToken = {
-	iat: number | undefined;
+	issuedAt: Date;
 	userId: number;
 };
 
