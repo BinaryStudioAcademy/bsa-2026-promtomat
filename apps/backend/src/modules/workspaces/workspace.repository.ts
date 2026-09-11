@@ -40,7 +40,16 @@ class WorkspaceRepository {
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);
-			query.whereILike("name", `%${escapedWorkspaceName}%`);
+			const searchPattern = `%${escapedWorkspaceName}%`;
+
+			query.where((builder) => {
+				builder
+					.whereILike("name", searchPattern)
+					.orWhereRaw(
+						"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
+						[searchPattern],
+					);
+			});
 		}
 
 		const workspaces = await query.execute();
