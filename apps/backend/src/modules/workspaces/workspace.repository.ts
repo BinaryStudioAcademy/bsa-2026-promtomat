@@ -13,6 +13,10 @@ import {
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
 
+type WorkspaceListRow = WorkspaceModel & {
+	promptCount: string;
+};
+
 class WorkspaceRepository {
 	private workspaceModel: typeof WorkspaceModel;
 
@@ -69,15 +73,7 @@ class WorkspaceRepository {
 			);
 		}
 
-		const workspaces = await query
-			.castTo<
-				Array<
-					WorkspaceModel & {
-						promptCount: string;
-					}
-				>
-			>()
-			.execute();
+		const workspaces = await query.castTo<WorkspaceListRow[]>().execute();
 
 		return workspaces.map((workspace) => {
 			const workspaceDto = WorkspaceEntity.initialize(workspace).toObject();
@@ -90,20 +86,6 @@ class WorkspaceRepository {
 		});
 	}
 
-	public async findAllByUserIdForUpdate(
-		userId: number,
-		trx: Transaction,
-	): Promise<WorkspaceEntity[]> {
-		const workspaces = await this.workspaceModel
-			.query(trx)
-			.where({ userId })
-			.orderBy("id")
-			.forUpdate()
-			.execute();
-
-		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
-	}
-
 	public async findByIdAndUserId(
 		id: number,
 		userId: number,
@@ -111,6 +93,21 @@ class WorkspaceRepository {
 		const workspace = await this.workspaceModel.query().findOne({ id, userId });
 
 		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
+
+	public async findCountByUserIdWithLock(
+		userId: number,
+		trx: Transaction,
+	): Promise<number> {
+		const workspaces = await this.workspaceModel
+			.query(trx)
+			.select(WorkspaceColumnName.ID)
+			.where({ userId })
+			.orderBy(WorkspaceColumnName.ID)
+			.forUpdate()
+			.execute();
+
+		return workspaces.length;
 	}
 
 	public async update(
@@ -121,6 +118,7 @@ class WorkspaceRepository {
 			const workspace = await this.workspaceModel
 				.query()
 				.patchAndFetchById(id, payload)
+				// Objection types this result as WorkspaceModel, but it can return undefined when no workspace matches the id
 				.castTo<undefined | WorkspaceModel>();
 
 			if (!workspace) {

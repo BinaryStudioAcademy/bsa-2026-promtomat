@@ -45,10 +45,10 @@ class WorkspaceService {
 
 	public async delete(workspaceId: number, userId: number): Promise<void> {
 		await this.database.transaction(async (trx) => {
-			const workspaces =
-				await this.workspaceRepository.findAllByUserIdForUpdate(userId, trx);
+			const workspaceCount =
+				await this.workspaceRepository.findCountByUserIdWithLock(userId, trx);
 
-			if (workspaces.length < MINIMUM_WORKSPACE_COUNT_FOR_DELETION) {
+			if (workspaceCount < MINIMUM_WORKSPACE_COUNT_FOR_DELETION) {
 				throw WorkspaceError.lastWorkspaceDeletionNotAllowed();
 			}
 

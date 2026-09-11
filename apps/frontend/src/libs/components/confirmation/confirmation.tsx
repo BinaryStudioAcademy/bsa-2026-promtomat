@@ -1,9 +1,6 @@
-import { useCallback } from "react";
-
 import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
 import { ButtonVariant, type IconName } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { ConfirmationLabel } from "./libs/enums/enums.js";
@@ -18,7 +15,7 @@ type Properties = {
 	isLoading?: boolean;
 	isOpen: boolean;
 	onCancel: () => void;
-	onConfirm?: (() => void) | undefined;
+	onConfirm: () => void;
 	title: string;
 	titleIconName?: ValueOf<typeof IconName>;
 	tone?: "danger" | "default";
@@ -38,19 +35,10 @@ const Confirmation = ({
 	titleIconName,
 	tone = "default",
 }: Properties) => {
-	const hasConfirmAction = Boolean(onConfirm);
-	const handleConfirm = useCallback((): void => {
-		onConfirm?.();
-	}, [onConfirm]);
-	const actionsClassName = getValidClasses(
-		styles["confirmation-actions"],
-		hasConfirmAction && styles["confirmation-actions-split"],
-	);
-
 	return (
 		<Modal
 			footer={
-				<div className={actionsClassName}>
+				<div className={styles["confirmation-actions"]}>
 					<Button
 						isDisabled={isDisabled}
 						label={cancelLabel}
@@ -58,16 +46,14 @@ const Confirmation = ({
 						type="button"
 						variant={ButtonVariant.SECONDARY}
 					/>
-					{hasConfirmAction && (
-						<Button
-							isDisabled={isDisabled}
-							isLoading={isLoading}
-							label={confirmLabel}
-							onClick={handleConfirm}
-							type="button"
-							variant={confirmVariant}
-						/>
-					)}
+					<Button
+						isDisabled={isDisabled}
+						isLoading={isLoading}
+						label={confirmLabel}
+						onClick={onConfirm}
+						type="button"
+						variant={confirmVariant}
+					/>
 				</div>
 			}
 			isDismissible={false}
