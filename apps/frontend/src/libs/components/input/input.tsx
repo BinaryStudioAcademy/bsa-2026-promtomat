@@ -18,6 +18,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
+	isLabelHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
 	maxLength?: number;
@@ -33,6 +34,7 @@ const Input = <T extends FieldValues>({
 	control,
 	descriptionId,
 	isDisabled = false,
+	isLabelHidden = false,
 	isRequired = false,
 	label,
 	maxLength,
@@ -72,7 +74,13 @@ const Input = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			<label className={styles["label"]} htmlFor={inputId}>
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isLabelHidden && styles["visually-hidden"],
+				)}
+				htmlFor={inputId}
+			>
 				{label}
 				{isRequired ? (
 					<span aria-hidden="true" className={styles["required"]}>

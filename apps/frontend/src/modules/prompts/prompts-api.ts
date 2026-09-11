@@ -5,6 +5,8 @@ import { PromptsApiPath, PromptsApiTag } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
 } from "./libs/types/types.js";
 
 const promptApi = baseApi
@@ -19,9 +21,18 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			searchPrompts: builder.query<
+				PromptSearchResponseDto,
+				PromptSearchRequestDto
+			>({
+				query: (queryPayload) => ({
+					params: queryPayload,
+					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
+				}),
+			}),
 		}),
 	});
 
-const { useRecordPromptMutation } = promptApi;
+const { useRecordPromptMutation, useSearchPromptsQuery } = promptApi;
 
-export { useRecordPromptMutation };
+export { useRecordPromptMutation, useSearchPromptsQuery };
