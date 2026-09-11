@@ -60,7 +60,6 @@ export {
 export {
 	type PrimaryAiCodingTool,
 	type UserDto,
-	type UserGetAllResponseDto,
 	type UserUpdateRequestDto,
 	AiCodingTool,
 	updateProfileValidationSchema,

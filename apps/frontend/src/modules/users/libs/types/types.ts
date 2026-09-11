@@ -1,5 +1,1 @@
-export {
-	type UserDto,
-	type UserGetAllResponseDto,
-	type UserUpdateRequestDto,
-} from "@promptomat/shared";
+export { type UserDto, type UserUpdateRequestDto } from "@promptomat/shared";
