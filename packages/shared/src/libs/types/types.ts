@@ -1,3 +1,4 @@
+export { type PagedResponseDto } from "./paged-response-dto.type.js";
 export { type ServerErrorDetail } from "./server-error-detail.type.js";
 export {
 	type ServerCommonErrorResponse,

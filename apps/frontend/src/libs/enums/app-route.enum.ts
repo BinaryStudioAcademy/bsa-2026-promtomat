@@ -1,6 +1,7 @@
 const AppRoute = {
 	ANY: "*",
 	NO_ACCESS: "/no-access",
+	PROMPT_HISTORY: "/prompt-history",
 	ROOT: "/",
 	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",

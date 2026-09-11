@@ -1,0 +1,4 @@
+const ROUND_FACTOR = 10;
+const ZERO_VALUE = 0;
+
+export { ROUND_FACTOR, ZERO_VALUE };

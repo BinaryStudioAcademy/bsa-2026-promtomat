@@ -3,13 +3,14 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 import {
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptFindAllOptions,
+	type PromptGetAllResponseDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
-
 	private promptRepository: PromptRepository;
 
 	public constructor(
@@ -39,6 +40,29 @@ class PromptService {
 		void this.promptEmbeddingService.embedForPrompt(promptDto);
 
 		return promptDto;
+	}
+
+	public async findAll(
+		options: PromptFindAllOptions,
+	): Promise<PromptGetAllResponseDto> {
+		const { averageScore, items, page, pageSize, totalCount } =
+			await this.promptRepository.findAll(options);
+
+		return {
+			averageScore,
+			items: items.map((item) => ({
+				body: item.promptBody,
+				createdAt: item.createdAt,
+				id: item.id,
+				intent: item.taskIntent,
+				score: item.efficiencyScore,
+				workspaceId: item.workspaceId,
+				workspaceName: item.workspace?.name ?? "",
+			})),
+			page,
+			pageSize,
+			totalCount,
+		};
 	}
 }
 
