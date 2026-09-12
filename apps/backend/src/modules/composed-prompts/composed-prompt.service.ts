@@ -1,3 +1,4 @@
+import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 import { ComposedPromptError } from "~/libs/exceptions/exceptions.js";
 import {
 	checkIsNonEmptyString,
@@ -292,7 +293,7 @@ class ComposedPromptService {
 			workspaceId,
 		});
 		const candidates = retrieved
-			.filter((_, index) => index < this.candidateLimit)
+			.slice(FIRST_ELEMENT_INDEX, this.candidateLimit)
 			.map((candidate) => mapToPromptCandidateDto(candidate));
 		const [topCandidate] = candidates;
 
