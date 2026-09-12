@@ -1,4 +1,4 @@
-import React, { useCallback, useId } from "react";
+import React, { useCallback, useEffect, useId } from "react";
 import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -34,12 +34,14 @@ const GenerateForm: React.FC<Properties> = ({
 	const workspaceCaptionId = useId();
 	const { data: workspacesData } = useGetWorkspacesQuery({});
 
+	const [firstWorkspace] = workspacesData?.items ?? [];
+
 	const options = workspacesData?.items.map(({ id, name }) => ({
 		label: name,
 		value: id,
 	}));
 
-	const { clearErrors, control, handleSubmit, setError } =
+	const { clearErrors, control, handleSubmit, setError, setValue } =
 		useAppForm<ComposeRequestDto>({
 			defaultValues: DEFAULT_GENERATE_PAYLOAD,
 			validationSchema: composeValidationSchema,
@@ -54,6 +56,12 @@ const GenerateForm: React.FC<Properties> = ({
 
 	const workspaceId = useWatch({ control, name: "workspaceId" });
 	const hasWorkspace = Boolean(workspaceId);
+
+	useEffect(() => {
+		if (!hasWorkspace && firstWorkspace) {
+			setValue("workspaceId", firstWorkspace.id);
+		}
+	}, [firstWorkspace, hasWorkspace, setValue]);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -83,15 +91,17 @@ const GenerateForm: React.FC<Properties> = ({
 				</div>
 			</div>
 			<div className={styles["task-zone"]}>
-				<Input
-					control={control}
-					isDisabled={isLoading || !hasWorkspace}
-					isLabelHidden
-					label={GenerateLabel.DESCRIPTION_FIELD}
-					name="description"
-					placeholder={GenerateLabel.DESCRIPTION_PLACEHOLDER}
-					size={ControlSize.LG}
-				/>
+				<div className={styles["description-field"]}>
+					<Input
+						control={control}
+						isDisabled={isLoading || !hasWorkspace}
+						isLabelHidden
+						label={GenerateLabel.DESCRIPTION_FIELD}
+						name="description"
+						placeholder={GenerateLabel.DESCRIPTION_PLACEHOLDER}
+						size={ControlSize.LG}
+					/>
+				</div>
 				<Button
 					className={styles["submit"]}
 					isDisabled={!hasWorkspace}

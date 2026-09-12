@@ -38,13 +38,17 @@
 
 .task-zone {
 	display: flex;
-	flex-direction: column;
+	flex-wrap: wrap;
 	gap: var(--space-12);
 	width: 100%;
 }
 
+.description-field {
+	flex-grow: 1;
+}
+
 .submit {
-	align-self: flex-end;
+	align-self: flex-start;
 }
 
 .card {
