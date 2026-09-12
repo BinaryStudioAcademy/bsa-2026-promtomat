@@ -14,6 +14,7 @@ type ControllerRouteParameters = {
 	preHandler?: preHandlerAsyncHookHandler;
 	validation?: {
 		body?: ValidationSchema;
+		params?: ValidationSchema;
 		query?: ValidationSchema;
 	};
 };
