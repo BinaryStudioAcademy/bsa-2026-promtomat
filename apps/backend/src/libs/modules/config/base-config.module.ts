@@ -4,7 +4,8 @@ import { config } from "dotenv";
 import { AppEnvironment } from "~/libs/enums/enums.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
-import { JwtAlgorithm } from "./libs/enums/enums.js";
+import { ConfigFormat, JwtAlgorithm } from "./libs/enums/enums.js";
+import { positiveIntegerFormat } from "./libs/formats/formats.js";
 import {
 	validateEmbeddingLocalPath,
 	validateJwtExpiresIn,
@@ -21,6 +22,7 @@ class BaseConfig implements Config {
 		this.logger = logger;
 
 		config();
+		convict.addFormat(positiveIntegerFormat);
 
 		this.envSchema.load({});
 		this.envSchema.validate({
@@ -72,6 +74,12 @@ class BaseConfig implements Config {
 						env: "BEDROCK_MODEL_ID",
 						format: String,
 					},
+				},
+				REQUEST_TIMEOUT_MS: {
+					default: null,
+					doc: "Milliseconds a single Bedrock request may take before it fails",
+					env: "BEDROCK_REQUEST_TIMEOUT_MS",
+					format: ConfigFormat.POSITIVE_INTEGER,
 				},
 			},
 			DB: {
@@ -154,6 +162,20 @@ class BaseConfig implements Config {
 					doc: "Key prefix of the embedding model inside the store bucket",
 					env: "EMBEDDING_S3_PREFIX",
 					format: String,
+				},
+			},
+			GENERATION: {
+				CANDIDATE_LIMIT: {
+					default: null,
+					doc: "Maximum number of prompt candidates sent to the model as material",
+					env: "GENERATION_CANDIDATE_LIMIT",
+					format: ConfigFormat.POSITIVE_INTEGER,
+				},
+				MAX_TOKENS: {
+					default: null,
+					doc: "Token budget of one composed prompt generation",
+					env: "GENERATION_MAX_TOKENS",
+					format: ConfigFormat.POSITIVE_INTEGER,
 				},
 			},
 			HASHING: {

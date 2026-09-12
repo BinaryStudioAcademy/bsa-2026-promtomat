@@ -43,6 +43,9 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Link to={AppRoute.TRAINING}>Training</Link>
 					</li>
+					<li>
+						<Link to={AppRoute.GENERATE}>Generate</Link>
+					</li>
 					<li className={styles["identity-label"]}>{user.email}</li>
 					<li>
 						<Button

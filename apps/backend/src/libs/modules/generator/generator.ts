@@ -8,4 +8,7 @@ const generator = new Generator({
 
 export { generator };
 export { SchemaKey } from "./libs/enums/enums.js";
-export { type GeneratorInterface } from "./libs/types/types.js";
+export {
+	type ComposedPromptStructuredGenerationOutput,
+	type GeneratorInterface,
+} from "./libs/types/types.js";
