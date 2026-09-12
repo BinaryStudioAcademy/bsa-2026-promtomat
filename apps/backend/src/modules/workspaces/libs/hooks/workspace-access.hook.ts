@@ -14,8 +14,12 @@ const workspaceAccessHook = (
 
 		const routeParameters = request.params as { workspaceId?: number };
 		const requestBody = request.body as null | { workspaceId?: number };
+		const requestQuery = request.query as undefined | { workspaceId?: number };
 
-		const workspaceId = routeParameters.workspaceId ?? requestBody?.workspaceId;
+		const workspaceId =
+			routeParameters.workspaceId ??
+			requestBody?.workspaceId ??
+			requestQuery?.workspaceId;
 
 		if (!workspaceId) {
 			throw WorkspaceError.notFound();
