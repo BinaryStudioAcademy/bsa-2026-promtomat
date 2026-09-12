@@ -30,6 +30,9 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export {
+	type ForgotPasswordRequestDto,
+	type NewPasswordFormValues,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -38,9 +41,12 @@ export {
 	AuthErrorMessage,
 	AuthValidationMessage,
 	AuthValidationRule,
+	forgotPasswordValidationSchema,
+	newPasswordValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
+	resetPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";

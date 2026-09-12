@@ -14,6 +14,14 @@ const UsersConstraintName = {
 	NICKNAME_UNIQUE: "users_nickname_unique",
 } as const;
 
+type PasswordPayload = {
+	passwordChangedAt: string;
+	passwordHash: string;
+	passwordSalt: string;
+};
+
+const NO_UPDATED_ROWS = 0;
+
 class UserRepository {
 	private userModel: typeof UserModel;
 
@@ -90,6 +98,37 @@ class UserRepository {
 
 			throw error;
 		}
+	}
+
+	public async updatePassword(
+		id: number,
+		payload: PasswordPayload,
+		trx?: Transaction,
+	): Promise<UserEntity> {
+		const user = await this.userModel
+			.query(trx)
+			.patchAndFetchById(id, payload)
+			.throwIfNotFound();
+
+		return UserEntity.initialize(user);
+	}
+
+	public async updatePasswordIfUnchangedSince(
+		id: number,
+		payload: PasswordPayload,
+		issuedAt: Date,
+	): Promise<boolean> {
+		const updatedRows = await this.userModel
+			.query()
+			.patch(payload)
+			.where("id", id)
+			.where((builder) => {
+				void builder
+					.whereNull("passwordChangedAt")
+					.orWhere("passwordChangedAt", "<", issuedAt);
+			});
+
+		return updatedRows !== NO_UPDATED_ROWS;
 	}
 }
 

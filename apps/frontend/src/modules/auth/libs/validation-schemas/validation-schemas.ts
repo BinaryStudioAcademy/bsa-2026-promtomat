@@ -1,4 +1,6 @@
 export {
+	forgotPasswordValidationSchema,
+	newPasswordValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordLengthValidationSchema,
 	signInValidationSchema,

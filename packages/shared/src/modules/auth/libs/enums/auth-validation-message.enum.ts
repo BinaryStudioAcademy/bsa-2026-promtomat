@@ -14,6 +14,8 @@ const AuthValidationMessage = {
 	PASSWORD_REQUIRED: "Password is required",
 	PASSWORD_TOO_LONG: `Password must be at most ${String(AuthValidationRule.PASSWORD_MAXIMUM_LENGTH)} characters`,
 	PASSWORD_TOO_SHORT: `Password must be at least ${String(AuthValidationRule.PASSWORD_MINIMUM_LENGTH)} characters`,
+	PASSWORDS_DO_NOT_MATCH: "Passwords do not match",
+	RESET_TOKEN_REQUIRED: "Reset token is required",
 } as const;
 
 export { AuthValidationMessage };

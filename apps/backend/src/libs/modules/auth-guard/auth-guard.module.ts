@@ -6,8 +6,10 @@ import { type UserService } from "~/modules/users/user.service.js";
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
 import { BEARER } from "./libs/constants/constants.js";
-import { AuthErrorMesssage } from "./libs/enums/enums.js";
+import { AuthErrorMesssage, AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
+
+const MILLISECONDS_IN_SECOND = 1000;
 
 class AuthGuard {
 	private readonly tokenService: TokenService;
@@ -17,6 +19,33 @@ class AuthGuard {
 	public constructor(tokenService: TokenService, userService: UserService) {
 		this.tokenService = tokenService;
 		this.userService = userService;
+	}
+
+	private assertTokenPredatesNoPasswordChange(
+		payload: AuthPayload,
+		passwordChangedAt: null | string,
+	): void {
+		if (passwordChangedAt === null) {
+			return;
+		}
+
+		if (payload.iat === undefined) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
+
+		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
+
+		if (Number.isNaN(changedAtMilliseconds)) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
+
+		const changedAtSeconds = Math.floor(
+			changedAtMilliseconds / MILLISECONDS_IN_SECOND,
+		);
+
+		if (payload.iat <= changedAtSeconds) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
 	}
 
 	private extractBearerToken(header?: string): null | string {
@@ -45,6 +74,10 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
+		if (payload.purpose !== undefined) {
+			this.throwUnauthorized(AuthErrorMesssage.WRONG_PURPOSE);
+		}
+
 		return payload;
 	}
 
@@ -57,13 +90,18 @@ class AuthGuard {
 
 		const payload = await this.verifyToken(token);
 
-		const user = await this.userService.findById(payload.userId);
+		const userEntity = await this.userService.findEntityById(payload.userId);
 
-		if (!user) {
+		if (!userEntity) {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
-		return user;
+		this.assertTokenPredatesNoPasswordChange(
+			payload,
+			userEntity.toAuthObject().passwordChangedAt,
+		);
+
+		return userEntity.toObject();
 	}
 }
 

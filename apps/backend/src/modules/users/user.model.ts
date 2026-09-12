@@ -10,6 +10,8 @@ class UserModel extends AbstractModel {
 
 	public nickname!: string;
 
+	public passwordChangedAt!: null | string;
+
 	public passwordHash!: string;
 
 	public passwordSalt!: string;
