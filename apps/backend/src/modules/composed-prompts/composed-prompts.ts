@@ -19,7 +19,7 @@ const composedPromptService = new ComposedPromptService({
 	logger,
 	maxTokens: config.ENV.GENERATION.MAX_TOKENS,
 	modelId: config.ENV.BEDROCK.MODEL.ID,
-	promptSearchService: promptService,
+	promptService,
 	workspaceService,
 });
 

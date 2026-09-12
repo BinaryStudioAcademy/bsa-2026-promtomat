@@ -9,6 +9,7 @@ import {
 	SchemaKey,
 } from "~/libs/modules/generator/generator.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
+import { type PromptService } from "~/modules/prompts/prompt.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
@@ -39,7 +40,6 @@ import {
 	type GenerationOutcome,
 	type ModelCallLog,
 	type PromptCandidateDto,
-	type PromptSearchService,
 	type StoreResult,
 } from "./libs/types/types.js";
 
@@ -50,7 +50,7 @@ type Constructor = {
 	logger: Logger;
 	maxTokens: number;
 	modelId: string;
-	promptSearchService: PromptSearchService;
+	promptService: PromptService;
 	workspaceService: WorkspaceService;
 };
 
@@ -74,7 +74,7 @@ class ComposedPromptService {
 
 	private modelId: string;
 
-	private promptSearchService: PromptSearchService;
+	private promptService: PromptService;
 
 	private workspaceService: WorkspaceService;
 
@@ -85,7 +85,7 @@ class ComposedPromptService {
 		logger,
 		maxTokens,
 		modelId,
-		promptSearchService,
+		promptService,
 		workspaceService,
 	}: Constructor) {
 		this.candidateLimit = candidateLimit;
@@ -94,7 +94,7 @@ class ComposedPromptService {
 		this.logger = logger;
 		this.maxTokens = maxTokens;
 		this.modelId = modelId;
-		this.promptSearchService = promptSearchService;
+		this.promptService = promptService;
 		this.workspaceService = workspaceService;
 	}
 
@@ -285,7 +285,7 @@ class ComposedPromptService {
 			return this.toComposedResult(existing, false);
 		}
 
-		const retrieved = await this.promptSearchService.findCandidates({
+		const retrieved = await this.promptService.findCandidates({
 			description,
 			limit: this.candidateLimit,
 			userId,

@@ -1,3 +1,5 @@
+import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
+
 import { type PromptCandidateDto } from "../types/types.js";
 
 const mapToPromptCandidateDto = ({
@@ -5,7 +7,7 @@ const mapToPromptCandidateDto = ({
 	promptBody,
 	promptId,
 	taskIntent,
-}: PromptCandidateDto): PromptCandidateDto => ({
+}: NearestPrompt): PromptCandidateDto => ({
 	efficiencyScore,
 	promptBody,
 	promptId,
