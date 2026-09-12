@@ -10,6 +10,8 @@ export {
 	ApplicationError,
 	AuthError,
 	HTTPError,
+	LabelError,
+	PromptError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
@@ -48,6 +50,13 @@ export {
 } from "./modules/auth/auth.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type GetLabelsRequestDto,
+	type LabelWithPromptCountDto,
+	labelGetByQueryValidationSchema,
+	LabelsApiPath,
+} from "./modules/labels/labels.js";
+export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
@@ -55,6 +64,7 @@ export {
 	type PromptRecentDto,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
 	promptWorkspaceQueryValidationSchema,

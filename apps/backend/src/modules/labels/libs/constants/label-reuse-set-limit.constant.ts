@@ -1,0 +1,3 @@
+const LABEL_REUSE_SET_LIMIT = 20;
+
+export { LABEL_REUSE_SET_LIMIT };
