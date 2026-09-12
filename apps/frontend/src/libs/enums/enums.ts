@@ -1,6 +1,7 @@
 export { AppRoute } from "./app-route.enum.js";
 export { ButtonVariant } from "./button-variant.enum.js";
 export { ControlSize } from "./control-size.enum.js";
+export { FormValidationMode } from "./form-validation-mode.enum.js";
 export { IconName } from "./icon-name.enum.js";
 export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
@@ -11,4 +12,5 @@ export {
 	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,
+	TechStackTechDictionary,
 } from "@promptomat/shared";

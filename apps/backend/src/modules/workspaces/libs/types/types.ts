@@ -6,4 +6,7 @@ export {
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 } from "@promptomat/shared";

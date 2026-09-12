@@ -3,9 +3,12 @@ import { useController } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
-import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
-import { Loader } from "~/libs/components/loader/loader.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
+import {
+	ButtonVariant,
+	ControlSize,
+	TechStackTechDictionary,
+} from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -13,12 +16,9 @@ import {
 	workspaceCreationValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
-import {
-	DEFAULT_WORKSPACE_CREATE_PAYLOAD,
-	FIRST_ELEMENT_INDEX,
-	WORKSPACE_STACK_TAG_OPTIONS,
-} from "./libs/constants/constants.js";
-import styles from "./styles.module.css";
+import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import styles from "../../styles.module.css";
+import { DEFAULT_WORKSPACE_CREATE_PAYLOAD } from "./libs/constants/constants.js";
 
 type Properties = {
 	onClose: () => void;
@@ -34,10 +34,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		validationSchema: workspaceCreationValidationSchema,
 	});
 
-	const {
-		field: stackTagsField,
-		fieldState: { error: stackTagsError },
-	} = useController({
+	const { field: stackTagsField } = useController({
 		control,
 		name: STACK_TAGS,
 	});
@@ -54,48 +51,26 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		[createWorkspace, handleSubmit, onClose],
 	);
 
-	const handleStackTagsChange = useCallback(
-		(event: React.ChangeEvent<HTMLSelectElement>) => {
-			stackTagsField.onChange([event.target.value]);
-		},
-		[stackTagsField],
-	);
-
 	return (
 		<>
-			{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<Input
-					control={control}
-					label="Workspace name"
-					name="name"
-					placeholder="Name..."
-				/>
-
-				<div className={styles["field"]}>
-					<label className={styles["label"]} htmlFor="stack-tags-select">
-						Stack Tags
-					</label>
-					<select
-						className={styles["select"]}
-						id="stack-tags-select"
+				<div className={styles["fields"]}>
+					<Input
+						control={control}
+						label="Workspace name"
+						name="name"
+						placeholder="Name..."
+					/>
+					<SearchableSelect
+						control={control}
+						isDisabled={isLoading}
+						label="Add tags"
 						name={stackTagsField.name}
-						onBlur={stackTagsField.onBlur}
-						onChange={handleStackTagsChange}
-						value={stackTagsField.value[FIRST_ELEMENT_INDEX] || ""}
-					>
-						<option disabled hidden value="">
-							Select an option...
-						</option>
-						{WORKSPACE_STACK_TAG_OPTIONS.map((option) => (
-							<option key={option.value} value={option.value}>
-								{option.label}
-							</option>
-						))}
-					</select>
-					<span className={styles["message"]}>{stackTagsError?.message}</span>
+						placeholder="Enter tags"
+						size={ControlSize.MD}
+						valuesDictionary={Object.values(TechStackTechDictionary)}
+					/>
 				</div>
-
 				<div className={styles["footer"]}>
 					<Button
 						isDisabled={isLoading}
@@ -106,8 +81,8 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						variant={ButtonVariant.SECONDARY}
 					/>
 					<Button
-						isDisabled={isLoading}
-						label="Create"
+						isLoading={isLoading}
+						label={WorkspaceFormMessage.CREATE}
 						size={ControlSize.MD}
 						type="submit"
 					/>

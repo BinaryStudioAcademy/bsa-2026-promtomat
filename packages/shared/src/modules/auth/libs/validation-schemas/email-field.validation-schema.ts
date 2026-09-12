@@ -6,8 +6,14 @@ const emailField = z
 	.string()
 	.trim()
 	.toLowerCase()
-	.min(AuthValidationRule.EMAIL_MINIMUM_LENGTH, {
+	.min(AuthValidationRule.EMAIL_EMPTY_STATE_LENGTH, {
 		error: AuthValidationMessage.EMAIL_REQUIRED,
+	})
+	.min(AuthValidationRule.EMAIL_MINIMUM_LENGTH, {
+		error: AuthValidationMessage.EMAIL_TOO_SHORT,
+	})
+	.max(AuthValidationRule.EMAIL_MAXIMUM_LENGTH, {
+		error: AuthValidationMessage.EMAIL_TOO_LONG,
 	})
 	.pipe(
 		z.email({

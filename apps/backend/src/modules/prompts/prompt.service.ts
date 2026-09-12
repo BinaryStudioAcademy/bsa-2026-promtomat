@@ -17,13 +17,16 @@ import {
 	LABEL_GENERATION_TEMPERATURE,
 	LABEL_GENERATION_TOP_P,
 } from "./libs/constants/constants.js";
+import { PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelMessage } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreatePayload,
 	type PromptDto,
 	type PromptFindByWorkspacePayload,
 	type PromptGenerateLabelPayload,
-	PromptLabelSource,
+	type PromptGetRecentResponseDto,
+	type PromptLabelSource,
+	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -156,6 +159,18 @@ class PromptService {
 		return await this.promptRepository.findByWorkspace(payload);
 	}
 
+	public async findProgress(
+		workspaceId: number,
+	): Promise<PromptProgressResponseDto> {
+		const count =
+			await this.promptRepository.findCountByWorkspaceId(workspaceId);
+
+		return {
+			count,
+			target: PromptProgress.TARGET_COUNT,
+		};
+	}
+
 	public async findPromptsWithoutLabels(
 		limit: number,
 		afterId: number,
@@ -165,6 +180,17 @@ class PromptService {
 			afterId,
 		);
 		return result.map((prompt) => prompt.toObject());
+	}
+
+	public async findRecent(
+		workspaceId: number,
+	): Promise<PromptGetRecentResponseDto> {
+		const items = await this.promptRepository.findRecentByWorkspaceId(
+			workspaceId,
+			PromptProgress.RECENT_LIMIT,
+		);
+
+		return { items };
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {

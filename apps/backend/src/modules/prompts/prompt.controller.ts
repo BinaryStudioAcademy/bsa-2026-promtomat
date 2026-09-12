@@ -13,10 +13,12 @@ import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
+	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
 	promptGetByQueryValidationSchema,
+	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
@@ -43,6 +45,23 @@ import { type PromptService } from "./prompt.service.js";
  *            type: number
  *          workspaceId:
  *            type: number
+ *      PromptProgress:
+ *        type: object
+ *        properties:
+ *          count:
+ *            type: number
+ *          target:
+ *            type: number
+ *      PromptRecent:
+ *        type: object
+ *        properties:
+ *          efficiencyScore:
+ *            type: number
+ *          id:
+ *            type: number
+ *            minimum: 1
+ *          taskIntent:
+ *            type: string
  */
 class PromptController extends BaseController {
 	private promptService: PromptService;
@@ -72,6 +91,36 @@ class PromptController extends BaseController {
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				query: promptGetByQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findProgress(
+					options as APIHandlerOptions<{
+						query: PromptWorkspaceQueryDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.PROGRESS,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				query: promptWorkspaceQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findRecent(
+					options as APIHandlerOptions<{
+						query: PromptWorkspaceQueryDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.RECENT,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				query: promptWorkspaceQueryValidationSchema,
 			},
 		});
 
@@ -214,6 +263,163 @@ class PromptController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.promptService.findByWorkspace(options.query),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/progress:
+	 *    get:
+	 *      description: Returns recorded prompt count and target for a workspace
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *          description: Workspace to count prompts in
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/PromptProgress"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        404:
+	 *          description: Workspace not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  details:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        message:
+	 *                          type: string
+	 *                        path:
+	 *                          type: array
+	 *                          items:
+	 *                            type: string
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 */
+	private async findProgress(
+		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findProgress(options.query.workspaceId),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/recent:
+	 *    get:
+	 *      description: Returns the most recent recorded prompts for a workspace
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *          description: Workspace to list recent prompts from
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  items:
+	 *                    type: array
+	 *                    items:
+	 *                      $ref: "#/components/schemas/PromptRecent"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        404:
+	 *          description: Workspace not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: object
+	 *                properties:
+	 *                  details:
+	 *                    type: array
+	 *                    items:
+	 *                      type: object
+	 *                      properties:
+	 *                        message:
+	 *                          type: string
+	 *                        path:
+	 *                          type: array
+	 *                          items:
+	 *                            type: string
+	 *                  errorType:
+	 *                    type: string
+	 *                  message:
+	 *                    type: string
+	 */
+	private async findRecent(
+		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findRecent(options.query.workspaceId),
 			status: HTTPCode.OK,
 		};
 	}
