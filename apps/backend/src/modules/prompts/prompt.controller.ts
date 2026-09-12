@@ -12,7 +12,7 @@ import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.h
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
-import { toPromptSearchResponseDto } from "./libs/helpers/helpers.js";
+import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptSearchRequestDto,
@@ -483,7 +483,7 @@ class PromptController extends BaseController {
 			userId: options.user?.id as number,
 		});
 
-		const payload = toPromptSearchResponseDto(promptCandidates);
+		const payload = convertToPromptSearchResponseDto(promptCandidates);
 
 		return {
 			payload,

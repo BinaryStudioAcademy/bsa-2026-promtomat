@@ -5,7 +5,7 @@ import {
 	type PromptSearchResult,
 } from "../types/types.js";
 
-const toPromptSearchResponseDto = (
+const convertToPromptSearchResponseDto = (
 	promptCandidates: NearestPrompt[],
 ): PromptSearchResponseDto => ({
 	items: promptCandidates.map((promptCandidate): PromptSearchResult => ({
@@ -15,4 +15,4 @@ const toPromptSearchResponseDto = (
 	})),
 });
 
-export { toPromptSearchResponseDto };
+export { convertToPromptSearchResponseDto };

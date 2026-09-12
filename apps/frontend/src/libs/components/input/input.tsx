@@ -77,7 +77,7 @@ const Input = <T extends FieldValues>({
 			<label
 				className={getValidClasses(
 					styles["label"],
-					isLabelHidden && styles["visually-hidden"],
+					isLabelHidden && "visually-hidden",
 				)}
 				htmlFor={inputId}
 			>

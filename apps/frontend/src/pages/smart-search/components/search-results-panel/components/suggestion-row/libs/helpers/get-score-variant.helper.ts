@@ -1,6 +1,8 @@
 import { ScoreThreshold } from "~/libs/components/score-grid/libs/enums/enums.js";
 
-const getScoreVariant = (score: number): "danger" | "success" | "warning" => {
+import { type ScoreVariant } from "../types/types.js";
+
+const getScoreVariant = (score: number): ScoreVariant => {
 	if (score <= ScoreThreshold.DANGER_MAX) {
 		return "danger";
 	}

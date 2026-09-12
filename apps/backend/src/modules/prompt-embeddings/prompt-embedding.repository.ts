@@ -15,7 +15,7 @@ import {
 import {
 	PgAttributeColumnName,
 	PromptEmbeddingColumnName,
-	RelevanceWeights,
+	RelevanceWeight,
 } from "./libs/enums/enums.js";
 import {
 	parseVectorDimension,
@@ -115,12 +115,12 @@ class PromptEmbeddingRepository {
 			.orderByRaw(
 				"(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) DESC",
 				[
-					RelevanceWeights.SIMILARITY_WEIGHT,
+					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
 					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
 					serializedEmbeddings,
 					SIMILARITY_THRESHOLD,
-					RelevanceWeights.EFFICIENCY_SCORE_WEIGHT,
+					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 					MAX_EFFICIENCY_SCORE,
 				],
