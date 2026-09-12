@@ -1,1 +1,5 @@
-export { promptCreateValidationSchema } from "@promptomat/shared";
+export {
+	promptCreateValidationSchema,
+	promptWorkspaceQueryValidationSchema,
+	searchPromptsValidationSchema,
+} from "@promptomat/shared";

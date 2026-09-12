@@ -1,0 +1,33 @@
+.content-column {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-32);
+	align-items: center;
+	justify-content: center;
+	max-width: 800px;
+	min-height: 80vh;
+	padding: var(--space-48) var(--space-16);
+	margin: 0 auto;
+}
+
+.search-scope-row {
+	display: flex;
+	gap: var(--space-10);
+	align-items: center;
+}
+
+.search-scope-label {
+	font-size: var(--font-size-title-3);
+	color: var(--text-body);
+}
+
+.workspace-select {
+	width: 320px;
+}
+
+.search-zone {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-12);
+	width: 100%;
+}

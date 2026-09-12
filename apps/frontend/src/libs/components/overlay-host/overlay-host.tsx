@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { Notification } from "~/libs/components/notification/notification.js";
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { KeyboardKey } from "~/libs/enums/enums.js";
 import {
 	bindShowNotification,
@@ -10,7 +11,6 @@ import {
 } from "~/libs/modules/notification/notification.js";
 
 import {
-	BLOCKING_IDS_EMPTY_LENGTH,
 	DEFAULT_NOTIFICATION_DURATION_MS,
 	DEFAULT_NOTIFICATION_TYPE,
 	LAST_INDEX_FROM_END,
@@ -35,7 +35,7 @@ const OverlayHost = ({ children }: Properties) => {
 		Map<string, ReturnType<typeof setTimeout>>
 	>(new Map());
 
-	const hasBlocking = blockingIds.length > BLOCKING_IDS_EMPTY_LENGTH;
+	const hasBlocking = blockingIds.length > EMPTY_LENGTH;
 
 	const registerBlocking = useCallback((id: string) => {
 		setBlockingIds((currentIds) => {

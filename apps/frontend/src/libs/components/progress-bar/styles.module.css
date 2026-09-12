@@ -1,0 +1,33 @@
+.row {
+	display: flex;
+	gap: var(--space-12);
+	align-items: center;
+	width: 100%;
+}
+
+.track {
+	flex: 1 0 0;
+	min-width: 0;
+	height: var(--space-8);
+	overflow: hidden;
+	background-color: var(--surface-inset);
+	border-radius: var(--radius-sm);
+}
+
+.fill {
+	height: 100%;
+	background-color: var(--surface-accent);
+	border-radius: var(--radius-sm);
+}
+
+.percent {
+	width: 40px;
+	font-size: var(--font-size-label-sm);
+	color: var(--text-muted);
+}
+
+.count {
+	font-size: var(--font-size-body-xl);
+	color: var(--text-strong);
+	white-space: nowrap;
+}
