@@ -39,6 +39,15 @@ class ContributorError extends HTTPError {
 			status: HTTPCode.NOT_FOUND,
 		});
 	}
+
+	public static ownerCannotBeAdded(): ContributorError {
+		return new ContributorError({
+			code: ContributorsErrorCode.WORKSPACE_OWNER_CANNOT_BE_ADDED_AS_CONTRIBUTOR,
+			message:
+				ContributorsErrorMessage.WORKSPACE_OWNER_CANNOT_BE_ADDED_AS_CONTRIBUTOR,
+			status: HTTPCode.CONFLICT,
+		});
+	}
 }
 
 export { ContributorError };
