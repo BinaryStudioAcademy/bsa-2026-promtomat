@@ -28,6 +28,7 @@ import {
 	computeDescriptionHash,
 	mapFallbackReasonToOutcome,
 	mapTextGenerationErrorToFallback,
+	mapToPromptCandidateDto,
 	renderMaterial,
 	selectUsedSources,
 } from "./libs/helpers/helpers.js";
@@ -290,9 +291,9 @@ class ComposedPromptService {
 			userId,
 			workspaceId,
 		});
-		const candidates = retrieved.filter(
-			(_, index) => index < this.candidateLimit,
-		);
+		const candidates = retrieved
+			.filter((_, index) => index < this.candidateLimit)
+			.map((candidate) => mapToPromptCandidateDto(candidate));
 		const [topCandidate] = candidates;
 
 		if (!topCandidate) {

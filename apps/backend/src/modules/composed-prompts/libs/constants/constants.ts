@@ -1,5 +1,4 @@
 export { DESCRIPTION_HASH_ALGORITHM } from "./description-hash-algorithm.constant.js";
-export { DISTANCE_THRESHOLD } from "./distance-threshold.constant.js";
 export { FIRST_SOURCE_NUMBER } from "./first-source-number.constant.js";
 export { GENERATION_TEMPERATURE } from "./generation-temperature.constant.js";
 export { GENERATION_TOP_P } from "./generation-top-p.constant.js";
