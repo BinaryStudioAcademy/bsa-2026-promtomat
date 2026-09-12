@@ -1,5 +1,6 @@
 export { type WorkspaceCreatePayload } from "./workspace-create-payload.type.js";
 export {
+	type WorkspaceAddContributorRequestDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,

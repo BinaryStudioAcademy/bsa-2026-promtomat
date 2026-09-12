@@ -155,6 +155,7 @@ class WorkspaceController extends BaseController {
 	 *        409:
 	 *          description: Workspace name already exists
 	 */
+
 	private async create(
 		options: APIHandlerOptions<{
 			body: WorkspaceCreateRequestDto;

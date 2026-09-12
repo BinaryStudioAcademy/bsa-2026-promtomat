@@ -1,4 +1,5 @@
 export {
+	workspaceAddContributorValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
