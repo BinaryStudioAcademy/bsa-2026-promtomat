@@ -4,6 +4,7 @@ import {
 	type DefaultValues,
 	type FieldErrors,
 	type FieldValues,
+	type FormState,
 	type UseFormClearErrors,
 	type UseFormHandleSubmit,
 	type UseFormProps,
@@ -14,6 +15,7 @@ import {
 } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import { FormValidationMode } from "~/libs/enums/enums.js";
 import { type ValidationSchema } from "~/libs/types/types.js";
 
 type Parameters<T extends FieldValues = FieldValues> = {
@@ -27,8 +29,8 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 	clearErrors: UseFormClearErrors<T>;
 	control: Control<T, null>;
 	errors: FieldErrors<T>;
+	formState: Pick<FormState<T>, "isDirty" | "isValid">;
 	handleSubmit: UseFormHandleSubmit<T>;
-	isDirty: boolean;
 	reset: UseFormReset<T>;
 	setError: UseFormSetError<T>;
 	setValue: UseFormSetValue<T>;
@@ -37,7 +39,7 @@ type ReturnValue<T extends FieldValues = FieldValues> = {
 const useAppForm = <T extends FieldValues = FieldValues>({
 	defaultValues,
 	isDisabled = false,
-	mode = "onSubmit",
+	mode = FormValidationMode.ON_SUBMIT,
 	validationSchema,
 }: Parameters<T>): ReturnValue<T> => {
 	let parameters: UseFormProps<T> = {
@@ -57,7 +59,7 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 	const {
 		clearErrors,
 		control,
-		formState: { errors, isDirty },
+		formState,
 		handleSubmit,
 		reset,
 		setError,
@@ -67,9 +69,9 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 	return {
 		clearErrors,
 		control,
-		errors,
+		errors: formState.errors,
+		formState,
 		handleSubmit,
-		isDirty,
 		reset,
 		setError,
 		setValue,

@@ -1,10 +1,25 @@
-import { type Transaction, UniqueViolationError } from "objection";
+import {
+	NotFoundError,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
 
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
+import { DatabaseTableName } from "~/libs/modules/database/database.js";
 
+import { PromptColumnName } from "../prompts/libs/enums/enums.js";
+import { WorkspaceColumnName } from "./libs/enums/enums.js";
+import {
+	type WorkspaceListItemDto,
+	type WorkspaceUpdateRequestDto,
+} from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
+
+type WorkspaceListRow = WorkspaceModel & {
+	promptCount: string;
+};
 
 class WorkspaceRepository {
 	private workspaceModel: typeof WorkspaceModel;
@@ -32,11 +47,27 @@ class WorkspaceRepository {
 		}
 	}
 
+	public async deleteById(id: number, trx: Transaction): Promise<void> {
+		await this.workspaceModel.query(trx).deleteById(id).execute();
+	}
+
 	public async findAllByUserId(
 		userId: number,
 		workspaceName?: string,
-	): Promise<WorkspaceEntity[]> {
-		const query = this.workspaceModel.query().where({ userId });
+	): Promise<WorkspaceListItemDto[]> {
+		const query = this.workspaceModel
+			.query()
+			.select(`${DatabaseTableName.WORKSPACES}.*`)
+			.count(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as promptCount`,
+			)
+			.leftJoinRelated("prompts")
+			.where(
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+				userId,
+			)
+			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
+			.orderBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`);
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);
@@ -44,7 +75,10 @@ class WorkspaceRepository {
 
 			query.where((builder) => {
 				builder
-					.whereILike("name", searchPattern)
+					.whereILike(
+						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME}`,
+						searchPattern,
+					)
 					.orWhereRaw(
 						"EXISTS (SELECT 1 FROM unnest(stack_tags) AS tag WHERE tag ILIKE ?)",
 						[searchPattern],
@@ -52,8 +86,17 @@ class WorkspaceRepository {
 			});
 		}
 
-		const workspaces = await query.execute();
-		return workspaces.map((workspace) => WorkspaceEntity.initialize(workspace));
+		const workspaces = await query.castTo<WorkspaceListRow[]>().execute();
+
+		return workspaces.map((workspace) => {
+			const workspaceDto = WorkspaceEntity.initialize(workspace).toObject();
+			const promptCount = Number(workspace.promptCount);
+
+			return {
+				...workspaceDto,
+				promptCount,
+			};
+		});
 	}
 
 	public async findByIdAndUserId(
@@ -63,6 +106,45 @@ class WorkspaceRepository {
 		const workspace = await this.workspaceModel.query().findOne({ id, userId });
 
 		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
+
+	public async findCountByUserIdWithLock(
+		userId: number,
+		trx: Transaction,
+	): Promise<number> {
+		const workspaces = await this.workspaceModel
+			.query(trx)
+			.select(WorkspaceColumnName.ID)
+			.where({ userId })
+			.orderBy(WorkspaceColumnName.ID)
+			.forUpdate()
+			.execute();
+
+		return workspaces.length;
+	}
+
+	public async update(
+		id: number,
+		payload: WorkspaceUpdateRequestDto,
+	): Promise<WorkspaceEntity> {
+		try {
+			const workspace = await this.workspaceModel
+				.query()
+				.patchAndFetchById(id, payload)
+				.throwIfNotFound();
+
+			return WorkspaceEntity.initialize(workspace);
+		} catch (error) {
+			if (error instanceof UniqueViolationError) {
+				throw WorkspaceError.nameAlreadyExists();
+			}
+
+			if (error instanceof NotFoundError) {
+				throw WorkspaceError.notFound();
+			}
+
+			throw error;
+		}
 	}
 }
 
