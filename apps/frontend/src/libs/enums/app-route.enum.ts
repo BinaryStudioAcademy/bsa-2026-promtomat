@@ -1,5 +1,6 @@
 const AppRoute = {
 	ANY: "*",
+	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
 	ROOT: "/",
 	SETTINGS: "/settings",

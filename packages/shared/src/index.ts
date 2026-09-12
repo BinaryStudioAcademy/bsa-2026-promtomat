@@ -67,6 +67,7 @@ export {
 	type PromptDto,
 	promptCreateValidationSchema,
 	PromptsApiPath,
+	PromptValidationRule,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,
