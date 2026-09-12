@@ -43,7 +43,7 @@ const SignInForm: React.FC = () => {
 	);
 
 	if (!isError && Boolean(data?.user)) {
-		return <Navigate replace to={AppRoute.ROOT} />;
+		return <Navigate replace to={AppRoute.WORKSPACES} />;
 	}
 
 	return (

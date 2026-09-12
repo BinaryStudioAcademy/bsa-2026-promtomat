@@ -4,7 +4,7 @@ import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 
 const NoAccessPage: React.FC = () => (
 	<FallbackScreen
-		action={{ label: "Back Home", url: AppRoute.ROOT }}
+		action={{ label: "Back Home", url: AppRoute.WORKSPACES }}
 		code={HTTPCode.FORBIDDEN}
 		illustrationUrl={noAccessIllustration}
 		message="Sorry, you are not allowed to access this page."

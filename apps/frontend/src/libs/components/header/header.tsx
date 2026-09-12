@@ -74,7 +74,7 @@ const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
 
 	return (
 		<header className={styles["header"]}>
-			<Link className={styles["identity"]} to={AppRoute.ROOT}>
+			<Link className={styles["identity"]} to={AppRoute.WORKSPACES}>
 				<Logo size={ControlSize.SM} />
 			</Link>
 
