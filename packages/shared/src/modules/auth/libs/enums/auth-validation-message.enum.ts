@@ -5,7 +5,7 @@ const AuthValidationMessage = {
 	EMAIL_REQUIRED: "Email is required",
 	NICKNAME_ALREADY_EXISTS: "This nickname is already taken",
 	NICKNAME_INVALID:
-		"Nickname can contain only Latin letters, numbers, and underscores",
+		"Nickname can contain only Latin letters, numbers, and underscores, and must include at least one Latin letter",
 	NICKNAME_REQUIRED: "Nickname is required",
 	NICKNAME_TOO_LONG: `Nickname must not exceed ${String(AuthValidationRule.NICKNAME_MAXIMUM_LENGTH)} characters`,
 	NICKNAME_TOO_SHORT: `Nickname must be at least ${String(AuthValidationRule.NICKNAME_MINIMUM_LENGTH)} characters`,
