@@ -18,6 +18,7 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
+	isLabelHidden?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	options: SelectOption[];
@@ -29,6 +30,7 @@ const Select = <T extends FieldValues>({
 	control,
 	descriptionId,
 	isDisabled = false,
+	isLabelHidden = false,
 	label,
 	name,
 	options,
@@ -66,7 +68,13 @@ const Select = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			<label className={styles["label"]} htmlFor={selectId}>
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isLabelHidden && "visually-hidden",
+				)}
+				htmlFor={selectId}
+			>
 				{label}
 			</label>
 			<div className={styles["control"]}>
