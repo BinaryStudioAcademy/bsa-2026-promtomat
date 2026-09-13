@@ -1,12 +1,21 @@
 import React, { useCallback, useId, useState } from "react";
+import { useController } from "react-hook-form";
 
+import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
+import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
+import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
+import {
+	type PromptItemResponseDto,
+	type PromptUpdateIntentRequestDto,
+} from "~/modules/prompts/libs/types/types.js";
+import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
+import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js";
 
 import styles from "./styles.module.css";
 
@@ -15,12 +24,32 @@ type Properties = {
 };
 
 const PromptListItem: React.FC<Properties> = ({ prompt }) => {
+	const [updateIntent] = useUpdateTaskIntentMutation();
+	const { control, handleSubmit, reset } =
+		useAppForm<PromptUpdateIntentRequestDto>({
+			defaultValues: { taskIntent: prompt.intent },
+			validationSchema: promptUpdateIntentValidationSchema,
+		});
+
+	const {
+		fieldState: { error },
+	} = useController({
+		control,
+		name: "taskIntent",
+	});
+
+	const { queryPayload } = usePromptFilters();
+
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 	const { copyToClipboard, isCopied } = useClipboard();
 
 	const contentId = useId();
+	const descriptionId = useId();
+
 	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
+
+	const errorMessage = error?.message;
 
 	const handleToggle = useCallback((): void => {
 		setIsExpanded((previous) => !previous);
@@ -53,6 +82,26 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const handleCopyClick = useCallback((): void => {
 		void copyToClipboard(prompt.body);
 	}, [copyToClipboard, prompt.body]);
+	const handleSaveUpdatedIntent = useCallback((): void => {
+		void handleSubmit(async (payload: PromptUpdateIntentRequestDto) => {
+			try {
+				await updateIntent({
+					id: prompt.id,
+					payload,
+					queryArgs: queryPayload,
+				}).unwrap();
+			} catch {
+				reset({ taskIntent: prompt.intent });
+			}
+		})();
+	}, [
+		handleSubmit,
+		updateIntent,
+		prompt.id,
+		prompt.intent,
+		reset,
+		queryPayload,
+	]);
 
 	return (
 		<div className={styles["item"]}>
@@ -71,9 +120,22 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 					{prompt.score}
 				</div>
 				<div className={styles["info"]}>
-					<span className={styles["intent"]}>{prompt.intent}</span>
-					<span className={styles["meta"]}>
-						{prompt.workspaceName || "No workspace"}
+					<InlineEdit
+						className={styles["intent"]}
+						control={control}
+						descriptionId={descriptionId}
+						name="taskIntent"
+						onSave={handleSaveUpdatedIntent}
+						size="sm"
+					/>
+					<span
+						className={
+							errorMessage
+								? getValidClasses(styles["meta"], styles["error"])
+								: styles["meta"]
+						}
+					>
+						{errorMessage ?? (prompt.workspaceName || "No workspace")}
 					</span>
 				</div>
 				<div className={styles["right-controls"]}>

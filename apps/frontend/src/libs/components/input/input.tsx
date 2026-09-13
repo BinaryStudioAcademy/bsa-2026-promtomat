@@ -15,12 +15,13 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	autoComplete?: React.HTMLInputAutoCompleteAttribute;
+	className?: string | undefined;
 	control: Control<T, null>;
-	descriptionId?: string;
+	descriptionId?: string | undefined;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
-	label: string;
+	label?: string | undefined;
 	maxLength?: number;
 	name: FieldPath<T>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
@@ -31,6 +32,7 @@ type Properties<T extends FieldValues> = {
 
 const Input = <T extends FieldValues>({
 	autoComplete,
+	className = "",
 	control,
 	descriptionId,
 	isDisabled = false,
@@ -74,20 +76,23 @@ const Input = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			<label
-				className={getValidClasses(
-					styles["label"],
-					isLabelHidden && "visually-hidden",
-				)}
-				htmlFor={inputId}
-			>
-				{label}
-				{isRequired ? (
-					<span aria-hidden="true" className={styles["required"]}>
-						*
-					</span>
-				) : null}
-			</label>
+			{label ? (
+				<label
+					className={getValidClasses(
+						styles["label"],
+						isLabelHidden && "visually-hidden",
+					)}
+					htmlFor={inputId}
+				>
+					{label}
+					{isRequired ? (
+						<span aria-hidden="true" className={styles["required"]}>
+							*
+						</span>
+					) : null}
+				</label>
+			) : null}
+
 			<div className={styles["control"]}>
 				<input
 					{...field}
@@ -100,6 +105,7 @@ const Input = <T extends FieldValues>({
 						styles[size],
 						hasError && styles["error"],
 						isPasswordField && styles["with-toggle"],
+						className,
 					)}
 					id={inputId}
 					maxLength={maxLength}

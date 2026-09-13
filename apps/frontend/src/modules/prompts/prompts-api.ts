@@ -69,9 +69,34 @@ const promptApi = baseApi
 			}),
 			updateTaskIntent: builder.mutation<
 				PromptDto,
-				{ id: number; payload: PromptUpdateIntentRequestDto }
+				{
+					id: number;
+					payload: PromptUpdateIntentRequestDto;
+					queryArgs: PromptGetQueryDto;
+				}
 			>({
-				invalidatesTags: [PromptsApiTag.PROMPT],
+				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
+					try {
+						const { data: updatedPrompt } = await queryFulfilled;
+
+						dispatch(
+							promptApi.util.updateQueryData(
+								"getPrompts",
+								queryArgs,
+								(draft) => {
+									const promptToUpdate = draft.items.find(
+										(prompt) => prompt.id === id,
+									);
+									if (promptToUpdate) {
+										Object.assign(promptToUpdate, updatedPrompt);
+									}
+								},
+							),
+						);
+					} catch {
+						// The UI will naturally handle the error
+					}
+				},
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
@@ -89,6 +114,7 @@ const {
 	useGetPromptsQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
+	useUpdateTaskIntentMutation,
 } = promptApi;
 
 export {
@@ -97,4 +123,5 @@ export {
 	useGetPromptsQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
+	useUpdateTaskIntentMutation,
 };
