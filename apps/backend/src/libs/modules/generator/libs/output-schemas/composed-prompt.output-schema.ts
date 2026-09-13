@@ -14,7 +14,12 @@ const composedPromptOutputSchema = {
 				description: "The composed prompt in markdown, written in English",
 				type: "string",
 			},
-			usedSources: { items: { type: "integer" }, type: "array" },
+			usedSources: {
+				description: "Numbers of the sources actually drawn on, at least one",
+				items: { type: "integer" },
+				minItems: 1,
+				type: "array",
+			},
 		},
 		required: ["prompt", "explanation", "usedSources"],
 		type: "object",
