@@ -52,6 +52,7 @@ type Constructor = {
 	maxTokens: number;
 	modelId: string;
 	promptService: PromptService;
+	sourceBodyMaxLength: number;
 	workspaceService: WorkspaceService;
 };
 
@@ -77,6 +78,8 @@ class ComposedPromptService {
 
 	private promptService: PromptService;
 
+	private sourceBodyMaxLength: number;
+
 	private workspaceService: WorkspaceService;
 
 	public constructor({
@@ -87,6 +90,7 @@ class ComposedPromptService {
 		maxTokens,
 		modelId,
 		promptService,
+		sourceBodyMaxLength,
 		workspaceService,
 	}: Constructor) {
 		this.candidateLimit = candidateLimit;
@@ -96,6 +100,7 @@ class ComposedPromptService {
 		this.maxTokens = maxTokens;
 		this.modelId = modelId;
 		this.promptService = promptService;
+		this.sourceBodyMaxLength = sourceBodyMaxLength;
 		this.workspaceService = workspaceService;
 	}
 
@@ -107,9 +112,7 @@ class ComposedPromptService {
 	}: Material): Promise<ComposeResult> {
 		const { description, userId, workspaceId } = payload;
 		const startedAt = Date.now();
-		const { output, reason } = await this.generate(
-			renderMaterial(candidates, description),
-		);
+		const { output, reason } = await this.generate(candidates, description);
 		const log: ModelCallLog = {
 			durationMs: Date.now() - startedAt,
 			outcome: ModelCallOutcome.COMPOSED,
@@ -135,13 +138,13 @@ class ComposedPromptService {
 
 		const { entity, isCreated } = await this.store(
 			ComposedPromptEntity.initializeNew({
-				body: output.prompt,
+				body: output.body,
 				description,
 				descriptionHash,
 				explanation: output.explanation,
 				modelId: this.modelId,
 				requesterId: userId,
-				sources: selectUsedSources(candidates, output.usedSources),
+				sources: output.sources,
 				workspaceId,
 			}),
 			workspaceId,
@@ -158,7 +161,10 @@ class ComposedPromptService {
 		return this.toComposedResult(entity, isCreated);
 	}
 
-	private async generate(material: string): Promise<GenerationOutcome> {
+	private async generate(
+		candidates: PromptCandidateDto[],
+		description: string,
+	): Promise<GenerationOutcome> {
 		try {
 			const output = await this.generator.generate({
 				config: {
@@ -166,19 +172,33 @@ class ComposedPromptService {
 					temperature: GENERATION_TEMPERATURE,
 					topP: GENERATION_TOP_P,
 				},
-				message: material,
+				message: renderMaterial({
+					candidates,
+					description,
+					sourceBodyMaxLength: this.sourceBodyMaxLength,
+				}),
 				schemaKey: SchemaKey.COMPOSED_PROMPT,
 				systemPrompt: SYSTEM_PROMPT,
 			});
+			const sources = selectUsedSources(candidates, output.usedSources);
+			const [firstSource] = sources;
 
 			if (
+				!firstSource ||
 				!checkIsNonEmptyString(output.prompt) ||
 				!checkIsNonEmptyString(output.explanation)
 			) {
 				return { output: null, reason: FallbackReason.UNUSABLE };
 			}
 
-			return { output, reason: null };
+			return {
+				output: {
+					body: output.prompt,
+					explanation: output.explanation,
+					sources,
+				},
+				reason: null,
+			};
 		} catch (error) {
 			if (!(error instanceof TextGenerationError)) {
 				throw error;

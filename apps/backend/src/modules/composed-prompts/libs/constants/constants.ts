@@ -8,4 +8,6 @@ export { PROMPT_RELATION } from "./prompt-relation.constant.js";
 export { SOURCES_GRAPH } from "./sources-graph.constant.js";
 export { SOURCES_RELATION } from "./sources-relation.constant.js";
 export { SYSTEM_PROMPT } from "./system-prompt.constant.js";
+export { TRAILING_HIGH_SURROGATE_PATTERN } from "./trailing-high-surrogate-pattern.constant.js";
+export { TRUNCATION_MARKER } from "./truncation-marker.constant.js";
 export { WHITESPACE_RUN_PATTERN } from "./whitespace-run-pattern.constant.js";

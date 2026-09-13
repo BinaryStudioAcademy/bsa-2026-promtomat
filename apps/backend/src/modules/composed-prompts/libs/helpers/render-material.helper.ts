@@ -3,22 +3,36 @@ import {
 	LANGUAGE_REMINDER,
 } from "../constants/constants.js";
 import { type PromptCandidateDto } from "../types/types.js";
+import { truncateSourceBody } from "./truncate-source-body.helper.js";
 
-const renderSource = (candidate: PromptCandidateDto, index: number): string =>
+type Options = {
+	candidates: PromptCandidateDto[];
+	description: string;
+	sourceBodyMaxLength: number;
+};
+
+const renderSource = (
+	candidate: PromptCandidateDto,
+	index: number,
+	sourceBodyMaxLength: number,
+): string =>
 	[
 		`Source ${(index + FIRST_SOURCE_NUMBER).toString()}`,
 		`Task intent: ${candidate.taskIntent}`,
 		`Efficiency score: ${candidate.efficiencyScore.toString()}/10`,
 		"Prompt:",
-		candidate.promptBody,
+		truncateSourceBody(candidate.promptBody, sourceBodyMaxLength),
 	].join("\n");
 
-const renderMaterial = (
-	candidates: PromptCandidateDto[],
-	description: string,
-): string =>
+const renderMaterial = ({
+	candidates,
+	description,
+	sourceBodyMaxLength,
+}: Options): string =>
 	[
-		...candidates.map((candidate, index) => renderSource(candidate, index)),
+		...candidates.map((candidate, index) =>
+			renderSource(candidate, index, sourceBodyMaxLength),
+		),
 		`Task description:\n${description}`,
 		LANGUAGE_REMINDER,
 	].join("\n\n");

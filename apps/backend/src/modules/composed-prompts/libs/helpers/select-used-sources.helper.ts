@@ -16,25 +16,22 @@ const selectUsedSources = (
 				sourceNumber <= candidates.length,
 		),
 	);
-	const [firstSelected] = selected;
-	const sourceNumbers =
-		firstSelected === undefined
-			? candidates.map((_, index) => index + FIRST_SOURCE_NUMBER)
-			: [...selected].toSorted((left, right) => left - right);
 
-	return sourceNumbers.flatMap((sourceNumber) => {
-		const candidate = candidates.at(sourceNumber - FIRST_SOURCE_NUMBER);
+	return [...selected]
+		.toSorted((left, right) => left - right)
+		.flatMap((sourceNumber) => {
+			const candidate = candidates.at(sourceNumber - FIRST_SOURCE_NUMBER);
 
-		return candidate
-			? [
-					{
-						promptId: candidate.promptId,
-						rank: sourceNumber,
-						taskIntent: candidate.taskIntent,
-					},
-				]
-			: [];
-	});
+			return candidate
+				? [
+						{
+							promptId: candidate.promptId,
+							rank: sourceNumber,
+							taskIntent: candidate.taskIntent,
+						},
+					]
+				: [];
+		});
 };
 
 export { selectUsedSources };

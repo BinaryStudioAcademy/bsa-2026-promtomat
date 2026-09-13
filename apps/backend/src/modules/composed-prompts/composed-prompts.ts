@@ -20,6 +20,7 @@ const composedPromptService = new ComposedPromptService({
 	maxTokens: config.ENV.GENERATION.MAX_TOKENS,
 	modelId: config.ENV.BEDROCK.MODEL.ID,
 	promptService,
+	sourceBodyMaxLength: config.ENV.GENERATION.SOURCE_BODY_MAX_LENGTH,
 	workspaceService,
 });
 

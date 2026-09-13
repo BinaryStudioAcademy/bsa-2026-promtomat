@@ -11,8 +11,7 @@ const mapTextGenerationErrorToFallback = (
 	error: TextGenerationError,
 ): FallbackMapping => {
 	switch (error.code) {
-		case TextGenerationErrorCode.OUTPUT_UNUSABLE:
-		case TextGenerationErrorCode.VALIDATION_FAILED: {
+		case TextGenerationErrorCode.OUTPUT_UNUSABLE: {
 			return { isConfigurationFault: false, reason: FallbackReason.UNUSABLE };
 		}
 

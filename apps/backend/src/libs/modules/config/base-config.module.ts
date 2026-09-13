@@ -177,6 +177,12 @@ class BaseConfig implements Config {
 					env: "GENERATION_MAX_TOKENS",
 					format: ConfigFormat.POSITIVE_INTEGER,
 				},
+				SOURCE_BODY_MAX_LENGTH: {
+					default: null,
+					doc: "Characters of one source prompt body sent to the model; longer bodies are truncated",
+					env: "GENERATION_SOURCE_BODY_MAX_LENGTH",
+					format: ConfigFormat.POSITIVE_INTEGER,
+				},
 			},
 			HASHING: {
 				SALT_LENGTH: {
