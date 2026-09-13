@@ -1,6 +1,6 @@
 import { type Format } from "convict";
 
-import { ConfigFormat } from "../enums/enums.js";
+import { ConfigFormat, ConfigFormatMessage } from "../enums/enums.js";
 
 const MINIMUM_POSITIVE_INTEGER = 1;
 
@@ -13,7 +13,7 @@ const positiveIntegerFormat: Format = {
 			!Number.isSafeInteger(value) ||
 			value < MINIMUM_POSITIVE_INTEGER
 		) {
-			throw new TypeError("must be a positive integer");
+			throw new TypeError(ConfigFormatMessage.POSITIVE_INTEGER);
 		}
 	},
 };
