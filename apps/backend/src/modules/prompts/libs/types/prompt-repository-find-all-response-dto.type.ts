@@ -1,8 +1,8 @@
-import { type PromptModel } from "../../prompt.model.js";
+import { type PromptRepositoryItem } from "./prompt-repository-item.type.js";
 
 type PromptRepositoryFindAllResponseDto = {
 	averageScore: null | number;
-	items: PromptModel[];
+	items: PromptRepositoryItem[];
 	page: number;
 	pageSize: number;
 	totalCount: number;

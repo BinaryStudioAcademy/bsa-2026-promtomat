@@ -163,7 +163,9 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.ROOT,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceAccessHook(this.workspaceService, {
+				isWorkspaceOptional: true,
+			}),
 			validation: {
 				query: promptGetQueryValidationSchema,
 			},

@@ -1,7 +1,7 @@
 const DEFAULT_PROMPT_FILTERS_VALUES = {
 	score: "",
 	search: "",
-	workspaceId: "all",
+	workspaceId: null,
 };
 
 export { DEFAULT_PROMPT_FILTERS_VALUES };
