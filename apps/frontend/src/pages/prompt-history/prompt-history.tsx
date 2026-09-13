@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
+import { PaginationValue } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptsQuery } from "~/modules/prompts/prompts-api.js";
@@ -18,18 +19,30 @@ const PromptHistory: React.FC = () => {
 	const { control, handlePageChange, handleScoreChange, queryPayload } =
 		usePromptFilters();
 
+	const [items, setItems] = useState<PromptItemResponseDto[]>([]);
+	const [previousData, setPreviousData] = useState<unknown>(null);
+
 	const { data: promptsData, isFetching } = useGetPromptsQuery(queryPayload);
 	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
 
+	if (promptsData && promptsData !== previousData) {
+		setPreviousData(promptsData);
+
+		if (queryPayload.page === PaginationValue.DEFAULT_PAGE) {
+			setItems(promptsData.items);
+		} else {
+			setItems((previous) => [...previous, ...promptsData.items]);
+		}
+	}
+
 	const workspaceOptions = [
-		{ label: "All Workspaces", value: "all" },
+		{ label: "All Workspaces", value: "" },
 		...workspaces.map(({ id, name }) => ({
 			label: name,
 			value: id,
 		})),
 	];
 
-	const items = promptsData?.items ?? [];
 	const totalPrompts = promptsData?.totalCount ?? ZERO_VALUE;
 	const averageScore = promptsData?.averageScore ?? ZERO_VALUE;
 	const hasMore = items.length < totalPrompts;
@@ -83,9 +96,7 @@ const PromptHistory: React.FC = () => {
 							No prompts match the current filters.
 						</div>
 					) : (
-						items.map((item: PromptItemResponseDto) => (
-							<PromptListItem key={item.id} prompt={item} />
-						))
+						items.map((item) => <PromptListItem key={item.id} prompt={item} />)
 					)}
 				</div>
 
