@@ -3,4 +3,7 @@ export {
 	type PromptCreateRequestDto,
 	type PromptSearchResult,
 } from "./libs/types/types.js";
-export { promptCreateValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+export {
+	promptCreateValidationSchema,
+	promptUpdateIntentValidationSchema,
+} from "./libs/validation-schemas/validation-schemas.js";

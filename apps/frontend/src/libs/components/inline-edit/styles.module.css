@@ -1,0 +1,9 @@
+.preview {
+	display: flex;
+	align-items: center;
+	width: max-content;
+	font-family: inherit;
+	cursor: pointer;
+	border: var(--border-width-hairline) solid transparent;
+	border-radius: var(--radius-md);
+}
