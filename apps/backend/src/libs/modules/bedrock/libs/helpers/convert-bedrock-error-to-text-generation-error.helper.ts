@@ -1,7 +1,9 @@
 import {
 	AccessDeniedException,
 	InternalServerException,
+	ModelErrorException,
 	ModelNotReadyException,
+	ModelStreamErrorException,
 	ModelTimeoutException,
 	ResourceNotFoundException,
 	ServiceQuotaExceededException,
@@ -19,7 +21,9 @@ const convertBedrockErrorToTextGenerationError = (
 	if (
 		checkIsTimeoutError(error) ||
 		error instanceof InternalServerException ||
+		error instanceof ModelErrorException ||
 		error instanceof ModelNotReadyException ||
+		error instanceof ModelStreamErrorException ||
 		error instanceof ModelTimeoutException ||
 		error instanceof ServiceUnavailableException ||
 		error instanceof ThrottlingException
