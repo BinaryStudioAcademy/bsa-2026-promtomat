@@ -1,7 +1,9 @@
+import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
+	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
@@ -42,6 +44,18 @@ class PromptService {
 		void this.promptEmbeddingService.embedForPrompt(promptDto);
 
 		return promptDto;
+	}
+
+	public findCandidates({
+		description,
+		limit,
+		workspaceId,
+	}: PromptCandidateQuery): Promise<NearestPrompt[]> {
+		return this.promptEmbeddingService.findNearestByQuery(
+			description,
+			limit,
+			workspaceId,
+		);
 	}
 
 	public async findProgress(

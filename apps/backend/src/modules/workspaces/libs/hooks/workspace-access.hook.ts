@@ -13,9 +13,8 @@ const workspaceAccessHook = (
 		}
 
 		const routeParameters = request.params as { workspaceId?: number };
-		const requestBody = request.body as null | { workspaceId?: number };
+		const requestBody = request.body as undefined | { workspaceId?: number };
 		const requestQuery = request.query as undefined | { workspaceId?: number };
-
 		const workspaceId =
 			routeParameters.workspaceId ??
 			requestBody?.workspaceId ??

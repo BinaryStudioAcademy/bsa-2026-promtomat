@@ -30,6 +30,10 @@ const Workspaces = loadPage(
 	() => import("~/pages/workspaces/workspaces.js"),
 	"Workspaces",
 );
+const SmartSearch = loadPage(
+	() => import("~/pages/smart-search/smart-search.js"),
+	"SmartSearch",
+);
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -49,6 +53,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.SETTINGS,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<SmartSearch />
+									</PrivateRoute>
+								),
+								path: AppRoute.SMART_SEARCH,
 							},
 							{
 								element: (
