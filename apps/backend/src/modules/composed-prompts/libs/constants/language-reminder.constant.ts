@@ -1,4 +1,4 @@
 const LANGUAGE_REMINDER =
-	"Write the prompt and the explanation in the language of the task description above.";
+	"Write both the prompt and the explanation in English, whatever language the task description and the sources use.";
 
 export { LANGUAGE_REMINDER };

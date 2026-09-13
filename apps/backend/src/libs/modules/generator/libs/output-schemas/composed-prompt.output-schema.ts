@@ -5,8 +5,15 @@ const composedPromptOutputSchema = {
 	value: JSON.stringify({
 		additionalProperties: false,
 		properties: {
-			explanation: { type: "string" },
-			prompt: { type: "string" },
+			explanation: {
+				description:
+					"Plain prose in English, saying what was taken from which source by its number",
+				type: "string",
+			},
+			prompt: {
+				description: "The composed prompt in markdown, written in English",
+				type: "string",
+			},
 			usedSources: { items: { type: "integer" }, type: "array" },
 		},
 		required: ["prompt", "explanation", "usedSources"],
