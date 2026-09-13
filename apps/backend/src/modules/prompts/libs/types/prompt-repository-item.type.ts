@@ -4,6 +4,8 @@ type PromptRepositoryItem = {
 	id: number;
 	promptBody: string;
 	taskIntent: string;
+	updatedAt: string;
+	userId: number;
 	workspace: {
 		name: string;
 	};

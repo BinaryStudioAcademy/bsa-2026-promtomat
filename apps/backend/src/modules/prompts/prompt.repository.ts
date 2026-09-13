@@ -27,6 +27,8 @@ class PromptRepository {
 			.clone()
 			.clearSelect()
 			.clearOrder()
+			.clear("limit")
+			.clear("offset")
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
 			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
 			.castTo<PromptAggregateRow[]>()

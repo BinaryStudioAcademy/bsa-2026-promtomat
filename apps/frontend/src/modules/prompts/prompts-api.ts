@@ -45,7 +45,7 @@ const promptApi = baseApi
 				providesTags: [PromptsApiTag.PROMPT],
 				query: (queryPayload) => ({
 					params: queryPayload,
-					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
+					url: APIPath.PROMPTS,
 				}),
 			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
