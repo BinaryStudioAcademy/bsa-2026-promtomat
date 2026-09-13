@@ -34,9 +34,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									},
 									{
 										lazy: async () => {
-											const pageModule = await import(
-												"~/pages/no-access/no-access.js"
-											);
+											const pageModule =
+												await import("~/pages/no-access/no-access.js");
 
 											return { Component: pageModule.NoAccessPage };
 										},
@@ -44,9 +43,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									},
 									{
 										lazy: async () => {
-											const pageModule = await import(
-												"~/pages/settings/settings.js"
-											);
+											const pageModule =
+												await import("~/pages/settings/settings.js");
 
 											return { Component: pageModule.SettingsPage };
 										},
@@ -54,9 +52,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									},
 									{
 										lazy: async () => {
-											const pageModule = await import(
-												"~/pages/smart-search/smart-search.js"
-											);
+											const pageModule =
+												await import("~/pages/smart-search/smart-search.js");
 
 											return { Component: pageModule.SmartSearch };
 										},
@@ -64,9 +61,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									},
 									{
 										lazy: async () => {
-											const pageModule = await import(
-												"~/pages/training/training.js"
-											);
+											const pageModule =
+												await import("~/pages/training/training.js");
 
 											return { Component: pageModule.Training };
 										},
@@ -74,9 +70,8 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									},
 									{
 										lazy: async () => {
-											const pageModule = await import(
-												"~/pages/workspaces/workspaces.js"
-											);
+											const pageModule =
+												await import("~/pages/workspaces/workspaces.js");
 
 											return { Component: pageModule.Workspaces };
 										},
