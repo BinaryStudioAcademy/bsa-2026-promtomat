@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from "react";
-import { useController } from "react-hook-form";
+import { useCallback, useState } from "react";
+import { useController, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
@@ -30,35 +30,38 @@ type Properties = {
 const STACK_TAGS = "stackTags";
 
 const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
-	const [createWorkspace, { error, isLoading }] = useCreateWorkspaceMutation();
+	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
+	const [conflict, setConflict] = useState<
+		undefined | { message: string; name: string }
+	>(undefined);
+	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
+		defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
+		validationSchema: workspaceCreationValidationSchema,
+	});
 
-	const { control, handleSubmit, setError } =
-		useAppForm<WorkspaceCreateRequestDto>({
-			defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
-			validationSchema: workspaceCreationValidationSchema,
-		});
+	const workspaceName = useWatch({ control, name: "name" });
+
+	const errorField =
+		conflict?.name === workspaceName ? conflict.message : undefined;
 
 	const { field: stackTagsField } = useController({
 		control,
 		name: STACK_TAGS,
 	});
 
-	useEffect(() => {
-		if (!isServerError(error)) {
-			return;
-		}
-
-		if (error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS) {
-			setError("name", { type: "server" });
-		}
-	}, [error, setError]);
-
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (payload: WorkspaceCreateRequestDto) => {
-				const { data } = await createWorkspace(payload);
+				const { data, error } = await createWorkspace(payload);
 				if (data) {
 					onClose();
+				}
+
+				if (
+					isServerError(error) &&
+					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
+				) {
+					setConflict({ message: error.message, name: payload.name });
 				}
 			})(event);
 		},
@@ -69,7 +72,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		<>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
-					<FormAlert error={error} />
+					{errorField && <FormAlert message={errorField} />}
 					<Input
 						control={control}
 						label="Workspace name"
