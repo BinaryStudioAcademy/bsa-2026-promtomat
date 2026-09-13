@@ -1,10 +1,15 @@
+import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
+import { PromptProgress } from "./libs/enums/enums.js";
 import {
+	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptFindAllOptions,
 	type PromptGetAllResponseDto,
-	type PromptGetQueryDto,
+	type PromptGetRecentResponseDto,
+	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -42,10 +47,9 @@ class PromptService {
 		return promptDto;
 	}
 
-	public async findAll(options: {
-		query: PromptGetQueryDto;
-		userId: number;
-	}): Promise<PromptGetAllResponseDto> {
+	public async findAll(
+		options: PromptFindAllOptions,
+	): Promise<PromptGetAllResponseDto> {
 		const { averageScore, items, page, pageSize, totalCount } =
 			await this.promptRepository.findAll(options);
 
@@ -64,6 +68,41 @@ class PromptService {
 			pageSize,
 			totalCount,
 		};
+	}
+
+	public findCandidates({
+		description,
+		limit,
+		workspaceId,
+	}: PromptCandidateQuery): Promise<NearestPrompt[]> {
+		return this.promptEmbeddingService.findNearestByQuery(
+			description,
+			limit,
+			workspaceId,
+		);
+	}
+
+	public async findProgress(
+		workspaceId: number,
+	): Promise<PromptProgressResponseDto> {
+		const count =
+			await this.promptRepository.findCountByWorkspaceId(workspaceId);
+
+		return {
+			count,
+			target: PromptProgress.TARGET_COUNT,
+		};
+	}
+
+	public async findRecent(
+		workspaceId: number,
+	): Promise<PromptGetRecentResponseDto> {
+		const items = await this.promptRepository.findRecentByWorkspaceId(
+			workspaceId,
+			PromptProgress.RECENT_LIMIT,
+		);
+
+		return { items };
 	}
 
 	public async findUserPromptSummary(userId: number): Promise<{

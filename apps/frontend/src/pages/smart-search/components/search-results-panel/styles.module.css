@@ -1,0 +1,7 @@
+.panel {
+	overflow: hidden;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-xl);
+	box-shadow: 0 var(--space-16) var(--space-32) rgb(0 0 0 / 50%);
+}

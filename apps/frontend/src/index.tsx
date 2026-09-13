@@ -15,6 +15,7 @@ import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { Profile } from "~/pages/profile/profile.js";
 import { PromptHistory } from "~/pages/prompt-history/prompt-history.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
+import { SmartSearch } from "~/pages/smart-search/smart-search.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
@@ -32,6 +33,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.SETTINGS,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<SmartSearch />
+									</PrivateRoute>
+								),
+								path: AppRoute.SMART_SEARCH,
 							},
 							{
 								element: (

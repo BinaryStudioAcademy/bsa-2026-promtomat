@@ -3,8 +3,6 @@ import { useController } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
-import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
-import { Loader } from "~/libs/components/loader/loader.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import {
 	ButtonVariant,
@@ -18,8 +16,9 @@ import {
 	workspaceCreationValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
+import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import styles from "../../styles.module.css";
 import { DEFAULT_WORKSPACE_CREATE_PAYLOAD } from "./libs/constants/constants.js";
-import styles from "./styles.module.css";
 
 type Properties = {
 	onClose: () => void;
@@ -54,23 +53,24 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 
 	return (
 		<>
-			{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<Input
-					control={control}
-					label="Workspace name"
-					name="name"
-					placeholder="Name..."
-				/>
-				<SearchableSelect
-					control={control}
-					isDisabled={false}
-					label="Add tags"
-					name={stackTagsField.name}
-					placeholder="Enter tags"
-					size={ControlSize.MD}
-					valuesDictionary={Object.values(TechStackTechDictionary)}
-				/>
+				<div className={styles["fields"]}>
+					<Input
+						control={control}
+						label="Workspace name"
+						name="name"
+						placeholder="Name..."
+					/>
+					<SearchableSelect
+						control={control}
+						isDisabled={isLoading}
+						label="Add tags"
+						name={stackTagsField.name}
+						placeholder="Enter tags"
+						size={ControlSize.MD}
+						valuesDictionary={Object.values(TechStackTechDictionary)}
+					/>
+				</div>
 				<div className={styles["footer"]}>
 					<Button
 						isDisabled={isLoading}
@@ -81,8 +81,8 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						variant={ButtonVariant.SECONDARY}
 					/>
 					<Button
-						isDisabled={isLoading}
-						label="Create"
+						isLoading={isLoading}
+						label={WorkspaceFormMessage.CREATE}
 						size={ControlSize.MD}
 						type="submit"
 					/>

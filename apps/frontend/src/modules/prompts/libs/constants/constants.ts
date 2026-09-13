@@ -1,6 +1,5 @@
-const DEFAULT_LIMIT = 10;
-const DEFAULT_PAGE = 1;
 const PAGE_INCREMENT = 1;
 const SEARCH_DELAY_MS = 300;
 
-export { DEFAULT_LIMIT, DEFAULT_PAGE, PAGE_INCREMENT, SEARCH_DELAY_MS };
+export { DEFAULT_PROMPT_FILTERS_VALUES } from "./default-prompt-filters.constant.js";
+export { PAGE_INCREMENT, SEARCH_DELAY_MS };

@@ -73,7 +73,7 @@ class AuthController extends BaseController {
 	 *           enum:
 	 *             - AUTH_EMAIL_ALREADY_EXISTS
 	 *             - AUTH_INVALID_CREDENTIALS
-	 * 			   - AUTH_NICKNAME_ALREADY_EXISTS
+	 *             - AUTH_NICKNAME_ALREADY_EXISTS
 	 *             - FORBIDDEN
 	 *             - INTERNAL_SERVER_ERROR
 	 *             - NOT_FOUND

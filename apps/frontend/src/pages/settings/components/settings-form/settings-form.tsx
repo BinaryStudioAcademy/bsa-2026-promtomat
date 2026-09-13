@@ -31,11 +31,15 @@ type Properties = {
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [updateProfile, { error, isLoading, isSuccess }] =
 		useUpdateProfileMutation();
-	const { control, handleSubmit, isDirty, reset } =
-		useAppForm<SettingsFormValues>({
-			defaultValues: getSettingsFormValues(user),
-			validationSchema: updateProfileValidationSchema,
-		});
+	const {
+		control,
+		formState: { isDirty },
+		handleSubmit,
+		reset,
+	} = useAppForm<SettingsFormValues>({
+		defaultValues: getSettingsFormValues(user),
+		validationSchema: updateProfileValidationSchema,
+	});
 
 	const isSaveDisabled = isLoading || !isDirty;
 

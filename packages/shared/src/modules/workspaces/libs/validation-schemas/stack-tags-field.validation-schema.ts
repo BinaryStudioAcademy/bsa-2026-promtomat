@@ -8,8 +8,6 @@ import {
 
 const stackTagsField = z
 	.array(TechStackTagSchema)
-	.max(MAX_TAGS_COUNT, { message: TagsErrorMessages.MAX_TAGS_ERROR_MESSAGE })
-	.optional()
-	.default([]);
+	.max(MAX_TAGS_COUNT, { message: TagsErrorMessages.MAX_TAGS_ERROR_MESSAGE });
 
 export { stackTagsField };

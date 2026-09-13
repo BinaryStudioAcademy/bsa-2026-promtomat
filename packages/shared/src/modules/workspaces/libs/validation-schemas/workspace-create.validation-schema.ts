@@ -6,7 +6,7 @@ import { visibilityField } from "./visibility-field.validation-schema.js";
 
 const workspaceCreation = z.object({
 	name: workspaceNameField,
-	stackTags: stackTagsField,
+	stackTags: stackTagsField.optional().default([]),
 	visibility: visibilityField,
 });
 

@@ -2,3 +2,6 @@ export { type WorkspaceCreateRequestDto } from "./workspace-create-request-dto.t
 export { type WorkspaceDto } from "./workspace-dto.type.js";
 export { type WorkspaceGetAllRequestDto } from "./workspace-get-all-request-dto.type.js";
 export { type WorkspaceGetAllResponseDto } from "./workspace-get-all-response-dto.type.js";
+export { type WorkspaceListItemDto } from "./workspace-list-item-dto.type.js";
+export { type WorkspaceRouteParametersDto } from "./workspace-route-parameters-dto.type.js";
+export { type WorkspaceUpdateRequestDto } from "./workspace-update-request-dto.type.js";

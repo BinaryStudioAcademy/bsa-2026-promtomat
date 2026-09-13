@@ -1,5 +1,6 @@
 .link {
 	color: var(--text-accent);
+	text-decoration: none;
 	text-underline-offset: 2px;
 	transition: color var(--motion-duration-fast) var(--motion-ease-standard);
 }
@@ -17,5 +18,4 @@
 .active {
 	font-weight: 600;
 	color: var(--text-strong);
-	text-decoration: none;
 }

@@ -48,7 +48,7 @@ const SignInForm: React.FC = () => {
 
 	return (
 		<>
-			<h1 className={styles["heading"]}>Log into your account</h1>
+			<h1 className={styles["heading"]}>Sign In</h1>
 			{hasFieldErrors ? null : <FormAlert error={error} />}
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
@@ -69,13 +69,16 @@ const SignInForm: React.FC = () => {
 				</div>
 				<Button
 					isDisabled={isLoading}
-					label="Sign in"
+					label={isLoading ? "Signing in..." : "Sign in"}
 					size={ControlSize.LG}
 					type="submit"
 				/>
 			</form>
 			<p className={styles["footer"]}>
-				Don&apos;t have an account? <Link to={AppRoute.SIGN_UP}>Sign up</Link>
+				Don&apos;t have an account?{" "}
+				<Link className={styles["inline-link"]} to={AppRoute.SIGN_UP}>
+					Sign up
+				</Link>
 			</p>
 		</>
 	);

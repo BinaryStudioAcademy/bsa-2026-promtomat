@@ -1,11 +1,10 @@
 import { z } from "zod";
 
-import { PromptScope, PromptValidationRule } from "../enums/enums.js";
+import { PromptValidationRule } from "../enums/enums.js";
 
 const promptGetQuery = z.object({
 	limit: z.coerce.number().int().positive().optional(),
 	page: z.coerce.number().int().positive().optional(),
-	scope: z.enum([PromptScope.MINE, PromptScope.ALL]),
 	score: z.coerce
 		.number()
 		.int()

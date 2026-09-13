@@ -1,13 +1,17 @@
+export { EMPTY_LENGTH } from "./libs/constants/constants.js";
 export {
 	APIPath,
 	AppEnvironment,
 	ContentType,
 	ErrorCode,
+	PaginationValue,
+	SortOrder,
 } from "./libs/enums/enums.js";
 export {
 	ApplicationError,
 	AuthError,
 	HTTPError,
+	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
@@ -50,11 +54,21 @@ export {
 	type PromptDto,
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
+	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
+	type PromptProgressResponseDto,
+	type PromptRecentDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptSearchResult,
+	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
+	PromptProgress,
 	PromptsApiPath,
-	PromptScope,
+	PromptsErrorMessage,
+	promptWorkspaceQueryValidationSchema,
+	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,
@@ -72,6 +86,9 @@ export {
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
+	type WorkspaceRouteParametersDto,
+	type WorkspaceUpdateRequestDto,
 	checkIsValidTechStackTag,
 	FIRST_ELEMENT_INDEX,
 	MAX_TAGS_COUNT,
@@ -82,7 +99,10 @@ export {
 	TechStackTechDictionary,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
+	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
+	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	workspaceUpdateValidationSchema,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

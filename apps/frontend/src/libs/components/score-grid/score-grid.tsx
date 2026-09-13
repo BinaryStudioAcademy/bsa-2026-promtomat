@@ -10,35 +10,58 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	isDisabled?: boolean;
+	isRadio?: boolean;
 	label: string;
 	onScoreSelect: (score: number) => () => void;
+	selectedScore?: null | number;
 };
 
 const ScoreGrid: React.FC<Properties> = ({
 	isDisabled = false,
+	isRadio = false,
 	label,
 	onScoreSelect,
+	selectedScore,
 }) => {
-	const [activeScore, setActiveScore] = useState<null | number>(null);
+	const [hoveredScore, setHoveredScore] = useState<null | number>(null);
+	const [internalScore, setInternalScore] = useState<null | number>(null);
 
 	const inputId = useId();
 
-	const handleActive = useCallback((score: number) => {
+	const currentSelectedScore =
+		selectedScore === undefined ? internalScore : selectedScore;
+	const handleHover = useCallback((score: number) => {
 		return (): void => {
-			setActiveScore(score);
+			setHoveredScore(score);
 		};
 	}, []);
 
-	const clearActive = useCallback((): void => {
-		setActiveScore(null);
+	const clearHover = useCallback((): void => {
+		setHoveredScore(null);
 	}, []);
 
-	const activeDescription = activeScore
-		? ScoreDescriptions[activeScore]
+	const handleScoreClick = useCallback(
+		(score: number) => {
+			return (): void => {
+				if (isRadio && selectedScore === undefined) {
+					setInternalScore((previous) => (previous === score ? null : score));
+				}
+				onScoreSelect(score)();
+			};
+		},
+		[isRadio, onScoreSelect, selectedScore],
+	);
+
+	const displayedScore = isRadio
+		? (hoveredScore ?? currentSelectedScore)
+		: hoveredScore;
+
+	const activeDescription = displayedScore
+		? ScoreDescriptions[displayedScore]
 		: "Hover or focus a score to see its evaluation criteria";
 
-	const messageColorClass = activeScore
-		? styles[getScoreColor(activeScore)]
+	const messageColorClass = displayedScore
+		? styles[getScoreColor(displayedScore)]
 		: "";
 
 	return (
@@ -48,21 +71,28 @@ const ScoreGrid: React.FC<Properties> = ({
 			</label>
 			<div className={styles["control"]}>
 				{SCORE_RANGE.map((score) => {
-					const isActive = activeScore === score;
+					const isHovered = hoveredScore === score;
+					const isSelected = isRadio && currentSelectedScore === score;
+					const isActive = isHovered || isSelected;
+
 					const buttonColorClass = isActive
 						? getScoreColor(score)
 						: "secondary";
+
 					return (
 						<Button
-							className={styles["score-button"]}
+							className={getValidClasses(
+								styles["score-button"],
+								isSelected && styles["score-button--selected"],
+							)}
 							isDisabled={isDisabled}
 							key={score}
 							label={String(score)}
-							onBlur={clearActive}
-							onClick={onScoreSelect(score)}
-							onFocus={handleActive(score)}
-							onMouseEnter={handleActive(score)}
-							onMouseLeave={clearActive}
+							onBlur={clearHover}
+							onClick={handleScoreClick(score)}
+							onFocus={handleHover(score)}
+							onMouseEnter={handleHover(score)}
+							onMouseLeave={clearHover}
 							size="lg"
 							type="button"
 							variant={buttonColorClass}
