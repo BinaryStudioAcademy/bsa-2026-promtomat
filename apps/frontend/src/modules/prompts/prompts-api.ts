@@ -8,6 +8,8 @@ import {
 	type PromptDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
@@ -45,6 +47,15 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			searchPrompts: builder.query<
+				PromptSearchResponseDto,
+				PromptSearchRequestDto
+			>({
+				query: (queryPayload) => ({
+					params: queryPayload,
+					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
+				}),
+			}),
 		}),
 	});
 
@@ -52,10 +63,12 @@ const {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useRecordPromptMutation,
+	useSearchPromptsQuery,
 } = promptApi;
 
 export {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useRecordPromptMutation,
+	useSearchPromptsQuery,
 };
