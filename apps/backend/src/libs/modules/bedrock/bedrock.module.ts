@@ -7,6 +7,7 @@ import {
 import {
 	DEFAULT_CONVERSATION_ROLE,
 	FIRST_CONTENT_INDEX,
+	REQUEST_MAX_ATTEMPTS,
 	SCHEMA_FORMAT_TYPE,
 } from "./libs/constants/constants.js";
 import {
@@ -32,6 +33,7 @@ class Bedrock {
 
 	public constructor({ modelId, region, requestTimeoutMs }: Constructor) {
 		this.client = new BedrockRuntimeClient({
+			maxAttempts: REQUEST_MAX_ATTEMPTS,
 			region,
 			requestHandler: {
 				requestTimeout: requestTimeoutMs,
