@@ -1,13 +1,14 @@
-import { PaginationValue } from "@promptomat/shared";
-
+import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import { ROUND_FACTOR, ZERO_VALUE } from "./libs/constants/constants.js";
+import { PaginationValue } from "./libs/enums/enums.js";
 import {
 	type PromptAggregateRow,
 	type PromptFindAllOptions,
+	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 } from "./libs/types/types.js";
 
@@ -89,6 +90,23 @@ class PromptRepository {
 			pageSize: limit,
 			totalCount,
 		};
+	}
+
+	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
+		return await this.promptModel.query().where({ workspaceId }).resultSize();
+	}
+
+	public async findRecentByWorkspaceId(
+		workspaceId: number,
+		limit: number,
+	): Promise<PromptRecentDto[]> {
+		return await this.promptModel
+			.query()
+			.select("efficiencyScore", "id", "taskIntent")
+			.where({ workspaceId })
+			.orderBy("createdAt", SortOrder.DESC)
+			.limit(limit)
+			.execute();
 	}
 
 	public async findUserPromptSummary(

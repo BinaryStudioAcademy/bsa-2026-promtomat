@@ -1,0 +1,3 @@
+const MAX_EFFICIENCY_SCORE = 10;
+
+export { MAX_EFFICIENCY_SCORE };

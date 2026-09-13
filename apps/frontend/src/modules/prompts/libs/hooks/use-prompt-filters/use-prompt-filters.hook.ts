@@ -1,4 +1,3 @@
-import { PaginationValue } from "@promptomat/shared";
 import { useCallback, useEffect, useState } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
@@ -10,6 +9,8 @@ import {
 	SEARCH_DELAY_MS,
 } from "~/modules/prompts/libs/constants/constants.js";
 import { type PromptGetQueryDto } from "~/modules/prompts/libs/types/types.js";
+
+import { PaginationValue } from "../../enums/enums.js";
 
 type PromptFiltersFormValues = {
 	score: number | string;

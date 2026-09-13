@@ -8,6 +8,11 @@ import {
 	type PromptDto,
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
+	type PromptGetRecentResponseDto,
+	type PromptProgressResponseDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
 const promptApi = baseApi
@@ -16,6 +21,26 @@ const promptApi = baseApi
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getPromptProgress: builder.query<
+				PromptProgressResponseDto,
+				PromptWorkspaceQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ workspaceId }) => ({
+					params: { workspaceId },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.PROGRESS}`,
+				}),
+			}),
+			getPromptRecent: builder.query<
+				PromptGetRecentResponseDto,
+				PromptWorkspaceQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ workspaceId }) => ({
+					params: { workspaceId },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.RECENT}`,
+				}),
+			}),
 			getPrompts: builder.query<PromptGetAllResponseDto, PromptGetQueryDto>({
 				providesTags: [PromptsApiTag.PROMPT],
 				query: (queryPayload) => ({
@@ -31,9 +56,30 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			searchPrompts: builder.query<
+				PromptSearchResponseDto,
+				PromptSearchRequestDto
+			>({
+				query: (queryPayload) => ({
+					params: queryPayload,
+					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
+				}),
+			}),
 		}),
 	});
 
-const { useGetPromptsQuery, useRecordPromptMutation } = promptApi;
+const {
+	useGetPromptProgressQuery,
+	useGetPromptRecentQuery,
+	useGetPromptsQuery,
+	useRecordPromptMutation,
+	useSearchPromptsQuery,
+} = promptApi;
 
-export { useGetPromptsQuery, useRecordPromptMutation };
+export {
+	useGetPromptProgressQuery,
+	useGetPromptRecentQuery,
+	useGetPromptsQuery,
+	useRecordPromptMutation,
+	useSearchPromptsQuery,
+};

@@ -12,9 +12,13 @@ const workspaceAccessHook = (
 			throw AuthError.unauthorized();
 		}
 
+		const routeParameters = request.params as { workspaceId?: number };
+		const requestBody = request.body as undefined | { workspaceId?: number };
+		const requestQuery = request.query as undefined | { workspaceId?: number };
 		const workspaceId =
-			(request.body as undefined | { workspaceId?: number })?.workspaceId ??
-			(request.query as undefined | { workspaceId?: number })?.workspaceId;
+			routeParameters.workspaceId ??
+			requestBody?.workspaceId ??
+			requestQuery?.workspaceId;
 
 		if (!workspaceId) {
 			return;
