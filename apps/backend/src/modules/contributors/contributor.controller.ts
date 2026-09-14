@@ -8,7 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "../workspaces/libs/enums/enums.js";
-import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
 	type WorkspaceRouteParametersDto,
@@ -63,7 +63,7 @@ class ContributorController extends BaseController {
 				),
 			method: HTTPMethod.POST,
 			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
-			preHandler: workspaceAccessHook(workspaceService),
+			preHandler: workspaceOwnerAccessHook(workspaceService),
 			validation: {
 				body: workspaceAddContributorValidationSchema,
 				params: workspaceRouteParametersValidationSchema,

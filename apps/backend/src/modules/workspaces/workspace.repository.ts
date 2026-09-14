@@ -8,6 +8,7 @@ import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 
+import { ContributorColumnName } from "../contributors/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import { WorkspaceColumnName } from "./libs/enums/enums.js";
 import {
@@ -97,6 +98,28 @@ class WorkspaceRepository {
 				promptCount,
 			};
 		});
+	}
+
+	public async findByIdAndContributorUserId(
+		id: number,
+		contributorUserId: number,
+	): Promise<null | WorkspaceEntity> {
+		const workspace = await this.workspaceModel
+			.query()
+			.select(`${DatabaseTableName.WORKSPACES}.*`)
+			.innerJoin(
+				DatabaseTableName.CONTRIBUTORS,
+				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+			)
+			.where(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`, id)
+			.where(
+				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+				contributorUserId,
+			)
+			.first();
+
+		return workspace ? WorkspaceEntity.initialize(workspace) : null;
 	}
 
 	public async findByIdAndUserId(

@@ -70,6 +70,16 @@ class WorkspaceService {
 		};
 	}
 
+	public async findByIdAndContributor(
+		id: number,
+		userId: number,
+	): Promise<null | WorkspaceDto> {
+		const workspace =
+			await this.workspaceRepository.findByIdAndContributorUserId(id, userId);
+
+		return workspace ? workspace.toObject() : null;
+	}
+
 	public async findByIdAndOwner(
 		id: number,
 		userId: number,

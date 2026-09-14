@@ -4,7 +4,7 @@ import { AuthError, WorkspaceError } from "~/libs/exceptions/exceptions.js";
 
 import { type WorkspaceService } from "../../workspace.service.js";
 
-const workspaceAccessHook = (
+const workspaceOwnerAccessHook = (
 	workspaceService: WorkspaceService,
 ): preHandlerAsyncHookHandler => {
 	return async (request) => {
@@ -29,18 +29,17 @@ const workspaceAccessHook = (
 		if (ownedWorkspace) {
 			return;
 		}
-
 		const contributedWorkspace = await workspaceService.findByIdAndContributor(
 			workspaceId,
 			request.user.id,
 		);
 
 		if (contributedWorkspace) {
-			return;
+			throw WorkspaceError.forbidden();
 		}
 
 		throw WorkspaceError.notFound();
 	};
 };
 
-export { workspaceAccessHook };
+export { workspaceOwnerAccessHook };

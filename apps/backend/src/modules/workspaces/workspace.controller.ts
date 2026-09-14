@@ -8,7 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
-import { workspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
+import { workspaceOwnerAccessHook } from "./libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceGetAllRequestDto,
@@ -99,7 +99,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.DELETE,
 			path: WorkspacesApiPath.$WORKSPACE_ID,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceOwnerAccessHook(this.workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
 			},
@@ -115,7 +115,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.PATCH,
 			path: WorkspacesApiPath.$WORKSPACE_ID,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceOwnerAccessHook(this.workspaceService),
 			validation: {
 				body: workspaceUpdateValidationSchema,
 				params: workspaceRouteParametersValidationSchema,
