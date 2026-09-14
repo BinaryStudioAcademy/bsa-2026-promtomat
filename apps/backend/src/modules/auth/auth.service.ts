@@ -6,7 +6,10 @@ import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { TokenPurpose } from "./libs/enums/enums.js";
-import { checkIsExpiredTokenError } from "./libs/helpers/helpers.js";
+import {
+	checkHasResetTokenClaims,
+	checkIsExpiredTokenError,
+} from "./libs/helpers/helpers.js";
 import {
 	type ForgotPasswordRequestDto,
 	type PasswordResetTokenClaims,
@@ -142,11 +145,7 @@ class AuthService {
 			throw AuthError.resetTokenInvalid();
 		}
 
-		if (
-			claims.purpose !== TokenPurpose.PASSWORD_RESET ||
-			typeof claims.userId !== "number" ||
-			claims.iat === undefined
-		) {
+		if (!checkHasResetTokenClaims(claims)) {
 			throw AuthError.resetTokenInvalid();
 		}
 

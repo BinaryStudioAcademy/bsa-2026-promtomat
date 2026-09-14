@@ -1,9 +1,10 @@
-import { TokenErrorMessage } from "~/libs/modules/token/token.js";
+import { TokenErrorCode } from "~/libs/enums/enums.js";
+import { HTTPError } from "~/libs/modules/http/http.js";
 
 const checkIsExpiredTokenError = (error: unknown): boolean => {
 	return (
-		error instanceof Error &&
-		error.message === TokenErrorMessage.TOKEN_HAS_EXPIRED
+		error instanceof HTTPError &&
+		error.code === TokenErrorCode.TOKEN_HAS_EXPIRED
 	);
 };
 
