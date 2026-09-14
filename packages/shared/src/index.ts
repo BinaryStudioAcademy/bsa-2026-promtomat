@@ -12,7 +12,10 @@ export {
 	AuthError,
 	ComposedPromptError,
 	HTTPError,
+<<<<<<< HEAD
 	LabelError,
+=======
+>>>>>>> 74cc94a7 (feat: add update taskIntent backend flow pm-75)
 	PromptError,
 	PromptSearchError,
 	ValidationError,
@@ -87,6 +90,7 @@ export {
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptRouteParametersDto,
 	type PromptSearchRequestDto,
 	type PromptSearchResponseDto,
 	type PromptSearchResult,
@@ -96,6 +100,7 @@ export {
 	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	PromptProgress,
+	promptRouteParametersValidationSchema,
 	PromptsApiPath,
 	PromptsErrorMessage,
 	promptUpdateIntentValidationSchema,

@@ -17,7 +17,7 @@ import {
 	PromptColumnName,
 } from "~/modules/prompts/libs/enums/enums.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
-import { type PromptModel } from "~/modules/prompts/prompt.model.js";
+import { PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import {
 	type PromptAggregateResult,
@@ -27,6 +27,7 @@ import {
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
+	type PromptUpdateIntentRequestDto,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -123,6 +124,15 @@ class PromptRepository {
 		};
 	}
 
+	public async findByIdAndUserId(
+		id: number,
+		userId: number,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel.query().findOne({ id, userId });
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
+	}
+
 	public async findByWorkspace({
 		labelId,
 		page,
@@ -194,6 +204,19 @@ class PromptRepository {
 			.modify("filterByQuery", { userId });
 
 		return await this.findAggregate(baseQuery);
+	}
+
+	public async update(
+		id: number,
+		payload: PromptUpdateIntentRequestDto,
+		trx?: Transaction,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel
+			.query(trx)
+			.patchAndFetchById(id, payload)
+			.castTo<PromptModel | undefined>();
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {

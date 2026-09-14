@@ -9,6 +9,7 @@ export { type PromptLabelSource } from "./prompt-label-source.type.js";
 export { type PromptRepositoryFindAllResponseDto } from "./prompt-repository-find-all-response-dto.type.js";
 
 export { type PromptRepositoryItem } from "./prompt-repository-item.type.js";
+export { type PromptUpdateIntentPayload } from "./prompt-update-intent-payload.type.js";
 export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
@@ -18,8 +19,10 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptRouteParametersDto,
 	type PromptSearchRequestDto,
 	type PromptSearchResponseDto,
 	type PromptSearchResult,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";

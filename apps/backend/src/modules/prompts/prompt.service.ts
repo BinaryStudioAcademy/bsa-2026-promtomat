@@ -1,5 +1,5 @@
 import { PromptError } from "~/libs/exceptions/exceptions.js";
-import { Database } from "~/libs/modules/database/database.js";
+import { type Database } from "~/libs/modules/database/database.js";
 import {
 	GeneratorInterface,
 	TextGenerationError,
@@ -22,6 +22,7 @@ import {
 	type PromptGetRecentResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
+	type PromptUpdateIntentPayload,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -42,6 +43,7 @@ class PromptService {
 	private labelService: LabelService;
 
 	private promptEmbeddingService: PromptEmbeddingService;
+
 	private promptRepository: PromptRepository;
 
 	public constructor({
@@ -159,6 +161,15 @@ class PromptService {
 		return await this.promptRepository.findByWorkspace(payload);
 	}
 
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | PromptDto> {
+		const prompt = await this.promptRepository.findByIdAndUserId(id, userId);
+
+		return prompt ? prompt.toObject() : null;
+	}
+
 	public findCandidates({
 		description,
 		limit,
@@ -218,6 +229,36 @@ class PromptService {
 		});
 
 		await this.promptRepository.updateLabel(prompt.id, label.id);
+	}
+
+	public async updateIntent(
+		payload: PromptUpdateIntentPayload,
+	): Promise<PromptDto> {
+		const { id, taskIntent } = payload;
+
+		const updatedPrompt = await this.database.transaction(async (trx) => {
+			const prompt = await this.promptRepository.update(
+				id,
+				{ taskIntent },
+				trx,
+			);
+
+			if (!prompt) {
+				throw PromptError.notFound();
+			}
+
+			await this.promptEmbeddingService.deleteForPrompt(id, trx);
+
+			// Regenerate AI label
+
+			return prompt;
+		});
+
+		const promptDto = updatedPrompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptDto);
+
+		return promptDto;
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {

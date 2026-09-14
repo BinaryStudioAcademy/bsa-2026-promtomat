@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { PromptSearchError } from "~/libs/exceptions/exceptions.js";
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
@@ -286,6 +288,13 @@ class PromptEmbeddingService {
 		} while (page.length === BACKFILL_PAGE_SIZE);
 
 		return report;
+	}
+
+	public async deleteForPrompt(
+		promptId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptEmbeddingRepository.deleteByPromptId(promptId, trx);
 	}
 
 	public async embedForPrompt(prompt: PromptEmbeddingSource): Promise<void> {
