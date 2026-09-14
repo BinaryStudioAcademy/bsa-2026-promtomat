@@ -14,7 +14,6 @@ import {
 	PROMPT_COUNT_ALIAS,
 	PROMPT_ID,
 	PROMPT_LABEL_ID,
-	USAGE_COUNT_ALIAS,
 } from "./libs/constants/constants.js";
 import {
 	type LabelCountRow,
@@ -62,23 +61,6 @@ class LabelRepository {
 			name: row.name,
 			promptCount: Number(row.promptCount),
 		}));
-	}
-
-	public async findMostUsedNames(
-		workspaceId: number,
-		limit: number,
-	): Promise<string[]> {
-		const mostUsedLabels = await this.labelModel
-			.query()
-			.select(LABEL_NAME)
-			.innerJoin(DatabaseTableName.PROMPTS, LABEL_ID, PROMPT_LABEL_ID)
-			.where(LABEL_WORKSPACE_ID, "=", workspaceId)
-			.count(`${PROMPT_ID} as ${USAGE_COUNT_ALIAS}`)
-			.groupBy(LABEL_ID, LABEL_NAME)
-			.orderBy(USAGE_COUNT_ALIAS, "desc")
-			.limit(limit);
-
-		return mostUsedLabels.map((label) => label.name);
 	}
 
 	public async findStem(label: string, trx?: Transaction): Promise<string> {

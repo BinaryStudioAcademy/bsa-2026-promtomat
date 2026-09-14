@@ -24,13 +24,6 @@ class LabelService {
 		return await this.labelRepository.findAllWithPromptCounts(workspaceId);
 	}
 
-	public async findMostUsedNames(
-		workspaceId: number,
-		limit: number,
-	): Promise<string[]> {
-		return await this.labelRepository.findMostUsedNames(workspaceId, limit);
-	}
-
 	public async findStem(label: string, trx?: Transaction): Promise<string> {
 		return await this.labelRepository.findStem(label, trx);
 	}
