@@ -3,3 +3,4 @@ export { AppEnvironment } from "./app-environment.enum.js";
 export { ContentType } from "./content-type.enum.js";
 export { ErrorCode } from "./error-code.enum.js";
 export { ServerErrorCode } from "./server-error-code.enum.js";
+export { SortOrder } from "./sort-order.enum.js";

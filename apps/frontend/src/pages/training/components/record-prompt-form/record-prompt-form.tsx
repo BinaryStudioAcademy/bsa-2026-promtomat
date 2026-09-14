@@ -1,11 +1,18 @@
+import { skipToken } from "@reduxjs/toolkit/query";
 import React, { useCallback } from "react";
+import { useWatch } from "react-hook-form";
 
 import { Input } from "~/libs/components/input/input.js";
+import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
+import {
+	useGetPromptProgressQuery,
+	useGetPromptRecentQuery,
+	useRecordPromptMutation,
+} from "~/modules/prompts/prompts-api.js";
 import {
 	type PromptCreateRequestDto,
 	promptCreateValidationSchema,
@@ -13,6 +20,7 @@ import {
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import styles from "../../styles.module.css";
+import { RecentInjections } from "../recent-injections/recent-injections.js";
 import { DEFAULT_RECORD_PROMT_PAYLOAD } from "./libs/constants.js";
 
 const RecordPromptForm: React.FC = () => {
@@ -34,6 +42,12 @@ const RecordPromptForm: React.FC = () => {
 			validationSchema: promptCreateValidationSchema,
 		});
 
+	const workspaceId = useWatch({ control, name: "workspaceId" });
+	const workspaceQuery =
+		typeof workspaceId === "number" ? { workspaceId } : skipToken;
+	const { data: progress } = useGetPromptProgressQuery(workspaceQuery);
+	const { data: recent } = useGetPromptRecentQuery(workspaceQuery);
+
 	const handleScoreSubmit = useCallback(
 		(score: number) => {
 			return (): void => {
@@ -41,7 +55,10 @@ const RecordPromptForm: React.FC = () => {
 				void handleSubmit(async (payload: PromptCreateRequestDto) => {
 					const { data } = await recordPrompt(payload);
 					if (data) {
-						reset();
+						reset({
+							...DEFAULT_RECORD_PROMT_PAYLOAD,
+							workspaceId: payload.workspaceId,
+						});
 					}
 				})();
 			};
@@ -58,6 +75,14 @@ const RecordPromptForm: React.FC = () => {
 
 	return (
 		<>
+			{progress && (
+				<ProgressBar
+					count={progress.count}
+					label="Training progress"
+					target={progress.target}
+					unit="Prompts"
+				/>
+			)}
 			<div>
 				<h1 className={styles["heading"]}>Log This Prompt</h1>
 				<span className={styles["sub-heading"]}>
@@ -97,6 +122,7 @@ const RecordPromptForm: React.FC = () => {
 					/>
 				</div>
 			</form>
+			{recent && <RecentInjections items={recent.items} />}
 		</>
 	);
 };

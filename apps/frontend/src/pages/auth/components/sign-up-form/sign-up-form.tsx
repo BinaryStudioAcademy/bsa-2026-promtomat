@@ -5,9 +5,10 @@ import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
-import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	AuthValidationRule,
 	type SignUpRequestDto,
@@ -21,7 +22,6 @@ import { SignUpFormMessage } from "./libs/enums/enums.js";
 
 type Properties = {
 	error: unknown;
-	hasConflictError: boolean;
 	isLoading: boolean;
 	isSuccess: boolean;
 	onSubmit: (payload: SignUpRequestDto) => void;
@@ -29,7 +29,6 @@ type Properties = {
 
 const SignUpForm: React.FC<Properties> = ({
 	error,
-	hasConflictError,
 	isLoading,
 	isSuccess,
 	onSubmit,
@@ -47,6 +46,19 @@ const SignUpForm: React.FC<Properties> = ({
 	const password = useWatch({ control, name: "password" });
 	const { isSubmitted } = useFormState({ control });
 
+	useEffect(() => {
+		if (!isServerError(error)) {
+			return;
+		}
+
+		if (error.code === ErrorCode.AUTH_EMAIL_ALREADY_EXISTS) {
+			setError("email", { type: "server" });
+		}
+		if (error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS) {
+			setError("nickname", { type: "server" });
+		}
+	}, [error, setError]);
+
 	const handlePasswordFocus = useCallback((): void => {
 		setHasPasswordBeenFocused(true);
 	}, []);
@@ -57,12 +69,6 @@ const SignUpForm: React.FC<Properties> = ({
 		},
 		[handleSubmit, onSubmit],
 	);
-
-	useEffect(() => {
-		if (hasConflictError) {
-			setError("email", { type: "server" });
-		}
-	}, [hasConflictError, setError]);
 
 	return (
 		<>

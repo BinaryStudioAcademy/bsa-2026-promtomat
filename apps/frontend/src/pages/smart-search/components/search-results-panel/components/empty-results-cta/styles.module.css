@@ -1,0 +1,17 @@
+.footer {
+	display: flex;
+	gap: var(--space-4);
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+}
+
+.muted {
+	color: var(--text-muted);
+}
+
+.accent {
+	font-weight: 600;
+	color: var(--text-accent);
+}
