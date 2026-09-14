@@ -20,6 +20,10 @@ type PasswordPayload = {
 	passwordSalt: string;
 };
 
+type ResetPasswordPayload = PasswordPayload & {
+	issuedAt: Date;
+};
+
 const NO_UPDATED_ROWS = 0;
 
 class UserRepository {
@@ -115,12 +119,14 @@ class UserRepository {
 
 	public async updatePasswordIfUnchangedSince(
 		id: number,
-		payload: PasswordPayload,
-		issuedAt: Date,
+		payload: ResetPasswordPayload,
+		trx?: Transaction,
 	): Promise<boolean> {
+		const { issuedAt, ...columns } = payload;
+
 		const updatedRows = await this.userModel
-			.query()
-			.patch(payload)
+			.query(trx)
+			.patch(columns)
 			.where("id", id)
 			.where((builder) => {
 				void builder

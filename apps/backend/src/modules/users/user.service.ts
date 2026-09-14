@@ -133,15 +133,12 @@ class UserService {
 	): Promise<boolean> {
 		const { hash, salt } = await this.hashing.hash(password);
 
-		return await this.userRepository.updatePasswordIfUnchangedSince(
-			userId,
-			{
-				passwordChangedAt: new Date().toISOString(),
-				passwordHash: hash,
-				passwordSalt: salt,
-			},
+		return await this.userRepository.updatePasswordIfUnchangedSince(userId, {
 			issuedAt,
-		);
+			passwordChangedAt: new Date().toISOString(),
+			passwordHash: hash,
+			passwordSalt: salt,
+		});
 	}
 
 	public async updateProfile(

@@ -30,13 +30,13 @@ class AuthGuard {
 		}
 
 		if (payload.iat === undefined) {
-			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
 		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
 
 		if (Number.isNaN(changedAtMilliseconds)) {
-			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+			this.throwUnauthorized(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
 		}
 
 		const changedAtSeconds = Math.floor(
