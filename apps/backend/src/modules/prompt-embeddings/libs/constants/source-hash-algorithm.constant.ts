@@ -1,3 +1,0 @@
-const SOURCE_HASH_ALGORITHM = "sha256";
-
-export { SOURCE_HASH_ALGORITHM };
