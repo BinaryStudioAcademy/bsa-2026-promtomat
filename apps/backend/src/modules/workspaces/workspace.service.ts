@@ -4,9 +4,11 @@ import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 
 import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
+import { WorkspaceListScope } from "./libs/enums/enums.js";
 import {
 	type WorkspaceCreatePayload,
 	type WorkspaceDto,
+	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -58,11 +60,13 @@ class WorkspaceService {
 
 	public async findAllByUserId(
 		userId: number,
-		workspaceName?: string,
+		query: WorkspaceGetAllRequestDto,
 	): Promise<WorkspaceGetAllResponseDto> {
+		const scope = query.scope ?? WorkspaceListScope.ALL;
 		const workspaces = await this.workspaceRepository.findAllByUserId(
 			userId,
-			workspaceName,
+			scope,
+			query.workspaceName,
 		);
 
 		return {

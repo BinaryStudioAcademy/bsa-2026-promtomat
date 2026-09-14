@@ -48,8 +48,12 @@ import { type WorkspaceService } from "./workspace.service.js";
  *         - $ref: "#/components/schemas/Workspace"
  *         - type: object
  *           required:
+ *             - memberCount
  *             - promptCount
  *           properties:
+ *             memberCount:
+ *               type: integer
+ *               minimum: 1
  *             promptCount:
  *               type: integer
  *               minimum: 0
@@ -195,6 +199,13 @@ class WorkspaceController extends BaseController {
 	 *        - bearerAuth: []
 	 *      parameters:
 	 *        - in: query
+	 *          name: scope
+	 *          schema:
+	 *            type: string
+	 *            enum: [all, owned, shared]
+	 *            default: all
+	 *          description: Limits the list to owned or shared workspaces
+	 *        - in: query
 	 *          name: workspaceName
 	 *          schema:
 	 *            type: string
@@ -234,7 +245,7 @@ class WorkspaceController extends BaseController {
 		return {
 			payload: await this.workspaceService.findAllByUserId(
 				options.user?.id as number,
-				options.query.workspaceName,
+				options.query,
 			),
 			status: HTTPCode.OK,
 		};
