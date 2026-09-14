@@ -60,8 +60,6 @@ const NewPasswordForm: React.FC = () => {
 		);
 	}
 
-	// A link with no token cannot be consumed, so it is reported the same way the
-	// API reports a consumed or unknown one rather than being submitted first.
 	const linkAlert = token
 		? { error }
 		: { message: NewPasswordMessage.LINK_INVALID };
