@@ -64,7 +64,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					<SearchableSelect
 						control={control}
 						isDisabled={isLoading}
-						label="Add tags"
+						label="Tech Stack Tags"
 						name={stackTagsField.name}
 						placeholder="Enter tags"
 						size={ControlSize.MD}
