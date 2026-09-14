@@ -13,15 +13,20 @@ import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
+import { promptAccessHook } from "./libs/hooks/prompt-access.hook.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
+	type PromptRouteParametersDto,
 	type PromptSearchRequestDto,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
+	promptRouteParametersValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -205,6 +210,23 @@ class PromptController extends BaseController {
 			path: PromptsApiPath.SEARCH,
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: { query: searchPromptsValidationSchema },
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.updateIntent(
+					options as APIHandlerOptions<{
+						body: PromptUpdateIntentRequestDto;
+						params: PromptRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: PromptsApiPath.INTENT,
+			preHandler: promptAccessHook(this.promptService),
+			validation: {
+				body: promptUpdateIntentValidationSchema,
+				params: promptRouteParametersValidationSchema,
+			},
 		});
 	}
 
@@ -521,6 +543,22 @@ class PromptController extends BaseController {
 
 		return {
 			payload,
+			status: HTTPCode.OK,
+		};
+	}
+	private async updateIntent(
+		options: APIHandlerOptions<{
+			body: PromptUpdateIntentRequestDto;
+			params: PromptRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			id: options.params.promptId,
+		};
+
+		return {
+			payload: await this.promptService.updateIntent(payload),
 			status: HTTPCode.OK,
 		};
 	}

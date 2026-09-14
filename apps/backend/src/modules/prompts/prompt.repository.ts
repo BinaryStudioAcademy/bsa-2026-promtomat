@@ -1,7 +1,9 @@
+import { type Transaction } from "objection";
+
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
-import { type PromptModel } from "~/modules/prompts/prompt.model.js";
+import { PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import { ZERO_VALUE } from "./libs/constants/constants.js";
 import { PaginationValue } from "./libs/enums/enums.js";
@@ -11,6 +13,7 @@ import {
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
+	type PromptUpdateIntentRequestDto,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -94,6 +97,15 @@ class PromptRepository {
 		};
 	}
 
+	public async findByIdAndUserId(
+		id: number,
+		userId: number,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel.query().findOne({ id, userId });
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
+	}
+
 	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
 		return await this.promptModel.query().where({ workspaceId }).resultSize();
 	}
@@ -119,6 +131,19 @@ class PromptRepository {
 			.modify("filterByQuery", { userId });
 
 		return await this.findAggregate(baseQuery);
+	}
+
+	public async update(
+		id: number,
+		payload: PromptUpdateIntentRequestDto,
+		trx?: Transaction,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel
+			.query(trx)
+			.patchAndFetchById(id, payload)
+			.castTo<PromptModel | undefined>();
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
 	}
 }
 
