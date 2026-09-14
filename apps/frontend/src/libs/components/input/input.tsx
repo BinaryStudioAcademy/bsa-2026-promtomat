@@ -21,7 +21,7 @@ type Properties<T extends FieldValues> = {
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
-	label?: string | undefined;
+	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
@@ -76,23 +76,20 @@ const Input = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			{label ? (
-				<label
-					className={getValidClasses(
-						styles["label"],
-						isLabelHidden && "visually-hidden",
-					)}
-					htmlFor={inputId}
-				>
-					{label}
-					{isRequired ? (
-						<span aria-hidden="true" className={styles["required"]}>
-							*
-						</span>
-					) : null}
-				</label>
-			) : null}
-
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isLabelHidden && "visually-hidden",
+				)}
+				htmlFor={inputId}
+			>
+				{label}
+				{isRequired ? (
+					<span aria-hidden="true" className={styles["required"]}>
+						*
+					</span>
+				) : null}
+			</label>
 			<div className={styles["control"]}>
 				<input
 					{...field}

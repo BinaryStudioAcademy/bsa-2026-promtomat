@@ -19,7 +19,8 @@ type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
-	label?: string | undefined;
+	isLabelHidden?: boolean;
+	label: string;
 	name: FieldPath<T>;
 	onSave?: () => void;
 	placeholder?: string;
@@ -31,6 +32,7 @@ const InlineEdit = <T extends FieldValues>({
 	control,
 	descriptionId,
 	isDisabled = false,
+	isLabelHidden = false,
 	label,
 	name,
 	onSave,
@@ -70,8 +72,13 @@ const InlineEdit = <T extends FieldValues>({
 		(event: React.KeyboardEvent<HTMLDivElement>) => {
 			event.stopPropagation();
 			if (event.key === "Enter") {
-				onSave?.();
 				setIsEditing(false);
+
+				if (field.value === originalValueReference.current) {
+					return;
+				}
+
+				onSave?.();
 			} else if (event.key === "Escape") {
 				field.onChange(originalValueReference.current);
 				setIsEditing(false);
@@ -109,6 +116,7 @@ const InlineEdit = <T extends FieldValues>({
 					control={control}
 					descriptionId={descriptionId}
 					isDisabled={isDisabled}
+					isLabelHidden={isLabelHidden}
 					label={label}
 					name={name}
 					placeholder={placeholder}
@@ -121,7 +129,14 @@ const InlineEdit = <T extends FieldValues>({
 
 	return (
 		<div className={inputStyles["field"]}>
-			{label && <label className={inputStyles["label"]}>{label}</label>}
+			<label
+				className={getValidClasses(
+					inputStyles["label"],
+					isLabelHidden && "visually-hidden",
+				)}
+			>
+				{label}
+			</label>
 			<div className={inputStyles["control"]}>
 				<span
 					className={getValidClasses(

@@ -124,6 +124,8 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 						className={styles["intent"]}
 						control={control}
 						descriptionId={descriptionId}
+						isLabelHidden={true}
+						label="Task Intent"
 						name="taskIntent"
 						onSave={handleSaveUpdatedIntent}
 						size="sm"
