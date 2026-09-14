@@ -1,13 +1,10 @@
-import { Navigate } from "react-router-dom";
-
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { AppRoute, ErrorCode, IconName } from "~/libs/enums/enums.js";
+import { AppRoute, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
 import { aiCodingToolToLabel } from "~/modules/users/users.js";
 
@@ -29,10 +26,6 @@ const Profile: React.FC = () => {
 				<Loader label="Loading profile" variant={LoaderVariant.SECTION} />
 			</main>
 		);
-	}
-
-	if (isServerError(error) && error.code === ErrorCode.AUTH_USER_NOT_FOUND) {
-		return <Navigate replace to={AppRoute.SIGN_IN} />;
 	}
 
 	if (!data) {

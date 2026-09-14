@@ -59,6 +59,11 @@ class UserRepository {
 		return user ? UserEntity.initialize(user) : null;
 	}
 
+	public async findByIdOrThrow(id: number): Promise<UserEntity> {
+		const user = await this.userModel.query().findById(id).throwIfNotFound();
+		return UserEntity.initialize(user);
+	}
+
 	public async findByNickname(nickname: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ nickname }).execute();
 

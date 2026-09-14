@@ -115,11 +115,7 @@ class UserService {
 	public async getProfileSummary(
 		userId: number,
 	): Promise<UserProfileSummaryResponseDto> {
-		const user = await this.userRepository.findById(userId);
-
-		if (!user) {
-			throw AuthError.userNotFound();
-		}
+		const user = await this.userRepository.findByIdOrThrow(userId);
 
 		const { averageScore, totalCount } =
 			await this.promptService.findUserPromptSummary(userId);
