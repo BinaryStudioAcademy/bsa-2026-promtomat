@@ -39,6 +39,32 @@ import { updateProfileValidationSchema } from "./libs/validation-schemas/validat
  *              - github_copilot
  *              - jetbrains_ai
  *              - windsurf
+ *      UserProfileSummary:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: number
+ *          nickname:
+ *            type: string
+ *          primaryAiCodingTool:
+ *            type: string
+ *            nullable: true
+ *            enum:
+ *              - chatgpt
+ *              - claude_code
+ *              - cursor
+ *              - gemini
+ *              - github_copilot
+ *              - jetbrains_ai
+ *              - windsurf
+ *          memberSince:
+ *            type: string
+ *            format: date-time
+ *          totalPrompts:
+ *            type: number
+ *          averageScore:
+ *            type: number
+ *            nullable: true
  */
 class UserController extends BaseController {
 	private userService: UserService;
@@ -83,23 +109,7 @@ class UserController extends BaseController {
 	 *          content:
 	 *            application/json:
 	 *              schema:
-	 *                type: object
-	 *                properties:
-	 *                  id:
-	 *                    type: number
-	 *                  nickname:
-	 *                    type: string
-	 *                  primaryAiCodingTool:
-	 *                    type: string
-	 *                    nullable: true
-	 *                  memberSince:
-	 *                    type: string
-	 *                    format: date-time
-	 *                  totalPrompts:
-	 *                    type: number
-	 *                  averageScore:
-	 *                    type: number
-	 *                    nullable: true
+	 *                $ref: "#/components/schemas/UserProfileSummary"
 	 *        401:
 	 *          description: Unauthorized
 	 */
