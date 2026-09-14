@@ -9,5 +9,4 @@ const token = new JwtTokenService({
 });
 
 export { token };
-export { TokenErrorMessage } from "./libs/enums/enums.js";
 export { type TokenService } from "./libs/types/types.js";
