@@ -81,8 +81,8 @@
 }
 
 .edit-icon {
-	width: 16px;
-	height: 16px;
+	width: var(--space-16);
+	height: var(--space-16);
 }
 
 .stats-grid {
@@ -115,7 +115,7 @@
 .empty-state {
 	padding: var(--space-24);
 	text-align: center;
-	border: 1px dashed var(--border-subtle);
+	border: var(--border-width-hairline) dashed var(--border-subtle);
 	border-radius: var(--radius-md);
 }
 

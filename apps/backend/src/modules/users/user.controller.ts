@@ -49,7 +49,8 @@ class UserController extends BaseController {
 		this.userService = userService;
 
 		this.addRoute({
-			handler: (options) => this.getProfileSummary(options),
+			handler: (options) =>
+				this.getProfileSummary(options as APIHandlerOptions & { user: UserDto }),
 			method: HTTPMethod.GET,
 			path: UsersApiPath.ME_SUMMARY,
 		});
@@ -103,12 +104,10 @@ class UserController extends BaseController {
 	 *          description: Unauthorized
 	 */
 	private async getProfileSummary(
-		options: APIHandlerOptions,
+		options: APIHandlerOptions & { user: UserDto },
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.userService.getProfileSummary(
-				options.user?.id as number,
-			),
+			payload: await this.userService.getProfileSummary(options.user.id),
 			status: HTTPCode.OK,
 		};
 	}
