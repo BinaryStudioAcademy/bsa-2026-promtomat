@@ -10,6 +10,11 @@
 	color: var(--text-body);
 }
 
+.required {
+	margin-left: var(--space-4);
+	color: var(--text-accent);
+}
+
 .control {
 	position: relative;
 	display: flex;

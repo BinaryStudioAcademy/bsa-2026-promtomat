@@ -86,6 +86,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					/>
 					<Select
 						control={control}
+						isRequired
 						label="Primary AI coding tool"
 						name="primaryAiCodingTool"
 						options={AI_CODING_TOOL_OPTIONS}
