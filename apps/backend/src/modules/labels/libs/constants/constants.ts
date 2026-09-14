@@ -9,4 +9,3 @@ export { LABEL_WORKSPACE_ID } from "./label-workspace-id.constant.js";
 export { PROMPT_COUNT_ALIAS } from "./prompt-count-alias.constant.js";
 export { PROMPT_ID } from "./prompt-id.constant.js";
 export { PROMPT_LABEL_ID } from "./prompt-label-id.constant.js";
-export { USAGE_COUNT_ALIAS } from "./usage-count-alias.constant.js";
