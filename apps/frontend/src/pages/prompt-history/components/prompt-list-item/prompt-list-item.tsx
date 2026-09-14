@@ -1,8 +1,10 @@
 import React, { useCallback, useId, useState } from "react";
 
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
-import { getRelativeTimeLabel } from "~/libs/helpers/get-relative-time-label/get-relative-time-label.helper.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import {
+	getRelativeTimeLabel,
+	getValidClasses,
+} from "~/libs/helpers/helpers.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 

@@ -15,6 +15,7 @@ import { UserModel } from "../users/user.model.js";
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
 import { WorkspaceModel } from "../workspaces/workspace.model.js";
 import { PromptColumnName } from "./libs/enums/enums.js";
+import { type PromptFilterByQueryParameters } from "./libs/types/types.js";
 
 class PromptModel extends AbstractModel {
 	public efficiencyScore!: number;
@@ -25,7 +26,7 @@ class PromptModel extends AbstractModel {
 
 	public userId!: number;
 
-	public workspace?: WorkspaceModel;
+	public workspace!: WorkspaceModel;
 
 	public workspaceId!: number;
 
@@ -35,17 +36,7 @@ class PromptModel extends AbstractModel {
 		return {
 			filterByQuery(
 				builder,
-				{
-					score,
-					search,
-					userId,
-					workspaceId,
-				}: {
-					score?: number;
-					search?: string;
-					userId: number;
-					workspaceId?: number;
-				},
+				{ score, search, userId, workspaceId }: PromptFilterByQueryParameters,
 			) {
 				builder.where(
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
@@ -88,7 +79,7 @@ class PromptModel extends AbstractModel {
 		return {
 			user: {
 				join: {
-					from: `${DatabaseTableName.PROMPTS}.userId`,
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
 					to: `${DatabaseTableName.USERS}.${UserColumnName.ID}`,
 				},
 				modelClass: UserModel,
@@ -96,7 +87,7 @@ class PromptModel extends AbstractModel {
 			},
 			workspace: {
 				join: {
-					from: `${DatabaseTableName.PROMPTS}.workspaceId`,
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 					to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 				},
 				modelClass: WorkspaceModel,

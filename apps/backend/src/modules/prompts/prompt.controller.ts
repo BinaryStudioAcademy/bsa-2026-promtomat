@@ -31,6 +31,31 @@ import { type PromptService } from "./prompt.service.js";
  * @swagger
  * components:
  *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         errorType:
+ *           type: string
+ *         message:
+ *           type: string
+ *     ValidationErrorResponse:
+ *       type: object
+ *       properties:
+ *         details:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *               path:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *         errorType:
+ *           type: string
+ *         message:
+ *           type: string
  *     Prompt:
  *       type: object
  *       properties:
@@ -163,7 +188,9 @@ class PromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: PromptsApiPath.ROOT,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceAccessHook(this.workspaceService, {
+				isWorkspaceOptional: true,
+			}),
 			validation: {
 				query: promptGetQueryValidationSchema,
 			},
@@ -215,12 +242,28 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/Prompt"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       403:
 	 *         description: You do not have permission to access this workspace
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       404:
 	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
 	 */
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
@@ -280,8 +323,16 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/PromptGetAllResponse"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
 	 */
 	private async findAll(
 		options: APIHandlerOptions<{
@@ -321,10 +372,22 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/PromptProgress"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       404:
 	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
 	 */
 	private async findProgress(
 		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
@@ -359,10 +422,22 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/PromptRecent"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       404:
 	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
 	 */
 	private async findRecent(
 		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
@@ -416,10 +491,22 @@ class PromptController extends BaseController {
 	 *                         maximum: 10
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       404:
 	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
 	 */
 	private async searchCandidates(
 		options: APIHandlerOptions<{ query: PromptSearchRequestDto }>,

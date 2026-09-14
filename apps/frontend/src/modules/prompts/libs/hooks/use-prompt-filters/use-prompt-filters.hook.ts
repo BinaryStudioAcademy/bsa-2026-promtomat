@@ -15,7 +15,7 @@ import { PaginationValue } from "../../enums/enums.js";
 type PromptFiltersFormValues = {
 	score: number | string;
 	search: string;
-	workspaceId: number | string;
+	workspaceId: null | number;
 };
 
 type UsePromptFiltersReturn = {

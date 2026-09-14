@@ -3,13 +3,14 @@ import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
-import { ROUND_FACTOR, ZERO_VALUE } from "./libs/constants/constants.js";
+import { ZERO_VALUE } from "./libs/constants/constants.js";
 import { PaginationValue } from "./libs/enums/enums.js";
 import {
 	type PromptAggregateRow,
 	type PromptFindAllOptions,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
+	type PromptRepositoryItem,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -26,19 +27,19 @@ class PromptRepository {
 			.clone()
 			.clearSelect()
 			.clearOrder()
+			.clear("limit")
+			.clear("offset")
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
 			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
 			.castTo<PromptAggregateRow[]>()
 			.execute();
 
-		const totalCount = Number(aggregation?.count ?? ZERO_VALUE);
-		const rawAvg = aggregation?.averageScore
-			? Number(aggregation.averageScore)
-			: null;
-		const averageScore =
-			rawAvg === null ? null : Math.round(rawAvg * ROUND_FACTOR) / ROUND_FACTOR;
-
-		return { averageScore, totalCount };
+		return {
+			averageScore: aggregation?.averageScore
+				? Number(aggregation.averageScore)
+				: null,
+			totalCount: Number(aggregation?.count ?? ZERO_VALUE),
+		};
 	}
 
 	public async create(entity: PromptEntity): Promise<PromptEntity> {
@@ -77,10 +78,11 @@ class PromptRepository {
 		const items = await baseQuery
 			.clone()
 			.select(`${DatabaseTableName.PROMPTS}.*`)
-			.withGraphFetched("workspace")
+			.withGraphJoined("workspace", { joinOperation: "innerJoin" })
 			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
 			.offset(offset)
 			.limit(limit)
+			.castTo<PromptRepositoryItem[]>()
 			.execute();
 
 		return {

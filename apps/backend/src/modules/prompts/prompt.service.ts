@@ -1,6 +1,7 @@
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
+import { ROUND_FACTOR } from "./libs/constants/constants.js";
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
 	type PromptCandidateQuery,
@@ -53,17 +54,16 @@ class PromptService {
 		const { averageScore, items, page, pageSize, totalCount } =
 			await this.promptRepository.findAll(options);
 
+		const formattedAverageScore =
+			averageScore === null
+				? null
+				: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
+
 		return {
-			averageScore,
-			items: items.map((item) => ({
-				body: item.promptBody,
-				createdAt: item.createdAt,
-				id: item.id,
-				intent: item.taskIntent,
-				score: item.efficiencyScore,
-				workspaceId: item.workspaceId,
-				workspaceName: item.workspace?.name ?? "",
-			})),
+			averageScore: formattedAverageScore,
+			items: items.map((item) =>
+				PromptEntity.initialize(item).toDto(item.workspace.name),
+			),
 			page,
 			pageSize,
 			totalCount,
