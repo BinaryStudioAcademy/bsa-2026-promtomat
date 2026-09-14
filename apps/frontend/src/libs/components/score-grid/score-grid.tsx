@@ -36,7 +36,7 @@ const ScoreGrid: React.FC<Properties> = ({
 		};
 	}, []);
 
-	const clearHover = useCallback((): void => {
+	const handleClearHover = useCallback((): void => {
 		setHoveredScore(null);
 	}, []);
 
@@ -88,11 +88,11 @@ const ScoreGrid: React.FC<Properties> = ({
 							isDisabled={isDisabled}
 							key={score}
 							label={String(score)}
-							onBlur={clearHover}
+							onBlur={handleClearHover}
 							onClick={handleScoreClick(score)}
 							onFocus={handleHover(score)}
 							onMouseEnter={handleHover(score)}
-							onMouseLeave={clearHover}
+							onMouseLeave={handleClearHover}
 							size="lg"
 							type="button"
 							variant={buttonColorClass}

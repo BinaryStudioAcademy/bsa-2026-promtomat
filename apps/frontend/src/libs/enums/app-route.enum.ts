@@ -1,7 +1,7 @@
 const AppRoute = {
 	ANY: "*",
 	NO_ACCESS: "/no-access",
-	PROMPT_HISTORY: "/prompt-history",
+	PROMPT_HISTORY: "/prompts/history",
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	ROOT: "/",
 	SETTINGS: "/settings",

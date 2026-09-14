@@ -26,22 +26,44 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 		setIsExpanded((previous) => !previous);
 	}, []);
 
-	const handleCopyClick = useCallback(
-		(event: React.MouseEvent<HTMLButtonElement>): void => {
-			event.stopPropagation();
-			void copyToClipboard(prompt.body);
+	const handleRowClick = useCallback(
+		(event: React.MouseEvent<HTMLDivElement>): void => {
+			const target = event.target as HTMLElement;
+			if (target.closest("button, input, textarea")) {
+				return;
+			}
+			handleToggle();
 		},
-		[copyToClipboard, prompt.body],
+		[handleToggle],
 	);
+
+	const handleRowKeyDown = useCallback(
+		(event: React.KeyboardEvent<HTMLDivElement>): void => {
+			if (event.target !== event.currentTarget) {
+				return;
+			}
+			if (event.key === "Enter" || event.key === " ") {
+				event.preventDefault();
+				handleToggle();
+			}
+		},
+		[handleToggle],
+	);
+
+	const handleCopyClick = useCallback((): void => {
+		void copyToClipboard(prompt.body);
+	}, [copyToClipboard, prompt.body]);
 
 	return (
 		<div className={styles["item"]}>
-			<button
+			<div
 				aria-controls={contentId}
 				aria-expanded={isExpanded}
 				className={styles["row"]}
-				onClick={handleToggle}
-				type="button"
+				onClick={handleRowClick}
+				onKeyDown={handleRowKeyDown}
+				role="button"
+				tabIndex={0}
 			>
 				<div
 					className={getValidClasses(styles["score-badge"], scoreColorClass)}
@@ -65,7 +87,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 						▾
 					</span>
 				</div>
-			</button>
+			</div>
 
 			{isExpanded && (
 				<div className={styles["expanded"]} id={contentId}>
