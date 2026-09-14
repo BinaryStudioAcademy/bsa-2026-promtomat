@@ -6,12 +6,16 @@ import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	COLUMN_TYPE_ALIAS,
 	DISTANCE_ALIAS,
+	MAX_EFFICIENCY_SCORE,
+	MAX_SIMILARITY,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
+	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
 	PgAttributeColumnName,
 	PromptEmbeddingColumnName,
+	RelevanceWeight,
 } from "./libs/enums/enums.js";
 import {
 	parseVectorDimension,
@@ -83,19 +87,44 @@ class PromptEmbeddingRepository {
 		limit,
 		workspaceId,
 	}: NearestPromptQuery): Promise<NearestPrompt[]> {
+		const serializedEmbeddings = serializeEmbedding(embedding);
+
 		return await this.promptEmbeddingModel
 			.query()
 			.select(
 				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.TASK_INTENT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				raw("?? <=> ?::vector AS ??", [
 					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializeEmbedding(embedding),
+					serializedEmbeddings,
 					DISTANCE_ALIAS,
 				]),
 			)
 			.joinRelated(PROMPT_RELATION)
 			.where(`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`, workspaceId)
-			.orderBy(DISTANCE_ALIAS)
+			.where(
+				raw("?? <=> ?::vector", [
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+				]),
+				"<",
+				SIMILARITY_THRESHOLD,
+			)
+			.orderByRaw(
+				"(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) DESC",
+				[
+					RelevanceWeight.SIMILARITY_WEIGHT,
+					MAX_SIMILARITY,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+					SIMILARITY_THRESHOLD,
+					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					MAX_EFFICIENCY_SCORE,
+				],
+			)
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();

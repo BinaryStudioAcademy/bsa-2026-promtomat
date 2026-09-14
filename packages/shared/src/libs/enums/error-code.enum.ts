@@ -1,4 +1,5 @@
 import { AuthErrorCode } from "../../modules/auth/auth.js";
+import { PromptsErrorCode } from "../../modules/prompts/prompts.js";
 import { UsersErrorCode } from "../../modules/users/users.js";
 import {
 	ContributorsErrorCode,
@@ -12,6 +13,7 @@ const ErrorCode = {
 	...UsersErrorCode,
 	...ContributorsErrorCode,
 	...WorkspacesErrorCode,
+	...PromptsErrorCode,
 } as const;
 
 export { ErrorCode };
