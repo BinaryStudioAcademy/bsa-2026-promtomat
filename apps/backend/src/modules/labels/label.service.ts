@@ -31,6 +31,10 @@ class LabelService {
 		return await this.labelRepository.findMostUsedNames(workspaceId, limit);
 	}
 
+	public async findStem(label: string, trx?: Transaction): Promise<string> {
+		return await this.labelRepository.findStem(label, trx);
+	}
+
 	public async getOrCreate(
 		payload: LabelCreatePayload,
 		trx?: Transaction,
@@ -41,8 +45,10 @@ class LabelService {
 			throw LabelError.unusableName();
 		}
 
+		const stem = await this.findStem(normalizedName, trx);
+
 		const label = await this.labelRepository.createIfAbsent(
-			LabelEntity.initializeNew({ ...payload, name: normalizedName }),
+			LabelEntity.initializeNew({ ...payload, name: normalizedName, stem }),
 			trx,
 		);
 

@@ -9,6 +9,7 @@ import {
 	CREATE_LABEL_MERGE_COLUMNS,
 	LABEL_ID,
 	LABEL_NAME,
+	LABEL_STEM_QUERY,
 	LABEL_WORKSPACE_ID,
 	PROMPT_COUNT_ALIAS,
 	PROMPT_ID,
@@ -17,6 +18,7 @@ import {
 } from "./libs/constants/constants.js";
 import {
 	type LabelCountRow,
+	type LabelStemRow,
 	type LabelWithPromptCountDto,
 } from "./libs/types/types.js";
 
@@ -77,6 +79,19 @@ class LabelRepository {
 			.limit(limit);
 
 		return mostUsedLabels.map((label) => label.name);
+	}
+
+	public async findStem(label: string, trx?: Transaction): Promise<string> {
+		const knex = trx ?? this.labelModel.knex();
+
+		const { rows } = await knex.raw<{ rows: LabelStemRow[] }>(
+			LABEL_STEM_QUERY,
+			[label],
+		);
+
+		const [row] = rows;
+
+		return row?.stem ?? label;
 	}
 }
 

@@ -18,8 +18,5 @@ const labelController = new LabelController(
 export { labelController, labelService };
 
 export { type LabelService } from "./label.service.js";
-export {
-	LABEL_MAX_LENGTH,
-	LABEL_REUSE_SET_LIMIT,
-} from "./libs/constants/constants.js";
+export { LABEL_MAX_LENGTH } from "./libs/constants/constants.js";
 export { normalizePromptLabel } from "./libs/helpers/helpers.js";

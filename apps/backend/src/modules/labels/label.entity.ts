@@ -5,19 +5,24 @@ class LabelEntity implements Entity {
 
 	private name: string;
 
+	private stem: null | string;
+
 	private workspaceId: number;
 
 	private constructor({
 		id,
 		name,
+		stem,
 		workspaceId,
 	}: {
 		id: null | number;
 		name: string;
+		stem: null | string;
 		workspaceId: number;
 	}) {
 		this.id = id;
 		this.name = name;
+		this.stem = stem;
 		this.workspaceId = workspaceId;
 	}
 
@@ -34,20 +39,24 @@ class LabelEntity implements Entity {
 		return new LabelEntity({
 			id,
 			name,
+			stem: null,
 			workspaceId,
 		});
 	}
 
 	public static initializeNew({
 		name,
+		stem,
 		workspaceId,
 	}: {
 		name: string;
+		stem: string;
 		workspaceId: number;
 	}): LabelEntity {
 		return new LabelEntity({
 			id: null,
 			name,
+			stem,
 			workspaceId,
 		});
 	}
@@ -55,6 +64,7 @@ class LabelEntity implements Entity {
 	toNewObject() {
 		return {
 			name: this.name,
+			stem: this.stem,
 			workspaceId: this.workspaceId,
 		};
 	}

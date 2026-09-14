@@ -2,23 +2,13 @@ import { PromptError } from "~/libs/exceptions/exceptions.js";
 import { Database } from "~/libs/modules/database/database.js";
 import {
 	GeneratorInterface,
-	SchemaKey,
 	TextGenerationError,
 } from "~/libs/modules/generator/generator.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
-import {
-	LABEL_REUSE_SET_LIMIT,
-	LabelService,
-	normalizePromptLabel,
-} from "../labels/labels.js";
-import {
-	LABEL_GENERATION_MAX_TOKENS,
-	LABEL_GENERATION_TEMPERATURE,
-	LABEL_GENERATION_TOP_P,
-} from "./libs/constants/constants.js";
+import { LabelService } from "../labels/labels.js";
 import { PromptProgress } from "./libs/enums/enums.js";
-import { createGenerateLabelMessage } from "./libs/helpers/helpers.js";
+import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreatePayload,
 	type PromptDto,
@@ -64,38 +54,22 @@ class PromptService {
 		this.promptEmbeddingService = promptEmbeddingService;
 	}
 
-	private async generateAndNormalizeLabel(prompt: PromptGenerateLabelPayload) {
-		const label = await this.generateLabel(prompt);
-		const normalized = normalizePromptLabel(label);
-
-		if (normalized === null) {
-			throw PromptError.failedToCreate();
-		}
-
-		return normalized;
-	}
-
-	private async generateLabel(
-		prompt: PromptGenerateLabelPayload,
-	): Promise<string> {
+	private async generateLabel({
+		promptBody,
+		taskIntent,
+		workspaceId,
+	}: PromptGenerateLabelPayload): Promise<string> {
 		try {
-			const labels = await this.labelService.findMostUsedNames(
-				prompt.workspaceId,
-				LABEL_REUSE_SET_LIMIT,
+			const nearestLabels =
+				await this.promptEmbeddingService.findNearestLabelNames({
+					promptBody,
+					taskIntent,
+					workspaceId,
+				});
+
+			const result = await this.generator.generate(
+				createGenerateLabelOptions(nearestLabels, promptBody, taskIntent),
 			);
-			const result = await this.generator.generate({
-				config: {
-					maxTokens: LABEL_GENERATION_MAX_TOKENS,
-					temperature: LABEL_GENERATION_TEMPERATURE,
-					topP: LABEL_GENERATION_TOP_P,
-				},
-				message: createGenerateLabelMessage({
-					existingLabels: labels,
-					promptBody: prompt.promptBody,
-					taskIntent: prompt.taskIntent,
-				}),
-				schemaKey: SchemaKey.LABEL,
-			});
 
 			return result.label;
 		} catch (error) {
@@ -111,7 +85,7 @@ class PromptService {
 		const { efficiencyScore, promptBody, taskIntent, userId, workspaceId } =
 			payload;
 
-		const generatedLabel = await this.generateAndNormalizeLabel({
+		const generatedLabel = await this.generateLabel({
 			promptBody,
 			taskIntent,
 			workspaceId,
@@ -123,7 +97,7 @@ class PromptService {
 				trx,
 			);
 
-			const created = await this.promptRepository.create(
+			const entity = await this.promptRepository.create(
 				PromptEntity.initializeNew({
 					efficiencyScore,
 					labelId: label.id,
@@ -135,7 +109,7 @@ class PromptService {
 				trx,
 			);
 
-			const object = created.toObject();
+			const object = entity.toObject();
 
 			return {
 				efficiencyScore: object.efficiencyScore,
@@ -194,7 +168,7 @@ class PromptService {
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
-		const generatedLabel = await this.generateAndNormalizeLabel({
+		const generatedLabel = await this.generateLabel({
 			promptBody: prompt.promptBody,
 			taskIntent: prompt.taskIntent,
 			workspaceId: prompt.workspaceId,

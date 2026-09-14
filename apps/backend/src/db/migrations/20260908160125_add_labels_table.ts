@@ -11,6 +11,7 @@ const ColumnName = {
 	CREATED_AT: "created_at",
 	ID: "id",
 	NAME: "name",
+	STEM: "stem",
 	UPDATED_AT: "updated_at",
 	WORKSPACE_ID: "workspace_id",
 } as const;
@@ -23,7 +24,8 @@ function up(knex: Knex): Promise<void> {
 	return knex.schema.createTable(TableName.LABELS, (table) => {
 		table.increments(ColumnName.ID).primary().notNullable();
 		table.string(ColumnName.NAME).notNullable();
-		table.unique([ColumnName.WORKSPACE_ID, ColumnName.NAME]);
+		table.unique([ColumnName.WORKSPACE_ID, ColumnName.STEM]);
+		table.string(ColumnName.STEM).notNullable();
 
 		table
 			.integer(ColumnName.WORKSPACE_ID)
