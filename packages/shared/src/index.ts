@@ -12,6 +12,7 @@ export {
 	HTTPError,
 	LabelError,
 	PromptError,
+	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
@@ -62,12 +63,17 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
 	promptGetByQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
+	PromptsErrorMessage,
 	promptWorkspaceQueryValidationSchema,
+	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,

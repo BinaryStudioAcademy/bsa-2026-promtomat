@@ -10,6 +10,7 @@ const ErrorCode = {
 	...LabelsErrorCode,
 	...PromptsErrorCode,
 	...WorkspacesErrorCode,
+	...PromptsErrorCode,
 } as const;
 
 export { ErrorCode };

@@ -4,12 +4,14 @@ import {
 	GeneratorInterface,
 	TextGenerationError,
 } from "~/libs/modules/generator/generator.js";
+import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { LabelService } from "../labels/labels.js";
 import { PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
+	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
 	type PromptFindByWorkspacePayload,
@@ -131,6 +133,18 @@ class PromptService {
 		payload: PromptFindByWorkspacePayload,
 	): Promise<PromptDto[]> {
 		return await this.promptRepository.findByWorkspace(payload);
+	}
+
+	public findCandidates({
+		description,
+		limit,
+		workspaceId,
+	}: PromptCandidateQuery): Promise<NearestPrompt[]> {
+		return this.promptEmbeddingService.findNearestByQuery(
+			description,
+			limit,
+			workspaceId,
+		);
 	}
 
 	public async findProgress(

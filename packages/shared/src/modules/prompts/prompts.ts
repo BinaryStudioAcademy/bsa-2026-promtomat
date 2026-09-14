@@ -1,5 +1,5 @@
-export { PromptProgress } from "./libs/enums/enums.js";
 export {
+	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorCode,
 	PromptsErrorMessage,
@@ -11,10 +11,14 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptSearchRequestDto,
+	type PromptSearchResponseDto,
+	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
 	promptGetByQueryValidationSchema,
 	promptWorkspaceQueryValidationSchema,
+	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
