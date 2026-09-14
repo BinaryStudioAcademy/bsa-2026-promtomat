@@ -2,12 +2,23 @@ import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
 import { UsersApiPath, UsersApiTag } from "./libs/enums/enums.js";
-import { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
+import {
+	type UserDto,
+	type UserProfileSummaryResponseDto,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 
 const usersApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getProfileSummary: builder.query<
+				UserProfileSummaryResponseDto,
+				undefined
+			>({
+				providesTags: [UsersApiTag.USER],
+				query: () => `${APIPath.USERS}${UsersApiPath.ME_SUMMARY}`,
+			}),
 			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
@@ -19,6 +30,6 @@ const usersApi = baseApi
 		}),
 	});
 
-const { useUpdateProfileMutation } = usersApi;
+const { useGetProfileSummaryQuery, useUpdateProfileMutation } = usersApi;
 
-export { useUpdateProfileMutation };
+export { useGetProfileSummaryQuery, useUpdateProfileMutation };

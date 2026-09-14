@@ -5,6 +5,7 @@ const IconName = {
 	CHEVRON: "chevron",
 	CIRCLE_X: "circle-x",
 	CLOSE: "close",
+	EDIT: "edit",
 	EYE: "eye",
 	EYE_FILLED: "eye-filled",
 	INFO: "info",

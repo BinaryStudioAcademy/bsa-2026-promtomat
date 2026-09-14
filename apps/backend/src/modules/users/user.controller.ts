@@ -39,6 +39,32 @@ import { updateProfileValidationSchema } from "./libs/validation-schemas/validat
  *              - github_copilot
  *              - jetbrains_ai
  *              - windsurf
+ *      UserProfileSummary:
+ *        type: object
+ *        properties:
+ *          id:
+ *            type: number
+ *          nickname:
+ *            type: string
+ *          primaryAiCodingTool:
+ *            type: string
+ *            nullable: true
+ *            enum:
+ *              - chatgpt
+ *              - claude_code
+ *              - cursor
+ *              - gemini
+ *              - github_copilot
+ *              - jetbrains_ai
+ *              - windsurf
+ *          memberSince:
+ *            type: string
+ *            format: date-time
+ *          totalPrompts:
+ *            type: number
+ *          averageScore:
+ *            type: number
+ *            nullable: true
  */
 class UserController extends BaseController {
 	private userService: UserService;
@@ -47,6 +73,13 @@ class UserController extends BaseController {
 		super(logger, APIPath.USERS);
 
 		this.userService = userService;
+
+		this.addRoute({
+			handler: (options) =>
+				this.getProfileSummary(options as APIHandlerOptions & { user: UserDto }),
+			method: HTTPMethod.GET,
+			path: UsersApiPath.ME_SUMMARY,
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -61,6 +94,32 @@ class UserController extends BaseController {
 				body: updateProfileValidationSchema,
 			},
 		});
+	}
+
+	/**
+	 * @swagger
+	 * /users/me/summary:
+	 *    get:
+	 *      description: Returns the authenticated user's profile summary
+	 *      security:
+	 *        - bearerAuth: []
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/UserProfileSummary"
+	 *        401:
+	 *          description: Unauthorized
+	 */
+	private async getProfileSummary(
+		options: APIHandlerOptions & { user: UserDto },
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.userService.getProfileSummary(options.user.id),
+			status: HTTPCode.OK,
+		};
 	}
 
 	/**
