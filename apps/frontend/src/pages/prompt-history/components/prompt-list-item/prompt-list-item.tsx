@@ -11,6 +11,7 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
+import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import {
 	type PromptItemResponseDto,
@@ -32,6 +33,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 
+	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const [updateIntent] = useUpdateTaskIntentMutation();
 	const { control, handleSubmit, reset } =
 		useAppForm<PromptUpdateIntentRequestDto>({
@@ -50,6 +52,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const descriptionId = useId();
 
 	const errorMessage = error?.message;
+	const isOwner = user?.id === prompt.userId;
 
 	const handleToggle = useCallback(
 		(event: React.SyntheticEvent<HTMLDetailsElement>): void => {
@@ -96,6 +99,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 						className={styles["intent"]}
 						control={control}
 						descriptionId={descriptionId}
+						isDisabled={!isOwner}
 						isLabelHidden={true}
 						label="Task Intent"
 						name="taskIntent"
