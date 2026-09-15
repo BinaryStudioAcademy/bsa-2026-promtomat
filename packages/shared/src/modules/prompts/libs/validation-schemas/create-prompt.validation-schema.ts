@@ -26,6 +26,10 @@ const promptCreate = z.object({
 		.string()
 		.trim()
 		.min(
+			PromptValidationRule.INTENT_REQUIRED,
+			PromptValidationMessage.INTENT_REQUIRED,
+		)
+		.min(
 			PromptValidationRule.INTENT_MINIMUM_LENGTH,
 			PromptValidationMessage.INTENT_TOO_SHORT,
 		)
