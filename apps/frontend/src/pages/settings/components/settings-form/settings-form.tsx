@@ -61,7 +61,10 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				.unwrap()
 				.then((updatedUser: UserDto) => {
 					reset(getSettingsFormValues(updatedUser));
-					showNotification({ message: SettingsMessage.SUCCESS });
+					showNotification({
+						message: SettingsMessage.SUCCESS,
+						type: "success",
+					});
 				})
 				.catch((caughtError: unknown) => {
 					if (
