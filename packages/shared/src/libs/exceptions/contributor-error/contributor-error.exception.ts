@@ -48,6 +48,14 @@ class ContributorError extends HTTPError {
 			status: HTTPCode.CONFLICT,
 		});
 	}
+
+	public static ownerCannotBeRemoved(): ContributorError {
+		return new ContributorError({
+			code: ContributorsErrorCode.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			message: ContributorsErrorMessage.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			status: HTTPCode.FORBIDDEN,
+		});
+	}
 }
 
 export { ContributorError };

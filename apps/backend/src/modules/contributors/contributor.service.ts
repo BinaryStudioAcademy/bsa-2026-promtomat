@@ -116,6 +116,18 @@ class ContributorService {
 			nextCursor,
 		};
 	}
+
+	public async remove(workspaceId: number, userId: number): Promise<void> {
+		const deletedContributorCount =
+			await this.contributorRepository.deleteByWorkspaceIdAndUserId(
+				workspaceId,
+				userId,
+			);
+
+		if (!deletedContributorCount) {
+			throw ContributorError.notFound();
+		}
+	}
 }
 
 export { ContributorService };

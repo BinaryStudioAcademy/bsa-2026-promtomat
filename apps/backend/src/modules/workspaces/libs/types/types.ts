@@ -4,6 +4,7 @@ export {
 	type WorkspaceContributorCandidatesCursor,
 	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorCandidatesResponseDto,
+	type WorkspaceContributorRouteParametersDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,

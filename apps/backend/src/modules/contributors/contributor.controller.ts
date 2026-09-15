@@ -9,15 +9,18 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "../workspaces/libs/enums/enums.js";
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
+import { workspaceContributorDeleteAccessHook } from "../workspaces/libs/hooks/workspace-contributor-delete-access.hook.js";
 import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
 	type WorkspaceContributorCandidatesQueryDto,
+	type WorkspaceContributorRouteParametersDto,
 	type WorkspaceRouteParametersDto,
 } from "../workspaces/libs/types/types.js";
 import {
 	workspaceAddContributorValidationSchema,
 	workspaceContributorCandidatesQueryValidationSchema,
+	workspaceContributorRouteParametersValidationSchema,
 	workspaceRouteParametersValidationSchema,
 } from "../workspaces/libs/validation-schemas/validation-schemas.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
@@ -96,6 +99,21 @@ class ContributorController extends BaseController {
 		super(logger, APIPath.WORKSPACES);
 
 		this.contributorService = contributorService;
+
+		this.addRoute({
+			handler: (options) =>
+				this.delete(
+					options as APIHandlerOptions<{
+						params: WorkspaceContributorRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.DELETE,
+			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+			preHandler: workspaceContributorDeleteAccessHook(workspaceService),
+			validation: {
+				params: workspaceContributorRouteParametersValidationSchema,
+			},
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -207,6 +225,55 @@ class ContributorController extends BaseController {
 				options.user?.id as number,
 			),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /workspaces/{workspaceId}/contributors/{userId}:
+	 *   delete:
+	 *     description: Removes a contributor or leaves a workspace
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *       - in: path
+	 *         name: userId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       204:
+	 *         description: Contributor removed successfully
+	 *       401:
+	 *         description: Unauthorized
+	 *       403:
+	 *         description: The action is forbidden or the workspace owner was targeted
+	 *       404:
+	 *         description: Workspace or contributor not found, or the user does not have access
+	 *       422:
+	 *         description: Invalid route parameters
+	 */
+
+	private async delete(
+		options: APIHandlerOptions<{
+			params: WorkspaceContributorRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		await this.contributorService.remove(
+			options.params.workspaceId,
+			options.params.userId,
+		);
+
+		return {
+			payload: null,
+			status: HTTPCode.NO_CONTENT,
 		};
 	}
 

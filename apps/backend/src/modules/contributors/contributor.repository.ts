@@ -124,6 +124,20 @@ class ContributorRepository {
 		}
 	}
 
+	public async deleteByWorkspaceIdAndUserId(
+		workspaceId: number,
+		userId: number,
+	): Promise<number> {
+		const deletedContributorCount = await this.contributorModel
+			.query()
+			.delete()
+			.where(ContributorColumnName.WORKSPACE_ID, workspaceId)
+			.where(ContributorColumnName.USER_ID, userId)
+			.execute();
+
+		return deletedContributorCount;
+	}
+
 	public async findAllByWorkspaceId(
 		workspaceId: number,
 	): Promise<WorkspaceUserSummaryDto[]> {
