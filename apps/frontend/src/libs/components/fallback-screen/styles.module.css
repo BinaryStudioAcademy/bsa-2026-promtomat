@@ -118,15 +118,16 @@
 }
 
 .action:hover {
-	background-color: var(--surface-accent-hover, #ffffff);
+	background-color: var(--state-hover-tint);
 }
 
 .action:active {
-	background-color: var(--surface-accent-active, #b9bec7);
+	color: var(--text-on-accent);
+	background-color: var(--state-active-tint);
 }
 
 .action:focus-visible {
-	outline: var(--border-width-focus, 2px) solid var(--border-focus, #d6ae75);
+	outline: var(--border-width-focus, 2px) solid var(--border-focus);
 	outline-offset: var(--border-width-focus, 2px);
 }
 
