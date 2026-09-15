@@ -97,6 +97,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
+						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
 					<Select
