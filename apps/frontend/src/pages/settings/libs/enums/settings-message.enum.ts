@@ -1,4 +1,5 @@
 const SettingsMessage = {
+	NICKNAME_PLACEHOLDER: "Enter your nickname...",
 	RESET_PASSWORD: "Reset Password via Email",
 	SAVE: "Save changes",
 	SUCCESS: "Your profile was updated.",
