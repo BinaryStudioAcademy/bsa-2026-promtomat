@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 type SuggestionsListProperties = {
 	activeIndex: number;
 	activeSuggestionReference: React.RefObject<HTMLLIElement | null>;
-	inputRect: DOMRect;
+	controlRect: DOMRect;
 	onSuggestionMouseDown: (value: string) => (event: React.MouseEvent) => void;
 	onSuggestionMouseMove: (index: number) => () => void;
 	suggestions: string[];
@@ -18,7 +18,7 @@ type SuggestionsListProperties = {
 const SuggestionsList = ({
 	activeIndex,
 	activeSuggestionReference,
-	inputRect,
+	controlRect,
 	onSuggestionMouseDown,
 	onSuggestionMouseMove,
 	suggestions,
@@ -30,10 +30,11 @@ const SuggestionsList = ({
 			id={suggestionsListId}
 			role="listbox"
 			style={{
-				left: inputRect.left,
+				left: controlRect.left,
+				maxWidth: controlRect.width,
 				position: "fixed",
-				top: inputRect.bottom + SUGGESTIONS_GAP_PX,
-				width: inputRect.width,
+				top: controlRect.bottom + SUGGESTIONS_GAP_PX,
+				width: controlRect.width,
 			}}
 		>
 			{suggestions.map((value, index) => (

@@ -1,22 +1,28 @@
-import { StrictMode } from "react";
+import { type ComponentType, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider as StoreProvider } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
+import { Loader } from "~/libs/components/loader/loader.js";
 import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
-import { Auth } from "~/pages/auth/auth.jsx";
 import { ErrorPage } from "~/pages/error/error.js";
-import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { PasswordReset } from "~/pages/password-reset/password-reset.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
 import { SmartSearch } from "~/pages/smart-search/smart-search.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
+
+const loadAuthPage = async (): Promise<{ Component: ComponentType }> => {
+	const pageModule = await import("~/pages/auth/auth.jsx");
+
+	return { Component: pageModule.Auth };
+};
 
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
@@ -26,43 +32,68 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 					{
 						children: [
 							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<SettingsPage />
-									</PrivateRoute>
-								),
-								path: AppRoute.SETTINGS,
+								children: [
+									{
+										element: <Navigate replace to={AppRoute.WORKSPACES} />,
+										index: true,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/no-access/no-access.js");
+
+											return { Component: pageModule.NoAccessPage };
+										},
+										path: AppRoute.NO_ACCESS,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/settings/settings.js");
+
+											return { Component: pageModule.SettingsPage };
+										},
+										path: AppRoute.SETTINGS,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/smart-search/smart-search.js");
+
+											return { Component: pageModule.SmartSearch };
+										},
+										path: AppRoute.SMART_SEARCH,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/training/training.js");
+
+											return { Component: pageModule.Training };
+										},
+										path: AppRoute.TRAINING,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/workspaces/workspaces.js");
+
+											return { Component: pageModule.Workspaces };
+										},
+										path: AppRoute.WORKSPACES,
+									},
+								],
+								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
+								hydrateFallbackElement: <Loader />,
 							},
 							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<SmartSearch />
-									</PrivateRoute>
-								),
-								path: AppRoute.SMART_SEARCH,
-							},
-							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<Workspaces />
-									</PrivateRoute>
-								),
-								path: AppRoute.WORKSPACES,
-							},
-							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<Training />
-									</PrivateRoute>
-								),
-								path: AppRoute.TRAINING,
-							},
-							{
-								element: <Auth />,
+								hydrateFallbackElement: <Loader />,
+								lazy: loadAuthPage,
 								path: AppRoute.SIGN_IN,
 							},
 							{
-								element: <Auth />,
+								hydrateFallbackElement: <Loader />,
+								lazy: loadAuthPage,
 								path: AppRoute.SIGN_UP,
 							},
 							{

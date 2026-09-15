@@ -1,4 +1,5 @@
 const SettingsMessage = {
+	NICKNAME_PLACEHOLDER: "Enter your nickname...",
 	RESET_PASSWORD: "Reset Password via Email",
 	RESET_PASSWORD_SENDING: "Sending...",
 	RESET_PASSWORD_SENT:
