@@ -1,4 +1,5 @@
 const DatabaseTableName = {
+	CONTRIBUTORS: "contributors",
 	MIGRATIONS: "migrations",
 	PROMPT_EMBEDDINGS: "prompt_embeddings",
 	PROMPTS: "prompts",

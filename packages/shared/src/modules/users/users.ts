@@ -2,6 +2,7 @@ export {
 	AiCodingTool,
 	UserErrorMessage,
 	UsersApiPath,
+	UsersErrorCode,
 	UserValidationMessage,
 } from "./libs/enums/enums.js";
 export {

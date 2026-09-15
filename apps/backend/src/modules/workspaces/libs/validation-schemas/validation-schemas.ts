@@ -1,4 +1,8 @@
 export {
+	workspaceAddContributorValidationSchema,
+	workspaceContributorCandidatesCursorValidationSchema,
+	workspaceContributorCandidatesQueryValidationSchema,
+	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,

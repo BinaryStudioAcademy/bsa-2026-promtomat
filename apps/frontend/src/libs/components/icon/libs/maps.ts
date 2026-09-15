@@ -9,7 +9,14 @@ import CloseIcon from "~/assets/img/close.svg?react";
 import EyeFilledIcon from "~/assets/img/eye-filled.svg?react";
 import EyeIcon from "~/assets/img/eye.svg?react";
 import InfoIcon from "~/assets/img/info.svg?react";
+import LockIcon from "~/assets/img/lock.svg?react";
+import LogOutIcon from "~/assets/img/log-out.svg?react";
 import MenuIcon from "~/assets/img/menu.svg?react";
+import PlusIcon from "~/assets/img/plus.svg?react";
+import SettingsIcon from "~/assets/img/settings.svg?react";
+import Trash2Icon from "~/assets/img/trash-2.svg?react";
+import UserCogIcon from "~/assets/img/user-cog.svg?react";
+import UsersIcon from "~/assets/img/users.svg?react";
 import { IconName } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -23,7 +30,14 @@ const iconNameToIcon = {
 	[IconName.EYE]: EyeIcon,
 	[IconName.EYE_FILLED]: EyeFilledIcon,
 	[IconName.INFO]: InfoIcon,
+	[IconName.LOCK]: LockIcon,
+	[IconName.LOG_OUT]: LogOutIcon,
 	[IconName.MENU]: MenuIcon,
+	[IconName.PLUS]: PlusIcon,
+	[IconName.SETTINGS]: SettingsIcon,
+	[IconName.TRASH_2]: Trash2Icon,
+	[IconName.USER_COG]: UserCogIcon,
+	[IconName.USERS]: UsersIcon,
 } satisfies Record<
 	ValueOf<typeof IconName>,
 	FunctionComponent<SVGProps<SVGSVGElement>>
