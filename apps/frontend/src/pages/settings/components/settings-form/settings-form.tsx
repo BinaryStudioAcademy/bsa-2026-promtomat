@@ -55,7 +55,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				.then((updatedUser: UserDto) => {
 					reset(getSettingsFormValues(updatedUser));
 					showNotification({
-						id: "settings-profile-updated",
 						message: SettingsMessage.SUCCESS,
 						type: "success",
 					});
