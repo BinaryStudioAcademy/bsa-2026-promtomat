@@ -7,6 +7,7 @@ import { SearchableSelect } from "~/libs/components/searchable-select/searchable
 import {
 	ButtonVariant,
 	ControlSize,
+	FormValidationMode,
 	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
@@ -31,6 +32,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 
 	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
 		defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
+		mode: FormValidationMode.ON_CHANGE,
 		validationSchema: workspaceCreationValidationSchema,
 	});
 
