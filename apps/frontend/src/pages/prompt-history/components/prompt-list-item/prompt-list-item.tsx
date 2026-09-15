@@ -9,6 +9,7 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import {
@@ -18,6 +19,7 @@ import {
 import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
 import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js";
 
+import { PromptHistoryMessage } from "../../libs/enums/enum.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -85,6 +87,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const handleCopyClick = useCallback((): void => {
 		void copyToClipboard(prompt.body);
 	}, [copyToClipboard, prompt.body]);
+
 	const handleSaveUpdatedIntent = useCallback((): void => {
 		void handleSubmit(async (payload: PromptUpdateIntentRequestDto) => {
 			try {
@@ -93,6 +96,10 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 					payload,
 					queryArgs: queryPayload,
 				}).unwrap();
+				showNotification({
+					message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
+					type: "success",
+				});
 			} catch {
 				reset({ taskIntent: prompt.intent });
 			}
