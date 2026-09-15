@@ -17,7 +17,7 @@ import {
 	PromptColumnName,
 } from "~/modules/prompts/libs/enums/enums.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
-import { PromptModel } from "~/modules/prompts/prompt.model.js";
+import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import {
 	type PromptAggregateResult,
