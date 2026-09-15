@@ -42,6 +42,19 @@ type EnvironmentSchema = {
 		EXPIRES_IN: string;
 		SECRET: string;
 	};
+	MAIL: {
+		FROM: string;
+		HOST: string;
+		PASSWORD: string;
+		PORT: number;
+		USER: string;
+	};
+	PASSWORD_RESET: {
+		LINK_BASE_URL: string;
+		REQUEST_LIMIT: number;
+		TOKEN_TTL_MINUTES: number;
+		WINDOW_MINUTES: number;
+	};
 };
 
 export { type EnvironmentSchema };

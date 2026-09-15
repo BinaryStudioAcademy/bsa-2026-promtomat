@@ -33,4 +33,7 @@ const serverApplication = new BaseServerApplication({
 });
 
 export { serverApplication };
-export { type ServerApplicationRouteParameters } from "./libs/types/types.js";
+export {
+	type RouteConfig,
+	type ServerApplicationRouteParameters,
+} from "./libs/types/types.js";

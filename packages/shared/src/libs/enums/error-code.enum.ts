@@ -2,11 +2,13 @@ import { AuthErrorCode } from "../../modules/auth/auth.js";
 import { PromptsErrorCode } from "../../modules/prompts/prompts.js";
 import { WorkspacesErrorCode } from "../../modules/workspaces/workspaces.js";
 import { ServerErrorCode } from "./server-error-code.enum.js";
+import { TokenErrorCode } from "./token-error-code.enum.js";
 
 const ErrorCode = {
 	...ServerErrorCode,
 	...AuthErrorCode,
 	...WorkspacesErrorCode,
+	...TokenErrorCode,
 	...PromptsErrorCode,
 } as const;
 

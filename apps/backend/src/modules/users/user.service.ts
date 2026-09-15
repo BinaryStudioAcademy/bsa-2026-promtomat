@@ -102,6 +102,25 @@ class UserService {
 		return user ? user.toObject() : null;
 	}
 
+	public async findEntityById(id: number): Promise<null | UserEntity> {
+		return await this.userRepository.findById(id);
+	}
+
+	public async updatePasswordForReset(
+		userId: number,
+		password: string,
+		issuedAt: Date,
+	): Promise<boolean> {
+		const { hash, salt } = await this.hashing.hash(password);
+
+		return await this.userRepository.updatePasswordIfUnchangedSince(userId, {
+			issuedAt,
+			passwordChangedAt: new Date().toISOString(),
+			passwordHash: hash,
+			passwordSalt: salt,
+		});
+	}
+
 	public async updateProfile(
 		currentUser: UserDto,
 		payload: UserUpdateRequestDto,

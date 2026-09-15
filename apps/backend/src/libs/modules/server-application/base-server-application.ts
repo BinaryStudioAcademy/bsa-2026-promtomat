@@ -1,3 +1,4 @@
+import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 import swagger, { type StaticDocumentSpec } from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
@@ -119,6 +120,17 @@ class BaseServerApplication implements ServerApplication {
 					return reply.status(error.status).send(response);
 				}
 
+				if (error.statusCode === HTTPCode.TOO_MANY_REQUESTS) {
+					this.logger.info(`[Rate limited]: ${error.message}`);
+
+					const throttled: ServerCommonErrorResponse = {
+						code: ErrorCode.TOO_MANY_REQUESTS,
+						message: error.message,
+					};
+
+					return reply.status(HTTPCode.TOO_MANY_REQUESTS).send(throttled);
+				}
+
 				this.logger.error(error.message);
 
 				const response: ServerCommonErrorResponse = {
@@ -209,9 +221,11 @@ class BaseServerApplication implements ServerApplication {
 	}
 
 	public addRoute(parameters: ServerApplicationRouteParameters): void {
-		const { handler, method, path, preHandler, validation } = parameters;
+		const { config, handler, method, path, preHandler, validation } =
+			parameters;
 
 		this.app.route({
+			...(config && { config }),
 			handler,
 			method,
 			...(preHandler && { preHandler }),
@@ -238,6 +252,11 @@ class BaseServerApplication implements ServerApplication {
 		await this.initServe();
 
 		await this.initMiddlewares();
+
+		await this.app.register(fastifyRateLimit, {
+			global: false,
+			hook: "preHandler",
+		});
 
 		await this.app.register(authGuardPlugin, { authGuard: this.authGuard });
 

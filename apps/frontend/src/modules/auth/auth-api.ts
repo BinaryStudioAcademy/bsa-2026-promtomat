@@ -5,6 +5,8 @@ import { type UserDto, UsersApiTag } from "~/modules/users/users.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
 import {
+	type ForgotPasswordRequestDto,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -15,9 +17,25 @@ const authApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [UsersApiTag.USER] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			forgotPassword: builder.mutation<null, ForgotPasswordRequestDto>({
+				extraOptions: { shouldSuppressToast: true },
+				query: (payload) => ({
+					body: payload,
+					method: HTTPMethod.POST,
+					url: `${APIPath.AUTH}${AuthApiPath.FORGOT_PASSWORD}`,
+				}),
+			}),
 			getAuthenticatedUser: builder.query<UserDto, undefined>({
 				providesTags: [UsersApiTag.USER],
 				query: () => `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			}),
+			resetPassword: builder.mutation<null, ResetPasswordRequestDto>({
+				extraOptions: { shouldSuppressToast: true },
+				query: (payload) => ({
+					body: payload,
+					method: HTTPMethod.POST,
+					url: `${APIPath.AUTH}${AuthApiPath.RESET_PASSWORD}`,
+				}),
 			}),
 			signIn: builder.mutation<SignInResponseDto, SignInRequestDto>({
 				extraOptions: { shouldSuppressToast: true },
@@ -71,7 +89,18 @@ const authApi = baseApi
 		}),
 	});
 
-const { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation } =
-	authApi;
+const {
+	useForgotPasswordMutation,
+	useGetAuthenticatedUserQuery,
+	useResetPasswordMutation,
+	useSignInMutation,
+	useSignUpMutation,
+} = authApi;
 
-export { useGetAuthenticatedUserQuery, useSignInMutation, useSignUpMutation };
+export {
+	useForgotPasswordMutation,
+	useGetAuthenticatedUserQuery,
+	useResetPasswordMutation,
+	useSignInMutation,
+	useSignUpMutation,
+};

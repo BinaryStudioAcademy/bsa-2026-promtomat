@@ -4,7 +4,12 @@ import { type JwtAlgorithm } from "~/libs/modules/config/config.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { TokenError } from "./libs/exceptions/exceptions.js";
-import { type TokenService } from "./libs/types/types.js";
+import {
+	type TokenCreateOptions,
+	type TokenService,
+} from "./libs/types/types.js";
+
+const EMPTY_LENGTH = 0;
 
 type Constructor = {
 	alg: ValueOf<typeof JwtAlgorithm>;
@@ -45,11 +50,18 @@ class JwtTokenService implements TokenService {
 
 	public async create<T extends Record<string, unknown>>(
 		payload: T,
+		options?: TokenCreateOptions,
 	): Promise<string> {
+		const expiresIn = options?.expiresIn ?? this.expiresIn;
+
+		if (expiresIn.trim().length === EMPTY_LENGTH) {
+			throw new TypeError("Token expiry must be a non-empty duration string.");
+		}
+
 		return await new SignJWT(payload)
 			.setProtectedHeader({ alg: this.alg })
 			.setIssuedAt()
-			.setExpirationTime(this.expiresIn)
+			.setExpirationTime(expiresIn)
 			.sign(this.secret);
 	}
 
