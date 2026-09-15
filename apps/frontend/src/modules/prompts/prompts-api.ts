@@ -6,6 +6,8 @@ import { PromptsApiPath, PromptsApiTag } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 	type PromptSearchRequestDto,
@@ -39,6 +41,13 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.RECENT}`,
 				}),
 			}),
+			getPrompts: builder.query<PromptGetAllResponseDto, PromptGetQueryDto>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: (queryPayload) => ({
+					params: queryPayload,
+					url: APIPath.PROMPTS,
+				}),
+			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
 				invalidatesTags: [PromptsApiTag.PROMPT, WorkspacesApiTag.WORKSPACE],
 				query: (payload) => ({
@@ -62,6 +71,7 @@ const promptApi = baseApi
 const {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
+	useGetPromptsQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 } = promptApi;
@@ -69,6 +79,7 @@ const {
 export {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
+	useGetPromptsQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 };

@@ -1,11 +1,14 @@
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
+import { ROUND_FACTOR } from "./libs/constants/constants.js";
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
 	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptFindAllOptions,
+	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
@@ -14,7 +17,6 @@ import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
-
 	private promptRepository: PromptRepository;
 
 	public constructor(
@@ -44,6 +46,28 @@ class PromptService {
 		void this.promptEmbeddingService.embedForPrompt(promptDto);
 
 		return promptDto;
+	}
+
+	public async findAll(
+		options: PromptFindAllOptions,
+	): Promise<PromptGetAllResponseDto> {
+		const { averageScore, items, page, pageSize, totalCount } =
+			await this.promptRepository.findAll(options);
+
+		const formattedAverageScore =
+			averageScore === null
+				? null
+				: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
+
+		return {
+			averageScore: formattedAverageScore,
+			items: items.map((item) =>
+				PromptEntity.initialize(item).toDto(item.workspace.name),
+			),
+			page,
+			pageSize,
+			totalCount,
+		};
 	}
 
 	public findCandidates({

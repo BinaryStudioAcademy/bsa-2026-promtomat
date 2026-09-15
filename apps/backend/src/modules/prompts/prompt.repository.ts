@@ -1,14 +1,45 @@
 import { SortOrder } from "~/libs/enums/enums.js";
+import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
-import { type PromptRecentDto } from "./libs/types/types.js";
+import { ZERO_VALUE } from "./libs/constants/constants.js";
+import { PaginationValue } from "./libs/enums/enums.js";
+import {
+	type PromptAggregateRow,
+	type PromptFindAllOptions,
+	type PromptRecentDto,
+	type PromptRepositoryFindAllResponseDto,
+	type PromptRepositoryItem,
+} from "./libs/types/types.js";
 
 class PromptRepository {
 	private promptModel: typeof PromptModel;
 
 	public constructor(promptModel: typeof PromptModel) {
 		this.promptModel = promptModel;
+	}
+
+	private async findAggregate(
+		baseQuery: ReturnType<typeof this.promptModel.query>,
+	): Promise<{ averageScore: null | number; totalCount: number }> {
+		const [aggregation] = await baseQuery
+			.clone()
+			.clearSelect()
+			.clearOrder()
+			.clear("limit")
+			.clear("offset")
+			.count(`${DatabaseTableName.PROMPTS}.id as count`)
+			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
+			.castTo<PromptAggregateRow[]>()
+			.execute();
+
+		return {
+			averageScore: aggregation?.averageScore
+				? Number(aggregation.averageScore)
+				: null,
+			totalCount: Number(aggregation?.count ?? ZERO_VALUE),
+		};
 	}
 
 	public async create(entity: PromptEntity): Promise<PromptEntity> {
@@ -19,6 +50,48 @@ class PromptRepository {
 			.execute();
 
 		return PromptEntity.initialize(prompt);
+	}
+
+	public async findAll({
+		query,
+		userId,
+	}: PromptFindAllOptions): Promise<PromptRepositoryFindAllResponseDto> {
+		const {
+			limit = PaginationValue.DEFAULT_LIMIT,
+			page = PaginationValue.DEFAULT_PAGE,
+			score,
+			search,
+			workspaceId,
+		} = query;
+
+		const baseQuery = this.promptModel.query().modify("filterByQuery", {
+			score,
+			search,
+			userId,
+			workspaceId,
+		});
+
+		const { averageScore, totalCount } = await this.findAggregate(baseQuery);
+
+		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
+
+		const items = await baseQuery
+			.clone()
+			.select(`${DatabaseTableName.PROMPTS}.*`)
+			.withGraphJoined("workspace", { joinOperation: "innerJoin" })
+			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
+			.offset(offset)
+			.limit(limit)
+			.castTo<PromptRepositoryItem[]>()
+			.execute();
+
+		return {
+			averageScore,
+			items,
+			page,
+			pageSize: limit,
+			totalCount,
+		};
 	}
 
 	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
@@ -36,6 +109,16 @@ class PromptRepository {
 			.orderBy("createdAt", SortOrder.DESC)
 			.limit(limit)
 			.execute();
+	}
+
+	public async findUserPromptSummary(
+		userId: number,
+	): Promise<{ averageScore: null | number; totalCount: number }> {
+		const baseQuery = this.promptModel
+			.query()
+			.modify("filterByQuery", { userId });
+
+		return await this.findAggregate(baseQuery);
 	}
 }
 

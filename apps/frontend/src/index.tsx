@@ -17,6 +17,8 @@ import { SmartSearch } from "~/pages/smart-search/smart-search.js";
 import { Training } from "~/pages/training/training.js";
 import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
+import { PromptHistory } from "./pages/prompt-history/prompt-history.js";
+
 createRoot(document.querySelector("#root") as HTMLElement).render(
 	<StrictMode>
 		<StoreProvider store={store}>
@@ -55,6 +57,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.TRAINING,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<PromptHistory />
+									</PrivateRoute>
+								),
+								path: AppRoute.PROMPT_HISTORY,
 							},
 							{
 								element: <Auth />,

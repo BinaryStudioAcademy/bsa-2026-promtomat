@@ -102,6 +102,26 @@ class PromptEntity implements Entity {
 		});
 	}
 
+	public toDto(workspaceName: string): {
+		body: string;
+		createdAt: string;
+		id: number;
+		intent: string;
+		score: number;
+		workspaceId: number;
+		workspaceName: string;
+	} {
+		return {
+			body: this.promptBody,
+			createdAt: this.createdAt,
+			id: this.id as number,
+			intent: this.taskIntent,
+			score: this.efficiencyScore,
+			workspaceId: this.workspaceId,
+			workspaceName,
+		};
+	}
+
 	public toNewObject(): {
 		efficiencyScore: number;
 		promptBody: string;
