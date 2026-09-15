@@ -1,10 +1,12 @@
 import {
 	type BedrockInterface,
-	CommandOptions,
-	TextGenerationError,
+	BedrockServiceError,
+	type CommandOptions,
+	type CommandOutput,
 } from "~/libs/modules/bedrock/bedrock.js";
 
 import { TOKENS_THRESHOLD } from "./libs/constants/constants.js";
+import { TextGenerationError } from "./libs/exceptions/exceptions.js";
 import { getOutputSchema } from "./libs/helpers/helpers.js";
 import {
 	type GeneratorInterface,
@@ -40,53 +42,52 @@ class Generator implements GeneratorInterface {
 		return commandOptions;
 	}
 
-	private throwIfExceedsTokenLimit(options: TextGenerationOptions) {
-		if (options.config.maxTokens > TOKENS_THRESHOLD) {
-			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
-				TOKENS_THRESHOLD,
-			);
+	private async sendCommand(options: CommandOptions): Promise<CommandOutput> {
+		try {
+			return await this.bedrockService.sendCommand(options);
+		} catch (error) {
+			if (error instanceof BedrockServiceError) {
+				throw TextGenerationError.unableToGenerateText(error);
+			}
+
+			throw error;
 		}
 	}
 
-	private tryGetContent(text: string | undefined): string {
-		if (text === undefined) {
-			throw TextGenerationError.outputUnusable();
+	private throwIfExceedsTokenLimit(options: TextGenerationOptions): void {
+		if (options.config.maxTokens > TOKENS_THRESHOLD) {
+			throw TextGenerationError.maxTokensExceedsAllowedThreshold();
 		}
-
-		return text;
 	}
 
 	public async generate<K extends keyof SchemaResultMap>(
 		options: StructuredGenerationOptions<K>,
 	): Promise<SchemaResultMap[K]> {
 		this.throwIfExceedsTokenLimit(options);
-		const result = await this.bedrockService.sendCommand(
-			this.createCommandOptions(options),
-		);
 
-		if (result.isTextTruncated) {
-			throw TextGenerationError.outputUnusable();
+		const result = await this.sendCommand(this.createCommandOptions(options));
+
+		if (result.isTextTruncated || result.text === undefined) {
+			throw TextGenerationError.unableToGenerateStructure();
 		}
 
-		const text = this.tryGetContent(result.text);
-
 		try {
-			return JSON.parse(text) as SchemaResultMap[K];
+			return JSON.parse(result.text) as SchemaResultMap[K];
 		} catch (error) {
-			throw TextGenerationError.outputUnusable(error);
+			throw TextGenerationError.unableToGenerateStructure(error);
 		}
 	}
 
 	public async generateText(options: TextGenerationOptions): Promise<string> {
-		const result = await this.bedrockService.sendCommand(options);
-
 		this.throwIfExceedsTokenLimit(options);
 
-		if (result.isTextTruncated) {
-			throw TextGenerationError.outputUnusable();
+		const result = await this.sendCommand(options);
+
+		if (result.isTextTruncated || result.text === undefined) {
+			throw TextGenerationError.unableToGenerateText();
 		}
 
-		return this.tryGetContent(result.text);
+		return result.text;
 	}
 }
 

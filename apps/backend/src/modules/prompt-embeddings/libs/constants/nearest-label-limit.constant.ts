@@ -1,0 +1,3 @@
+const NEAREST_LABEL_LIMIT = 20;
+
+export { NEAREST_LABEL_LIMIT };

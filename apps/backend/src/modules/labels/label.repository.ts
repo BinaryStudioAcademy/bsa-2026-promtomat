@@ -1,0 +1,80 @@
+import { type Transaction } from "objection";
+
+import { DatabaseTableName } from "~/libs/modules/database/database.js";
+
+import { LabelEntity } from "./label.entity.js";
+import { type LabelModel } from "./label.model.js";
+import {
+	CREATE_LABEL_CONFLICT_COLUMNS,
+	CREATE_LABEL_MERGE_COLUMNS,
+	LABEL_ID,
+	LABEL_NAME,
+	LABEL_STEM_QUERY,
+	LABEL_WORKSPACE_ID,
+	PROMPT_COUNT_ALIAS,
+	PROMPT_ID,
+	PROMPT_LABEL_ID,
+} from "./libs/constants/constants.js";
+import {
+	type LabelCountRow,
+	type LabelStemRow,
+	type LabelWithPromptCountDto,
+} from "./libs/types/types.js";
+
+class LabelRepository {
+	private labelModel: typeof LabelModel;
+
+	public constructor(labelModel: typeof LabelModel) {
+		this.labelModel = labelModel;
+	}
+
+	public async createIfAbsent(
+		entity: LabelEntity,
+		trx?: Transaction,
+	): Promise<LabelEntity> {
+		const label = await this.labelModel
+			.query(trx)
+			.insert(entity.toNewObject())
+			.onConflict(CREATE_LABEL_CONFLICT_COLUMNS)
+			.merge(CREATE_LABEL_MERGE_COLUMNS)
+			.returning("*")
+			.execute();
+
+		return LabelEntity.initialize(label);
+	}
+
+	public async findAllWithPromptCounts(
+		workspaceId: number,
+	): Promise<LabelWithPromptCountDto[]> {
+		const rows = (await this.labelModel
+			.knex()
+			.select(LABEL_ID, LABEL_NAME)
+			.from(DatabaseTableName.LABELS)
+			.leftJoin(DatabaseTableName.PROMPTS, LABEL_ID, PROMPT_LABEL_ID)
+			.where(LABEL_WORKSPACE_ID, "=", workspaceId)
+			.count(`${PROMPT_ID} as ${PROMPT_COUNT_ALIAS}`)
+			.groupBy(LABEL_ID, LABEL_NAME)
+			.orderBy(PROMPT_COUNT_ALIAS, "desc")) as LabelCountRow[];
+
+		return rows.map((row) => ({
+			id: row.id,
+			name: row.name,
+			promptCount: Number(row.promptCount),
+		}));
+	}
+
+	public async findStem(label: string, trx?: Transaction): Promise<string> {
+		const knex = trx ?? this.labelModel.knex();
+
+		const { rows } = await knex.raw<{ rows: LabelStemRow[] }>(
+			LABEL_STEM_QUERY,
+			[label],
+		);
+
+		const [row] = rows;
+
+		return row?.stem ?? label;
+	}
+}
+
+export { LabelRepository };

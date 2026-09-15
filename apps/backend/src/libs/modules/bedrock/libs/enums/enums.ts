@@ -1,2 +1,2 @@
-export { TextGenerationErrorCode } from "./text-generation-error-code.enum.js";
-export { TextGenerationErrorMessage } from "./text-generation-error-message.enum.js";
+export { BedrockServiceErrorCode } from "./bedrock-service-error-code.enum.js";
+export { BedrockServiceErrorMessage } from "./bedrock-service-error-message.enum.js";
