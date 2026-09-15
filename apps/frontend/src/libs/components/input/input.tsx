@@ -24,7 +24,10 @@ type Properties<T extends FieldValues> = {
 	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
+	onBlur?: React.FocusEventHandler<HTMLInputElement>;
+	onClick?: React.MouseEventHandler<HTMLInputElement>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
+	onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
@@ -41,7 +44,10 @@ const Input = <T extends FieldValues>({
 	label,
 	maxLength,
 	name,
+	onBlur,
+	onClick,
 	onFocus,
+	onKeyDown,
 	placeholder = "",
 	size = ControlSize.MD,
 	type = InputType.TEXT,
@@ -106,7 +112,10 @@ const Input = <T extends FieldValues>({
 					)}
 					id={inputId}
 					maxLength={maxLength}
+					onBlur={onBlur}
+					onClick={onClick}
 					onFocus={onFocus}
+					onKeyDown={onKeyDown}
 					placeholder={placeholder}
 					type={inputType}
 				/>

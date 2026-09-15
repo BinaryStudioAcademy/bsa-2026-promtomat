@@ -106,13 +106,7 @@ const InlineEdit = <T extends FieldValues>({
 
 	if (isEditing) {
 		return (
-			/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */
-			<div
-				onBlur={handleBlur}
-				onClick={handleClick}
-				onKeyDown={handleKeyDown}
-				ref={wrapperReference}
-			>
+			<div ref={wrapperReference}>
 				<Input
 					className={className}
 					control={control}
@@ -121,6 +115,9 @@ const InlineEdit = <T extends FieldValues>({
 					isLabelHidden={isLabelHidden}
 					label={label}
 					name={name}
+					onBlur={handleBlur}
+					onClick={handleClick}
+					onKeyDown={handleKeyDown}
 					placeholder={placeholder}
 					size={size}
 					{...rest}
