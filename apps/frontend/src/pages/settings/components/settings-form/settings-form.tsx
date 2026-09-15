@@ -61,7 +61,10 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				.unwrap()
 				.then((updatedUser: UserDto) => {
 					reset(getSettingsFormValues(updatedUser));
-					showNotification({ message: SettingsMessage.SUCCESS });
+					showNotification({
+						message: SettingsMessage.SUCCESS,
+						type: "success",
+					});
 				})
 				.catch((caughtError: unknown) => {
 					if (
@@ -102,6 +105,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					/>
 					<Select
 						control={control}
+						isRequired
 						label="Primary AI coding tool"
 						name="primaryAiCodingTool"
 						options={AI_CODING_TOOL_OPTIONS}
