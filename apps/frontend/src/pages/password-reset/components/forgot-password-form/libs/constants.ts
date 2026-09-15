@@ -10,7 +10,7 @@ const ForgotPasswordMessage = {
 	FOOTER_LEAD: "Remembered your password?",
 	SENDING: "Sending...",
 	SENT_DESCRIPTION:
-		"If that address has an account, a reset link is on its way. The link expires in 10 minutes.",
+		"If that address has an account, a reset link is on its way. The link expires after a limited time.",
 	SENT_TITLE: "Check your email",
 	SUBMIT: "Send reset link",
 	TITLE: "Reset your password",
