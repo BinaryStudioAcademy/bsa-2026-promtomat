@@ -118,12 +118,13 @@
 }
 
 .action:hover {
+	color: var(--text-strong);
 	background-color: var(--state-hover-tint);
 }
 
 .action:active {
-	color: var(--text-on-accent);
-	background-color: var(--state-active-tint);
+	color: var(--text-strong);
+	background-color: var(--state-press-tint);
 }
 
 .action:focus-visible {
