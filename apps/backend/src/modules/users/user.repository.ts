@@ -8,23 +8,16 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
-import { type UserUpdateRequestDto } from "./libs/types/types.js";
+import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
+import {
+	type PasswordPayload,
+	type ResetPasswordPayload,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 
 const UsersConstraintName = {
 	NICKNAME_UNIQUE: "users_nickname_unique",
 } as const;
-
-type PasswordPayload = {
-	passwordChangedAt: string;
-	passwordHash: string;
-	passwordSalt: string;
-};
-
-type ResetPasswordPayload = PasswordPayload & {
-	issuedAt: Date;
-};
-
-const NO_UPDATED_ROWS = 0;
 
 class UserRepository {
 	private userModel: typeof UserModel;
