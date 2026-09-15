@@ -1,9 +1,14 @@
+import { Icon } from "~/libs/components/icon/icon.js";
 import {
 	LoaderSize,
 	LoaderVariant,
 } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import {
+	ButtonVariant,
+	ControlSize,
+	type IconName,
+} from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -11,6 +16,7 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	className?: string | undefined;
+	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLoading?: boolean;
 	label: string;
@@ -26,6 +32,7 @@ type Properties = {
 
 const Button: React.FC<Properties> = ({
 	className,
+	iconName,
 	isDisabled = false,
 	isLoading = false,
 	label,
@@ -53,6 +60,7 @@ const Button: React.FC<Properties> = ({
 		onMouseLeave={onMouseLeave}
 		type={type}
 	>
+		{iconName && <Icon iconName={iconName} />}
 		{label}
 		{isLoading && (
 			<Loader
