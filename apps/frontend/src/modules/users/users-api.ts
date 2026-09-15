@@ -9,6 +9,7 @@ const usersApi = baseApi
 	.injectEndpoints({
 		endpoints: (builder) => ({
 			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
 					body: payload,
