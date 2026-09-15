@@ -63,6 +63,7 @@ class AuthGuard {
 
 	private async verifyToken(token: string): Promise<AuthPayload> {
 		let payload: AuthPayload;
+
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
@@ -73,7 +74,9 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
-		if (payload.purpose !== undefined) {
+		const hasPurpose = Boolean(payload.purpose);
+
+		if (hasPurpose) {
 			this.throwUnauthorized(AuthErrorMesssage.WRONG_PURPOSE);
 		}
 
