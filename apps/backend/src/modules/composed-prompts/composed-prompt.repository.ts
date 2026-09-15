@@ -3,6 +3,7 @@ import { UniqueViolationError } from "objection";
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
 import { SOURCES_GRAPH } from "./libs/constants/constants.js";
+import { ComposedPromptColumnName } from "./libs/enums/enums.js";
 import { ComposedPromptDuplicateError } from "./libs/exceptions/exceptions.js";
 
 class ComposedPromptRepository {
@@ -38,17 +39,14 @@ class ComposedPromptRepository {
 		entity: ComposedPromptEntity,
 	): Promise<ComposedPromptEntity> {
 		try {
-			return await this.composedPromptModel.transaction(async (transaction) => {
-				const { id } = await this.composedPromptModel
-					.query(transaction)
+			return await this.composedPromptModel.transaction(async (trx) => {
+				const inserted = await this.composedPromptModel
+					.query(trx)
 					.insertGraph(entity.toNewObject())
 					.execute();
-				const composedPrompt = await this.composedPromptModel
-					.query(transaction)
-					.findById(id)
-					.withGraphFetched(SOURCES_GRAPH)
-					.throwIfNotFound()
-					.execute();
+				const composedPrompt = await inserted.$fetchGraph(SOURCES_GRAPH, {
+					transaction: trx,
+				});
 
 				return this.initializeEntity(composedPrompt);
 			});
@@ -82,6 +80,16 @@ class ComposedPromptRepository {
 			.execute();
 
 		return composedPrompt ? this.initializeEntity(composedPrompt) : null;
+	}
+
+	public async findWorkspaceId(id: number): Promise<null | number> {
+		const composedPrompt = await this.composedPromptModel
+			.query()
+			.findById(id)
+			.select(ComposedPromptColumnName.WORKSPACE_ID)
+			.execute();
+
+		return composedPrompt?.workspaceId ?? null;
 	}
 }
 

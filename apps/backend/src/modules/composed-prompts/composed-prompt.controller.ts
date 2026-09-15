@@ -11,6 +11,7 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import { type ComposedPromptService } from "./composed-prompt.service.js";
 import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
+import { composedPromptAccessHook } from "./libs/hooks/composed-prompt-access.hook.js";
 import {
 	type ComposedPromptIdParametersDto,
 	type ComposeRequestDto,
@@ -128,6 +129,10 @@ class ComposedPromptController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: ComposedPromptsApiPath.$ID,
+			preHandler: composedPromptAccessHook(
+				this.composedPromptService,
+				this.workspaceService,
+			),
 			validation: {
 				params: composedPromptIdParametersValidationSchema,
 			},
@@ -246,10 +251,7 @@ class ComposedPromptController extends BaseController {
 		options: APIHandlerOptions<{ params: ComposedPromptIdParametersDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.composedPromptService.findById(
-				options.params.id,
-				options.user?.id as number,
-			),
+			payload: await this.composedPromptService.findById(options.params.id),
 			status: HTTPCode.OK,
 		};
 	}

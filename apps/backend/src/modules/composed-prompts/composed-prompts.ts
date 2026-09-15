@@ -21,7 +21,6 @@ const composedPromptService = new ComposedPromptService({
 	modelId: config.ENV.BEDROCK.MODEL.ID,
 	promptService,
 	sourceBodyMaxLength: config.ENV.GENERATION.SOURCE_BODY_MAX_LENGTH,
-	workspaceService,
 });
 
 const composedPromptController = new ComposedPromptController(
