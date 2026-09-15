@@ -1,4 +1,4 @@
-import React, { useCallback, useId, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useController } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -56,6 +56,12 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const errorMessage = error?.message;
 	const isOwner = user?.id === prompt.userId;
 
+	const lastValidIntentReference = useRef(prompt.intent);
+
+	useEffect(() => {
+		lastValidIntentReference.current = prompt.intent;
+	}, [prompt.intent]);
+
 	const handleToggle = useCallback(
 		(event: React.SyntheticEvent<HTMLDetailsElement>): void => {
 			setIsOpen(event.currentTarget.open);
@@ -68,8 +74,10 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	}, [copyToClipboard, prompt.body]);
 
 	const handleSaveUpdatedIntent = useCallback((): void => {
-		void handleSubmit(async (payload: PromptUpdateIntentRequestDto) => {
-			try {
+		void handleSubmit(
+			async (payload: PromptUpdateIntentRequestDto) => {
+				lastValidIntentReference.current = payload.taskIntent;
+
 				await updateIntent({
 					id: prompt.id,
 					payload,
@@ -79,18 +87,15 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 					message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
 					type: "success",
 				});
-			} catch {
-				reset({ taskIntent: prompt.intent });
-			}
-		})();
-	}, [
-		handleSubmit,
-		updateIntent,
-		prompt.id,
-		prompt.intent,
-		reset,
-		queryPayload,
-	]);
+			},
+			() => {
+				reset(
+					{ taskIntent: lastValidIntentReference.current },
+					{ keepErrors: true },
+				);
+			},
+		)();
+	}, [handleSubmit, updateIntent, prompt.id, reset, queryPayload]);
 
 	return (
 		<details className={styles["item"]} onToggle={handleToggle} open={isOpen}>

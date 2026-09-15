@@ -59,11 +59,22 @@ const InlineEdit = <T extends FieldValues>({
 		inputElement?.focus();
 	}, [isEditing]);
 
+	const cancelEditing = useCallback((): void => {
+		field.onChange(originalValueReference.current);
+		setIsEditing(false);
+	}, [field]);
+
+	const saveEditing = useCallback((): void => {
+		setIsEditing(false);
+		if (field.value !== originalValueReference.current) {
+			onSave?.();
+		}
+	}, [field, onSave]);
+
 	const handleStartEditing = useCallback((): void => {
 		if (isDisabled) {
 			return;
 		}
-
 		originalValueReference.current = field.value;
 		setIsEditing(true);
 	}, [isDisabled, field.value]);
@@ -72,30 +83,21 @@ const InlineEdit = <T extends FieldValues>({
 		(event: React.KeyboardEvent<HTMLDivElement>) => {
 			event.stopPropagation();
 			if (event.key === "Enter") {
-				setIsEditing(false);
-
-				if (field.value === originalValueReference.current) {
-					return;
-				}
-
-				onSave?.();
+				saveEditing();
 			} else if (event.key === "Escape") {
-				field.onChange(originalValueReference.current);
-				setIsEditing(false);
+				cancelEditing();
 			}
 		},
-		[field, onSave],
+		[saveEditing, cancelEditing],
 	);
 
 	const handleBlur = useCallback(
 		(event: React.FocusEvent<HTMLDivElement>) => {
-			if (event.currentTarget.contains(event.relatedTarget)) {
-				return;
+			if (!event.currentTarget.contains(event.relatedTarget)) {
+				cancelEditing();
 			}
-			field.onChange(originalValueReference.current);
-			setIsEditing(false);
 		},
-		[field],
+		[cancelEditing],
 	);
 
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
