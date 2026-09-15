@@ -10,7 +10,6 @@ import { type UserModel } from "~/modules/users/user.model.js";
 
 import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
 import {
-	type PasswordPayload,
 	type ResetPasswordPayload,
 	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
@@ -95,19 +94,6 @@ class UserRepository {
 
 			throw error;
 		}
-	}
-
-	public async updatePassword(
-		id: number,
-		payload: PasswordPayload,
-		trx?: Transaction,
-	): Promise<UserEntity> {
-		const user = await this.userModel
-			.query(trx)
-			.patchAndFetchById(id, payload)
-			.throwIfNotFound();
-
-		return UserEntity.initialize(user);
 	}
 
 	public async updatePasswordIfUnchangedSince(
