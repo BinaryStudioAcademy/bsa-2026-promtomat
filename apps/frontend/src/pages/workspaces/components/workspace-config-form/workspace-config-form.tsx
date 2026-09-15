@@ -126,7 +126,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					<SearchableSelect
 						control={control}
 						isDisabled={isLoading}
-						label="Add tags"
+						label="Tech Stack Tags"
 						name="stackTags"
 						placeholder="Enter tags"
 						size={ControlSize.MD}
