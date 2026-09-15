@@ -29,13 +29,17 @@ const promptCreate = z.object({
 			PromptValidationRule.INTENT_REQUIRED,
 			PromptValidationMessage.INTENT_REQUIRED,
 		)
-		.min(
-			PromptValidationRule.INTENT_MINIMUM_LENGTH,
-			PromptValidationMessage.INTENT_TOO_SHORT,
-		)
-		.max(
-			PromptValidationRule.INTENT_MAXIMUM_LENGTH,
-			PromptValidationMessage.INTENT_TOO_LONG,
+		.pipe(
+			z
+				.string()
+				.min(
+					PromptValidationRule.INTENT_MINIMUM_LENGTH,
+					PromptValidationMessage.INTENT_TOO_SHORT,
+				)
+				.max(
+					PromptValidationRule.INTENT_MAXIMUM_LENGTH,
+					PromptValidationMessage.INTENT_TOO_LONG,
+				),
 		),
 	workspaceId: z.number(PromptValidationMessage.INVALID_CONTEXT),
 });
