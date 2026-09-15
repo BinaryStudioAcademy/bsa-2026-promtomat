@@ -3,7 +3,7 @@ import { type Transaction } from "objection";
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
-import { PromptModel } from "~/modules/prompts/prompt.model.js";
+import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 
 import { ZERO_VALUE } from "./libs/constants/constants.js";
 import { PaginationValue } from "./libs/enums/enums.js";
