@@ -1,6 +1,7 @@
 import { ContributorError, UserError } from "~/libs/exceptions/exceptions.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
+import { type WorkspaceContributorsResponseDto } from "../workspaces/libs/types/types.js";
 import { ContributorEntity } from "./contributor.entity.js";
 import { type ContributorRepository } from "./contributor.repository.js";
 import {
@@ -40,6 +41,20 @@ class ContributorService {
 		);
 
 		return contributor.toObject();
+	}
+
+	public async findAllByWorkspaceId(
+		workspaceId: number,
+	): Promise<WorkspaceContributorsResponseDto> {
+		const [owner, contributors] = await Promise.all([
+			this.contributorRepository.findOwnerByWorkspaceId(workspaceId),
+			this.contributorRepository.findAllByWorkspaceId(workspaceId),
+		]);
+
+		return {
+			contributors,
+			owner,
+		};
 	}
 }
 

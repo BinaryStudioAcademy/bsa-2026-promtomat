@@ -8,6 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "../workspaces/libs/enums/enums.js";
+import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
@@ -40,6 +41,33 @@ import { type ContributorService } from "./contributor.service.js";
  *         workspaceId:
  *           type: integer
  *           minimum: 1
+ *     WorkspaceUserSummary:
+ *       type: object
+ *       required:
+ *         - email
+ *         - id
+ *         - nickname
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *         id:
+ *           type: integer
+ *           minimum: 1
+ *         nickname:
+ *           type: string
+ *     WorkspaceContributorsResponse:
+ *       type: object
+ *       required:
+ *         - contributors
+ *         - owner
+ *       properties:
+ *         contributors:
+ *           type: array
+ *           items:
+ *             $ref: "#/components/schemas/WorkspaceUserSummary"
+ *         owner:
+ *           $ref: "#/components/schemas/WorkspaceUserSummary"
  */
 class ContributorController extends BaseController {
 	private contributorService: ContributorService;
@@ -52,6 +80,21 @@ class ContributorController extends BaseController {
 		super(logger, APIPath.WORKSPACES);
 
 		this.contributorService = contributorService;
+
+		this.addRoute({
+			handler: (options) =>
+				this.findAllByWorkspaceId(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+			preHandler: workspaceAccessHook(workspaceService),
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
+			},
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -131,6 +174,48 @@ class ContributorController extends BaseController {
 				options.user?.id as number,
 			),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /workspaces/{workspaceId}/contributors:
+	 *   get:
+	 *     description: Returns the workspace owner and contributors
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       200:
+	 *         description: Workspace contributors returned successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/WorkspaceContributorsResponse"
+	 *       401:
+	 *         description: Unauthorized
+	 *       404:
+	 *         description: Workspace not found or the user does not have access
+	 *       422:
+	 *         description: Invalid workspace identifier
+	 */
+
+	private async findAllByWorkspaceId(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.contributorService.findAllByWorkspaceId(
+				options.params.workspaceId,
+			),
+			status: HTTPCode.OK,
 		};
 	}
 }
