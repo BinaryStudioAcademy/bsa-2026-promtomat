@@ -59,7 +59,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						control={control}
 						label="Workspace name"
 						name="name"
-						placeholder="Name..."
+						placeholder="Enter name"
 					/>
 					<SearchableSelect
 						control={control}
