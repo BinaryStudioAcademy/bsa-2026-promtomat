@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { AppRoute } from "~/libs/enums/enums.js";
-import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 
-import { getScoreVariant } from "./libs/helpers/get-score-variant.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -26,14 +26,7 @@ const SuggestionRow: React.FC<Properties> = ({
 			})}
 		>
 			<span className={styles["title"]}>{taskIntent}</span>
-			<span
-				className={getValidClasses(
-					styles["badge"],
-					styles[getScoreVariant(efficiencyScore)],
-				)}
-			>
-				{efficiencyScore}
-			</span>
+			<ScoreBadge efficiencyScore={efficiencyScore} />
 		</Link>
 	);
 };

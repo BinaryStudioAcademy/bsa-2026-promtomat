@@ -30,26 +30,3 @@
 	color: var(--text-strong);
 	white-space: nowrap;
 }
-
-.badge {
-	flex-shrink: 0;
-	padding: var(--space-4) var(--space-8);
-	font-family: var(--font-family-mono);
-	font-size: var(--font-size-body-sm);
-	border-radius: var(--radius-sm);
-}
-
-.success {
-	color: var(--fg-success);
-	background-color: var(--bg-success);
-}
-
-.warning {
-	color: var(--fg-warning);
-	background-color: var(--bg-warning);
-}
-
-.danger {
-	color: var(--fg-danger);
-	background-color: var(--bg-danger);
-}
