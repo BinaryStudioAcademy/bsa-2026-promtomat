@@ -54,7 +54,11 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				.unwrap()
 				.then((updatedUser: UserDto) => {
 					reset(getSettingsFormValues(updatedUser));
-					showNotification({ message: SettingsMessage.SUCCESS });
+					showNotification({
+						id: "settings-profile-updated",
+						message: SettingsMessage.SUCCESS,
+						type: "success",
+					});
 				})
 				.catch(() => {
 					// The failure is exposed through the mutation error state.
