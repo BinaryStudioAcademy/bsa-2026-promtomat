@@ -1,3 +1,4 @@
+import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
 import { ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserDto } from "~/libs/types/types.js";
@@ -8,8 +9,6 @@ import { type TokenService } from "../token/libs/types/types.js";
 import { BEARER } from "./libs/constants/constants.js";
 import { AuthErrorMesssage, AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
-
-const MILLISECONDS_IN_SECOND = 1000;
 
 class AuthGuard {
 	private readonly tokenService: TokenService;
@@ -25,11 +24,11 @@ class AuthGuard {
 		payload: AuthPayload,
 		passwordChangedAt: null | string,
 	): void {
-		if (passwordChangedAt === null) {
+		if (!passwordChangedAt) {
 			return;
 		}
 
-		if (payload.iat === undefined) {
+		if (!payload.iat) {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 

@@ -1,3 +1,4 @@
+import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
@@ -5,8 +6,14 @@ import { type MailService } from "~/libs/modules/mail/mail.js";
 import { type TokenService } from "~/libs/modules/token/token.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
+import {
+	PASSWORD_CHANGED_SUBJECT,
+	PASSWORD_CHANGED_TEXT,
+	PASSWORD_RESET_SUBJECT,
+} from "./libs/constants/constants.js";
 import { TokenPurpose } from "./libs/enums/enums.js";
 import {
+	buildPasswordResetText,
 	checkHasResetTokenClaims,
 	checkIsExpiredTokenError,
 } from "./libs/helpers/helpers.js";
@@ -21,12 +28,6 @@ import {
 	type SignUpResponseDto,
 	type VerifiedResetToken,
 } from "./libs/types/types.js";
-
-const MILLISECONDS_IN_SECOND = 1000;
-
-const PASSWORD_CHANGED_SUBJECT = "Your Promptomat password was changed";
-
-const PASSWORD_RESET_SUBJECT = "Reset your Promptomat password";
 
 type Constructor = {
 	hashing: Hashing;
@@ -81,7 +82,7 @@ class AuthService {
 
 			await this.mailService.send({
 				subject: PASSWORD_CHANGED_SUBJECT,
-				text: "Your password was just changed. You have been signed out everywhere else, so you will need to sign in again on your other devices.\n\nIf this was not you, request a new reset link immediately and contact support.",
+				text: PASSWORD_CHANGED_TEXT,
 				to: user.email,
 			});
 		} catch (error) {
@@ -97,7 +98,7 @@ class AuthService {
 		try {
 			await this.mailService.send({
 				subject: PASSWORD_RESET_SUBJECT,
-				text: `Open this link to choose a new password. It expires in ${this.tokenTtlMinutes.toString()} minutes.\n\n${link}\n\nIf you did not ask for this, you can ignore this email.`,
+				text: buildPasswordResetText(link, this.tokenTtlMinutes),
 				to: email,
 			});
 		} catch (error) {
