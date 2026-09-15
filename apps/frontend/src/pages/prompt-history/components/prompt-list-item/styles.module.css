@@ -31,13 +31,20 @@
 }
 
 .intent {
+	padding: 0 var(--space-2);
+	font-size: var(--font-size-body-sm);
 	font-weight: 600;
 	color: var(--text-strong);
 }
 
 .meta {
+	padding: 0 var(--space-2);
 	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
+}
+
+.error {
+	color: var(--fg-danger);
 }
 
 .right-controls {

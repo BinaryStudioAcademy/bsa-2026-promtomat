@@ -1,4 +1,4 @@
-import { raw } from "objection";
+import { raw, type Transaction } from "objection";
 
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
@@ -54,6 +54,17 @@ class PromptEmbeddingRepository {
 			.execute();
 
 		return PromptEmbeddingEntity.initialize(promptEmbedding);
+	}
+
+	public async deleteByPromptId(
+		promptId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptEmbeddingModel
+			.query(trx)
+			.delete()
+			.where(PromptEmbeddingColumnName.PROMPT_ID, promptId)
+			.execute();
 	}
 
 	public async findIndexedSourcesAfter(

@@ -1,3 +1,5 @@
+import { PromptError } from "~/libs/exceptions/exceptions.js";
+import { type Database } from "~/libs/modules/database/database.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
@@ -11,18 +13,24 @@ import {
 	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
+	type PromptUpdateIntentPayload,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
 
 class PromptService {
+	private database: Database;
+
 	private promptEmbeddingService: PromptEmbeddingService;
+
 	private promptRepository: PromptRepository;
 
 	public constructor(
+		database: Database,
 		promptRepository: PromptRepository,
 		promptEmbeddingService: PromptEmbeddingService,
 	) {
+		this.database = database;
 		this.promptRepository = promptRepository;
 		this.promptEmbeddingService = promptEmbeddingService;
 	}
@@ -70,6 +78,15 @@ class PromptService {
 		};
 	}
 
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | PromptDto> {
+		const prompt = await this.promptRepository.findByIdAndUserId(id, userId);
+
+		return prompt ? prompt.toObject() : null;
+	}
+
 	public findCandidates({
 		description,
 		limit,
@@ -103,6 +120,36 @@ class PromptService {
 		);
 
 		return { items };
+	}
+
+	public async updateIntent(
+		payload: PromptUpdateIntentPayload,
+	): Promise<PromptDto> {
+		const { id, taskIntent } = payload;
+
+		const updatedPrompt = await this.database.transaction(async (trx) => {
+			const prompt = await this.promptRepository.update(
+				id,
+				{ taskIntent },
+				trx,
+			);
+
+			if (!prompt) {
+				throw PromptError.notFound();
+			}
+
+			await this.promptEmbeddingService.deleteForPrompt(id, trx);
+
+			// Regenerate AI label
+
+			return prompt;
+		});
+
+		const promptDto = updatedPrompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptDto);
+
+		return promptDto;
 	}
 }
 
