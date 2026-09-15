@@ -13,10 +13,6 @@ import { store } from "~/libs/modules/store/store.js";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { PasswordReset } from "~/pages/password-reset/password-reset.js";
-import { SettingsPage } from "~/pages/settings/settings.js";
-import { SmartSearch } from "~/pages/smart-search/smart-search.js";
-import { Training } from "~/pages/training/training.js";
-import { Workspaces } from "~/pages/workspaces/workspaces.js";
 
 const loadAuthPage = async (): Promise<{ Component: ComponentType }> => {
 	const pageModule = await import("~/pages/auth/auth.jsx");
@@ -103,14 +99,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								element: <PasswordReset />,
 								path: AppRoute.RESET_PASSWORD,
-							},
-							{
-								element: (
-									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
-										<NoAccessPage />
-									</PrivateRoute>
-								),
-								path: AppRoute.NO_ACCESS,
 							},
 							{
 								element: <NotFoundPage />,
