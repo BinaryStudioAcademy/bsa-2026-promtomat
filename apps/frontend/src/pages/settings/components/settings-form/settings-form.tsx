@@ -4,8 +4,9 @@ import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize } from "~/libs/enums/enums.js";
+import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
 import { useUpdateProfileMutation } from "~/modules/users/users-api.js";
@@ -34,10 +35,16 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		formState: { isDirty },
 		handleSubmit,
 		reset,
+		setError,
 	} = useAppForm<SettingsFormValues>({
 		defaultValues: getSettingsFormValues(user),
 		validationSchema: updateProfileValidationSchema,
 	});
+
+	const isNicknameConflict =
+		isServerError(error) &&
+		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
+	const generalError = isNicknameConflict ? undefined : error;
 
 	const isSaveDisabled = isLoading || !isDirty;
 
@@ -56,11 +63,19 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					reset(getSettingsFormValues(updatedUser));
 					showNotification({ message: SettingsMessage.SUCCESS });
 				})
-				.catch(() => {
-					// The failure is exposed through the mutation error state.
+				.catch((caughtError: unknown) => {
+					if (
+						isServerError(caughtError) &&
+						caughtError.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS
+					) {
+						setError("nickname", {
+							message: caughtError.message,
+							type: "server",
+						});
+					}
 				});
 		},
-		[isDirty, reset, updateProfile],
+		[isDirty, reset, setError, updateProfile],
 	);
 
 	const handleFormSubmit = useCallback(
@@ -73,7 +88,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	return (
 		<section className={styles["card"]}>
 			<h2 className={styles["section-title"]}>PROFILE SETUP</h2>
-			<FormAlert error={error} />
+			<FormAlert error={generalError} />
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
 					<Input
@@ -82,6 +97,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
+						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
 					<Select

@@ -39,7 +39,7 @@ const Auth: React.FC = () => {
 	}
 
 	if (user) {
-		return <Navigate replace to={AppRoute.ROOT} />;
+		return <Navigate replace to={AppRoute.WORKSPACES} />;
 	}
 
 	const getScreen = (screen: string): React.JSX.Element => {
