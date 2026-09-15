@@ -1,10 +1,23 @@
 import { ContributorError, UserError } from "~/libs/exceptions/exceptions.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
-import { type WorkspaceContributorsResponseDto } from "../workspaces/libs/types/types.js";
+import {
+	type WorkspaceContributorCandidatesQueryDto,
+	type WorkspaceContributorCandidatesResponseDto,
+	type WorkspaceContributorsResponseDto,
+} from "../workspaces/libs/types/types.js";
 import { ContributorEntity } from "./contributor.entity.js";
 import { type ContributorRepository } from "./contributor.repository.js";
 import {
+	CONTRIBUTOR_CANDIDATES_LOOKAHEAD_COUNT,
+	CONTRIBUTOR_CANDIDATES_PAGE_SIZE,
+} from "./libs/constants/constants.js";
+import {
+	decodeContributorCandidatesCursor,
+	encodeContributorCandidatesCursor,
+} from "./libs/helpers/helpers.js";
+import {
+	type ContributorCandidateQuery,
 	type ContributorCreatePayload,
 	type ContributorDto,
 } from "./libs/types/types.js";
@@ -54,6 +67,53 @@ class ContributorService {
 		return {
 			contributors,
 			owner,
+		};
+	}
+	public async findCandidates(
+		workspaceId: number,
+		ownerId: number,
+		query: WorkspaceContributorCandidatesQueryDto,
+	): Promise<WorkspaceContributorCandidatesResponseDto> {
+		const candidateQuery: ContributorCandidateQuery = {
+			limit:
+				CONTRIBUTOR_CANDIDATES_PAGE_SIZE +
+				CONTRIBUTOR_CANDIDATES_LOOKAHEAD_COUNT,
+			ownerId,
+			userQuery: query.userQuery ?? "",
+			workspaceId,
+		};
+
+		if (query.cursor) {
+			candidateQuery.cursor = decodeContributorCandidatesCursor(query.cursor);
+		}
+
+		const candidates =
+			await this.contributorRepository.findCandidates(candidateQuery);
+
+		const checkHasNextPage =
+			candidates.length > CONTRIBUTOR_CANDIDATES_PAGE_SIZE;
+
+		let nextCursor: WorkspaceContributorCandidatesResponseDto["nextCursor"] =
+			null;
+
+		if (checkHasNextPage) {
+			candidates.pop();
+
+			const lastCandidates = candidates.slice(
+				-CONTRIBUTOR_CANDIDATES_LOOKAHEAD_COUNT,
+			);
+
+			for (const lastCandidate of lastCandidates) {
+				nextCursor = encodeContributorCandidatesCursor({
+					id: lastCandidate.id,
+					nickname: lastCandidate.nickname,
+				});
+			}
+		}
+
+		return {
+			items: candidates,
+			nextCursor,
 		};
 	}
 }

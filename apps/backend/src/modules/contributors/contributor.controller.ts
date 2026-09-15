@@ -12,10 +12,12 @@ import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.h
 import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceRouteParametersDto,
 } from "../workspaces/libs/types/types.js";
 import {
 	workspaceAddContributorValidationSchema,
+	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
 } from "../workspaces/libs/validation-schemas/validation-schemas.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
@@ -56,6 +58,20 @@ import { type ContributorService } from "./contributor.service.js";
  *           minimum: 1
  *         nickname:
  *           type: string
+ *     WorkspaceContributorCandidatesResponse:
+ *       type: object
+ *       required:
+ *         - items
+ *         - nextCursor
+ *       properties:
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: "#/components/schemas/WorkspaceUserSummary"
+ *         nextCursor:
+ *           type: string
+ *           nullable: true
+ *           description: Opaque cursor for loading the next page
  *     WorkspaceContributorsResponse:
  *       type: object
  *       required:
@@ -80,6 +96,23 @@ class ContributorController extends BaseController {
 		super(logger, APIPath.WORKSPACES);
 
 		this.contributorService = contributorService;
+
+		this.addRoute({
+			handler: (options) =>
+				this.findCandidates(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+						query: WorkspaceContributorCandidatesQueryDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
+			preHandler: workspaceOwnerAccessHook(workspaceService),
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
+				query: workspaceContributorCandidatesQueryValidationSchema,
+			},
+		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -214,6 +247,65 @@ class ContributorController extends BaseController {
 		return {
 			payload: await this.contributorService.findAllByWorkspaceId(
 				options.params.workspaceId,
+			),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /workspaces/{workspaceId}/contributor-candidates:
+	 *   get:
+	 *     description: Returns users who can be added as workspace contributors
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *       - in: query
+	 *         name: userQuery
+	 *         required: false
+	 *         description: Filters users by nickname or email
+	 *         schema:
+	 *           type: string
+	 *       - in: query
+	 *         name: cursor
+	 *         required: false
+	 *         description: Opaque cursor returned by the previous response
+	 *         schema:
+	 *           type: string
+	 *     responses:
+	 *       200:
+	 *         description: Contributor candidates returned successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/WorkspaceContributorCandidatesResponse"
+	 *       401:
+	 *         description: Unauthorized
+	 *       403:
+	 *         description: Only the workspace owner can view contributor candidates
+	 *       404:
+	 *         description: Workspace not found or the user does not have access
+	 *       422:
+	 *         description: Invalid workspace identifier, query, or cursor
+	 */
+
+	private async findCandidates(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+			query: WorkspaceContributorCandidatesQueryDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.contributorService.findCandidates(
+				options.params.workspaceId,
+				options.user?.id as number,
+				options.query,
 			),
 			status: HTTPCode.OK,
 		};

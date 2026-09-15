@@ -1,5 +1,6 @@
 export { type ContributorDto } from "./contributor-dto.type.js";
 export { type WorkspaceAddContributorRequestDto } from "./workspace-add-contributor-request-dto.type.js";
+export { type WorkspaceContributorCandidatesCursor } from "./workspace-contributor-candidates-cursor.type.js";
 export { type WorkspaceContributorCandidatesQueryDto } from "./workspace-contributor-candidates-query-dto.type.js";
 export { type WorkspaceContributorCandidatesResponseDto } from "./workspace-contributor-candidates-response-dto.type.js";
 export { type WorkspaceContributorRouteParametersDto } from "./workspace-contributor-route-parameters-dto.type.js";

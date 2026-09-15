@@ -21,6 +21,7 @@ export {
 export {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesCursor,
 	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorRouteParametersDto,
@@ -36,6 +37,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	workspaceAddContributorValidationSchema,
+	workspaceContributorCandidatesCursorValidationSchema,
 	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,

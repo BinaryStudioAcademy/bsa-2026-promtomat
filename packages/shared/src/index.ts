@@ -81,6 +81,7 @@ export {
 export {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesCursor,
 	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorRouteParametersDto,
@@ -104,6 +105,7 @@ export {
 	TechStackTagSchema,
 	TechStackTechDictionary,
 	workspaceAddContributorValidationSchema,
+	workspaceContributorCandidatesCursorValidationSchema,
 	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
