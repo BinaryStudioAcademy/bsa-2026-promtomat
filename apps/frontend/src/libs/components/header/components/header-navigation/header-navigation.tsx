@@ -43,7 +43,7 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Link to={AppRoute.TRAINING}>Training</Link>
 					</li>
-					<li className={styles["identity-label"]}>{user.email}</li>
+					<li className={styles["identity-label"]}>{user.nickname}</li>
 					<li>
 						<Button
 							label="Sign out"
