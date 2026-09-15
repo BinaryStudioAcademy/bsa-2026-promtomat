@@ -9,6 +9,7 @@ import {
 	ButtonVariant,
 	ControlSize,
 	ErrorCode,
+	FormValidationMode,
 	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
@@ -36,6 +37,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	>(undefined);
 	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
 		defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
+		mode: FormValidationMode.ON_CHANGE,
 		validationSchema: workspaceCreationValidationSchema,
 	});
 
@@ -77,12 +79,12 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						control={control}
 						label="Workspace name"
 						name="name"
-						placeholder="Name..."
+						placeholder="Enter name"
 					/>
 					<SearchableSelect
 						control={control}
 						isDisabled={isLoading}
-						label="Add tags"
+						label="Tech Stack Tags"
 						name={stackTagsField.name}
 						placeholder="Enter tags"
 						size={ControlSize.MD}
