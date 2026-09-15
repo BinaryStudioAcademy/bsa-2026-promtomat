@@ -97,17 +97,23 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const handleSaveUpdatedIntent = useCallback((): void => {
 		void handleSubmit(
 			async (payload: PromptUpdateIntentRequestDto) => {
+				const previousIntent = lastValidIntentReference.current;
 				lastValidIntentReference.current = payload.taskIntent;
 
-				await updateIntent({
-					id: prompt.id,
-					payload,
-					queryArgs: queryPayload,
-				}).unwrap();
-				showNotification({
-					message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
-					type: "success",
-				});
+				try {
+					await updateIntent({
+						id: prompt.id,
+						payload,
+						queryArgs: queryPayload,
+					}).unwrap();
+					showNotification({
+						message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
+						type: "success",
+					});
+				} catch {
+					lastValidIntentReference.current = previousIntent;
+					reset({ taskIntent: previousIntent });
+				}
 			},
 			() => {
 				reset(
