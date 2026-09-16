@@ -75,15 +75,20 @@ resource "aws_iam_role_policy" "ecs_redeploy" {
   })
 }
 
-resource "aws_iam_role" "backend_s3" {
-  name = "promptomat-backend-s3"
+moved {
+  from = aws_iam_role.backend_s3
+  to   = aws_iam_role.backend_task
+}
+
+resource "aws_iam_role" "backend_task" {
+  name = "promptomat-backend-task"
 
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
 
 resource "aws_iam_role_policy" "backend_s3_access" {
   name = "read-write-model-bucket"
-  role = aws_iam_role.backend_s3.id
+  role = aws_iam_role.backend_task.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -101,6 +106,22 @@ resource "aws_iam_role_policy" "backend_s3_access" {
         Resource = [
           aws_s3_bucket.local_model.arn
         ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "backend_bedrock_invoke" {
+  name = "invoke-bedrock-model"
+  role = aws_iam_role.backend_task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["bedrock:InvokeModel"]
+        Resource = "arn:aws:bedrock:${var.region}::foundation-model/${var.bedrock_model_id}"
       }
     ]
   })

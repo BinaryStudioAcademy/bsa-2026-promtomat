@@ -133,6 +133,11 @@ variable "bedrock_request_timeout_ms" {
   default = 30000
 }
 
+variable "bedrock_connection_timeout_ms" {
+  type    = number
+  default = 3000
+}
+
 variable "generation_candidate_limit" {
   type    = number
   default = 5
