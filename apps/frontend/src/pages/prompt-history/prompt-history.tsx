@@ -47,7 +47,7 @@ const PromptHistory: React.FC = () => {
 		listContent = <Loader variant={LoaderVariant.SECTION} />;
 	} else if (isError) {
 		listContent = (
-			<div className={styles["error-state"]}>
+			<div className={styles["empty-state"]}>
 				Failed to load prompts. Please try again.
 			</div>
 		);
