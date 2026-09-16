@@ -26,6 +26,7 @@ type Properties<T extends FieldValues> = {
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
+	transformValue?: (value: string) => string;
 	type?: ValueOf<typeof InputType>;
 };
 
@@ -42,6 +43,7 @@ const Input = <T extends FieldValues>({
 	onFocus,
 	placeholder = "",
 	size = ControlSize.MD,
+	transformValue,
 	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
 	const {
@@ -71,6 +73,15 @@ const Input = <T extends FieldValues>({
 	const handleVisibilityToggle = useCallback((): void => {
 		setIsPasswordVisible((previous) => !previous);
 	}, []);
+
+	const handleChange = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>): void => {
+			const rawValue = event.target.value;
+
+			field.onChange(transformValue ? transformValue(rawValue) : rawValue);
+		},
+		[field, transformValue],
+	);
 
 	return (
 		<div className={styles["field"]}>
@@ -103,6 +114,7 @@ const Input = <T extends FieldValues>({
 					)}
 					id={inputId}
 					maxLength={maxLength}
+					onChange={handleChange}
 					onFocus={onFocus}
 					placeholder={placeholder}
 					type={inputType}

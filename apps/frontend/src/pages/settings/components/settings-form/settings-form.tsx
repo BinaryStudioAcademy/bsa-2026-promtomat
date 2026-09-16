@@ -5,6 +5,7 @@ import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
+import { removeSpaces } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -102,6 +103,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						name="nickname"
 						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
+						transformValue={removeSpaces}
 					/>
 					<Select
 						control={control}
