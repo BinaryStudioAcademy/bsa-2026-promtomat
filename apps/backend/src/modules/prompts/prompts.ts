@@ -18,4 +18,4 @@ const promptController = new PromptController(
 	workspaceService,
 );
 
-export { promptController };
+export { promptController, promptService };

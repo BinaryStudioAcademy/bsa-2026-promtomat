@@ -72,6 +72,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
+												await import("~/pages/generate/generate.js");
+
+											return { Component: pageModule.Generate };
+										},
+										path: AppRoute.GENERATE,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
 												await import("~/pages/workspaces/workspaces.js");
 
 											return { Component: pageModule.Workspaces };

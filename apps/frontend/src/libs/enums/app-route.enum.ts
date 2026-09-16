@@ -1,6 +1,7 @@
 const AppRoute = {
 	ANY: "*",
 	FORGOT_PASSWORD: "/forgot-password",
+	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	RESET_PASSWORD: "/reset-password",
