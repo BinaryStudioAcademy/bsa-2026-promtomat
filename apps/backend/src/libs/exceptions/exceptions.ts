@@ -1,6 +1,7 @@
 export {
 	ApplicationError,
 	AuthError,
+	ComposedPromptError,
 	ContributorError,
 	PromptSearchError,
 	UserError,

@@ -1,0 +1,3 @@
+const WHITESPACE_RUN_PATTERN = /\s+/g;
+
+export { WHITESPACE_RUN_PATTERN };

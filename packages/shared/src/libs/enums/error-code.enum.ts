@@ -1,4 +1,5 @@
 import { AuthErrorCode } from "../../modules/auth/auth.js";
+import { ComposedPromptsErrorCode } from "../../modules/composed-prompts/composed-prompts.js";
 import { PromptsErrorCode } from "../../modules/prompts/prompts.js";
 import { UsersErrorCode } from "../../modules/users/users.js";
 import {
@@ -12,6 +13,7 @@ const ErrorCode = {
 	...AuthErrorCode,
 	...UsersErrorCode,
 	...ContributorsErrorCode,
+	...ComposedPromptsErrorCode,
 	...WorkspacesErrorCode,
 	...PromptsErrorCode,
 } as const;
