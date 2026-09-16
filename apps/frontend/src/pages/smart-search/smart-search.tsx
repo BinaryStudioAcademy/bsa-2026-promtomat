@@ -1,3 +1,4 @@
+import { skipToken } from "@reduxjs/toolkit/query";
 import React, { useId } from "react";
 import { useWatch } from "react-hook-form";
 
@@ -8,8 +9,12 @@ import { Select } from "~/libs/components/select/select.js";
 import { ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
+import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useSearchPromptsQuery } from "~/modules/prompts/prompts-api.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import {
+	useActiveWorkspace,
+	useGetWorkspacesQuery,
+} from "~/modules/workspaces/workspaces.js";
 
 import { SearchResultsPanel } from "./components/search-results-panel/search-results-panel.js";
 import styles from "./styles.module.css";
@@ -32,27 +37,34 @@ const SmartSearch: React.FC = () => {
 		value: id,
 	}));
 
-	const { control: workspaceControl } = useAppForm<WorkspaceScopeFormValues>({
-		defaultValues: {},
-	});
-	const workspaceId = useWatch({
+	const { control: workspaceControl, setValue: setWorkspaceValue } =
+		useAppForm<WorkspaceScopeFormValues>({
+			defaultValues: {},
+		});
+	const formWorkspaceId = useWatch({
 		control: workspaceControl,
 		name: "workspaceId",
+	});
+	const workspaceId = useActiveWorkspace({ formWorkspaceId, workspaces });
+	useSyncedFormValue({
+		name: "workspaceId",
+		setValue: setWorkspaceValue,
+		value: workspaceId,
 	});
 
 	const { control: searchControl, debouncedSearch } =
 		useSearch(SEARCH_DELAY_MS);
+
+	const hasSearchQuery =
+		workspaceId !== undefined &&
+		debouncedSearch.length > SEARCH_DESCRIPTION_MIN_LENGTH;
 
 	const {
 		data: searchData,
 		error,
 		isFetching,
 	} = useSearchPromptsQuery(
-		{ description: debouncedSearch, workspaceId },
-		{
-			skip:
-				!workspaceId || debouncedSearch.length <= SEARCH_DESCRIPTION_MIN_LENGTH,
-		},
+		hasSearchQuery ? { description: debouncedSearch, workspaceId } : skipToken,
 	);
 
 	return (
@@ -65,11 +77,12 @@ const SmartSearch: React.FC = () => {
 					<Select
 						control={workspaceControl}
 						descriptionId={searchScopeLabelId}
+						isDisabled={workspaceId === undefined}
 						isLabelHidden
 						label="Search in"
 						name="workspaceId"
 						options={options ?? []}
-						placeholder="Select workspace..."
+						placeholder="Loading workspaces..."
 						size={ControlSize.LG}
 					/>
 				</div>

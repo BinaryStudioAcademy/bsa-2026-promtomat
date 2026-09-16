@@ -1,4 +1,5 @@
 export { WorkspacesApiTag } from "./libs/enums/enums.js";
+export { useActiveWorkspace } from "./libs/hooks/use-active-workspace/use-active-workspace.hook.js";
 export {
 	workspaceCreationValidationSchema,
 	workspaceUpdateValidationSchema,
