@@ -2,6 +2,7 @@ import { config } from "~/libs/modules/config/config.js";
 import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { authController } from "~/modules/auth/auth.js";
+import { composedPromptController } from "~/modules/composed-prompts/composed-prompts.js";
 import { healthController } from "~/modules/health/health.js";
 import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
@@ -18,6 +19,7 @@ const apiV1 = new BaseServerApplicationApi(
 	"v1",
 	config,
 	...authController.routes,
+	...composedPromptController.routes,
 	...healthController.routes,
 	...userController.routes,
 	...promptController.routes,

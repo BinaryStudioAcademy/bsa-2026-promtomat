@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
+import { Loader } from "~/libs/components/loader/loader.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { PaginationValue } from "~/modules/prompts/libs/enums/enums.js";
+import { ButtonVariant } from "~/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
-import { useGetPromptsQuery } from "~/modules/prompts/prompts-api.js";
+import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
@@ -16,24 +17,11 @@ import styles from "./styles.module.css";
 const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
-	const { control, handlePageChange, handleScoreChange, queryPayload } =
-		usePromptFilters();
+	const { control, handleScoreChange, queryPayload } = usePromptFilters();
 
-	const [items, setItems] = useState<PromptItemResponseDto[]>([]);
-	const [previousData, setPreviousData] = useState<unknown>(null);
-
-	const { data: promptsData, isFetching } = useGetPromptsQuery(queryPayload);
+	const { data, fetchNextPage, hasNextPage, isError, isFetching, isLoading } =
+		useGetPromptsInfiniteQuery(queryPayload);
 	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
-
-	if (promptsData && promptsData !== previousData) {
-		setPreviousData(promptsData);
-
-		if (queryPayload.page === PaginationValue.DEFAULT_PAGE) {
-			setItems(promptsData.items);
-		} else {
-			setItems((previous) => [...previous, ...promptsData.items]);
-		}
-	}
 
 	const workspaceOptions = [
 		{ label: "All Workspaces", value: "" },
@@ -43,9 +31,37 @@ const PromptHistory: React.FC = () => {
 		})),
 	];
 
-	const totalPrompts = promptsData?.totalCount ?? ZERO_VALUE;
-	const averageScore = promptsData?.averageScore ?? null;
-	const hasMore = items.length < totalPrompts;
+	const items = data?.pages.flatMap((page) => page.items) ?? [];
+
+	const [firstPage] = data?.pages ?? [];
+	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
+	const averageScore = firstPage?.averageScore ?? null;
+
+	const handleLoadMore = useCallback((): void => {
+		void fetchNextPage();
+	}, [fetchNextPage]);
+
+	let listContent: React.ReactNode;
+
+	if (isLoading) {
+		listContent = <Loader variant={LoaderVariant.SECTION} />;
+	} else if (isError) {
+		listContent = (
+			<div className={styles["error-state"]}>
+				Failed to load prompts. Please try again.
+			</div>
+		);
+	} else if (!isFetching && items.length === ZERO_VALUE) {
+		listContent = (
+			<div className={styles["empty-state"]}>
+				No prompts match the current filters.
+			</div>
+		);
+	} else {
+		listContent = items.map((item) => (
+			<PromptListItem key={item.id} prompt={item} />
+		));
+	}
 
 	return (
 		<main className={styles["container"]}>
@@ -92,24 +108,17 @@ const PromptHistory: React.FC = () => {
 					</div>
 				</div>
 
-				<div className={styles["list"]}>
-					{!isFetching && items.length === ZERO_VALUE ? (
-						<div className={styles["empty-state"]}>
-							No prompts match the current filters.
-						</div>
-					) : (
-						items.map((item) => <PromptListItem key={item.id} prompt={item} />)
-					)}
-				</div>
+				<div className={styles["list"]}>{listContent}</div>
 
-				{hasMore && (
+				{hasNextPage && !isLoading && !isError && (
 					<div className={styles["load-more-wrapper"]}>
 						<Button
 							isDisabled={isFetching}
+							isLoading={isFetching}
 							label={isFetching ? "Loading..." : "Load More"}
-							onClick={handlePageChange}
+							onClick={handleLoadMore}
 							type="button"
-							variant="secondary"
+							variant={ButtonVariant.SECONDARY}
 						/>
 					</div>
 				)}

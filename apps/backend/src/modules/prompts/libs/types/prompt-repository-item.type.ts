@@ -6,10 +6,8 @@ type PromptRepositoryItem = {
 	taskIntent: string;
 	updatedAt: string;
 	userId: number;
-	workspace: {
-		name: string;
-	};
 	workspaceId: number;
+	workspaceName: string;
 };
 
 export { type PromptRepositoryItem };

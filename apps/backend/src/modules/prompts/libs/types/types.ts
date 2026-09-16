@@ -1,4 +1,4 @@
-export { type PromptAggregateRow } from "./prompt-aggregate-row.type.js";
+export { type PromptAggregateResult } from "./prompt-aggregate-result.type.js";
 export { type PromptCandidateQuery } from "./prompt-candidate-query.type.js";
 export { type PromptCreatePayload } from "./prompt-create-payload.type.js";
 export { type PromptFilterByQueryParameters } from "./prompt-filter-by-query-parameters.type.js";

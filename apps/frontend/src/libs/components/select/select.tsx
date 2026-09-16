@@ -19,6 +19,7 @@ type Properties<T extends FieldValues> = {
 	descriptionId?: string;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
+	isRequired?: boolean;
 	label: string;
 	name: FieldPath<T>;
 	options: SelectOption[];
@@ -31,6 +32,7 @@ const Select = <T extends FieldValues>({
 	descriptionId,
 	isDisabled = false,
 	isLabelHidden = false,
+	isRequired = false,
 	label,
 	name,
 	options,
@@ -76,12 +78,18 @@ const Select = <T extends FieldValues>({
 				htmlFor={selectId}
 			>
 				{label}
+				{isRequired ? (
+					<span aria-hidden="true" className={styles["required"]}>
+						*
+					</span>
+				) : null}
 			</label>
 			<div className={styles["control"]}>
 				<select
 					{...restField}
 					aria-describedby={describedById}
 					aria-invalid={hasError || undefined}
+					aria-required={isRequired || undefined}
 					className={getValidClasses(
 						styles["select"],
 						styles[size],

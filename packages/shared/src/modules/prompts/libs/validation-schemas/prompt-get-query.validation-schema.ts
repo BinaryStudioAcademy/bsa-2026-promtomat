@@ -3,7 +3,12 @@ import { z } from "zod";
 import { PromptValidationRule } from "../enums/enums.js";
 
 const promptGetQuery = z.object({
-	limit: z.coerce.number().int().positive().optional(),
+	limit: z.coerce
+		.number()
+		.int()
+		.positive()
+		.max(PromptValidationRule.MAX_LIMIT)
+		.optional(),
 	page: z.coerce.number().int().positive().optional(),
 	score: z.coerce
 		.number()

@@ -20,6 +20,7 @@ const usersApi = baseApi
 				query: () => `${APIPath.USERS}${UsersApiPath.ME_SUMMARY}`,
 			}),
 			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: [UsersApiTag.USER],
 				query: (payload) => ({
 					body: payload,

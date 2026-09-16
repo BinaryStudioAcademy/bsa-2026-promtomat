@@ -10,6 +10,7 @@ export {
 export {
 	ApplicationError,
 	AuthError,
+	ComposedPromptError,
 	HTTPError,
 	PromptSearchError,
 	ValidationError,
@@ -51,6 +52,22 @@ export {
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
+export {
+	type ComposedPromptDto,
+	type ComposedPromptIdParametersDto,
+	type ComposedPromptSourceDto,
+	type ComposeRequestDto,
+	type ComposeResponseDto,
+	type PromptCandidateDto,
+	composedPromptIdParametersValidationSchema,
+	ComposedPromptsApiPath,
+	ComposedPromptsErrorCode,
+	ComposedPromptsErrorMessage,
+	ComposedPromptValidationMessage,
+	ComposeResultKind,
+	composeValidationSchema,
+	FallbackReason,
+} from "./modules/composed-prompts/composed-prompts.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type PromptCreateRequestDto,
@@ -70,6 +87,7 @@ export {
 	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorMessage,
+	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";

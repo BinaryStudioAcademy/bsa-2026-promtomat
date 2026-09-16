@@ -1,3 +1,5 @@
+import { raw } from "objection";
+
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
@@ -6,7 +8,7 @@ import { type PromptModel } from "~/modules/prompts/prompt.model.js";
 import { ZERO_VALUE } from "./libs/constants/constants.js";
 import { PaginationValue } from "./libs/enums/enums.js";
 import {
-	type PromptAggregateRow,
+	type PromptAggregateResult,
 	type PromptFindAllOptions,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
@@ -22,7 +24,7 @@ class PromptRepository {
 
 	private async findAggregate(
 		baseQuery: ReturnType<typeof this.promptModel.query>,
-	): Promise<{ averageScore: null | number; totalCount: number }> {
+	): Promise<PromptAggregateResult> {
 		const [aggregation] = await baseQuery
 			.clone()
 			.clearSelect()
@@ -31,14 +33,14 @@ class PromptRepository {
 			.clear("offset")
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
 			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
-			.castTo<PromptAggregateRow[]>()
+			.castTo<{ averageScore: null | string; count: string }[]>()
 			.execute();
 
 		return {
 			averageScore: aggregation?.averageScore
 				? Number(aggregation.averageScore)
 				: null,
-			totalCount: Number(aggregation?.count ?? ZERO_VALUE),
+			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
 		};
 	}
 
@@ -77,8 +79,18 @@ class PromptRepository {
 
 		const items = await baseQuery
 			.clone()
-			.select(`${DatabaseTableName.PROMPTS}.*`)
-			.withGraphJoined("workspace", { joinOperation: "innerJoin" })
+			.select(
+				`${DatabaseTableName.PROMPTS}.id`,
+				`${DatabaseTableName.PROMPTS}.taskIntent`,
+				`${DatabaseTableName.PROMPTS}.promptBody`,
+				`${DatabaseTableName.PROMPTS}.efficiencyScore`,
+				`${DatabaseTableName.PROMPTS}.createdAt`,
+				`${DatabaseTableName.PROMPTS}.updatedAt`,
+				`${DatabaseTableName.PROMPTS}.userId`,
+				`${DatabaseTableName.PROMPTS}.workspaceId`,
+				raw("?? AS ??", ["workspace.name", "workspaceName"]),
+			)
+			.joinRelated("workspace")
 			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
 			.offset(offset)
 			.limit(limit)
@@ -113,7 +125,7 @@ class PromptRepository {
 
 	public async findUserPromptSummary(
 		userId: number,
-	): Promise<{ averageScore: null | number; totalCount: number }> {
+	): Promise<PromptAggregateResult> {
 		const baseQuery = this.promptModel
 			.query()
 			.modify("filterByQuery", { userId });
