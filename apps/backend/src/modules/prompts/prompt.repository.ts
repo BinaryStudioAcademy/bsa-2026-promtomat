@@ -9,7 +9,6 @@ import { ZERO_VALUE } from "./libs/constants/constants.js";
 import { PaginationValue } from "./libs/enums/enums.js";
 import {
 	type PromptAggregateResult,
-	type PromptAggregateRow,
 	type PromptFindAllOptions,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
@@ -34,12 +33,14 @@ class PromptRepository {
 			.clear("offset")
 			.count(`${DatabaseTableName.PROMPTS}.id as count`)
 			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
-			.castTo<PromptAggregateRow[]>()
+			.castTo<{ averageScore: null | string; count: string }[]>()
 			.execute();
 
 		return {
-			averageScore: aggregation?.averageScore ?? null,
-			totalCount: aggregation?.count ?? ZERO_VALUE,
+			averageScore: aggregation?.averageScore
+				? Number(aggregation.averageScore)
+				: null,
+			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
 		};
 	}
 
