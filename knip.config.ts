@@ -2,6 +2,13 @@ import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
 	ignoreIssues: {
+		// Ignoring the bedrock files below also hides the sole import of
+		// `ApplicationError`: `TextGenerationError` extends it, and nothing
+		// else in the repository references it.
+		"apps/backend/src/libs/exceptions/exceptions.ts": ["exports"],
+		// `SchemaKey` is the entry point for structured generation, which has no
+		// caller yet: label generation uses `generateText` (#96).
+		"apps/backend/src/libs/modules/generator/generator.ts": ["exports"],
 		// `PromptEmbeddingSource` and `NearestPrompt` are exported ahead of their
 		// consumers: the editing flow (regenerate) and search (#77).
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [

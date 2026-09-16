@@ -11,6 +11,8 @@ export {
 	AuthError,
 	ComposedPromptError,
 	HTTPError,
+	LabelError,
+	PromptError,
 	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
@@ -66,6 +68,13 @@ export {
 } from "./modules/composed-prompts/composed-prompts.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type GetLabelsRequestDto,
+	type LabelWithPromptCountDto,
+	labelGetByQueryValidationSchema,
+	LabelsApiPath,
+} from "./modules/labels/labels.js";
+export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
@@ -76,6 +85,7 @@ export {
 	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorMessage,
