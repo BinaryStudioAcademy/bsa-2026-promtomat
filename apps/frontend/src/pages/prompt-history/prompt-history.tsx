@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
-import { PaginationValue } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
-import { useGetPromptsQuery } from "~/modules/prompts/prompts-api.js";
+import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
@@ -16,10 +15,10 @@ import styles from "./styles.module.css";
 const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
-	const { control, handlePageChange, handleScoreChange, queryPayload } =
-		usePromptFilters();
+	const { control, handleScoreChange, queryPayload } = usePromptFilters();
 
-	const { data: promptsData, isFetching } = useGetPromptsQuery(queryPayload);
+	const { data, fetchNextPage, hasNextPage, isFetching } =
+		useGetPromptsInfiniteQuery(queryPayload);
 	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
 
 	const workspaceOptions = [
@@ -30,11 +29,15 @@ const PromptHistory: React.FC = () => {
 		})),
 	];
 
-	const items = promptsData?.items ?? [];
-	const totalPrompts = promptsData?.totalCount ?? ZERO_VALUE;
-	const averageScore = promptsData?.averageScore ?? null;
-	const currentPage = queryPayload.page ?? PaginationValue.DEFAULT_PAGE;
-	const hasMore = currentPage * PaginationValue.DEFAULT_LIMIT < totalPrompts;
+	const items = data?.pages.flatMap((page) => page.items) ?? [];
+
+	const [firstPage] = data?.pages ?? [];
+	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
+	const averageScore = firstPage?.averageScore ?? null;
+
+	const handleLoadMore = useCallback((): void => {
+		void fetchNextPage();
+	}, [fetchNextPage]);
 
 	return (
 		<main className={styles["container"]}>
@@ -87,17 +90,29 @@ const PromptHistory: React.FC = () => {
 							No prompts match the current filters.
 						</div>
 					) : (
-						items.map((item) => <PromptListItem key={item.id} prompt={item} />)
+						items.map((item) => {
+							const workspaceName =
+								workspaces.find(
+									(workspace) => workspace.id === item.workspaceId,
+								)?.name ?? "";
+
+							return (
+								<PromptListItem
+									key={item.id}
+									prompt={{ ...item, workspaceName }}
+								/>
+							);
+						})
 					)}
 				</div>
 
-				{hasMore && (
+				{hasNextPage && (
 					<div className={styles["load-more-wrapper"]}>
 						<Button
 							isDisabled={isFetching}
 							isLoading={isFetching}
 							label={isFetching ? "Loading..." : "Load More"}
-							onClick={handlePageChange}
+							onClick={handleLoadMore}
 							type="button"
 							variant={ButtonVariant.SECONDARY}
 						/>
