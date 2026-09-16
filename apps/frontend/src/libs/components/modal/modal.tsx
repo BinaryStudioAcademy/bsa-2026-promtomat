@@ -24,6 +24,7 @@ type Properties = {
 	isOpen: boolean;
 	onClose: () => void;
 	role?: "alertdialog" | "dialog";
+	subtitle?: string;
 	title: string;
 	titleIconName?: undefined | ValueOf<typeof IconName>;
 	tone?: "danger" | "default";
@@ -37,12 +38,15 @@ const Modal = ({
 	isOpen,
 	onClose,
 	role = "dialog",
+	subtitle,
 	title,
 	titleIconName,
 	tone = "default",
 }: Properties) => {
 	const modalId = useId();
 	const titleId = `${modalId}-title`;
+	const subtitleId = `${modalId}-subtitle`;
+	const descriptionId = subtitle ? subtitleId : undefined;
 	const isSectioned = Boolean(footer);
 	const isDangerTone = tone === "danger";
 	const shapeClassName = isSectioned
@@ -175,6 +179,7 @@ const Modal = ({
 				/>
 			)}
 			<div
+				aria-describedby={descriptionId}
 				aria-labelledby={titleId}
 				aria-modal="true"
 				className={getValidClasses(styles["modal"], shapeClassName)}
@@ -196,15 +201,22 @@ const Modal = ({
 							iconName={titleIconName}
 						/>
 					)}
-					<h2
-						className={getValidClasses(
-							styles["modal-title"],
-							isDangerTone && styles["modal-title-danger"],
+					<div className={styles["modal-title-stack"]}>
+						<h2
+							className={getValidClasses(
+								styles["modal-title"],
+								isDangerTone && styles["modal-title-danger"],
+							)}
+							id={titleId}
+						>
+							{title}
+						</h2>
+						{subtitle && (
+							<p className={styles["modal-subtitle"]} id={subtitleId}>
+								{subtitle}
+							</p>
 						)}
-						id={titleId}
-					>
-						{title}
-					</h2>
+					</div>
 				</div>
 				{isSectioned ? (
 					<div className={styles["modal-body"]}>{children}</div>

@@ -46,6 +46,24 @@ const workspacesApi = baseApi
 				}),
 			}),
 
+			deleteWorkspaceContributor: builder.mutation<
+				null,
+				{ userId: number; workspaceId: number }
+			>({
+				invalidatesTags: [WorkspacesApiTag.WORKSPACE],
+				query: ({ userId, workspaceId }) => ({
+					method: HTTPMethod.DELETE,
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+						{
+							userId: String(userId),
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+
 			getWorkspaces: builder.query<
 				WorkspaceGetAllResponseDto,
 				WorkspaceGetAllRequestDto
@@ -80,6 +98,7 @@ const workspacesApi = baseApi
 
 const {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
@@ -87,6 +106,7 @@ const {
 
 export {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

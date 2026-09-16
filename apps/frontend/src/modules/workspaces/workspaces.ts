@@ -5,6 +5,7 @@ export {
 } from "./libs/validation-schemas/validation-schemas.js";
 export {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
