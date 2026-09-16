@@ -31,12 +31,10 @@ const PromptHistory: React.FC = () => {
 
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 
-	// Використовуємо деструктуризацію, щоб уникнути [0] (no-magic-numbers)
 	const [firstPage] = data?.pages ?? [];
 	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
 	const averageScore = firstPage?.averageScore ?? null;
 
-	// Огортаємо функцію в useCallback (react/jsx-no-bind)
 	const handleLoadMore = useCallback((): void => {
 		void fetchNextPage();
 	}, [fetchNextPage]);

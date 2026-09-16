@@ -44,9 +44,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 				</div>
 				<div className={styles["info"]}>
 					<span className={styles["intent"]}>{prompt.intent}</span>
-					<span className={styles["meta"]}>
-						{prompt.workspaceName || "No workspace"}
-					</span>
+					<span className={styles["meta"]}>{prompt.workspaceName}</span>
 				</div>
 				<div className={styles["right-controls"]}>
 					<span className={styles["timestamp"]}>Injected {relativeTime}</span>
