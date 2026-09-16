@@ -5,6 +5,7 @@ import { authController } from "~/modules/auth/auth.js";
 import { composedPromptController } from "~/modules/composed-prompts/composed-prompts.js";
 import { contributorController } from "~/modules/contributors/contributors.js";
 import { healthController } from "~/modules/health/health.js";
+import { labelController } from "~/modules/labels/labels.js";
 import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
 import { workspaceController } from "~/modules/workspaces/workspaces.js";
@@ -23,6 +24,7 @@ const apiV1 = new BaseServerApplicationApi(
 	...contributorController.routes,
 	...composedPromptController.routes,
 	...healthController.routes,
+	...labelController.routes,
 	...userController.routes,
 	...promptController.routes,
 	...workspaceController.routes,

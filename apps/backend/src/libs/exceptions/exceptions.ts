@@ -3,6 +3,8 @@ export {
 	AuthError,
 	ComposedPromptError,
 	ContributorError,
+	LabelError,
+	PromptError,
 	PromptSearchError,
 	UserError,
 	ValidationError,
