@@ -6,17 +6,17 @@ import {
 	type UseFormSetValue,
 } from "react-hook-form";
 
-type Parameters<T extends FieldValues> = {
-	name: FieldPath<T>;
+type Parameters<T extends FieldValues, Name extends FieldPath<T>> = {
+	name: Name;
 	setValue: UseFormSetValue<T>;
-	value: PathValue<T, FieldPath<T>> | undefined;
+	value: PathValue<T, Name> | undefined;
 };
 
-const useSyncedFormValue = <T extends FieldValues>({
+const useSyncedFormValue = <T extends FieldValues, Name extends FieldPath<T>>({
 	name,
 	setValue,
 	value,
-}: Parameters<T>): void => {
+}: Parameters<T, Name>): void => {
 	useEffect(() => {
 		if (value === undefined) {
 			return;
