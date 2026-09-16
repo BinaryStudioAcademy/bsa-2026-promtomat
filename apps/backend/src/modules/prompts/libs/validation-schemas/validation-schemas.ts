@@ -1,5 +1,6 @@
 export {
 	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,

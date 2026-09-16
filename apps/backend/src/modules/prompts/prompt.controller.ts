@@ -1,5 +1,4 @@
 import { APIPath } from "~/libs/enums/enums.js";
-import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { BaseController } from "~/libs/modules/controller/base-controller.module.js";
 import {
 	type APIHandlerOptions,
@@ -14,6 +13,7 @@ import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
 	type PromptSearchRequestDto,
@@ -21,6 +21,7 @@ import {
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
@@ -62,6 +63,8 @@ import { type PromptService } from "./prompt.service.js";
  *         id:
  *           type: number
  *           minimum: 1
+ *         label:
+ *           type: string
  *         efficiencyScore:
  *           type: number
  *           minimum: 1
@@ -141,6 +144,21 @@ class PromptController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
+				this.findAllByWorkspace(
+					options as APIHandlerOptions<{
+						query: GetPromptsRequestDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.ROOT,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				query: promptGetByQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
 				this.findProgress(
 					options as APIHandlerOptions<{
 						query: PromptWorkspaceQueryDto;
@@ -213,73 +231,12 @@ class PromptController extends BaseController {
 		});
 	}
 
-	/**
-	 * @swagger
-	 * /prompts:
-	 *   post:
-	 *     description: Creates a new prompt
-	 *     security:
-	 *       - bearerAuth: []
-	 *     requestBody:
-	 *       description: Prompt data
-	 *       required: true
-	 *       content:
-	 *         application/json:
-	 *           schema:
-	 *             type: object
-	 *             properties:
-	 *               efficiencyScore:
-	 *                 type: number
-	 *                 minimum: 1
-	 *                 maximum: 10
-	 *               promptBody:
-	 *                 type: string
-	 *               taskIntent:
-	 *                 type: string
-	 *               workspaceId:
-	 *                 type: number
-	 *     responses:
-	 *       201:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Prompt"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       403:
-	 *         description: You do not have permission to access this workspace
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		if (options.user === null) {
-			throw AuthError.unauthorized();
-		}
-
 		const payload = {
 			...options.body,
-			userId: options.user.id,
+			userId: options.user?.id as number,
 		};
 		return {
 			payload: await this.promptService.create(payload),
@@ -350,6 +307,100 @@ class PromptController extends BaseController {
 				query: options.query,
 				userId: options.user?.id as number,
 			}),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts:
+	 *   post:
+	 *     description: Creates a new prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     requestBody:
+	 *       description: Prompt data
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               efficiencyScore:
+	 *                 type: number
+	 *                 minimum: 1
+	 *                 maximum: 10
+	 *               promptBody:
+	 *                 type: string
+	 *               taskIntent:
+	 *                 type: string
+	 *               workspaceId:
+	 *                 type: number
+	 *     responses:
+	 *       201:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       403:
+	 *         description: You do not have permission to access this workspace
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 */
+	/**
+	 * @swagger
+	 * /prompts:
+	 *    get:
+	 *      description: Returns the prompts of a workspace, optionally narrowed to one label
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *        - in: query
+	 *          name: labelId
+	 *          required: false
+	 *          schema:
+	 *            type: number
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                type: array
+	 *                items:
+	 *                  $ref: "#/components/schemas/Prompt"
+	 */
+	private async findAllByWorkspace(
+		options: APIHandlerOptions<{ query: GetPromptsRequestDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findByWorkspace(options.query),
 			status: HTTPCode.OK,
 		};
 	}
