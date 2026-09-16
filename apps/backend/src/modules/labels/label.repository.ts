@@ -7,14 +7,8 @@ import { type LabelModel } from "./label.model.js";
 import {
 	CREATE_LABEL_CONFLICT_COLUMNS,
 	CREATE_LABEL_MERGE_COLUMNS,
-	LABEL_ID,
-	LABEL_NAME,
-	LABEL_STEM_QUERY,
-	LABEL_WORKSPACE_ID,
-	PROMPT_COUNT_ALIAS,
-	PROMPT_ID,
-	PROMPT_LABEL_ID,
 } from "./libs/constants/constants.js";
+import { TableColumn } from "./libs/enums/enums.js";
 import {
 	type LabelCountRow,
 	type LabelStemRow,
@@ -48,13 +42,17 @@ class LabelRepository {
 	): Promise<LabelWithPromptCountDto[]> {
 		const rows = (await this.labelModel
 			.knex()
-			.select(LABEL_ID, LABEL_NAME)
+			.select(TableColumn.LABEL_ID, TableColumn.LABEL_NAME)
 			.from(DatabaseTableName.LABELS)
-			.leftJoin(DatabaseTableName.PROMPTS, LABEL_ID, PROMPT_LABEL_ID)
-			.where(LABEL_WORKSPACE_ID, "=", workspaceId)
-			.count(`${PROMPT_ID} as ${PROMPT_COUNT_ALIAS}`)
-			.groupBy(LABEL_ID, LABEL_NAME)
-			.orderBy(PROMPT_COUNT_ALIAS, "desc")) as LabelCountRow[];
+			.leftJoin(
+				DatabaseTableName.PROMPTS,
+				TableColumn.LABEL_ID,
+				TableColumn.PROMPT_LABEL_ID,
+			)
+			.where(TableColumn.LABEL_WORKSPACE_ID, "=", workspaceId)
+			.count(`${TableColumn.PROMPT_ID} as ${TableColumn.PROMPT_COUNT_ALIAS}`)
+			.groupBy(TableColumn.LABEL_ID, TableColumn.LABEL_NAME)
+			.orderBy(TableColumn.PROMPT_COUNT_ALIAS, "desc")) as LabelCountRow[];
 
 		return rows.map((row) => ({
 			id: row.id,
@@ -67,7 +65,7 @@ class LabelRepository {
 		const knex = trx ?? this.labelModel.knex();
 
 		const { rows } = await knex.raw<{ rows: LabelStemRow[] }>(
-			LABEL_STEM_QUERY,
+			"SELECT (ts_lexize('english_stem', ?))[1] AS stem",
 			[label],
 		);
 

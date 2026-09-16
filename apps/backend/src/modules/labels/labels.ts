@@ -18,5 +18,4 @@ const labelController = new LabelController(
 export { labelController, labelService };
 
 export { type LabelService } from "./label.service.js";
-export { LABEL_MAX_LENGTH } from "./libs/constants/constants.js";
-export { normalizePromptLabel } from "./libs/helpers/helpers.js";
+export { LabelConstraint } from "./libs/enums/enums.js";
