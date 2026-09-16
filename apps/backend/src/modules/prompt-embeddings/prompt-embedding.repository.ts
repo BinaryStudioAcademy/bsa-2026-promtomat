@@ -124,6 +124,8 @@ class PromptEmbeddingRepository {
 				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
 				`${PROMPT_RELATION}.${PromptColumnName.TASK_INTENT}`,
 				`${PROMPT_RELATION}.${PromptColumnName.CREATED_AT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.UPDATED_AT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`,
 				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
 				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				raw("?? AS ??", [
@@ -152,7 +154,7 @@ class PromptEmbeddingRepository {
 		return {
 			averageScore: aggregation?.averageScore
 				? Number(aggregation.averageScore)
-				: ZERO_VALUE,
+				: null,
 			items,
 			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
 		};
