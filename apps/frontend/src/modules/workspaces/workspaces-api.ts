@@ -19,6 +19,7 @@ const workspacesApi = baseApi
 				WorkspaceDto,
 				WorkspaceCreateRequestDto
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (payload) => ({
 					body: payload,
@@ -60,6 +61,7 @@ const workspacesApi = baseApi
 				WorkspaceDto,
 				{ id: number; payload: WorkspaceUpdateRequestDto }
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: [WorkspacesApiTag.WORKSPACE],
 				query: ({ id, payload }) => ({
 					body: payload,
