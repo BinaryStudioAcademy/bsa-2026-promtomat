@@ -85,6 +85,8 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.promptBody`,
 				`${DatabaseTableName.PROMPTS}.efficiencyScore`,
 				`${DatabaseTableName.PROMPTS}.createdAt`,
+				`${DatabaseTableName.PROMPTS}.updatedAt`,
+				`${DatabaseTableName.PROMPTS}.userId`,
 				`${DatabaseTableName.PROMPTS}.workspaceId`,
 				raw("?? AS ??", ["workspace.name", "workspaceName"]),
 			)
