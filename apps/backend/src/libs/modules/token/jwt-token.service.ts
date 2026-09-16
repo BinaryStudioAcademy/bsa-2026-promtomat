@@ -3,6 +3,7 @@ import { errors, type JWTPayload, jwtVerify, SignJWT } from "jose";
 import { type JwtAlgorithm } from "~/libs/modules/config/config.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
+import { TokenValidationMessage } from "./libs/enums/enums.js";
 import { TokenError } from "./libs/exceptions/exceptions.js";
 import {
 	type TokenCreateOptions,
@@ -55,7 +56,7 @@ class JwtTokenService implements TokenService {
 		const expiresIn = options?.expiresIn ?? this.expiresIn;
 
 		if (expiresIn.trim().length === EMPTY_LENGTH) {
-			throw new TypeError("Token expiry must be a non-empty duration string.");
+			throw new TypeError(TokenValidationMessage.EMPTY_EXPIRES_IN);
 		}
 
 		return await new SignJWT(payload)
