@@ -2,7 +2,6 @@ export {
 	ContributorsErrorCode,
 	ContributorsErrorMessage,
 	WorkspaceListScope,
-	WorkspaceRole,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,

@@ -111,7 +111,6 @@ export {
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	WorkspaceListScope,
-	WorkspaceRole,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
