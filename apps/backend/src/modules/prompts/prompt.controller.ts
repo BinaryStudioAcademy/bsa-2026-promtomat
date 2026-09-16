@@ -300,7 +300,6 @@ class PromptController extends BaseController {
 	 *         schema:
 	 *           type: integer
 	 *           minimum: 1
-	 *           maximum: 1000
 	 *       - in: query
 	 *         name: limit
 	 *         schema:
