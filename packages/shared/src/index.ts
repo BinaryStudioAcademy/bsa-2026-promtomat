@@ -9,7 +9,10 @@ export {
 export {
 	ApplicationError,
 	AuthError,
+	ComposedPromptError,
 	HTTPError,
+	LabelError,
+	PromptError,
 	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
@@ -47,8 +50,31 @@ export {
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
+export {
+	type ComposedPromptDto,
+	type ComposedPromptIdParametersDto,
+	type ComposedPromptSourceDto,
+	type ComposeRequestDto,
+	type ComposeResponseDto,
+	type PromptCandidateDto,
+	composedPromptIdParametersValidationSchema,
+	ComposedPromptsApiPath,
+	ComposedPromptsErrorCode,
+	ComposedPromptsErrorMessage,
+	ComposedPromptValidationMessage,
+	ComposeResultKind,
+	composeValidationSchema,
+	FallbackReason,
+} from "./modules/composed-prompts/composed-prompts.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type GetLabelsRequestDto,
+	type LabelWithPromptCountDto,
+	labelGetByQueryValidationSchema,
+	LabelsApiPath,
+} from "./modules/labels/labels.js";
+export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
@@ -59,9 +85,11 @@ export {
 	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
+	promptGetByQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorMessage,
+	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";

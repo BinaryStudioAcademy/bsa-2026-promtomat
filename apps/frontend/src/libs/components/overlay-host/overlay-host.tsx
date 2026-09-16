@@ -16,6 +16,7 @@ import {
 	LAST_INDEX_FROM_END,
 	NOTIFICATION_CLOSING_DURATION_MS,
 } from "./libs/constants/constants.js";
+import { generateNotificationId } from "./libs/helpers/generate-notification-id.helper.js";
 import { lockPage } from "./libs/helpers/lock-page.helper.js";
 import { type NotificationItem } from "./libs/types/types.js";
 import { overlayHostContext } from "./overlay-host.context.js";
@@ -31,6 +32,7 @@ const OverlayHost = ({ children }: Properties) => {
 	);
 	const [blockingIds, setBlockingIds] = useState<string[]>([]);
 	const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+	const notificationIdCounterReference = useRef(EMPTY_LENGTH);
 	const timeoutIdsReference = useRef<
 		Map<string, ReturnType<typeof setTimeout>>
 	>(new Map());
@@ -104,7 +106,8 @@ const OverlayHost = ({ children }: Properties) => {
 
 	const handleShowNotification = useCallback(
 		(payload: ShowNotificationPayload) => {
-			const id = payload.id ?? crypto.randomUUID();
+			const id =
+				payload.id ?? generateNotificationId(notificationIdCounterReference);
 
 			if (timeoutIdsReference.current.has(id)) {
 				return;

@@ -1,0 +1,3 @@
+const NEAREST_LABEL_RELATION = "nearest";
+
+export { NEAREST_LABEL_RELATION };
