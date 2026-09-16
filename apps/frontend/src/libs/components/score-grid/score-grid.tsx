@@ -81,10 +81,7 @@ const ScoreGrid: React.FC<Properties> = ({
 
 					return (
 						<Button
-							className={getValidClasses(
-								styles["score-button"],
-								isSelected && styles["score-button--selected"],
-							)}
+							className={styles["score-button"]}
 							isDisabled={isDisabled}
 							key={score}
 							label={String(score)}

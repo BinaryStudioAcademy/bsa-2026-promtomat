@@ -9,7 +9,12 @@ const promptGetQuery = z.object({
 		.positive()
 		.max(PromptValidationRule.MAX_LIMIT)
 		.optional(),
-	page: z.coerce.number().int().positive().optional(),
+	page: z.coerce
+		.number()
+		.int()
+		.positive()
+		.max(PromptValidationRule.MAX_PAGE)
+		.optional(),
 	score: z.coerce
 		.number()
 		.int()

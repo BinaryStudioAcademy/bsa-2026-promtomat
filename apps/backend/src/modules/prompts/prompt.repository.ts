@@ -120,6 +120,8 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.UPDATED_AT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				raw("?? AS ??", [
 					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,

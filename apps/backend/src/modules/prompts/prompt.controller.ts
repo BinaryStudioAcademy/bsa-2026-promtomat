@@ -96,10 +96,15 @@ import { type PromptService } from "./prompt.service.js";
  *       properties:
  *         averageScore:
  *           type: number
+ *           nullable: true
  *         items:
  *           type: array
  *           items:
  *             $ref: "#/components/schemas/PromptItem"
+ *         page:
+ *           type: number
+ *         pageSize:
+ *           type: number
  *         totalCount:
  *           type: number
  *     PromptProgress:
@@ -295,11 +300,13 @@ class PromptController extends BaseController {
 	 *         schema:
 	 *           type: integer
 	 *           minimum: 1
+	 *           maximum: 1000
 	 *       - in: query
 	 *         name: limit
 	 *         schema:
 	 *           type: integer
 	 *           minimum: 1
+	 *           maximum: 100
 	 *       - in: query
 	 *         name: search
 	 *         schema:
