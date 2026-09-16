@@ -44,7 +44,7 @@ const PromptHistory: React.FC = () => {
 	];
 
 	const totalPrompts = promptsData?.totalCount ?? ZERO_VALUE;
-	const averageScore = promptsData?.averageScore ?? ZERO_VALUE;
+	const averageScore = promptsData?.averageScore ?? null;
 	const hasMore = items.length < totalPrompts;
 
 	return (
@@ -61,7 +61,9 @@ const PromptHistory: React.FC = () => {
 					</div>
 					<div className={styles["metric-card"]}>
 						<span className={styles["metric-label"]}>Average Score</span>
-						<span className={styles["metric-value"]}>{averageScore} / 10</span>
+						<span className={styles["metric-value"]}>
+							{averageScore === null ? "—" : `${String(averageScore)} / 10`}
+						</span>
 					</div>
 				</div>
 
@@ -74,7 +76,7 @@ const PromptHistory: React.FC = () => {
 					/>
 					<ScoreGrid
 						isRadio
-						label="Score:"
+						label="Efficiency score:"
 						onScoreSelect={handleScoreChange}
 						selectedScore={
 							typeof queryPayload.score === "number" ? queryPayload.score : null
