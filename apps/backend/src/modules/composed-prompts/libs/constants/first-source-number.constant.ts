@@ -1,0 +1,3 @@
+const FIRST_SOURCE_NUMBER = 1;
+
+export { FIRST_SOURCE_NUMBER };
