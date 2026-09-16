@@ -1,0 +1,41 @@
+/*
+--item-height is consumed by UserItem through inheritance: the list owns how many
+items are visible, the item owns how tall one is. Custom property names are not
+hashed by CSS modules, so the value crosses the file boundary.
+*/
+.list {
+	--visible-items: 3;
+	--item-height: 54px;
+
+	height: calc(var(--visible-items) * var(--item-height));
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	list-style: none;
+	background-color: var(--surface-canvas);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-md);
+}
+
+.state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: var(--space-12);
+}
+
+.empty {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-faint);
+	text-align: center;
+}
+
+.error {
+	flex-direction: column;
+	gap: var(--space-8);
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+	text-align: center;
+}

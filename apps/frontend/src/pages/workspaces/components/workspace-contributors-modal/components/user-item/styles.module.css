@@ -1,0 +1,32 @@
+.item {
+	display: flex;
+	gap: var(--space-12);
+	align-items: center;
+	height: var(--item-height);
+	padding: var(--space-10) var(--space-12);
+}
+
+.identity {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--space-2);
+	min-width: 0;
+}
+
+.name {
+	font-size: var(--font-size-body-base);
+	font-weight: 500;
+	color: var(--text-strong);
+	overflow-wrap: anywhere;
+}
+
+.email {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+.item:hover {
+	background-color: var(--surface-inset);
+}

@@ -4,6 +4,7 @@ import { baseApi } from "~/libs/modules/api/base-api.js";
 
 import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
+	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
@@ -64,6 +65,22 @@ const workspacesApi = baseApi
 				}),
 			}),
 
+			getWorkspaceContributors: builder.query<
+				WorkspaceContributorsResponseDto,
+				number
+			>({
+				providesTags: [WorkspacesApiTag.WORKSPACE],
+				query: (workspaceId) => ({
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						{
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+
 			getWorkspaces: builder.query<
 				WorkspaceGetAllResponseDto,
 				WorkspaceGetAllRequestDto
@@ -100,6 +117,7 @@ const {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 } = workspacesApi;
@@ -108,6 +126,7 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 };
