@@ -90,19 +90,7 @@ const PromptHistory: React.FC = () => {
 							No prompts match the current filters.
 						</div>
 					) : (
-						items.map((item) => {
-							const workspaceName =
-								workspaces.find(
-									(workspace) => workspace.id === item.workspaceId,
-								)?.name ?? "";
-
-							return (
-								<PromptListItem
-									key={item.id}
-									prompt={{ ...item, workspaceName }}
-								/>
-							);
-						})
+						items.map((item) => <PromptListItem key={item.id} prompt={item} />)
 					)}
 				</div>
 

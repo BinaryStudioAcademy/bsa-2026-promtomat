@@ -1,3 +1,5 @@
+import { raw } from "objection";
+
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
@@ -83,8 +85,9 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.efficiencyScore`,
 				`${DatabaseTableName.PROMPTS}.createdAt`,
 				`${DatabaseTableName.PROMPTS}.workspaceId`,
+				raw("?? AS ??", ["workspace.name", "workspaceName"]),
 			)
-			.withGraphJoined("workspace", { joinOperation: "innerJoin" })
+			.joinRelated("workspace")
 			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
 			.offset(offset)
 			.limit(limit)
