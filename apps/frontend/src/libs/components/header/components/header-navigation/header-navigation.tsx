@@ -30,7 +30,7 @@ const HeaderNavigation: React.FC<Properties> = ({
 	return (
 		<ul className={styles["nav-list"]}>
 			{user ? (
-				<>
+				<div className={styles["nav-list__navigation"]}>
 					<li>
 						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
 					</li>
@@ -46,16 +46,18 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Link to={AppRoute.SETTINGS}>Settings</Link>
 					</li>
-					<li className={styles["identity-label"]}>{user.nickname}</li>
-					<li>
-						<Button
-							label="Sign out"
-							onClick={handleSignOut}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
-						/>
-					</li>
-				</>
+					<div className={styles["nav-list__user"]}>
+						<li className={styles["identity-label"]}>{user.nickname}</li>
+						<li>
+							<Button
+								label="Sign out"
+								onClick={handleSignOut}
+								type="button"
+								variant={ButtonVariant.SECONDARY}
+							/>
+						</li>
+					</div>
+				</div>
 			) : (
 				<>
 					<li>
