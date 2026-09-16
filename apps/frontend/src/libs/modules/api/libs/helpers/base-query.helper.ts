@@ -59,16 +59,6 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			return { error };
 		}
 
-		case ErrorCode.INTERNAL_SERVER_ERROR: {
-			showNotification({
-				id: error.code,
-				message: error.message,
-				type: "danger",
-			});
-
-			return { error };
-		}
-
 		case ErrorCode.UNAUTHENTICATED: {
 			const hasExpiredToken = await storage.has(StorageKey.TOKEN);
 

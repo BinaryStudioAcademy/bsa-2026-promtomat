@@ -7,7 +7,6 @@ import { SearchableSelect } from "~/libs/components/searchable-select/searchable
 import {
 	ButtonVariant,
 	ControlSize,
-	ErrorCode,
 	FormValidationMode,
 	HTTPCode,
 	TechStackTechDictionary,
@@ -67,10 +66,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
 		isServerError(error) && error.status === HTTPCode.CONFLICT;
-	const isToastedError =
-		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
 	const generalErrorMessage =
-		hasConflictError || hasFieldErrors || isToastedError ? null : errorMessage;
+		hasConflictError || hasFieldErrors ? null : errorMessage;
 
 	useEffect(() => {
 		if (hasConflictError && errorMessage) {

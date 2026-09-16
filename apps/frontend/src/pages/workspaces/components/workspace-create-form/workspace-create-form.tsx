@@ -35,6 +35,9 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const [conflict, setConflict] = useState<
 		undefined | { message: string; name: string }
 	>(undefined);
+	const [generalErrorMessage, setGeneralErrorMessage] = useState<
+		string | undefined
+	>(undefined);
 	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
 		defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
 		mode: FormValidationMode.ON_CHANGE,
@@ -45,6 +48,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 
 	const errorField =
 		conflict?.name === workspaceName ? conflict.message : undefined;
+	const alertMessage = errorField ?? generalErrorMessage;
 
 	const { field: stackTagsField } = useController({
 		control,
@@ -54,9 +58,13 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (payload: WorkspaceCreateRequestDto) => {
+				setConflict(undefined);
+				setGeneralErrorMessage(undefined);
+
 				const { data, error } = await createWorkspace(payload);
 				if (data) {
 					onClose();
+					return;
 				}
 
 				if (
@@ -64,6 +72,11 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
 				) {
 					setConflict({ message: error.message, name: payload.name });
+					return;
+				}
+
+				if (isServerError(error)) {
+					setGeneralErrorMessage(error.message);
 				}
 			})(event);
 		},
@@ -74,7 +87,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		<>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
-					{errorField && <FormAlert message={errorField} />}
+					{alertMessage && <FormAlert message={alertMessage} />}
 					<Input
 						control={control}
 						label="Workspace name"
