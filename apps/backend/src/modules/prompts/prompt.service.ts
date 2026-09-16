@@ -62,7 +62,7 @@ class PromptService {
 		return {
 			averageScore: formattedAverageScore,
 			items: items.map((item) =>
-				PromptEntity.initialize(item).toDto(item.workspace.name),
+				PromptEntity.initialize(item).toDto(item.workspaceName),
 			),
 			page,
 			pageSize,

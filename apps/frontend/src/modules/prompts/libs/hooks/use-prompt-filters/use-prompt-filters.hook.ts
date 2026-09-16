@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
+import { usePagination } from "~/libs/hooks/use-pagination/use-pagination.hook.js";
 import {
 	DEFAULT_PROMPT_FILTERS_VALUES,
-	PAGE_INCREMENT,
 	SEARCH_DELAY_MS,
 } from "~/modules/prompts/libs/constants/constants.js";
 import { type PromptGetQueryDto } from "~/modules/prompts/libs/types/types.js";
 
-import { PaginationValue } from "../../enums/enums.js";
+import { usePromptQueryPayload } from "./use-prompt-query-payload.hook.js";
 
 type PromptFiltersFormValues = {
 	score: number | string;
@@ -26,7 +26,7 @@ type UsePromptFiltersReturn = {
 };
 
 const usePromptFilters = (): UsePromptFiltersReturn => {
-	const [page, setPage] = useState<number>(PaginationValue.DEFAULT_PAGE);
+	const { handlePageChange, page, resetPage } = usePagination();
 
 	const { control, setValue } = useAppForm<PromptFiltersFormValues>({
 		defaultValues: DEFAULT_PROMPT_FILTERS_VALUES,
@@ -34,15 +34,19 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 
 	const formValues = useWatch({ control });
 
-	const debouncedSearch = useDebounce(formValues.search ?? "", SEARCH_DELAY_MS);
+	const currentSearch = formValues.search ?? "";
+	const currentScore = formValues.score ?? "";
+	const currentWorkspaceId = formValues.workspaceId ?? null;
 
-	useEffect(() => {
-		setPage(PaginationValue.DEFAULT_PAGE);
-	}, [debouncedSearch, formValues.score, formValues.workspaceId]);
+	const debouncedSearch = useDebounce(currentSearch, SEARCH_DELAY_MS);
 
-	const handlePageChange = useCallback((): void => {
-		setPage((previous) => previous + PAGE_INCREMENT);
-	}, []);
+	const queryPayload = usePromptQueryPayload({
+		debouncedSearch,
+		page,
+		resetPage,
+		score: currentScore,
+		workspaceId: currentWorkspaceId,
+	});
 
 	const handleScoreChange = useCallback(
 		(score: number | string) => {
@@ -52,17 +56,6 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 		},
 		[formValues.score, setValue],
 	);
-
-	const queryPayload: PromptGetQueryDto = {
-		limit: PaginationValue.DEFAULT_LIMIT,
-		page,
-		score: typeof formValues.score === "number" ? formValues.score : undefined,
-		search: debouncedSearch || undefined,
-		workspaceId:
-			typeof formValues.workspaceId === "number"
-				? formValues.workspaceId
-				: undefined,
-	};
 
 	return {
 		control,

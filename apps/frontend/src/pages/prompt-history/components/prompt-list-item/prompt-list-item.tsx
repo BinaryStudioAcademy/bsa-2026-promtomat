@@ -1,6 +1,8 @@
-import React, { useCallback, useId, useState } from "react";
+import React, { useCallback, useState } from "react";
 
+import { Button } from "~/libs/components/button/button.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
@@ -15,39 +17,17 @@ type Properties = {
 };
 
 const PromptListItem: React.FC<Properties> = ({ prompt }) => {
-	const [isExpanded, setIsExpanded] = useState<boolean>(false);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const { copyToClipboard, isCopied } = useClipboard();
 
-	const contentId = useId();
 	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 
-	const handleToggle = useCallback((): void => {
-		setIsExpanded((previous) => !previous);
-	}, []);
-
-	const handleRowClick = useCallback(
-		(event: React.MouseEvent<HTMLDivElement>): void => {
-			const target = event.target as HTMLElement;
-			if (target.closest("button, input, textarea")) {
-				return;
-			}
-			handleToggle();
+	const handleToggle = useCallback(
+		(event: React.SyntheticEvent<HTMLDetailsElement>): void => {
+			setIsOpen(event.currentTarget.open);
 		},
-		[handleToggle],
-	);
-
-	const handleRowKeyDown = useCallback(
-		(event: React.KeyboardEvent<HTMLDivElement>): void => {
-			if (event.target !== event.currentTarget) {
-				return;
-			}
-			if (event.key === "Enter" || event.key === " ") {
-				event.preventDefault();
-				handleToggle();
-			}
-		},
-		[handleToggle],
+		[],
 	);
 
 	const handleCopyClick = useCallback((): void => {
@@ -55,16 +35,8 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	}, [copyToClipboard, prompt.body]);
 
 	return (
-		<div className={styles["item"]}>
-			<div
-				aria-controls={contentId}
-				aria-expanded={isExpanded}
-				className={styles["row"]}
-				onClick={handleRowClick}
-				onKeyDown={handleRowKeyDown}
-				role="button"
-				tabIndex={0}
-			>
+		<details className={styles["item"]} onToggle={handleToggle} open={isOpen}>
+			<summary className={styles["row"]}>
 				<div
 					className={getValidClasses(styles["score-badge"], scoreColorClass)}
 				>
@@ -81,30 +53,29 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 					<span
 						className={getValidClasses(
 							styles["chevron"],
-							isExpanded && styles["chevron-expanded"],
+							isOpen && styles["chevron-expanded"],
 						)}
 					>
 						▾
 					</span>
 				</div>
-			</div>
+			</summary>
 
-			{isExpanded && (
-				<div className={styles["expanded"]} id={contentId}>
-					<div className={styles["expanded-header"]}>
-						<span className={styles["expanded-label"]}>Prompt Body</span>
-						<button
-							className={styles["copy-button"]}
-							onClick={handleCopyClick}
-							type="button"
-						>
-							{isCopied ? "Copied!" : "Copy"}
-						</button>
-					</div>
-					<pre className={styles["body"]}>{prompt.body}</pre>
+			<div className={styles["expanded"]}>
+				<div className={styles["expanded-header"]}>
+					<span className={styles["expanded-label"]}>Prompt Body</span>
+					<Button
+						className={styles["copy-button"]}
+						label={isCopied ? "Copied!" : "Copy"}
+						onClick={handleCopyClick}
+						size={ControlSize.SM}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
 				</div>
-			)}
-		</div>
+				<pre className={styles["body"]}>{prompt.body}</pre>
+			</div>
+		</details>
 	);
 };
 
