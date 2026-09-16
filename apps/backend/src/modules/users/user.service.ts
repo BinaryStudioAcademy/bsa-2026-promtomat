@@ -113,21 +113,17 @@ class UserService {
 	}
 
 	public async getProfileSummary(
-		userId: number,
+		user: UserDto,
 	): Promise<UserProfileSummaryResponseDto> {
-		const user = await this.userRepository.findByIdOrThrow(userId);
-
 		const { averageScore, totalCount } =
-			await this.promptService.findUserPromptSummary(userId);
-		const { createdAt, nickname, primaryAiCodingTool } =
-			user.toProfileSummaryObject();
+			await this.promptService.findUserPromptSummary(user.id);
 
 		return {
 			averageScore,
-			id: userId,
-			memberSince: createdAt,
-			nickname,
-			primaryAiCodingTool,
+			id: user.id,
+			memberSince: user.createdAt,
+			nickname: user.nickname,
+			primaryAiCodingTool: user.primaryAiCodingTool,
 			totalPrompts: totalCount,
 		};
 	}

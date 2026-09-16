@@ -125,20 +125,9 @@ class UserEntity implements Entity {
 
 	public toObject(): UserDto {
 		return {
+			createdAt: this.createdAt as string,
 			email: this.email,
 			id: this.id as number,
-			nickname: this.nickname,
-			primaryAiCodingTool: this.primaryAiCodingTool,
-		};
-	}
-
-	public toProfileSummaryObject(): {
-		createdAt: string;
-		nickname: string;
-		primaryAiCodingTool: null | PrimaryAiCodingTool;
-	} {
-		return {
-			createdAt: this.createdAt as string,
 			nickname: this.nickname,
 			primaryAiCodingTool: this.primaryAiCodingTool,
 		};

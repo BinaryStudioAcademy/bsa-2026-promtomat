@@ -39,6 +39,9 @@ import { updateProfileValidationSchema } from "./libs/validation-schemas/validat
  *              - github_copilot
  *              - jetbrains_ai
  *              - windsurf
+ *          createdAt:
+ *            type: string
+ *            format: date-time
  *      UserProfileSummary:
  *        type: object
  *        properties:
@@ -117,7 +120,7 @@ class UserController extends BaseController {
 		options: APIHandlerOptions & { user: UserDto },
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.userService.getProfileSummary(options.user.id),
+			payload: await this.userService.getProfileSummary(options.user),
 			status: HTTPCode.OK,
 		};
 	}
