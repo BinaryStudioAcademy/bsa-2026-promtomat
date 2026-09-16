@@ -96,10 +96,15 @@ import { type PromptService } from "./prompt.service.js";
  *       properties:
  *         averageScore:
  *           type: number
+ *           nullable: true
  *         items:
  *           type: array
  *           items:
  *             $ref: "#/components/schemas/PromptItem"
+ *         page:
+ *           type: number
+ *         pageSize:
+ *           type: number
  *         totalCount:
  *           type: number
  *     PromptProgress:

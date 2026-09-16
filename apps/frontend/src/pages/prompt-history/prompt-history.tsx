@@ -2,6 +2,8 @@ import React, { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
+import { Loader } from "~/libs/components/loader/loader.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
@@ -17,7 +19,7 @@ const ZERO_VALUE = 0;
 const PromptHistory: React.FC = () => {
 	const { control, handleScoreChange, queryPayload } = usePromptFilters();
 
-	const { data, fetchNextPage, hasNextPage, isFetching } =
+	const { data, fetchNextPage, hasNextPage, isError, isFetching, isLoading } =
 		useGetPromptsInfiniteQuery(queryPayload);
 	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
 
@@ -38,6 +40,28 @@ const PromptHistory: React.FC = () => {
 	const handleLoadMore = useCallback((): void => {
 		void fetchNextPage();
 	}, [fetchNextPage]);
+
+	let listContent: React.ReactNode;
+
+	if (isLoading) {
+		listContent = <Loader variant={LoaderVariant.SECTION} />;
+	} else if (isError) {
+		listContent = (
+			<div className={styles["error-state"]}>
+				Failed to load prompts. Please try again.
+			</div>
+		);
+	} else if (!isFetching && items.length === ZERO_VALUE) {
+		listContent = (
+			<div className={styles["empty-state"]}>
+				No prompts match the current filters.
+			</div>
+		);
+	} else {
+		listContent = items.map((item) => (
+			<PromptListItem key={item.id} prompt={item} />
+		));
+	}
 
 	return (
 		<main className={styles["container"]}>
@@ -84,17 +108,9 @@ const PromptHistory: React.FC = () => {
 					</div>
 				</div>
 
-				<div className={styles["list"]}>
-					{!isFetching && items.length === ZERO_VALUE ? (
-						<div className={styles["empty-state"]}>
-							No prompts match the current filters.
-						</div>
-					) : (
-						items.map((item) => <PromptListItem key={item.id} prompt={item} />)
-					)}
-				</div>
+				<div className={styles["list"]}>{listContent}</div>
 
-				{hasNextPage && (
+				{hasNextPage && !isLoading && !isError && (
 					<div className={styles["load-more-wrapper"]}>
 						<Button
 							isDisabled={isFetching}
