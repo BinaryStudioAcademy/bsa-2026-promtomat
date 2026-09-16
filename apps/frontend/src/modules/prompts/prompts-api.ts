@@ -45,31 +45,28 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.RECENT}`,
 				}),
 			}),
-			getPrompts: builder.query<PromptGetAllResponseDto, PromptGetQueryDto>({
-				forceRefetch: ({ currentArg, previousArg }) => {
-					return JSON.stringify(currentArg) !== JSON.stringify(previousArg);
-				},
-				merge: (currentCache, newResponse, { arg }) => {
-					if (arg.page === PaginationValue.DEFAULT_PAGE) {
-						return newResponse;
-					}
+			getPrompts: builder.infiniteQuery<
+				PromptGetAllResponseDto,
+				Omit<PromptGetQueryDto, "page">,
+				number
+			>({
+				infiniteQueryOptions: {
+					getNextPageParam: (lastPage, _allPages, lastPageParameter) => {
+						const isLastPage =
+							lastPageParameter * PaginationValue.DEFAULT_LIMIT >=
+							lastPage.totalCount;
 
-					currentCache.items.push(...newResponse.items);
-					currentCache.totalCount = newResponse.totalCount;
-					currentCache.averageScore = newResponse.averageScore;
-					currentCache.page = newResponse.page;
+						return isLastPage
+							? undefined
+							: lastPageParameter + PaginationValue.DEFAULT_OFFSET;
+					},
+					initialPageParam: PaginationValue.DEFAULT_PAGE,
 				},
 				providesTags: [PromptsApiTag.PROMPT],
-				query: (queryPayload) => ({
-					params: queryPayload,
+				query: ({ pageParam, queryArg }) => ({
+					params: { ...queryArg, page: pageParam },
 					url: APIPath.PROMPTS,
 				}),
-				serializeQueryArgs: ({ endpointName, queryArgs }) => {
-					const filters = Object.fromEntries(
-						Object.entries(queryArgs).filter(([key]) => key !== "page"),
-					);
-					return `${endpointName}-${JSON.stringify(filters)}`;
-				},
 			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
 				invalidatesTags: [PromptsApiTag.PROMPT, WorkspacesApiTag.WORKSPACE],
@@ -94,7 +91,7 @@ const promptApi = baseApi
 const {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
-	useGetPromptsQuery,
+	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 } = promptApi;
@@ -102,7 +99,7 @@ const {
 export {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
-	useGetPromptsQuery,
+	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 };
