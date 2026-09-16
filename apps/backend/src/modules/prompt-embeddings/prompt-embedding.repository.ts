@@ -1,8 +1,17 @@
 import { raw } from "objection";
 
+import {
+	AVERAGE_SCORE_ALIAS,
+	COUNT_ALIAS,
+	WORKSPACE_NAME_ALIAS,
+} from "~/libs/constants/constants.js";
+import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
+import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 
+import { ZERO_VALUE } from "../prompts/libs/constants/constants.js";
+import { type PromptRepositoryItem } from "../prompts/libs/types/prompt-repository-item.type.js";
 import {
 	COLUMN_TYPE_ALIAS,
 	DISTANCE_ALIAS,
@@ -10,6 +19,8 @@ import {
 	MAX_SIMILARITY,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
+	PROMPT_WORKSPACE_ALIAS,
+	PROMPT_WORKSPACE_RELATION,
 	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
@@ -26,6 +37,9 @@ import {
 	type IndexedPromptSource,
 	type NearestPrompt,
 	type NearestPromptQuery,
+	type PromptAggregateRow,
+	type PromptSemanticSearchQuery,
+	type PromptSemanticSearchResult,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
@@ -54,6 +68,94 @@ class PromptEmbeddingRepository {
 			.execute();
 
 		return PromptEmbeddingEntity.initialize(promptEmbedding);
+	}
+
+	public async findAll({
+		embedding,
+		limit,
+		offset,
+		score,
+		userId,
+		workspaceId,
+	}: PromptSemanticSearchQuery): Promise<PromptSemanticSearchResult> {
+		const serializedEmbeddings = serializeEmbedding(embedding);
+
+		const baseQuery = this.promptEmbeddingModel
+			.query()
+			.joinRelated(PROMPT_WORKSPACE_RELATION)
+			.where(`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`, userId)
+			.where(
+				raw("?? <=> ?::vector", [
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+				]),
+				"<",
+				SIMILARITY_THRESHOLD,
+			);
+
+		if (workspaceId) {
+			baseQuery.where(
+				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
+				workspaceId,
+			);
+		}
+
+		if (score) {
+			baseQuery.where(
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				score,
+			);
+		}
+
+		const [aggregation] = await baseQuery
+			.clone()
+			.clearSelect()
+			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${COUNT_ALIAS}`)
+			.avg(
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${AVERAGE_SCORE_ALIAS}`,
+			)
+			.castTo<PromptAggregateRow[]>()
+			.execute();
+
+		const items = await baseQuery
+			.clone()
+			.select(
+				`${PROMPT_RELATION}.${PromptColumnName.ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.TASK_INTENT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.CREATED_AT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				raw("?? AS ??", [
+					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
+					WORKSPACE_NAME_ALIAS,
+				]),
+			)
+			.orderByRaw(
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				[
+					RelevanceWeight.SIMILARITY_WEIGHT,
+					MAX_SIMILARITY,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+					SIMILARITY_THRESHOLD,
+					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					MAX_EFFICIENCY_SCORE,
+				],
+			)
+			.offset(offset)
+			.limit(limit)
+			.castTo<PromptRepositoryItem[]>()
+			.execute();
+
+		return {
+			averageScore: aggregation?.averageScore
+				? Number(aggregation.averageScore)
+				: ZERO_VALUE,
+			items,
+			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
+		};
 	}
 
 	public async findIndexedSourcesAfter(
@@ -113,7 +215,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				"(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) DESC",
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
