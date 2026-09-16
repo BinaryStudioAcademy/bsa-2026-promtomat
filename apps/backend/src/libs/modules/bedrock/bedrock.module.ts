@@ -7,11 +7,12 @@ import {
 import {
 	DEFAULT_CONVERSATION_ROLE,
 	FIRST_CONTENT_INDEX,
+	REQUEST_MAX_ATTEMPTS,
 	SCHEMA_FORMAT_TYPE,
 } from "./libs/constants/constants.js";
 import {
 	checkIsTextTruncated,
-	convertToBedrockServiceError,
+	convertBedrockErrorToTextGenerationError,
 } from "./libs/helpers/helpers.js";
 import {
 	type CommandOptions,
@@ -32,18 +33,11 @@ class Bedrock {
 
 	private modelId: string;
 
-	public constructor({
-		connectionTimeoutMs,
-		maxAttempts,
-		modelId,
-		region,
-		requestTimeoutMs,
-	}: Constructor) {
+	public constructor({ modelId, region, requestTimeoutMs }: Constructor) {
 		this.client = new BedrockRuntimeClient({
-			maxAttempts,
+			maxAttempts: REQUEST_MAX_ATTEMPTS,
 			region,
 			requestHandler: {
-				connectionTimeout: connectionTimeoutMs,
 				requestTimeout: requestTimeoutMs,
 				throwOnRequestTimeout: true,
 			},
@@ -113,7 +107,7 @@ class Bedrock {
 				text,
 			};
 		} catch (error) {
-			throw convertToBedrockServiceError(error);
+			throw convertBedrockErrorToTextGenerationError(error);
 		}
 	}
 }

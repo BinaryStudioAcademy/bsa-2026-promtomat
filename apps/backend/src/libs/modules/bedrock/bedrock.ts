@@ -11,10 +11,11 @@ const bedrock = new Bedrock({
 });
 
 export { bedrock };
-export { BedrockServiceError } from "./libs/exceptions/exceptions.js";
+export { TextGenerationErrorCode } from "./libs/enums/enums.js";
+export { TextGenerationError } from "./libs/exceptions/text-generation-error.exception.js";
+export { checkIsTimeoutError } from "./libs/helpers/helpers.js";
 export {
 	type BedrockInterface,
 	type CommandOptions,
-	type CommandOutput,
 	type StructuredOutputSchema,
 } from "./libs/types/types.js";

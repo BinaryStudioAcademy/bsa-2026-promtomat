@@ -3,11 +3,13 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 import { SchemaKey } from "../enums/enums.js";
 import {
+	composedPromptOutputSchema,
 	labelOutputSchema,
 	textOutputSchema,
 } from "../output-schemas/output-schemas.js";
 
 const schemas = {
+	[SchemaKey.COMPOSED_PROMPT]: composedPromptOutputSchema,
 	[SchemaKey.LABEL]: labelOutputSchema,
 	[SchemaKey.TEXT]: textOutputSchema,
 };

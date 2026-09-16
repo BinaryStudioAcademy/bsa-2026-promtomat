@@ -1,7 +1,9 @@
 import {
 	AccessDeniedException,
 	InternalServerException,
+	ModelErrorException,
 	ModelNotReadyException,
+	ModelStreamErrorException,
 	ModelTimeoutException,
 	ResourceNotFoundException,
 	ServiceQuotaExceededException,
@@ -10,17 +12,23 @@ import {
 	ValidationException,
 } from "@aws-sdk/client-bedrock-runtime";
 
-import { BedrockServiceError } from "../exceptions/exceptions.js";
+import { TextGenerationError } from "../exceptions/exceptions.js";
+import { checkIsTimeoutError } from "./check-is-timeout-error.helper.js";
 
-const convertToBedrockServiceError = (error: unknown): BedrockServiceError => {
+const convertBedrockErrorToTextGenerationError = (
+	error: unknown,
+): TextGenerationError => {
 	if (
+		checkIsTimeoutError(error) ||
 		error instanceof InternalServerException ||
+		error instanceof ModelErrorException ||
 		error instanceof ModelNotReadyException ||
+		error instanceof ModelStreamErrorException ||
 		error instanceof ModelTimeoutException ||
 		error instanceof ServiceUnavailableException ||
 		error instanceof ThrottlingException
 	) {
-		return BedrockServiceError.unavailable(error);
+		return TextGenerationError.unavailable(error);
 	}
 
 	if (
@@ -28,14 +36,14 @@ const convertToBedrockServiceError = (error: unknown): BedrockServiceError => {
 		error instanceof ResourceNotFoundException ||
 		error instanceof ServiceQuotaExceededException
 	) {
-		return BedrockServiceError.configInvalid(error);
+		return TextGenerationError.configInvalid(error);
 	}
 
 	if (error instanceof ValidationException) {
-		return BedrockServiceError.validationFailed(error);
+		return TextGenerationError.validationFailed(error);
 	}
 
-	return BedrockServiceError.unclassified(error);
+	return TextGenerationError.unclassified(error);
 };
 
-export { convertToBedrockServiceError };
+export { convertBedrockErrorToTextGenerationError };

@@ -57,8 +57,9 @@ const SearchableSelect = <T extends FieldValues>({
 	const suggestionsListId = useId();
 
 	const inputReference = useRef<HTMLInputElement>(null);
+	const controlReference = useRef<HTMLDivElement>(null);
 	const activeSuggestionReference = useRef<HTMLLIElement>(null);
-	const [inputRect, setInputRect] = useState<DOMRect | null>(null);
+	const [controlRect, setControlRect] = useState<DOMRect | null>(null);
 
 	const [inputValue, setInputValue] = useState("");
 	const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
@@ -85,13 +86,16 @@ const SearchableSelect = <T extends FieldValues>({
 	});
 
 	useLayoutEffect(() => {
-		if (isSuggestionsOpen && inputReference.current) {
-			setInputRect(inputReference.current.getBoundingClientRect());
+		if (isSuggestionsOpen && controlReference.current) {
+			setControlRect(controlReference.current.getBoundingClientRect());
 		}
 	}, [isSuggestionsOpen, suggestions]);
 
 	useEffect(() => {
-		activeSuggestionReference.current?.scrollIntoView({ block: "nearest" });
+		activeSuggestionReference.current?.scrollIntoView({
+			block: "nearest",
+			inline: "nearest",
+		});
 	}, [activeIndex]);
 
 	const commitValue = useCallback(
@@ -196,6 +200,7 @@ const SearchableSelect = <T extends FieldValues>({
 					styles[size],
 					hasError && styles["error"],
 				)}
+				ref={controlReference}
 			>
 				<ul className={styles["values"]}>
 					{selectedValues.map((value) => (
@@ -237,11 +242,11 @@ const SearchableSelect = <T extends FieldValues>({
 				/>
 			</div>
 
-			{hasSuggestions && inputRect && (
+			{hasSuggestions && controlRect && (
 				<SuggestionsList
 					activeIndex={activeIndex}
 					activeSuggestionReference={activeSuggestionReference}
-					inputRect={inputRect}
+					controlRect={controlRect}
 					onSuggestionMouseDown={handleSuggestionMouseDown}
 					onSuggestionMouseMove={handleSuggestionMouseMove}
 					suggestions={suggestions}
