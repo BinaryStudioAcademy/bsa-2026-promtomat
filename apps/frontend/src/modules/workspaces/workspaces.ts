@@ -4,9 +4,11 @@ export {
 	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 export {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

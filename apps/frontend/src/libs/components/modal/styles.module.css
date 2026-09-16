@@ -112,7 +112,7 @@
 
 .modal-body {
 	min-height: 0;
-	padding: var(--space-32) var(--space-20);
+	padding: var(--space-20);
 	overflow: auto;
 	overscroll-behavior: contain;
 }

@@ -12,6 +12,7 @@ import {
 
 import { SOLO_MEMBER_COUNT } from "../../libs/constants/constants.js";
 import { WorkspaceContributorsMessage } from "../../libs/enums/enums.js";
+import { CandidateSearch } from "./components/candidate-search/candidate-search.js";
 import { ContributorItem } from "./components/contributor-item/contributor-item.js";
 import { UserList } from "./components/user-list/user-list.js";
 import styles from "./styles.module.css";
@@ -33,12 +34,16 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 
 	const contributors = data?.contributors;
 	const hasNoContributors = contributors?.length === EMPTY_LENGTH;
+	const members =
+		data && !isError ? [data.owner, ...data.contributors] : undefined;
 	const memberLabel =
-		workspace.memberCount === SOLO_MEMBER_COUNT ? "member" : "members";
-	const subtitle = contributors
-		? `Owned by you · ${String(workspace.memberCount)} ${memberLabel}`
+		members?.length === SOLO_MEMBER_COUNT ? "member" : "members";
+	const subtitle = members
+		? `Owned by you · ${String(members.length)} ${memberLabel}`
 		: "Owned by you";
-	const contributorCount = contributors ? String(contributors.length) : "–";
+
+	const contributorCount =
+		contributors && !isError ? String(contributors.length) : "–";
 	const title = `Manage Access: ${workspace.name}`;
 
 	const handleRemove = useCallback(
@@ -68,7 +73,10 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 			title={title}
 		>
 			<div className={styles["body"]}>
-				<h3 className={styles["section-label"]}>Find a user</h3>
+				<div className={styles["section"]}>
+					<h3 className={styles["section-label"]}>Find a user</h3>
+					<CandidateSearch workspaceId={workspace.id} />
+				</div>
 
 				<hr className={styles["divider"]} />
 				<div className={styles["section"]}>
@@ -79,7 +87,7 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 
 					<UserList
 						emptyMessage={WorkspaceContributorsMessage.NO_CONTRIBUTORS}
-						errorMessage={WorkspaceContributorsMessage.LOAD_FAILED}
+						errorMessage={WorkspaceContributorsMessage.CONTRIBUTORS_LOAD_FAILED}
 						isEmpty={hasNoContributors}
 						isError={isError}
 						isLoading={isLoading}

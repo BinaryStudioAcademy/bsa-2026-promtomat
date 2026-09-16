@@ -1,4 +1,7 @@
 export {
+	type ContributorDto,
+	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,

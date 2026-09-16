@@ -91,7 +91,7 @@ const Modal = ({
 				: null;
 
 		const [firstElement] = getFocusableElements(dialogElement);
-		firstElement?.focus();
+		firstElement?.focus({ preventScroll: true });
 
 		return () => {
 			triggerElement?.focus();

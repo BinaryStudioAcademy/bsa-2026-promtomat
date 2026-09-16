@@ -4,6 +4,9 @@ import { baseApi } from "~/libs/modules/api/base-api.js";
 
 import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
+	type ContributorDto,
+	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
@@ -16,6 +19,28 @@ const workspacesApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [WorkspacesApiTag.WORKSPACE] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			addWorkspaceContributor: builder.mutation<
+				ContributorDto,
+				{ payload: WorkspaceAddContributorRequestDto; workspaceId: number }
+			>({
+				invalidatesTags: (_result, error) => {
+					const hasError = Boolean(error);
+
+					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+				},
+				query: ({ payload, workspaceId }) => ({
+					body: payload,
+					method: HTTPMethod.POST,
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						{
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+
 			createWorkspace: builder.mutation<
 				WorkspaceDto,
 				WorkspaceCreateRequestDto
@@ -51,7 +76,10 @@ const workspacesApi = baseApi
 				null,
 				{ userId: number; workspaceId: number }
 			>({
-				invalidatesTags: [WorkspacesApiTag.WORKSPACE],
+				invalidatesTags: (_result, error) => {
+					const hasError = Boolean(error);
+					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+				},
 				query: ({ userId, workspaceId }) => ({
 					method: HTTPMethod.DELETE,
 					url: configureString(
@@ -60,6 +88,30 @@ const workspacesApi = baseApi
 						{
 							userId: String(userId),
 							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+			getWorkspaceContributorCandidates: builder.infiniteQuery<
+				WorkspaceContributorCandidatesResponseDto,
+				{ userQuery: string; workspaceId: number },
+				null | string
+			>({
+				infiniteQueryOptions: {
+					getNextPageParam: (lastPage) => lastPage.nextCursor,
+					initialPageParam: null,
+				},
+				providesTags: [WorkspacesApiTag.WORKSPACE],
+				query: ({ pageParam, queryArg }) => ({
+					params: {
+						cursor: pageParam ?? undefined,
+						userQuery: queryArg.userQuery,
+					},
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
+						{
+							workspaceId: String(queryArg.workspaceId),
 						},
 					),
 				}),
@@ -114,18 +166,22 @@ const workspacesApi = baseApi
 	});
 
 const {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 } = workspacesApi;
 
 export {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
