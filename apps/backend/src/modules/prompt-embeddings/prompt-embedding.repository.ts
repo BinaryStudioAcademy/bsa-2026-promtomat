@@ -7,11 +7,11 @@ import {
 } from "~/libs/constants/constants.js";
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
+import { type PromptRepositoryItem } from "~/modules/prompts/libs/types/types.js";
 import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 
-import { ZERO_VALUE } from "../prompts/libs/constants/constants.js";
-import { type PromptRepositoryItem } from "../prompts/libs/types/prompt-repository-item.type.js";
 import {
 	COLUMN_TYPE_ALIAS,
 	DISTANCE_ALIAS,
