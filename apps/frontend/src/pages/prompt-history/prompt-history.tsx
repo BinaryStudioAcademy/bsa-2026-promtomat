@@ -45,7 +45,7 @@ const PromptHistory: React.FC = () => {
 
 	if (isLoading) {
 		listContent = <Loader variant={LoaderVariant.SECTION} />;
-	} else if (isError) {
+	} else if (isError && items.length === ZERO_VALUE) {
 		listContent = (
 			<div className={styles["empty-state"]}>
 				Failed to load prompts. Please try again.
@@ -61,6 +61,14 @@ const PromptHistory: React.FC = () => {
 		listContent = items.map((item) => (
 			<PromptListItem key={item.id} prompt={item} />
 		));
+	}
+
+	let loadMoreLabel = "Load More";
+
+	if (isFetching) {
+		loadMoreLabel = "Loading...";
+	} else if (isError) {
+		loadMoreLabel = "Retry";
 	}
 
 	return (
@@ -110,12 +118,12 @@ const PromptHistory: React.FC = () => {
 
 				<div className={styles["list"]}>{listContent}</div>
 
-				{hasNextPage && !isLoading && !isError && (
+				{hasNextPage && !isLoading && (
 					<div className={styles["load-more-wrapper"]}>
 						<Button
 							isDisabled={isFetching}
 							isLoading={isFetching}
-							label={isFetching ? "Loading..." : "Load More"}
+							label={loadMoreLabel}
 							onClick={handleLoadMore}
 							type="button"
 							variant={ButtonVariant.SECONDARY}
