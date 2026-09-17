@@ -1,17 +1,14 @@
 import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
-import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Icon } from "~/libs/components/icon/icon.js";
 import { Input } from "~/libs/components/input/input.js";
 import {
 	ControlSize,
-	ErrorCode,
 	FormValidationMode,
 	IconName,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { type WorkspaceAddContributorRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -30,21 +27,13 @@ type Properties = {
 const AddContributorForm: React.FC<Properties> = ({
 	workspaceId,
 }: Properties) => {
-	const [addContributor, { error, isLoading }] =
-		useAddWorkspaceContributorMutation();
+	const [addContributor, { isLoading }] = useAddWorkspaceContributorMutation();
 	const { control, handleSubmit, reset, setError } =
 		useAppForm<WorkspaceAddContributorRequestDto>({
 			defaultValues: { email: "" },
 			mode: FormValidationMode.ON_TOUCHED,
 			validationSchema: workspaceAddContributorValidationSchema,
 		});
-
-	const isEmailError =
-		isServerError(error) && EMAIL_ERROR_CODES.has(error.code);
-	const isToastedError =
-		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
-	const generalErrorMessage =
-		isEmailError || isToastedError ? null : getErrorMessage(error);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -68,8 +57,6 @@ const AddContributorForm: React.FC<Properties> = ({
 
 	return (
 		<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-			{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
-
 			<div className={styles["row"]}>
 				<Input
 					control={control}
