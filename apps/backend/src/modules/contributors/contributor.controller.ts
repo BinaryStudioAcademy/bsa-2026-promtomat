@@ -96,7 +96,7 @@ class ContributorController extends BaseController {
 		contributorService: ContributorService,
 		workspaceService: WorkspaceService,
 	) {
-		super(logger, APIPath.WORKSPACES);
+		super(logger, APIPath.WORKSPACES_$WORKSPACE_ID);
 
 		this.contributorService = contributorService;
 
@@ -108,7 +108,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.DELETE,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+			path: WorkspacesApiPath.CONTRIBUTORS_USER_ID,
 			preHandler: workspaceContributorDeleteAccessHook(workspaceService),
 			validation: {
 				params: workspaceContributorRouteParametersValidationSchema,
@@ -124,7 +124,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
+			path: WorkspacesApiPath.CONTRIBUTOR_CANDIDATES,
 			preHandler: workspaceOwnerAccessHook(workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
@@ -140,7 +140,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+			path: WorkspacesApiPath.CONTRIBUTORS,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
@@ -156,7 +156,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.POST,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+			path: WorkspacesApiPath.CONTRIBUTORS,
 			preHandler: workspaceOwnerAccessHook(workspaceService),
 			validation: {
 				body: workspaceAddContributorValidationSchema,

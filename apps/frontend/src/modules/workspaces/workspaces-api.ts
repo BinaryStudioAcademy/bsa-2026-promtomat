@@ -32,8 +32,8 @@ const workspacesApi = baseApi
 					body: payload,
 					method: HTTPMethod.POST,
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
 						{
 							workspaceId: String(workspaceId),
 						},
@@ -83,8 +83,8 @@ const workspacesApi = baseApi
 				query: ({ userId, workspaceId }) => ({
 					method: HTTPMethod.DELETE,
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS_USER_ID,
 						{
 							userId: String(userId),
 							workspaceId: String(workspaceId),
@@ -108,8 +108,8 @@ const workspacesApi = baseApi
 						userQuery: queryArg.userQuery,
 					},
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTOR_CANDIDATES,
 						{
 							workspaceId: String(queryArg.workspaceId),
 						},
@@ -124,8 +124,8 @@ const workspacesApi = baseApi
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (workspaceId) => ({
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
 						{
 							workspaceId: String(workspaceId),
 						},
