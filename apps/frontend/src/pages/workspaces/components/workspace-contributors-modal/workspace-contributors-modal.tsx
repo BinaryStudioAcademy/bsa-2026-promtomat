@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
-import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import {
@@ -13,9 +12,7 @@ import {
 import { SOLO_MEMBER_COUNT } from "../../libs/constants/constants.js";
 import { WorkspaceContributorsMessage } from "../../libs/enums/enums.js";
 import { AddContributorForm } from "./components/add-contributor-form/add-contributor-form.js";
-import { ContributorItem } from "./components/contributor-item/contributor-item.js";
-import { UserItem } from "./components/user-item/user-item.js";
-import { UserList } from "./components/user-list/user-list.js";
+import { ContributorList } from "./components/contributor-list/contributor-list.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -36,7 +33,6 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 		useDeleteWorkspaceContributorMutation();
 
 	const contributors = data?.contributors;
-	const hasNoContributors = contributors?.length === EMPTY_LENGTH;
 	const members =
 		data && !isError ? [data.owner, ...data.contributors] : undefined;
 	const memberLabel =
@@ -64,6 +60,8 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 	const handleRetry = useCallback((): void => {
 		void refetch();
 	}, [refetch]);
+
+	const removeHandler = isOwner ? handleRemove : undefined;
 
 	return (
 		<Modal
@@ -99,27 +97,16 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 						<span className={styles["count-badge"]}>{contributorCount}</span>
 					</div>
 
-					<UserList
+					<ContributorList
+						contributors={contributors}
 						emptyMessage={WorkspaceContributorsMessage.NO_CONTRIBUTORS}
 						errorMessage={WorkspaceContributorsMessage.CONTRIBUTORS_LOAD_FAILED}
-						isEmpty={hasNoContributors}
 						isError={isError}
 						isLoading={isLoading}
+						isRemoving={isRemoving}
+						onRemove={removeHandler}
 						onRetry={handleRetry}
-					>
-						{contributors?.map((contributor) => {
-							return isOwner ? (
-								<ContributorItem
-									isDisabled={isRemoving}
-									key={contributor.id}
-									onRemove={handleRemove}
-									user={contributor}
-								/>
-							) : (
-								<UserItem key={contributor.id} user={contributor} />
-							);
-						})}
-					</UserList>
+					/>
 				</div>
 			</div>
 		</Modal>

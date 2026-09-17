@@ -4,29 +4,33 @@ import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type WorkspaceUserSummaryDto } from "~/modules/workspaces/libs/types/types.js";
 
-import { UserItem } from "../user-item/user-item.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	isDisabled: boolean;
-	onRemove: (userId: number) => void;
+	isDisabled?: boolean | undefined;
+	onRemove?: ((userId: number) => void) | undefined;
 	user: WorkspaceUserSummaryDto;
 };
 
 const ContributorItem: React.FC<Properties> = ({
-	isDisabled,
+	isDisabled = false,
 	onRemove,
 	user,
 }: Properties) => {
 	const contributorRemoveLabel = `Remove ${user.nickname}`;
+	const hasRemoveAction = Boolean(onRemove);
 
 	const handleRemove = useCallback((): void => {
-		onRemove(user.id);
+		onRemove?.(user.id);
 	}, [onRemove, user.id]);
 
 	return (
-		<UserItem
-			action={
+		<li className={styles["item"]}>
+			<div className={styles["identity"]}>
+				<span className={styles["name"]}>{user.nickname}</span>
+				<span className={styles["email"]}>{user.email}</span>
+			</div>
+			{hasRemoveAction && (
 				<IconButton
 					ariaLabel={contributorRemoveLabel}
 					className={styles["remove-button"]}
@@ -35,9 +39,8 @@ const ContributorItem: React.FC<Properties> = ({
 					onClick={handleRemove}
 					size={ControlSize.MD}
 				/>
-			}
-			user={user}
-		/>
+			)}
+		</li>
 	);
 };
 

@@ -6,6 +6,7 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Input } from "~/libs/components/input/input.js";
 import {
 	ControlSize,
+	ErrorCode,
 	FormValidationMode,
 	IconName,
 } from "~/libs/enums/enums.js";
@@ -40,7 +41,10 @@ const AddContributorForm: React.FC<Properties> = ({
 
 	const isEmailError =
 		isServerError(error) && EMAIL_ERROR_CODES.has(error.code);
-	const generalErrorMessage = isEmailError ? null : getErrorMessage(error);
+	const isToastedError =
+		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
+	const generalErrorMessage =
+		isEmailError || isToastedError ? null : getErrorMessage(error);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {

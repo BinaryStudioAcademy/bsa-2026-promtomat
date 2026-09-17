@@ -22,6 +22,7 @@ const workspacesApi = baseApi
 				ContributorDto,
 				{ payload: WorkspaceAddContributorRequestDto; workspaceId: number }
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
 
