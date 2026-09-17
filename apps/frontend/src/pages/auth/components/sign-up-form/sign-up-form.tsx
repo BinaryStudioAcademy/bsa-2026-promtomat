@@ -63,6 +63,10 @@ const SignUpForm: React.FC<Properties> = ({
 		setHasPasswordBeenFocused(true);
 	}, []);
 
+	const isToastedError =
+		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
+	const generalError = isToastedError ? undefined : error;
+
 	const handleFormSubmit = useCallback(
 		(event_: React.BaseSyntheticEvent): void => {
 			void handleSubmit(onSubmit)(event_);
@@ -73,7 +77,7 @@ const SignUpForm: React.FC<Properties> = ({
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign up</h1>
-			<FormAlert error={error} />
+			<FormAlert error={generalError} />
 			{isSuccess ? (
 				<FormAlert message={SignUpFormMessage.SUCCESS} variant="success" />
 			) : null}
