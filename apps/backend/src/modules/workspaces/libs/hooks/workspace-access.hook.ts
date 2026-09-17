@@ -6,6 +6,7 @@ import { type WorkspaceService } from "../../workspace.service.js";
 
 const workspaceAccessHook = (
 	workspaceService: WorkspaceService,
+	options: { isWorkspaceOptional?: boolean } = {},
 ): preHandlerAsyncHookHandler => {
 	return async (request) => {
 		if (!request.user) {
@@ -21,6 +22,9 @@ const workspaceAccessHook = (
 			requestQuery?.workspaceId;
 
 		if (!workspaceId) {
+			if (options.isWorkspaceOptional) {
+				return;
+			}
 			throw WorkspaceError.notFound();
 		}
 

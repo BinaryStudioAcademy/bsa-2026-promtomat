@@ -86,6 +86,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 										},
 										path: AppRoute.WORKSPACES,
 									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-history/prompt-history.js");
+
+											return { Component: pageModule.PromptHistory };
+										},
+										path: AppRoute.PROMPTS_HISTORY,
+									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
 								hydrateFallbackElement: <Loader />,
