@@ -13,8 +13,8 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
-import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import {
+	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 	type PromptUpdateIntentRequestDto,
 } from "~/modules/prompts/libs/types/types.js";
@@ -26,9 +26,10 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	prompt: PromptItemResponseDto;
+	queryPayload: Omit<PromptGetQueryDto, "page">;
 };
 
-const PromptListItem: React.FC<Properties> = ({ prompt }) => {
+const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const { copyToClipboard, isCopied } = useClipboard();
 
@@ -50,7 +51,6 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 		name: "taskIntent",
 	});
 
-	const { queryPayload } = usePromptFilters();
 	const descriptionId = useId();
 
 	const errorMessage = error?.message;
