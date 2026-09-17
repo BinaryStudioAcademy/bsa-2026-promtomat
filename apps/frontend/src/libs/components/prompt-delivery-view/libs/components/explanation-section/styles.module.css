@@ -1,0 +1,28 @@
+.heading {
+	margin: 0;
+	font-size: var(--font-size-title-3);
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.explanation {
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	line-height: 1.6;
+	color: var(--text-body);
+}
+
+.sources-heading {
+	margin: 0;
+	font-size: var(--font-size-body-xl);
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.sources {
+	padding-left: var(--space-24);
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	line-height: 1.6;
+	color: var(--text-body);
+}

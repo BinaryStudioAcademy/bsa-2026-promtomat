@@ -1,4 +1,5 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
@@ -19,6 +20,14 @@ const promptApi = baseApi
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getPromptById: builder.query<PromptDto, number>({
+				extraOptions: { shouldSuppressToast: true },
+				query: (id) => ({
+					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
+						id: String(id),
+					}),
+				}),
+			}),
 			getPromptProgress: builder.query<
 				PromptProgressResponseDto,
 				PromptWorkspaceQueryDto
@@ -60,6 +69,7 @@ const promptApi = baseApi
 	});
 
 const {
+	useGetPromptByIdQuery,
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useRecordPromptMutation,
@@ -67,6 +77,7 @@ const {
 } = promptApi;
 
 export {
+	useGetPromptByIdQuery,
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useRecordPromptMutation,

@@ -13,6 +13,7 @@ import { ErrorPage } from "~/pages/error/error.js";
 import { Generate } from "~/pages/generate/generate.js";
 import { NoAccessPage } from "~/pages/no-access/no-access.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { PromptDelivery } from "~/pages/prompt-delivery/prompt-delivery.js";
 import { SettingsPage } from "~/pages/settings/settings.js";
 import { SmartSearch } from "~/pages/smart-search/smart-search.js";
 import { Training } from "~/pages/training/training.js";
@@ -56,6 +57,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									</PrivateRoute>
 								),
 								path: AppRoute.TRAINING,
+							},
+							{
+								element: (
+									<PrivateRoute redirectTo={AppRoute.SIGN_IN}>
+										<PromptDelivery />
+									</PrivateRoute>
+								),
+								path: AppRoute.PROMPTS_$PROMPT_ID,
 							},
 							{
 								element: (
