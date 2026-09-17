@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { capitalizeFirstLetter } from "~/libs/helpers/helpers.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
@@ -28,6 +29,7 @@ const WorkspaceCard: React.FC<Properties> = ({
 }: Properties) => {
 	const visibility = capitalizeFirstLetter(workspace.visibility);
 	const hasContributors = workspace.memberCount > SOLO_MEMBER_COUNT;
+	const hasStackTags = workspace.stackTags.length > EMPTY_LENGTH;
 
 	const handleConfigClick = useCallback((): void => {
 		onConfig(workspace);
@@ -67,12 +69,17 @@ const WorkspaceCard: React.FC<Properties> = ({
 			</header>
 
 			<div className={styles["details"]}>
-				<div className={styles["detail-row"]}>
-					Tech Stack:{" "}
-					<span className={styles["detail-value"]}>
-						{workspace.stackTags.join(", ")}
-					</span>
-				</div>
+				{hasStackTags && (
+					<ul className={styles["stack-tags"]}>
+						{workspace.stackTags.map((stackTag) => {
+							return (
+								<li className={styles["stack-tag"]} key={stackTag}>
+									{stackTag}
+								</li>
+							);
+						})}
+					</ul>
+				)}
 				<div className={styles["detail-row-mono"]}>
 					Dataset Readiness: [========== 30%] 300 / 1,000 Prompts
 				</div>
