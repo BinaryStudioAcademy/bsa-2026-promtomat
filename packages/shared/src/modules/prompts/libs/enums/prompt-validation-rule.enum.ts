@@ -6,6 +6,7 @@ const PromptValidationRule = {
 	INTENT_MAXIMUM_LENGTH: 255,
 	INTENT_MINIMUM_LENGTH: 5,
 	INTENT_REQUIRED: 1,
+	MAX_LIMIT: 100,
 } as const;
 
 export { PromptValidationRule };

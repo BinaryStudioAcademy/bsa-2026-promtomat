@@ -8,14 +8,17 @@ import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { LabelService } from "../labels/labels.js";
+import { ROUND_FACTOR } from "./libs/constants/constants.js";
 import { PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
 	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
+	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
 	type PromptGenerateLabelPayload,
+	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
@@ -39,7 +42,6 @@ class PromptService {
 	private labelService: LabelService;
 
 	private promptEmbeddingService: PromptEmbeddingService;
-
 	private promptRepository: PromptRepository;
 
 	public constructor({
@@ -127,6 +129,28 @@ class PromptService {
 		await this.promptEmbeddingService.embedForPrompt(prompt);
 
 		return prompt;
+	}
+
+	public async findAll(
+		options: PromptFindAllOptions,
+	): Promise<PromptGetAllResponseDto> {
+		const { averageScore, items, page, pageSize, totalCount } =
+			await this.promptRepository.findAll(options);
+
+		const formattedAverageScore =
+			averageScore === null
+				? null
+				: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
+
+		return {
+			averageScore: formattedAverageScore,
+			items: items.map((item) =>
+				PromptEntity.initialize(item).toDto(item.workspaceName),
+			),
+			page,
+			pageSize,
+			totalCount,
+		};
 	}
 
 	public async findByWorkspace(
