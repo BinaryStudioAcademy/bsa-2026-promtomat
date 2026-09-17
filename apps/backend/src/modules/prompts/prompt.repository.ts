@@ -27,7 +27,7 @@ import {
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
-	type PromptUpdateIntentRequestDto,
+	type PromptUpdatePayload,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -124,6 +124,12 @@ class PromptRepository {
 		};
 	}
 
+	public async findById(id: number): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel.query().findById(id);
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
+	}
+
 	public async findByIdAndUserId(
 		id: number,
 		userId: number,
@@ -208,7 +214,7 @@ class PromptRepository {
 
 	public async update(
 		id: number,
-		payload: PromptUpdateIntentRequestDto,
+		payload: PromptUpdatePayload,
 		trx?: Transaction,
 	): Promise<null | PromptEntity> {
 		const prompt = await this.promptModel

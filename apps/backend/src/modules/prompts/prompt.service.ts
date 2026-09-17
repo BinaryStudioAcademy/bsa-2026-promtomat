@@ -157,10 +157,10 @@ class PromptService {
 	public async findByIdAndOwner(
 		id: number,
 		userId: number,
-	): Promise<null | PromptDto> {
+	): Promise<null | Omit<PromptDto, "label">> {
 		const prompt = await this.promptRepository.findByIdAndUserId(id, userId);
 
-		return prompt ? { ...prompt.toObject(), label: "TODO" } : null;
+		return prompt ? prompt.toObject() : null;
 	}
 
 	public async findByWorkspace(
@@ -235,10 +235,27 @@ class PromptService {
 	): Promise<PromptDto> {
 		const { id, taskIntent } = payload;
 
+		const existingPromptEntity = (await this.promptRepository.findById(
+			id,
+		)) as PromptEntity;
+
+		const existingPrompt = existingPromptEntity.toObject();
+
+		const generatedLabel = await this.generateLabel({
+			promptBody: existingPrompt.promptBody,
+			taskIntent: existingPrompt.taskIntent,
+			workspaceId: existingPrompt.workspaceId,
+		});
+
 		const updatedPrompt = await this.database.transaction(async (trx) => {
+			const label = await this.labelService.getOrCreate({
+				name: generatedLabel,
+				workspaceId: promptObject.workspaceId,
+			});
+
 			const prompt = await this.promptRepository.update(
 				id,
-				{ taskIntent },
+				{ labelId: label.id, taskIntent },
 				trx,
 			);
 
@@ -248,16 +265,14 @@ class PromptService {
 
 			await this.promptEmbeddingService.deleteForPrompt(id, trx);
 
-			// Regenerate AI label
-
 			return prompt;
 		});
 
-		const promptDto = updatedPrompt.toObject();
+		const promptObject = updatedPrompt.toObject();
 
-		void this.promptEmbeddingService.embedForPrompt(promptDto);
+		void this.promptEmbeddingService.embedForPrompt(promptObject);
 
-		return { ...promptDto, label: "TODO" };
+		return { ...promptObject, label: generatedLabel };
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {
