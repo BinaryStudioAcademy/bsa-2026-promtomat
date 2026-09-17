@@ -200,14 +200,34 @@ class ContributorController extends BaseController {
 	 *               $ref: "#/components/schemas/Contributor"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       403:
 	 *         description: Only the workspace owner can add contributors
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace or target user not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       409:
 	 *         description: User is already a contributor or is the workspace owner
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid route parameters or request body
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async create(
@@ -253,12 +273,28 @@ class ContributorController extends BaseController {
 	 *         description: Contributor removed successfully
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       403:
 	 *         description: The action is forbidden or the workspace owner was targeted
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace or contributor not found, or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid route parameters
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async delete(
@@ -300,10 +336,22 @@ class ContributorController extends BaseController {
 	 *               $ref: "#/components/schemas/WorkspaceContributorsResponse"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace not found or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid workspace identifier
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async findAllByWorkspaceId(
@@ -354,12 +402,28 @@ class ContributorController extends BaseController {
 	 *               $ref: "#/components/schemas/WorkspaceContributorCandidatesResponse"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       403:
 	 *         description: Only the workspace owner can view contributor candidates
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace not found or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid workspace identifier, query, or cursor
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async findCandidates(
