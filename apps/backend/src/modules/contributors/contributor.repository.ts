@@ -51,7 +51,7 @@ class ContributorRepository {
 				.orWhere((sameNicknameBuilder) => {
 					sameNicknameBuilder
 						.where(userNickname, cursor.nickname)
-						.where(userId, ">", cursor.id);
+						.andWhere(userId, ">", cursor.id);
 				});
 		});
 	}
@@ -132,7 +132,7 @@ class ContributorRepository {
 			.query()
 			.delete()
 			.where(ContributorColumnName.WORKSPACE_ID, workspaceId)
-			.where(ContributorColumnName.USER_ID, userId)
+			.andWhere(ContributorColumnName.USER_ID, userId)
 			.execute();
 
 		return deletedContributorCount;

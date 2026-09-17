@@ -1,8 +1,3 @@
-/*
---item-height is consumed by UserItem through inheritance: the list owns how many
-items are visible, the item owns how tall one is. Custom property names are not
-hashed by CSS modules, so the value crosses the file boundary.
-*/
 .list {
 	--visible-items: 3;
 	--item-height: 54px;

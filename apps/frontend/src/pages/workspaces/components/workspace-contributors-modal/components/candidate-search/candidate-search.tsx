@@ -58,7 +58,7 @@ const CandidateSearch: React.FC<Properties> = ({ workspaceId }: Properties) => {
 	const isFetchNextPageError = isError && direction === "forward";
 	const hasListError = isError && !isFetchNextPageError;
 
-	const removePendingUserId = useCallback((userId: number): void => {
+	const handleRemovePendingUserId = useCallback((userId: number): void => {
 		setPendingUserIds((previous) =>
 			previous.filter((pendingId) => pendingId !== userId),
 		);
@@ -69,10 +69,10 @@ const CandidateSearch: React.FC<Properties> = ({ workspaceId }: Properties) => {
 			setPendingUserIds((previous) => [...previous, userId]);
 
 			void addContributor({ payload: { userId }, workspaceId }).finally(() => {
-				removePendingUserId(userId);
+				handleRemovePendingUserId(userId);
 			});
 		},
-		[addContributor, removePendingUserId, workspaceId],
+		[addContributor, handleRemovePendingUserId, workspaceId],
 	);
 
 	const handleRetry = useCallback((): void => {
