@@ -1,4 +1,4 @@
-export { WorkspacesApiTag } from "./libs/enums/enums.js";
+export { WorkspaceListScope, WorkspacesApiTag } from "./libs/enums/enums.js";
 export {
 	workspaceCreationValidationSchema,
 	workspaceUpdateValidationSchema,

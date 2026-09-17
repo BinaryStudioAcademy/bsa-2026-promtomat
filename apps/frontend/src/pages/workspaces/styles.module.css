@@ -20,6 +20,10 @@
 	text-transform: uppercase;
 }
 
+.filter-container {
+	margin-bottom: var(--space-20);
+}
+
 .search-container {
 	margin-bottom: var(--space-20);
 }
