@@ -29,6 +29,7 @@ type Properties<T extends FieldValues> = {
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 	placeholder?: string;
+	ref?: React.Ref<HTMLInputElement>;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
 };
@@ -49,6 +50,7 @@ const Input = <T extends FieldValues>({
 	onFocus,
 	onKeyDown,
 	placeholder = "",
+	ref,
 	size = ControlSize.MD,
 	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
@@ -117,6 +119,7 @@ const Input = <T extends FieldValues>({
 					onFocus={onFocus}
 					onKeyDown={onKeyDown}
 					placeholder={placeholder}
+					ref={ref}
 					type={inputType}
 				/>
 				{isPasswordField && (

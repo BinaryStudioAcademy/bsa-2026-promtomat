@@ -13,3 +13,8 @@
 	border: var(--border-width-hairline) solid transparent;
 	border-radius: var(--radius-md);
 }
+
+.preview:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}

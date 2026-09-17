@@ -27,6 +27,8 @@ type Properties<T extends FieldValues> = {
 	size?: ValueOf<typeof ControlSize>;
 };
 
+const ZERO_VALUE = 0;
+
 const InlineEdit = <T extends FieldValues>({
 	className = "",
 	control,
@@ -38,10 +40,10 @@ const InlineEdit = <T extends FieldValues>({
 	onSave,
 	placeholder = "",
 	size = ControlSize.MD,
-	...rest
 }: Properties<T>): React.JSX.Element => {
 	const [isEditing, setIsEditing] = useState(false);
-	const wrapperReference = useRef<HTMLDivElement>(null);
+	const inputReference = useRef<HTMLInputElement>(null);
+	const previewButtonReference = useRef<HTMLButtonElement>(null);
 	const originalValueReference = useRef<unknown>(null);
 
 	const { field } = useController({
@@ -51,17 +53,15 @@ const InlineEdit = <T extends FieldValues>({
 	});
 
 	useEffect(() => {
-		if (!isEditing || !wrapperReference.current) {
-			return;
+		if (isEditing) {
+			inputReference.current?.focus();
 		}
-
-		const inputElement = wrapperReference.current.querySelector("input");
-		inputElement?.focus();
 	}, [isEditing]);
 
 	const handleCancelEditing = useCallback((): void => {
 		field.onChange(originalValueReference.current);
 		setIsEditing(false);
+		setTimeout(() => previewButtonReference.current?.focus(), ZERO_VALUE);
 	}, [field]);
 
 	const handleSaveEditing = useCallback((): void => {
@@ -69,15 +69,24 @@ const InlineEdit = <T extends FieldValues>({
 		if (field.value !== originalValueReference.current) {
 			onSave?.();
 		}
+		setTimeout(() => previewButtonReference.current?.focus(), ZERO_VALUE);
 	}, [field, onSave]);
 
-	const handleStartEditing = useCallback((): void => {
-		if (isDisabled) {
-			return;
-		}
-		originalValueReference.current = field.value;
-		setIsEditing(true);
-	}, [isDisabled, field.value]);
+	const handleStartEditing = useCallback(
+		(
+			event:
+				| React.FocusEvent<HTMLButtonElement>
+				| React.MouseEvent<HTMLButtonElement>,
+		): void => {
+			event.stopPropagation();
+			if (isDisabled) {
+				return;
+			}
+			originalValueReference.current = field.value;
+			setIsEditing(true);
+		},
+		[isDisabled, field.value],
+	);
 
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -94,10 +103,10 @@ const InlineEdit = <T extends FieldValues>({
 	const handleBlur = useCallback(
 		(event: React.FocusEvent<HTMLDivElement>) => {
 			if (!event.currentTarget.contains(event.relatedTarget)) {
-				handleCancelEditing();
+				handleSaveEditing();
 			}
 		},
-		[handleCancelEditing],
+		[handleSaveEditing],
 	);
 
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -106,7 +115,7 @@ const InlineEdit = <T extends FieldValues>({
 
 	if (isEditing) {
 		return (
-			<div ref={wrapperReference}>
+			<div>
 				<Input
 					className={className}
 					control={control}
@@ -119,8 +128,8 @@ const InlineEdit = <T extends FieldValues>({
 					onClick={handleClick}
 					onKeyDown={handleKeyDown}
 					placeholder={placeholder}
+					ref={inputReference}
 					size={size}
-					{...rest}
 				/>
 			</div>
 		);
@@ -144,7 +153,7 @@ const InlineEdit = <T extends FieldValues>({
 						className,
 					)}
 					onClick={handleStartEditing}
-					onFocus={handleStartEditing}
+					ref={previewButtonReference}
 				>
 					{field.value || placeholder}
 				</button>
