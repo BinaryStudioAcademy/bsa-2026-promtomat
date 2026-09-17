@@ -57,6 +57,8 @@
 	--space-48: 48px;
 	--space-64: 64px;
 	--space-80: 80px;
+	--elevation-default: 0;
+	--elevation-navbar-header: 10;
 	--radius-none: 0;
 	--radius-xs: 2px;
 	--radius-sm: 4px;

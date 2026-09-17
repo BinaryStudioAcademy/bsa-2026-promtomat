@@ -30,40 +30,41 @@ const HeaderNavigation: React.FC<Properties> = ({
 	return (
 		<ul className={styles["nav-list"]}>
 			{user ? (
-				<div className={styles["nav-list__navigation"]}>
-					<li>
+				<>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
 					</li>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.WORKSPACES}>Workspaces</Link>
 					</li>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.TRAINING}>Training</Link>
 					</li>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.GENERATE}>Generate</Link>
 					</li>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.SETTINGS}>Settings</Link>
 					</li>
-					<div className={styles["nav-list__user"]}>
-						<li className={styles["identity-label"]}>{user.nickname}</li>
-						<li>
-							<Button
-								label="Sign out"
-								onClick={handleSignOut}
-								type="button"
-								variant={ButtonVariant.SECONDARY}
-							/>
-						</li>
-					</div>
-				</div>
+					<li className={styles["nav-list__user"]}>
+						<span className={styles["identity-label"]} title={user.nickname}>
+							{user.nickname}
+						</span>
+						<Button
+							className={styles["sign-out"]}
+							label="Sign out"
+							onClick={handleSignOut}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+					</li>
+				</>
 			) : (
 				<>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.SIGN_IN}>Sign in</Link>
 					</li>
-					<li>
+					<li className={styles["nav-list__item"]}>
 						<Link to={AppRoute.SIGN_UP}>Sign up</Link>
 					</li>
 				</>
