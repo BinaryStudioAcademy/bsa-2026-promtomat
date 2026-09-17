@@ -11,7 +11,6 @@ export { LABEL_GENERATION_MAX_TOKENS } from "./label-generation-max-tokens.const
 export { LABEL_GENERATION_TEMPERATURE } from "./label-generation-temperature.constant.js";
 export { LABEL_GENERATION_TOP_P } from "./label-generation-top-p.constant.js";
 export { LABEL_ID } from "./label-id.constant.js";
-export { MAX_SUGGESTIONS } from "./max-suggestions.constant.js";
 export { PROMPT_ID } from "./prompt-id.constant.js";
 export { PROMPT_LABEL_ID } from "./prompt-label-id.constant.js";
 export { PROMPT_WORKSPACE_ID } from "./prompt-workspace-id.constant.js";
