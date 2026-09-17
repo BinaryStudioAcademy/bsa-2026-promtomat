@@ -1,5 +1,6 @@
 .header {
 	position: sticky;
+	top: 0;
 	z-index: var(--elevation-navbar-header);
 	display: flex;
 	gap: var(--space-8);
