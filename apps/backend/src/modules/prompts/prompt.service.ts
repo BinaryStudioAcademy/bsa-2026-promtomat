@@ -235,9 +235,11 @@ class PromptService {
 	): Promise<PromptDto> {
 		const { id, taskIntent } = payload;
 
-		const existingPromptEntity = (await this.promptRepository.findById(
-			id,
-		)) as PromptEntity;
+		const existingPromptEntity = await this.promptRepository.findById(id);
+
+		if (!existingPromptEntity) {
+			throw PromptError.notFound();
+		}
 
 		const existingPrompt = existingPromptEntity.toObject();
 
