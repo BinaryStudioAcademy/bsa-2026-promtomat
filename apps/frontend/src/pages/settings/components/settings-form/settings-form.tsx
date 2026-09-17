@@ -46,8 +46,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
 	const isToastedError =
 		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
-	const generalError =
-		isNicknameConflict || isToastedError ? undefined : error;
+	const generalError = isNicknameConflict || isToastedError ? undefined : error;
 
 	const isSaveDisabled = isLoading || !isDirty;
 

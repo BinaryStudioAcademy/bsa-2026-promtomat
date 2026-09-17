@@ -35,8 +35,7 @@ const SignInForm: React.FC = () => {
 	});
 	const isToastedError =
 		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
-	const generalError =
-		hasFieldErrors || isToastedError ? undefined : error;
+	const generalError = hasFieldErrors || isToastedError ? undefined : error;
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
