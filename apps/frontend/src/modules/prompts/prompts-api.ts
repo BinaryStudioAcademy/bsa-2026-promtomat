@@ -92,7 +92,7 @@ const promptApi = baseApi
 				{
 					id: number;
 					payload: PromptUpdateIntentRequestDto;
-					queryArgs: PromptGetQueryDto;
+					queryArgs: Omit<PromptGetQueryDto, "page">;
 				}
 			>({
 				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
@@ -104,11 +104,14 @@ const promptApi = baseApi
 								"getPrompts",
 								queryArgs,
 								(draft) => {
-									const promptToUpdate = draft.items.find(
-										(prompt) => prompt.id === id,
-									);
-									if (promptToUpdate) {
-										Object.assign(promptToUpdate, updatedPrompt);
+									for (const pageData of draft.pages) {
+										const promptToUpdate = pageData.items.find(
+											(prompt) => prompt.id === id,
+										);
+										if (promptToUpdate) {
+											Object.assign(promptToUpdate, updatedPrompt);
+											break;
+										}
 									}
 								},
 							),
