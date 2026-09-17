@@ -69,7 +69,7 @@ const SmartSearch: React.FC = () => {
 						label="Search in"
 						name="workspaceId"
 						options={options ?? []}
-						placeholder="Select workspace..."
+						placeholder="Select workspace"
 						size={ControlSize.LG}
 					/>
 				</div>
