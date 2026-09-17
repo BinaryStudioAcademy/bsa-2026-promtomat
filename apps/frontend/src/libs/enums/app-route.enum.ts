@@ -5,6 +5,7 @@ const AppRoute = {
 	NO_ACCESS: "/no-access",
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	RESET_PASSWORD: "/reset-password",
+	PROMPTS_HISTORY: "/prompts/history",
 	ROOT: "/",
 	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",
