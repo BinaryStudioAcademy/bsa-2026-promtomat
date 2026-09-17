@@ -12,10 +12,7 @@ export {
 	AuthError,
 	ComposedPromptError,
 	HTTPError,
-<<<<<<< HEAD
 	LabelError,
-=======
->>>>>>> 74cc94a7 (feat: add update taskIntent backend flow pm-75)
 	PromptError,
 	PromptSearchError,
 	ValidationError,
