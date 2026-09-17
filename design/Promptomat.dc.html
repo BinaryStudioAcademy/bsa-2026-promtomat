@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#0A0C11; }
+  * { box-sizing:border-box; }
+  a { color:#E9A84C; text-decoration:none; }
+  a:hover { color:#F3C177; }
+  input, textarea, select, button { font-family:'IBM Plex Sans', system-ui, sans-serif; }
+  input::placeholder, textarea::placeholder { color:#5C6478; }
+  select option { background:#11141B; color:#E8EAF0; }
+  ::-webkit-scrollbar { width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb { background:#242a36; border-radius:8px; }
+  @keyframes riseIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  @media (max-width: 600px) {
+    html, body { overflow-x:hidden; }
+    .app-root { width:100%; overflow-x:hidden; }
+    .app-sidebar { width:min(82vw,300px) !important; padding:18px 14px !important; }
+    .app-header { gap:10px !important; padding:10px 12px !important; min-height:58px; }
+    .app-header-copy { overflow:hidden; }
+    .app-header-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px !important; }
+    .app-header-subtitle { display:none; }
+    .app-header-account { padding:5px !important; }
+    .page-mobile { width:100%; padding:18px 14px 48px !important; }
+    .page-mobile h1 { font-size:26px !important; line-height:1.14; }
+    .page-intro { margin-bottom:20px !important; }
+    .page-intro > div { flex-basis:100% !important; }
+    .page-intro > button { width:100%; justify-content:center; min-height:44px; }
+    .mobile-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px !important; }
+    .mobile-summary-grid > div { min-width:0; padding:12px 10px !important; }
+    .mobile-summary-grid > div:last-child { grid-column:1 / -1; }
+    .mobile-summary-grid > div > div:first-child { min-height:24px; font-size:9px !important; line-height:1.25; margin-bottom:6px !important; }
+    .mobile-summary-grid > div span:first-child,
+    .mobile-summary-grid > div > div:last-child { font-size:19px !important; }
+    .filter-row { align-items:stretch !important; }
+    .filter-row > * { flex-basis:100% !important; max-width:none !important; width:100%; }
+    .filter-row select { width:100%; min-height:44px; }
+    .workspace-grid { grid-template-columns:minmax(0,1fr) !important; }
+    .workspace-card { padding:16px !important; }
+    .workspace-actions { display:grid !important; grid-template-columns:1fr auto auto; }
+    .workspace-actions button { min-height:42px; }
+    .surface-panel { padding:18px !important; border-radius:14px !important; }
+    .training-panel { padding:18px !important; }
+    .search-layout { grid-template-columns:minmax(0,1fr) !important; gap:12px !important; }
+    .search-result-meta { flex-wrap:wrap; row-gap:4px !important; }
+    .detail-panel { padding:16px !important; top:auto !important; }
+    .profile-save-row { align-items:stretch !important; flex-direction:column; gap:8px !important; }
+    .profile-save-row button { width:100%; min-height:44px; }
+    .profile-stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px !important; }
+    .profile-stats > div:last-child { grid-column:1 / -1; }
+    .profile-stats > div { min-width:0; padding:14px 6px !important; }
+    .profile-stats > div > div:first-child { font-size:22px !important; }
+    .profile-stats > div > div:last-child { font-size:10.5px !important; line-height:1.25; }
+    .config-targets { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .config-targets button { width:100%; min-height:42px; padding:10px 8px !important; }
+    .config-actions { display:grid !important; grid-template-columns:1fr 1fr; gap:10px !important; }
+    .config-actions button { width:100%; min-height:44px; padding:10px !important; }
+    .mobile-action-row > button { flex:1 1 100%; justify-content:center; }
+  }
+</style>
+</helmet>
+<div class="app-root" style="display:flex;min-height:100vh;background:#0A0C11;color:#E8EAF0;font-family:'IBM Plex Sans', system-ui, sans-serif;font-size:14px;">
+
+  <aside class="app-sidebar" style="flex:none;width:232px;position:{{ asidePos }};left:0;top:0;z-index:{{ asideZ }};align-self:flex-start;height:100vh;display:{{ asideDisplay }};flex-direction:column;padding:20px 14px;border-right:1px solid #1B202A;background:#0C0E14;overflow-y:{{ asideOverflow }};">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 8px 22px;">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(150deg,#F3C177,#D8853A);display:flex;align-items:center;justify-content:center;color:#1A1206;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;">P</div>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.01em;">Promptomat</span>
+    </div>
+
+    <button onClick="{{ goGenerate }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:16px;border-radius:12px;border:0;cursor:pointer;font-size:13.5px;font-weight:700;text-align:left;background:{{ genCtaBg }};color:{{ genCtaColor }};border:1px solid {{ genCtaBorder }};">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;">
+        <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path>
+        <path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"></path>
+      </svg>
+      Generate a prompt
+    </button>
+
+    <div style="padding:0 8px 8px;font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:#5C6478;">Library</div>
+    <nav style="display:flex;flex-direction:column;gap:3px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+        <button onClick="{{ item.go }}" style="position:relative;display:flex;align-items:center;gap:10px;padding:10px 12px;border:0;border-radius:10px;font-size:13.5px;font-weight:500;text-align:left;cursor:pointer;background:{{ item.bg }};color:{{ item.color }};" style-hover="background:#151A23;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;opacity:0.9;">
+            <path d="{{ item.icon }}"></path>
+            <path d="{{ item.icon2 }}"></path>
+          </svg>
+          {{ item.label }}
+          <sc-if value="{{ item.active }}" hint-placeholder-val="{{ false }}">
+            <span style="position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:#E9A84C;"></span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="margin-top:auto;padding:14px;border-radius:12px;background:#11141B;border:1px solid #1B202A;">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C8498" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"></path>
+          <path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7"></path>
+        </svg>
+        <span style="font-size:11.5px;letter-spacing:0.07em;text-transform:uppercase;color:#7C8498;">Index size</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:6px;">
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;color:#E9A84C;">{{ hTotal }}</span>
+        <span style="font-size:12px;color:#6B7285;">prompts</span>
+      </div>
+      <div style="height:5px;border-radius:999px;background:#1B202A;overflow:hidden;margin-top:10px;">
+        <div style="height:100%;border-radius:999px;width:{{ indexPct }}%;background:#E9A84C;"></div>
+      </div>
+    </div>
+  </aside>
+
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;z-index:70;background:rgba(6,8,12,0.62);"></div>
+  </sc-if>
+
+  <div style="flex:1;min-width:0;">
+  <header class="app-header" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:{{ headerPad }};background:rgba(10,12,17,0.92);backdrop-filter:blur(10px);border-bottom:1px solid #1B202A;">
+    <button onClick="{{ openDrawer }}" style="display:{{ burgerDisplay }};align-items:center;justify-content:center;width:36px;height:36px;flex:none;border-radius:10px;border:1px solid #232833;background:#11141B;color:#E8EAF0;cursor:pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    <div class="app-header-copy" style="flex:1;min-width:0;">
+      <div class="app-header-title" style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;letter-spacing:-0.01em;">{{ pageTitle }}</div>
+      <div class="app-header-subtitle" style="font-size:12px;color:#6B7285;">{{ pageSub }}</div>
+    </div>
+    <div style="position:relative;flex:none;">
+      <button class="app-header-account" onClick="{{ toggleProfile }}" style="display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border-radius:999px;border:1px solid #232833;background:#11141B;cursor:pointer;color:#E8EAF0;" style-hover="background:#161A23;">
+        <span style="width:28px;height:28px;border-radius:50%;background:linear-gradient(150deg,#F3C177,#D8853A);display:flex;align-items:center;justify-content:center;color:#17120A;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;">yo</span>
+        <span style="display:{{ nickDisplay }};font-size:13px;font-weight:600;">{{ settings.nickname }}</span>
+        <span style="font-size:10px;color:#7C8498;">▾</span>
+      </button>
+      <sc-if value="{{ profileOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;top:calc(100% + 10px);right:0;width:248px;padding:8px;border-radius:14px;border:1px solid #262C38;background:#12151D;box-shadow:0 22px 50px rgba(0,0,0,0.55);animation:riseIn 0.16s ease both;">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 10px 12px;border-bottom:1px solid #1B202A;margin-bottom:6px;">
+            <span style="width:34px;height:34px;flex:none;border-radius:50%;background:linear-gradient(150deg,#F3C177,#D8853A);display:flex;align-items:center;justify-content:center;color:#17120A;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;">yo</span>
+            <div style="min-width:0;">
+              <div style="font-size:13px;font-weight:600;">{{ settings.nickname }}</div>
+              <div style="font-size:11.5px;color:#7C8498;overflow:hidden;text-overflow:ellipsis;">{{ email }}</div>
+            </div>
+          </div>
+          <button onClick="{{ goProfile }}" style="width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:#D6DAE4;font-size:13px;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 4a3.75 3.75 0 1 1 0 7.5A3.75 3.75 0 0 1 12 4z"></path><path d="M4.5 20c0-3.6 3.4-5.5 7.5-5.5s7.5 1.9 7.5 5.5"></path></svg>Profile and account</button>
+          <button onClick="{{ goGenerate }}" style="width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:#D6DAE4;font-size:13px;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg>Generate a prompt</button>
+          <div style="height:1px;background:#1B202A;margin:6px 0;"></div>
+          <button onClick="{{ signOut }}" style="width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:#D9695D;font-size:13px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#231619;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M15 4.5H18A1.5 1.5 0 0 1 19.5 6v12A1.5 1.5 0 0 1 18 19.5h-3"></path><path d="M11 8l-4 4 4 4M7 12h8"></path></svg>Sign out</button>
+        </div>
+      </sc-if>
+    </div>
+  </header>
+  <sc-if value="{{ profileOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeProfile }}" style="position:fixed;inset:0;z-index:30;"></div>
+  </sc-if>
+  <sc-if value="{{ anyWsMenuOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeWsMenu }}" style="position:fixed;inset:0;z-index:88;"></div>
+  </sc-if>
+
+  <!-- WORKSPACES -->
+  <sc-if value="{{ onWorkspaces }}" hint-placeholder-val="{{ true }}">
+    <main class="page-mobile" style="max-width:1180px;margin:0 auto;padding:{{ pagePad }};">
+      <div class="page-intro" style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px;">
+        <div style="flex:1 1 320px;min-width:0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">WORKSPACES</div>
+          <h1 style="margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.02em;">Project manager</h1>
+          <p style="margin:0;color:#8A91A3;max-width:52ch;text-wrap:pretty;">Each workspace collects the prompts behind one codebase. Log enough of them and the retrieval index starts answering for you.</p>
+        </div>
+        <button onClick="{{ openCreate }}" style="padding:11px 18px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;" style-hover="background:#F3C177;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 5v14M5 12h14"></path></svg>Create workspace</button>
+      </div>
+
+      <div class="mobile-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:24px;">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="padding:16px 18px;border:1px solid #1B202A;border-radius:14px;background:#11141B;">
+            <div style="font-size:11.5px;letter-spacing:0.08em;color:#7C8498;text-transform:uppercase;margin-bottom:10px;">{{ s.label }}</div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-0.02em;color:{{ s.tone }};">{{ s.value }}</span>
+              <span style="font-size:12px;color:#5C6478;">{{ s.unit }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div class="filter-row" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;">
+        <div style="position:relative;flex:1 1 280px;">
+          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#5C6478;display:flex;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13z"></path><path d="M15.5 15.5L21 21"></path></svg></span>
+          <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search workspaces, stacks, owners" style="width:100%;padding:11px 14px 11px 34px;border-radius:10px;border:1px solid #232833;background:#11141B;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+        </div>
+        <div style="position:relative;flex:0 1 225px;min-width:200px;">
+          <button aria-expanded="{{ workspaceSortMenuOpen }}" aria-label="Sort workspaces" onClick="{{ toggleWorkspaceSortMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;height:42px;padding:0 12px;border-radius:10px;border:1px solid {{ workspaceSortMenuBorder }};background:#11141B;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#161A23;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C8498" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M8 6h11M8 12h8M8 18h5"></path><path d="M4 4v16M2 18l2 2 2-2"></path></svg>
+            <span style="flex:1;min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ workspaceSortLabel }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ workspaceSortMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+              <sc-for list="{{ workspaceSortOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o.label }}</span>
+                  <span style="font-size:12px;color:#E9A84C;visibility:{{ o.checkVisibility }};">✓</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div class="workspace-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;">
+        <sc-for list="{{ visibleWorkspaces }}" as="w" hint-placeholder-count="4">
+          <div class="workspace-card" style="display:flex;flex-direction:column;padding:20px;border:1px solid #1B202A;border-radius:16px;background:#11141B;animation:riseIn 0.3s ease both;" style-hover="border-color:#2E3543;">
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+              <div style="flex:1;min-width:0;">
+                <h3 style="margin:0 0 4px;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;letter-spacing:-0.01em;">{{ w.name }}</h3>
+                <div style="font-size:12px;color:#6B7285;font-family:'IBM Plex Mono',monospace;">{{ w.updated }}</div>
+              </div>
+            </div>
+            <p style="margin:0 0 14px;font-size:13px;line-height:1.5;color:#9BA3B5;text-wrap:pretty;">{{ w.description }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+              <sc-for list="{{ w.stack }}" as="tag" hint-placeholder-count="3">
+                <span style="padding:4px 9px;border-radius:7px;background:#171B24;border:1px solid #242A36;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9BA3B5;">{{ tag }}</span>
+              </sc-for>
+            </div>
+            <div style="margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+                <span style="font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;color:#7C8498;">Dataset readiness</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B9C0CF;">{{ w.prompts }} / {{ w.target }}</span>
+              </div>
+              <div style="height:6px;border-radius:999px;background:#1B202A;overflow:hidden;">
+                <div style="height:100%;border-radius:999px;width:{{ w.pct }}%;background:{{ w.barColor }};transition:width 0.4s ease;"></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 0;border-top:1px solid #1B202A;border-bottom:1px solid #1B202A;margin-bottom:14px;">
+              <div>
+                <div style="font-size:10.5px;letter-spacing:0.06em;color:#6B7285;text-transform:uppercase;margin-bottom:3px;">Avg score</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#E8EAF0;">{{ w.score }}</div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;letter-spacing:0.06em;color:#6B7285;text-transform:uppercase;margin-bottom:3px;">7-day</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#6FCF97;">{{ w.delta }}</div>
+              </div>
+            </div>
+            <div class="workspace-actions" style="display:flex;gap:8px;margin-top:auto;">
+              <button onClick="{{ w.search }}" style="flex:1;padding:9px 0;border-radius:9px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:#1E2430;">Open</button>
+              <button onClick="{{ w.config }}" style="padding:9px 12px;border-radius:9px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Config</button>
+              <button onClick="{{ w.remove }}" style="padding:9px 12px;border-radius:9px;border:1px solid #3A2429;background:transparent;color:#C9564B;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:#2A1A1D;color:#E77A6E;">Delete</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ noWorkspaces }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:56px 24px;text-align:center;border:1px dashed #262C38;border-radius:16px;background:#0E1117;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px;">Nothing matches that filter</div>
+          <p style="margin:0 0 18px;color:#7C8498;font-size:13px;">Clear the search or start a new workspace for this codebase.</p>
+          <button onClick="{{ openCreate }}" style="padding:10px 18px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 5v14M5 12h14"></path></svg>Create workspace</button>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- TRAINING -->
+  <sc-if value="{{ onTraining }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:1180px;margin:0 auto;padding:{{ pagePad }};display:grid;grid-template-columns:{{ trainCol }};gap:20px;align-items:start;">
+      <section class="training-panel" style="padding:26px;border:1px solid #1B202A;border-radius:18px;background:#11141B;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">TRAINING</div>
+        <h1 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;">Log this prompt</h1>
+        <p style="margin:0 0 24px;color:#8A91A3;">Every submission trains the retrieval index. Four fields, fifteen seconds.</p>
+
+        <div style="position:relative;width:100%;margin-bottom:18px;">
+          <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Workspace</label>
+          <button onClick="{{ toggleWsMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;border-radius:11px;border:1px solid {{ wsMenuBorder }};background:#161A23;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#1A1F29;">
+            <span style="width:24px;height:24px;flex:none;border-radius:7px;background:#1E2430;border:1px solid #2A313F;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#E9A84C;">{{ activeWsInitials }}</span>
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ activeWs }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ wsMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;max-height:290px;overflow:auto;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+              <sc-for list="{{ wsOptions }}" as="w" hint-placeholder-count="4">
+                <button onClick="{{ w.pick }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:{{ w.bg }};color:{{ w.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ w.label }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;">{{ w.count }}</span>
+                </button>
+              </sc-for>
+              <div style="height:1px;background:#1B202A;margin:5px 0;"></div>
+              <button onClick="{{ newWsFromMenu }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#E9A84C;font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex:none;"><path d="M12 5v14M5 12h14"></path></svg>New workspace</button>
+            </div>
+          </sc-if>
+        </div>
+
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Task intent</label>
+        <input value="{{ form.intent }}" onChange="{{ setFormIntent }}" placeholder="e.g. JWT authentication on FastAPI" style="width:100%;padding:12px 14px;margin-bottom:18px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+          <label style="font-size:12.5px;font-weight:600;color:#B9C0CF;">Prompt body</label>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C6478;">markdown</span>
+          <div style="margin-left:auto;display:flex;gap:4px;padding:3px;border:1px solid #1B202A;border-radius:9px;background:#0E1117;">
+            <sc-for list="{{ trainTabs }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.go }}" style="padding:6px 12px;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6B7285;">{{ form.charCount }} chars</span>
+        </div>
+        <sc-if value="{{ trainWrite }}" hint-placeholder-val="{{ true }}">
+          <textarea value="{{ form.body }}" onChange="{{ setFormBody }}" placeholder="Paste the exact prompt you sent to your coding AI tool…" style="width:100%;min-height:170px;padding:14px;margin-bottom:14px;border-radius:12px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;resize:vertical;outline:none;" style-focus="border-color:#E9A84C;"></textarea>
+        </sc-if>
+        <sc-if value="{{ trainPreview }}" hint-placeholder-val="{{ false }}">
+          <div style="min-height:170px;padding:16px;margin-bottom:14px;border-radius:12px;border:1px solid #232833;background:#0E1117;">{{ formBodyMd }}</div>
+        </sc-if>
+
+        <div style="padding:13px 15px;border-radius:11px;background:#0E1117;border:1px solid #1B202A;margin-bottom:22px;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C8498" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M4 7.5l7-3.5 9 4.5v8l-9 4.5-7-3.5z"></path><path d="M11 12l9-4.5M11 12v8.5"></path></svg>
+            <span style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">Labels</span>
+            <span style="margin-left:auto;font-size:11.5px;color:#5C6478;">generated from the prompt</span>
+          </div>
+          <sc-if value="{{ hasAutoLabels }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <sc-for list="{{ autoLabels }}" as="l" hint-placeholder-count="3">
+                <span style="padding:4px 9px;border-radius:7px;background:#171B24;border:1px solid #242A36;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9BA3B5;">{{ l }}</span>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noAutoLabels }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12.5px;color:#6B7285;line-height:1.5;">Labels appear once there is enough of the prompt body to read.</div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:9px;">
+          <label style="font-size:12.5px;font-weight:600;color:#B9C0CF;">Efficiency score</label>
+          <span style="font-size:11.5px;color:#6B7285;">optional</span>
+          <sc-if value="{{ hasScore }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ clearScore }}" style="margin-left:auto;padding:4px 10px;border-radius:8px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:11.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Clear score</button>
+          </sc-if>
+        </div>
+        <div style="display:grid;grid-template-columns:{{ scoreCols }};gap:6px;margin-bottom:10px;">
+          <sc-for list="{{ scoreItems }}" as="s" hint-placeholder-count="10">
+            <button onClick="{{ s.pick }}" style="padding:12px 0;border-radius:10px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;background:{{ s.bg }};color:{{ s.color }};border:1px solid {{ s.border }};">{{ s.n }}</button>
+          </sc-for>
+        </div>
+        <div style="padding:12px 14px;border-radius:10px;background:#0E1117;border:1px solid #1B202A;margin-bottom:22px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:{{ criteriaTone }};">{{ criteriaLabel }}</span>
+          <span style="font-size:12.5px;color:#8A91A3;"> — {{ criteriaText }}</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button onClick="{{ submitPrompt }}" style="padding:12px 22px;border-radius:10px;border:0;cursor:{{ submitCursor }};font-size:13.5px;font-weight:700;background:{{ submitBg }};color:{{ submitColor }};display:inline-flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M5 4.5h11.5L20 8v11.5A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5v-14A1 1 0 0 1 5 4.5z"></path><path d="M9 13l2 2 4-4"></path></svg>Log prompt</button>
+          <span style="font-size:12.5px;color:#6B7285;">{{ submitHint }}</span>
+        </div>
+      </section>
+
+      <aside style="display:flex;flex-direction:column;gap:14px;">
+        <div style="padding:20px;border:1px solid #1B202A;border-radius:16px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:14px;">Your logging streak</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px;">
+            <span style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;color:#E9A84C;">{{ streak }}</span>
+            <span style="font-size:12.5px;color:#8A91A3;">days in a row</span>
+          </div>
+          <div style="display:flex;gap:4px;">
+            <sc-for list="{{ streakCells }}" as="c" hint-placeholder-count="14">
+              <div style="flex:1;height:26px;border-radius:4px;background:{{ c.bg }};"></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:20px;border:1px solid #1B202A;border-radius:16px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:14px;">Recently logged</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ recentPrompts }}" as="p" hint-placeholder-count="4">
+              <button onClick="{{ p.open }}" style="display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:0 0 10px;border:0;border-bottom:1px solid #1B202A;background:transparent;cursor:pointer;" style-hover="opacity:0.75;">
+                <span style="flex:1;min-width:0;font-size:13px;color:#D6DAE4;line-height:1.45;">{{ p.intent }}</span>
+                <span style="padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:{{ p.badgeBg }};color:{{ p.badgeColor }};">{{ p.score }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </sc-if>
+
+  <!-- SMART SEARCH -->
+  <sc-if value="{{ onSearch }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:1180px;margin:0 auto;padding:{{ pagePad }};">
+      <div class="page-intro" style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:22px;">
+        <div style="flex:1 1 420px;min-width:0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">SMART SEARCH</div>
+          <h1 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;">Find the prompt that already worked</h1>
+          <p style="margin:0;color:#8A91A3;">{{ corpusLine }}</p>
+        </div>
+        <div style="position:relative;flex:1 1 260px;max-width:320px;">
+          <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Workspace</label>
+          <button onClick="{{ toggleWsMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;border-radius:11px;border:1px solid {{ wsMenuBorder }};background:#11141B;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#161A23;">
+            <span style="width:24px;height:24px;flex:none;border-radius:7px;background:#1E2430;border:1px solid #2A313F;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#E9A84C;">{{ activeWsInitials }}</span>
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ activeWs }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ wsMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;max-height:290px;overflow:auto;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+              <sc-for list="{{ wsOptions }}" as="w" hint-placeholder-count="4">
+                <button onClick="{{ w.pick }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:{{ w.bg }};color:{{ w.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ w.label }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;">{{ w.count }}</span>
+                </button>
+              </sc-for>
+              <div style="height:1px;background:#1B202A;margin:5px 0;"></div>
+              <button onClick="{{ newWsFromMenu }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#E9A84C;font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex:none;"><path d="M12 5v14M5 12h14"></path></svg>New workspace</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div class="mobile-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px;">
+        <div style="padding:15px 18px;border:1px solid #1B202A;border-radius:14px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;color:#7C8498;text-transform:uppercase;margin-bottom:9px;">Prompts logged</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:600;">{{ hTotal }}</div>
+        </div>
+        <div style="padding:15px 18px;border:1px solid #1B202A;border-radius:14px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;color:#7C8498;text-transform:uppercase;margin-bottom:9px;">Average score</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:600;color:#6FCF97;">{{ hAvg }}</div>
+        </div>
+        <div style="padding:15px 18px;border:1px solid #1B202A;border-radius:14px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;color:#7C8498;text-transform:uppercase;margin-bottom:9px;">Most active</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#E9A84C;padding-top:4px;">{{ hTopWorkspace }}</div>
+        </div>
+      </div>
+
+      <div class="filter-row" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="position:relative;flex:1 1 320px;">
+          <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#5C6478;display:flex;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13z"></path><path d="M15.5 15.5L21 21"></path></svg></span>
+          <input value="{{ sQuery }}" onChange="{{ setSQuery }}" placeholder="Describe the task: “rate limit middleware”, “stripe webhook”…" style="width:100%;padding:13px 14px 13px 34px;border-radius:11px;border:1px solid #232833;background:#11141B;color:#E8EAF0;font-size:14px;outline:none;" style-focus="border-color:#E9A84C;" />
+        </div>
+        <div style="position:relative;flex:0 1 210px;min-width:180px;">
+          <button aria-expanded="{{ qualityMenuOpen }}" aria-label="Quality filter" onClick="{{ toggleQualityMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;height:46px;padding:0 12px;border-radius:11px;border:1px solid {{ qualityMenuBorder }};background:#11141B;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#161A23;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E9A84C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3l7 3v5c0 4.8-2.9 8.1-7 10-4.1-1.9-7-5.2-7-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+            <span style="flex:1;min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ qualityLabel }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ qualityMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+              <sc-for list="{{ qualityOptions }}" as="o" hint-placeholder-count="5">
+                <button onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="flex:1;min-width:0;">
+                    <span style="display:block;font-size:12.5px;font-weight:600;">{{ o.label }}</span>
+                    <span style="display:block;margin-top:2px;font-size:10.5px;color:#6B7285;">{{ o.hint }}</span>
+                  </span>
+                  <span style="font-size:12px;color:#E9A84C;visibility:{{ o.checkVisibility }};">✓</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="position:relative;flex:0 1 175px;min-width:160px;">
+          <button aria-expanded="{{ sortMenuOpen }}" aria-label="Sort results" onClick="{{ toggleSortMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;height:46px;padding:0 12px;border-radius:11px;border:1px solid {{ sortMenuBorder }};background:#11141B;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#161A23;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C8498" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M8 6h11M8 12h8M8 18h5"></path><path d="M4 4v16M2 18l2 2 2-2"></path></svg>
+            <span style="flex:1;min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ sortLabel }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ sortMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+              <sc-for list="{{ sortOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o.label }}</span>
+                  <span style="font-size:12px;color:#E9A84C;visibility:{{ o.checkVisibility }};">✓</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid #1B202A;border-radius:12px;background:#0E1117;margin-bottom:20px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B9C0CF;">{{ resultCount }}</span>
+        <span style="font-size:12.5px;color:#7C8498;">{{ searchModeHint }}</span>
+        <button onClick="{{ sClear }}" style="margin-left:auto;padding:5px 11px;border-radius:8px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Clear</button>
+      </div>
+
+      <div class="search-layout" style="display:grid;grid-template-columns:{{ twoCol }};gap:18px;align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:10px;grid-column:1;grid-row:{{ headRow }};">
+          <sc-for list="{{ resultsHead }}" as="r" hint-placeholder-count="5">
+            <button aria-expanded="{{ r.expanded }}" onClick="{{ r.select }}" style="text-align:left;padding:16px 18px;border-radius:14px;cursor:pointer;background:{{ r.bg }};border:1px solid {{ r.border }};animation:riseIn 0.25s ease both;">
+              <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;">
+                <span style="flex:1;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:#E8EAF0;">{{ r.intent }}</span>
+                <span style="display:{{ r.matchDisplay }};padding:3px 8px;border-radius:6px;border:1px solid rgba(111,211,224,0.28);background:rgba(111,211,224,0.1);font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#6FD3E0;white-space:nowrap;">{{ r.matchLabel }}</span>
+                <span style="padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:{{ r.badgeBg }};color:{{ r.badgeColor }};">{{ r.score }}</span>
+                <span style="display:{{ r.disclosureDisplay }};color:#7C8498;font-size:12px;">{{ r.disclosure }}</span>
+              </div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7C8498;line-height:1.5;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.snippet }}</div>
+              <div class="search-result-meta" style="display:flex;gap:10px;align-items:center;font-size:11.5px;color:#6B7285;">
+                <span>{{ r.workspace }}</span>
+                <span>·</span>
+                <span>{{ r.tool }}</span>
+                <span>·</span>
+                <span>{{ r.when }}</span>
+              </div>
+            </button>
+          </sc-for>
+          <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:40px 24px;text-align:center;border:1px dashed #262C38;border-radius:14px;background:#0E1117;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:6px;">{{ noResultsTitle }}</div>
+              <p style="margin:0 0 16px;font-size:13px;color:#7C8498;">{{ noResultsText }}</p>
+              <button onClick="{{ noResultsAction }}" style="padding:9px 16px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;">{{ noResultsActionLabel }}</button>
+            </div>
+          </sc-if>
+        </div>
+
+        <div class="detail-panel" style="grid-column:{{ paneCol }};grid-row:{{ paneRow }};position:{{ paneStick }};top:90px;padding:{{ panePad }};border:1px solid #1B202A;border-radius:16px;background:#11141B;">
+          <sc-if value="{{ hasSelection }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <button aria-expanded="true" onClick="{{ collapseSelected }}" style="display:flex;width:100%;align-items:flex-start;gap:12px;margin:0 0 6px;padding:0;border:0;background:transparent;color:inherit;text-align:left;cursor:{{ detailHeaderCursor }};">
+                <h2 style="flex:1;margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600;letter-spacing:-0.01em;">{{ selected.intent }}</h2>
+                <span style="padding:4px 10px;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:12px;background:{{ selected.badgeBg }};color:{{ selected.badgeColor }};">{{ selected.score }}</span>
+                <span style="display:{{ detailDisclosureDisplay }};padding-top:4px;color:#7C8498;font-size:12px;">▴</span>
+              </button>
+              <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:#6B7285;margin-bottom:16px;">
+                <span>{{ selected.workspace }}</span><span>·</span><span>{{ selected.tool }}</span><span>·</span><span>{{ selected.when }}</span>
+                <sc-if value="{{ selectedGenerated }}" hint-placeholder-val="{{ false }}">
+                  <span style="margin-left:auto;padding:3px 9px;border-radius:999px;background:rgba(111,211,224,0.12);border:1px solid rgba(111,211,224,0.3);color:#6FD3E0;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.04em;">GENERATED</span>
+                </sc-if>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <div style="display:flex;gap:4px;padding:3px;border:1px solid #1B202A;border-radius:9px;background:#0E1117;">
+                  <sc-for list="{{ bodyTabs }}" as="t" hint-placeholder-count="2">
+                    <button onClick="{{ t.go }}" style="padding:6px 12px;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+                <button onClick="{{ openSelectedPage }}" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid #232833;background:transparent;color:#9BA3B5;font-size:12px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;border-color:#2E3543;">Open full page<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M10 7l5 5-5 5"></path></svg></button>
+              </div>
+              <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}">
+                <div style="margin:0 0 14px;padding:16px;border-radius:12px;background:#0C0F15;border:1px solid #1B202A;max-height:300px;overflow:auto;">{{ selectedBodyMd }}</div>
+              </sc-if>
+              <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom:14px;">
+                  <textarea value="{{ editBody }}" onChange="{{ setEditBody }}" style="width:100%;min-height:220px;padding:16px;border-radius:12px;border:1px solid rgba(233,168,76,0.45);background:#0C0F15;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.65;resize:vertical;outline:none;"></textarea>
+                  <div style="display:flex;gap:8px;margin-top:10px;">
+                    <button onClick="{{ saveEdit }}" style="padding:9px 16px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:12.5px;font-weight:700;cursor:pointer;">Save prompt</button>
+                    <button onClick="{{ cancelEdit }}" style="padding:9px 14px;border-radius:9px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Cancel</button>
+                  </div>
+                </div>
+              </sc-if>
+
+              <div style="padding:15px;border-radius:12px;background:#0E1117;border:1px solid {{ rateBorder }};margin-bottom:16px;">
+                <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+                  <span style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">{{ rateHeading }}</span>
+                  <sc-if value="{{ selectedUnrated }}" hint-placeholder-val="{{ false }}">
+                    <span style="margin-left:auto;padding:3px 9px;border-radius:999px;background:#1B202A;color:#7C8498;font-family:'IBM Plex Mono',monospace;font-size:11px;">excluded from generation</span>
+                  </sc-if>
+                </div>
+                <div style="display:grid;grid-template-columns:{{ scoreCols }};gap:5px;margin-bottom:9px;">
+                  <sc-for list="{{ rateItems }}" as="r" hint-placeholder-count="10">
+                    <button onClick="{{ r.pick }}" style="padding:9px 0;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:600;background:{{ r.bg }};color:{{ r.color }};border:1px solid {{ r.border }};">{{ r.n }}</button>
+                  </sc-for>
+                </div>
+                <div style="font-size:12.5px;color:{{ rateTone }};line-height:1.45;">{{ rateHint }}</div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+                <sc-for list="{{ selected.tags }}" as="tag" hint-placeholder-count="3">
+                  <span style="padding:4px 9px;border-radius:7px;background:#171B24;border:1px solid #242A36;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9BA3B5;">{{ tag }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button onClick="{{ copySelected }}" style="flex:1;padding:11px 0;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 9h9.5A1.5 1.5 0 0 1 20 10.5V20a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20v-9.5A1.5 1.5 0 0 1 9 9z"></path><path d="M15.5 6V4.5A1.5 1.5 0 0 0 14 3H5.5A1.5 1.5 0 0 0 4 4.5V15"></path></svg>{{ copyLabel }}</button>
+                <button onClick="{{ reuseSelected }}" style="padding:11px 16px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Fork</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noSelection }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:32px 8px;text-align:center;color:#6B7285;font-size:13px;">Select a result to read the full prompt.</div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ hasTail }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px;grid-column:1;grid-row:{{ tailRow }};">
+            <sc-for list="{{ resultsTail }}" as="r" hint-placeholder-count="3">
+              <button aria-expanded="{{ r.expanded }}" onClick="{{ r.select }}" style="text-align:left;padding:16px 18px;border-radius:14px;cursor:pointer;background:{{ r.bg }};border:1px solid {{ r.border }};">
+                <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;">
+                  <span style="flex:1;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:#E8EAF0;">{{ r.intent }}</span>
+                  <span style="padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;white-space:nowrap;background:{{ r.badgeBg }};color:{{ r.badgeColor }};">{{ r.score }}</span>
+                  <span style="display:{{ r.disclosureDisplay }};color:#7C8498;font-size:12px;">{{ r.disclosure }}</span>
+                </div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#7C8498;line-height:1.5;margin-bottom:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.snippet }}</div>
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:#6B7285;">
+                  <span>{{ r.workspace }}</span>
+                  <span>·</span>
+                  <span>{{ r.tool }}</span>
+                  <span>·</span>
+                  <span>{{ r.when }}</span>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </main>
+  </sc-if>
+
+  <!-- GENERATE -->
+  <sc-if value="{{ onGenerate }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:900px;margin:0 auto;padding:{{ pagePad }};">
+      <div style="margin-bottom:22px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">GENERATE</div>
+        <h1 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;">Compose a prompt from what already worked</h1>
+        <p style="margin:0;color:#8A91A3;max-width:62ch;text-wrap:pretty;">Describe the task. Promptomat assembles a new prompt out of the highest-scoring stored prompts in the workspace and shows you which ones it drew from.</p>
+      </div>
+
+      <div class="surface-panel" style="padding:{{ cardPad }};border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:16px;">
+        <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+          <span style="font-size:12px;color:#6B7285;">Generating in</span>
+          <div style="position:relative;">
+            <button onClick="{{ toggleWsMenuGen }}" style="display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border-radius:999px;background:#161A23;border:1px solid {{ wsGenBorder }};font-size:12.5px;font-weight:600;white-space:nowrap;color:#E8EAF0;cursor:pointer;" style-hover="background:#1A1F29;">{{ activeWs }}<span style="font-size:10px;color:#7C8498;">▾</span></button>
+            <sc-if value="{{ wsMenuGenOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;top:calc(100% + 6px);left:0;min-width:230px;z-index:95;max-height:260px;overflow:auto;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+                <sc-for list="{{ wsOptions }}" as="w" hint-placeholder-count="4">
+                  <button onClick="{{ w.pick }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;border-radius:8px;background:{{ w.bg }};color:{{ w.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                    <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ w.label }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;">{{ w.count }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input value="{{ gIntent }}" onChange="{{ setGIntent }}" placeholder="What are you trying to achieve?" style="flex:1 1 240px;min-width:0;padding:14px 16px;border-radius:11px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:14px;outline:none;" style-focus="border-color:#E9A84C;" />
+          <button onClick="{{ runGenerate }}" style="flex:{{ genBtnFlex }};justify-content:center;padding:14px 26px;border-radius:11px;border:0;font-size:13.5px;font-weight:700;background:{{ gBtnBg }};color:{{ gBtnColor }};cursor:{{ gBtnCursor }};display:inline-flex;align-items:center;gap:9px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path></svg>{{ gBtnLabel }}</button>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;align-items:center;">
+          <span style="font-size:12px;color:#6B7285;">Try</span>
+          <sc-for list="{{ gExamples }}" as="e" hint-placeholder-count="3">
+            <button onClick="{{ e.use }}" style="padding:6px 11px;border-radius:999px;border:1px solid #232833;background:#161A23;color:#9BA3B5;font-size:12px;cursor:pointer;" style-hover="color:#E8EAF0;border-color:#2E3543;">{{ e.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ gLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:{{ cardPad }};border:1px solid #1B202A;border-radius:18px;background:#11141B;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#E9A84C;margin-bottom:16px;">SEARCHING THE INDEX…</div>
+          <div style="height:12px;border-radius:6px;background:#1B202A;margin-bottom:10px;width:82%;"></div>
+          <div style="height:12px;border-radius:6px;background:#1B202A;margin-bottom:10px;width:64%;"></div>
+          <div style="height:12px;border-radius:6px;background:#1B202A;width:73%;"></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ gComposed }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:{{ cardPad }};border:1px solid #242A36;border-radius:18px;background:#11141B;animation:riseIn 0.25s ease both;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+            <span style="padding:3px 9px;border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;background:{{ gOriginBg }};border:1px solid {{ gOriginBorder }};color:{{ gOriginColor }};">{{ gOriginLabel }}</span>
+            <span style="margin-left:auto;padding:4px 10px;border-radius:999px;background:rgba(111,207,151,0.12);color:#6FCF97;font-family:'IBM Plex Mono',monospace;font-size:11.5px;">{{ gResult.confidenceLabel }}</span>
+          </div>
+          <sc-if value="{{ gNotEditing }}" hint-placeholder-val="{{ true }}">
+            <div style="margin:0 0 16px;padding:18px;border-radius:12px;background:#0C0F15;border:1px solid #1B202A;">{{ gBodyMd }}</div>
+          </sc-if>
+          <sc-if value="{{ gEditing }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-bottom:16px;">
+              <textarea value="{{ gEditBody }}" onChange="{{ setGEditBody }}" style="width:100%;min-height:260px;padding:18px;border-radius:12px;border:1px solid rgba(233,168,76,0.45);background:#0C0F15;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;"></textarea>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                <button onClick="{{ gSaveEdit }}" style="padding:10px 18px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:12.5px;font-weight:700;cursor:pointer;">Save prompt</button>
+                <button onClick="{{ gCancelEdit }}" style="padding:10px 14px;border-radius:9px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Cancel</button>
+                <span style="font-size:12px;color:#6B7285;">Saving your edits marks this as your own prompt, not a generated one.</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="padding:16px 18px;border-radius:12px;background:#0E1117;border:1px solid {{ gRateBorder }};margin-bottom:22px;">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:11px;">
+              <span style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">Rate this prompt</span>
+              <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:{{ gScoreTone }};">{{ gScoreLabel }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:{{ scoreCols }};gap:6px;margin-bottom:10px;">
+              <sc-for list="{{ gRateItems }}" as="r" hint-placeholder-count="10">
+                <button onClick="{{ r.pick }}" style="padding:10px 0;border-radius:9px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;background:{{ r.bg }};color:{{ r.color }};border:1px solid {{ r.border }};">{{ r.n }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:12.5px;color:#8A91A3;line-height:1.5;">{{ gRateHint }}</div>
+          </div>
+
+          <h3 style="margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;">Why this prompt?</h3>
+          <p style="margin:0 0 20px;font-size:13.5px;line-height:1.65;color:#9BA3B5;text-wrap:pretty;">{{ gResult.why }}</p>
+
+          <h3 style="margin:0 0 10px;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;">Sources</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:22px;">
+            <sc-for list="{{ gResult.sources }}" as="s" hint-placeholder-count="2">
+              <button onClick="{{ s.open }}" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;text-align:left;padding:12px 14px;border-radius:11px;background:#0E1117;border:1px solid #1B202A;cursor:pointer;" style-hover="border-color:#2E3543;">
+                <span style="width:22px;height:22px;flex:none;border-radius:6px;background:#1B202A;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#9BA3B5;">{{ s.n }}</span>
+                <span style="flex:1;min-width:120px;font-size:13.5px;color:#D6DAE4;">{{ s.intent }}</span>
+                <span style="font-size:12px;color:#6B7285;">{{ s.workspace }}</span>
+                <span style="padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;background:{{ s.badgeBg }};color:{{ s.badgeColor }};">{{ s.score }}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5C6478" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M10 7l5 5-5 5"></path></svg>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{ gCopy }}" style="padding:11px 20px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 9h9.5A1.5 1.5 0 0 1 20 10.5V20a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20v-9.5A1.5 1.5 0 0 1 9 9z"></path><path d="M15.5 6V4.5A1.5 1.5 0 0 0 14 3H5.5A1.5 1.5 0 0 0 4 4.5V15"></path></svg>{{ gCopyLabel }}</button>
+            <button onClick="{{ gStartEdit }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:13px;font-weight:600;cursor:pointer;">Edit</button>
+            <button onClick="{{ gRate }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Open in log</button>
+            <button onClick="{{ runGenerate }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Recompose</button>
+          </div>
+
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ gFallback }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:{{ cardPad }};border:1px solid #242A36;border-radius:18px;background:#11141B;animation:riseIn 0.25s ease both;">
+          <div style="display:flex;gap:11px;padding:13px 16px;border-radius:11px;background:rgba(233,168,76,0.08);border:1px solid rgba(233,168,76,0.28);margin-bottom:20px;">
+            <span style="color:#E9A84C;display:flex;flex:none;padding-top:1px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 4.5l8.5 15h-17z"></path><path d="M12 10v4.5M12 17.2v.1"></path></svg></span>
+            <span style="font-size:13.5px;color:#E9C48C;line-height:1.5;">The model took too long to answer. Here is the closest stored prompt instead.</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#E9A84C;margin-bottom:12px;">CLOSEST STORED PROMPT</div>
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px;">
+            <h3 style="flex:1;margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;">{{ gResult.closest.intent }}</h3>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:{{ gResult.closest.badgeColor }};">{{ gResult.closest.scoreLabel }}</span>
+          </div>
+          <sc-if value="{{ gFbNotEditing }}" hint-placeholder-val="{{ true }}">
+            <div style="margin:0 0 16px;padding:18px;border-radius:12px;background:#0C0F15;border:1px solid #1B202A;">{{ gFbBodyMd }}</div>
+          </sc-if>
+          <sc-if value="{{ gFbEditing }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-bottom:16px;">
+              <textarea value="{{ gFbEditBody }}" onChange="{{ setGFbEditBody }}" style="width:100%;min-height:240px;padding:18px;border-radius:12px;border:1px solid rgba(233,168,76,0.45);background:#0C0F15;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;"></textarea>
+              <div style="display:flex;gap:10px;margin-top:10px;">
+                <button onClick="{{ gFbSaveEdit }}" style="padding:10px 18px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:12.5px;font-weight:700;cursor:pointer;">Save prompt</button>
+                <button onClick="{{ gFbCancelEdit }}" style="padding:10px 14px;border-radius:9px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Cancel</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="padding:16px 18px;border-radius:12px;background:#0E1117;border:1px solid #1B202A;margin-bottom:20px;">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:11px;">
+              <span style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">Rate this prompt</span>
+              <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B9C0CF;">{{ gFbScoreLabel }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:{{ scoreCols }};gap:6px;margin-bottom:10px;">
+              <sc-for list="{{ gFbRateItems }}" as="r" hint-placeholder-count="10">
+                <button onClick="{{ r.pick }}" style="padding:10px 0;border-radius:9px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;background:{{ r.bg }};color:{{ r.color }};border:1px solid {{ r.border }};">{{ r.n }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:12.5px;color:#8A91A3;line-height:1.5;">{{ gFbHint }}</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{ gCopy }}" style="padding:11px 20px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 9h9.5A1.5 1.5 0 0 1 20 10.5V20a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20v-9.5A1.5 1.5 0 0 1 9 9z"></path><path d="M15.5 6V4.5A1.5 1.5 0 0 0 14 3H5.5A1.5 1.5 0 0 0 4 4.5V15"></path></svg>{{ gCopyLabel }}</button>
+            <button onClick="{{ gFbStartEdit }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:13px;font-weight:600;cursor:pointer;">Edit</button>
+            <button onClick="{{ gFbOpen }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Open in log</button>
+            <button onClick="{{ runGenerate }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Try again</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ gIdle }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:44px 24px;text-align:center;border:1px dashed #262C38;border-radius:18px;background:#0E1117;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:6px;">Nothing composed yet</div>
+          <p style="margin:0;font-size:13px;color:#7C8498;">Enter a task intent above. Two or more related stored prompts produce a composition; fewer falls back to the closest match.</p>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- WORKSPACE CONFIG -->
+  <sc-if value="{{ onConfig }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:860px;margin:0 auto;padding:{{ pagePad }};">
+      <button onClick="{{ goWorkspaces }}" style="margin-bottom:18px;padding:7px 12px;border-radius:9px;border:1px solid #232833;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px;" style-hover="color:#E8EAF0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M14 7l-5 5 5 5"></path></svg>All workspaces</button>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">WORKSPACE CONFIG</div>
+      <h1 style="margin:0 0 24px;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;">{{ cfg.name }}</h1>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:18px;">General</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:18px;">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Name</label>
+            <input value="{{ cfg.name }}" onChange="{{ setCfgName }}" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+          </div>
+        </div>
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Description</label>
+        <input value="{{ cfg.description }}" onChange="{{ setCfgDesc }}" style="width:100%;padding:12px 14px;margin-bottom:18px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+        <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:9px;">
+          <label style="font-size:12.5px;font-weight:600;color:#B9C0CF;">Tech stack</label>
+          <span style="font-size:11.5px;color:#5C6478;">{{ cfgStackCount }}</span>
+        </div>
+        <div style="position:relative;max-width:520px;">
+          <div onClick="{{ focusCfgStack }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-radius:10px;border:1px solid {{ cfgStackBorder }};background:#161A23;cursor:text;">
+            <sc-for list="{{ cfgStackTokens }}" as="t" hint-placeholder-count="2">
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 5px 4px 9px;border-radius:7px;background:rgba(233,168,76,0.14);border:1px solid rgba(233,168,76,0.35);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#E9A84C;">{{ t.label }}<button onClick="{{ t.remove }}" style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:0;border-radius:4px;background:transparent;color:#E9A84C;font-size:13px;line-height:1;cursor:pointer;padding:0;" style-hover="background:rgba(233,168,76,0.2);">×</button></span>
+            </sc-for>
+            <input value="{{ cfgStackQuery }}" onChange="{{ setCfgStackQuery }}" onFocus="{{ openCfgStack }}" onBlur="{{ blurCfgStack }}" onKeyDown="{{ cfgStackKeyDown }}" ref="{{ cfgStackRef }}" placeholder="{{ cfgStackPlaceholder }}" style="flex:1 1 110px;min-width:110px;padding:4px 2px;border:0;background:transparent;color:#E8EAF0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none;" />
+          </div>
+          <sc-if value="{{ cfgStackOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:10;max-height:190px;overflow:auto;padding:6px;border-radius:11px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 40px rgba(0,0,0,0.55);">
+              <sc-for list="{{ cfgStackOptions }}" as="o" hint-placeholder-count="6">
+                <button onMouseDown="{{ o.pick }}" style="display:block;width:100%;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">{{ o.label }}</button>
+              </sc-for>
+              <sc-if value="{{ cfgStackNoOptions }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:8px 10px;font-size:12px;color:#6B7285;">No matching technology</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:18px;">Dataset target</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;">
+          <span style="font-size:13px;color:#9BA3B5;">{{ cfgPct }}% of target reached</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#B9C0CF;">{{ cfg.prompts }} / {{ cfg.target }}</span>
+        </div>
+        <div style="height:8px;border-radius:999px;background:#1B202A;overflow:hidden;margin-bottom:18px;">
+          <div style="height:100%;border-radius:999px;width:{{ cfgPct }}%;background:{{ cfgBarColor }};transition:width 0.4s ease;"></div>
+        </div>
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:9px;">Prompts needed before the index is considered ready</label>
+        <div class="config-targets" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <sc-for list="{{ cfgTargets }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.pick }}" style="padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;background:{{ t.bg }};color:{{ t.color }};border:1px solid {{ t.border }};">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </section>
+
+      <div class="config-actions" style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <button onClick="{{ cfgSave }}" style="padding:12px 22px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13.5px;font-weight:700;cursor:pointer;">Save workspace</button>
+        <button onClick="{{ goWorkspaces }}" style="padding:12px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#B9C0CF;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Cancel</button>
+      </div>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #3A2429;border-radius:16px;background:#14100F;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#C9564B;margin-bottom:10px;">Danger zone</div>
+        <p style="margin:0 0 16px;font-size:13px;color:#9BA3B5;max-width:58ch;text-wrap:pretty;">Deleting this workspace removes its prompts from the retrieval index. Logged prompts stay in each contributor's history.</p>
+        <button onClick="{{ cfgDelete }}" style="padding:11px 18px;border-radius:10px;border:1px solid #3A2429;background:transparent;color:#C9564B;font-size:13px;font-weight:600;cursor:pointer;" style-hover="background:#2A1A1D;color:#E77A6E;">Delete workspace</button>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- SETTINGS -->
+  <sc-if value="{{ onSettings }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:760px;margin:0 auto;padding:{{ pagePad }};">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">ACCOUNT</div>
+      <h1 style="margin:0 0 26px;font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;">Profile</h1>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:18px;">Profile</div>
+        <div style="display:flex;gap:16px;align-items:center;margin-bottom:22px;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(150deg,#F3C177,#D8853A);display:flex;align-items:center;justify-content:center;color:#17120A;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;">yo</div>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;">{{ settings.nickname }}</div>
+            <div style="font-size:12.5px;color:#7C8498;">{{ accountLine }}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:20px;">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Nickname</label>
+            <input value="{{ settings.nickname }}" onChange="{{ setNickname }}" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Primary AI coding tool</label>
+            <div style="position:relative;">
+              <button aria-expanded="{{ toolMenuOpen }}" aria-label="Primary AI coding tool" onClick="{{ toggleToolMenu }}" style="display:flex;align-items:center;gap:10px;width:100%;height:44px;padding:0 13px;border-radius:10px;border:1px solid {{ toolMenuBorder }};background:#161A23;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#1A1F29;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E9A84C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M7 8l-3 4 3 4M17 8l3 4-3 4M14 5l-4 14"></path></svg>
+                <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ settings.tool }}</span>
+                <span style="font-size:10px;color:#7C8498;">▾</span>
+              </button>
+              <sc-if value="{{ toolMenuOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);">
+                  <sc-for list="{{ toolOptions }}" as="o" hint-placeholder-count="6">
+                    <button onClick="{{ o.pick }}" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:{{ o.bg }};color:{{ o.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ o.label }}</span>
+                      <span style="font-size:12px;color:#E9A84C;visibility:{{ o.checkVisibility }};">✓</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+        <div class="profile-save-row" style="display:flex;align-items:center;gap:14px;">
+          <button onClick="{{ saveSettings }}" style="padding:11px 20px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13.5px;font-weight:700;cursor:pointer;">Save changes</button>
+          <span style="font-size:12.5px;color:#6B7285;">{{ saveHint }}</span>
+        </div>
+      </section>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:16px;">Your prompt activity</div>
+        <sc-if value="{{ profileHasActivity }}" hint-placeholder-val="{{ true }}">
+          <div class="profile-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+            <div style="padding:20px;border-radius:12px;background:#161A23;border:1px solid #1F2530;text-align:center;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600;color:#E9A84C;">{{ profilePrompts }}</div>
+              <div style="font-size:12.5px;color:#8A91A3;margin-top:4px;">Total prompts</div>
+            </div>
+            <div style="padding:20px;border-radius:12px;background:#161A23;border:1px solid #1F2530;text-align:center;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600;color:#6FCF97;">{{ profileAvg }}</div>
+              <div style="font-size:12.5px;color:#8A91A3;margin-top:4px;">Average score</div>
+            </div>
+            <div style="padding:20px;border-radius:12px;background:#161A23;border:1px solid #1F2530;text-align:center;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600;color:#E8EAF0;">{{ streak }}</div>
+              <div style="font-size:12.5px;color:#8A91A3;margin-top:4px;">Day streak</div>
+            </div>
+          </div>
+          <button onClick="{{ goSearch }}" style="margin-top:14px;padding:10px 16px;border-radius:10px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:13px;font-weight:600;cursor:pointer;" style-hover="background:#1E2430;">View prompt log history</button>
+        </sc-if>
+        <sc-if value="{{ profileEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:34px 20px;text-align:center;border:1px dashed #262C38;border-radius:12px;">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:6px;">No prompts yet</div>
+            <p style="margin:0 0 14px;font-size:13px;color:#7C8498;">Once you log one, your totals and average score show up here.</p>
+            <button onClick="{{ goTraining }}" style="padding:9px 16px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:13px;font-weight:700;cursor:pointer;">Create one to get started</button>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:16px;">Security</div>
+        <div class="mobile-action-row" style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:13px;font-weight:600;cursor:pointer;" style-hover="background:#1E2430;">Reset password via email</button>
+          <button style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#B9C0CF;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Manage API keys</button>
+        </div>
+      </section>
+
+      <section class="surface-panel" style="padding:24px;border:1px solid #3A2429;border-radius:16px;background:#14100F;">
+        <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#C9564B;margin-bottom:10px;">Danger zone</div>
+        <p style="margin:0 0 16px;font-size:13px;color:#9BA3B5;max-width:56ch;text-wrap:pretty;">Deleting your account removes every prompt you logged. Workspaces you own are transferred to their next contributor.</p>
+        <button style="padding:11px 18px;border-radius:10px;border:1px solid #3A2429;background:transparent;color:#C9564B;font-size:13px;font-weight:600;cursor:pointer;" style-hover="background:#2A1A1D;color:#E77A6E;">Delete account</button>
+      </section>
+    </main>
+  </sc-if>
+
+  <!-- PROMPT DETAIL -->
+  <sc-if value="{{ onPrompt }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:820px;margin:0 auto;padding:{{ pagePad }};">
+      <button onClick="{{ promptBack }}" style="margin-bottom:18px;padding:7px 12px;border-radius:9px;border:1px solid #232833;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px;" style-hover="color:#E8EAF0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M14 7l-5 5 5 5"></path></svg>{{ promptBackLabel }}</button>
+      <sc-if value="{{ pHas }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">PROMPT</div>
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+            <h1 style="flex:1 1 260px;margin:0;font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;text-wrap:pretty;">{{ pRecord.intent }}</h1>
+            <span style="padding:5px 11px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;white-space:nowrap;background:{{ pRecord.badgeBg }};color:{{ pRecord.badgeColor }};">{{ pRecord.scoreLabel }}</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:#6B7285;margin-bottom:20px;">
+            <span>{{ pRecord.workspace }}</span><span>·</span><span>{{ pRecord.tool }}</span><span>·</span><span>{{ pRecord.when }}</span>
+            <sc-if value="{{ pOrigin }}" hint-placeholder-val="{{ false }}">
+              <span style="padding:3px 9px;border-radius:999px;background:{{ pOriginBg }};border:1px solid {{ pOriginBorder }};color:{{ pOriginColor }};font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.04em;">{{ pOriginLabel }}</span>
+            </sc-if>
+          </div>
+
+          <section style="padding:20px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <div style="display:flex;gap:4px;padding:3px;border:1px solid #1B202A;border-radius:9px;background:#0E1117;">
+                <sc-for list="{{ pTabs }}" as="t" hint-placeholder-count="2">
+                  <button onClick="{{ t.go }}" style="padding:6px 13px;border:0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};">{{ t.label }}</button>
+                </sc-for>
+              </div>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C6478;">markdown</span>
+              <button onClick="{{ pCopy }}" style="margin-left:auto;padding:8px 14px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 9h9.5A1.5 1.5 0 0 1 20 10.5V20a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20v-9.5A1.5 1.5 0 0 1 9 9z"></path><path d="M15.5 6V4.5A1.5 1.5 0 0 0 14 3H5.5A1.5 1.5 0 0 0 4 4.5V15"></path></svg>{{ pCopyLabel }}</button>
+            </div>
+            <sc-if value="{{ pPreview }}" hint-placeholder-val="{{ true }}">
+              <div style="padding:18px;border-radius:12px;background:#0C0F15;border:1px solid #1B202A;">{{ pBodyMd }}</div>
+            </sc-if>
+            <sc-if value="{{ pWrite }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <textarea value="{{ pEditBody }}" onChange="{{ setPEditBody }}" style="width:100%;min-height:280px;padding:18px;border-radius:12px;border:1px solid rgba(233,168,76,0.45);background:#0C0F15;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;"></textarea>
+                <div style="display:flex;gap:8px;margin-top:10px;">
+                  <button onClick="{{ pSave }}" style="padding:10px 18px;border-radius:9px;border:0;background:#E9A84C;color:#17120A;font-size:12.5px;font-weight:700;cursor:pointer;">Save prompt</button>
+                  <button onClick="{{ pCancel }}" style="padding:10px 14px;border-radius:9px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Cancel</button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+
+          <section style="padding:20px;border:1px solid {{ pRateBorder }};border-radius:16px;background:#11141B;margin-bottom:14px;">
+            <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:11px;">
+              <span style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">{{ pRateHeading }}</span>
+              <sc-if value="{{ pUnrated }}" hint-placeholder-val="{{ false }}">
+                <span style="margin-left:auto;padding:3px 9px;border-radius:999px;background:#1B202A;color:#7C8498;font-family:'IBM Plex Mono',monospace;font-size:11px;">excluded from generation</span>
+              </sc-if>
+            </div>
+            <div style="display:grid;grid-template-columns:{{ scoreCols }};gap:6px;margin-bottom:10px;">
+              <sc-for list="{{ pRateItems }}" as="r" hint-placeholder-count="10">
+                <button onClick="{{ r.pick }}" style="padding:11px 0;border-radius:9px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;background:{{ r.bg }};color:{{ r.color }};border:1px solid {{ r.border }};">{{ r.n }}</button>
+              </sc-for>
+            </div>
+            <div style="font-size:12.5px;color:{{ pRateTone }};line-height:1.5;">{{ pRateHint }}</div>
+          </section>
+
+          <section style="padding:20px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+            <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:11px;">Labels</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <sc-for list="{{ pRecord.tags }}" as="tag" hint-placeholder-count="3">
+                <span style="padding:4px 9px;border-radius:7px;background:#171B24;border:1px solid #242A36;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9BA3B5;">{{ tag }}</span>
+              </sc-for>
+            </div>
+          </section>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{ pFork }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:#161A23;color:#E8EAF0;font-size:13px;font-weight:600;cursor:pointer;" style-hover="background:#1E2430;">Fork into training</button>
+            <button onClick="{{ pOpenInLog }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#9BA3B5;font-size:13px;font-weight:600;cursor:pointer;" style-hover="color:#E8EAF0;">Show in search</button>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pMissing }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:44px 24px;text-align:center;border:1px dashed #262C38;border-radius:16px;background:#0E1117;color:#7C8498;font-size:13px;">That prompt is no longer in the log.</div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  </div>
+
+  <!-- CREATE MODAL -->
+  <sc-if value="{{ createOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:60;background:rgba(6,8,12,0.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;">
+      <div style="width:100%;max-width:460px;padding:26px;border-radius:18px;border:1px solid #242A36;background:#11141B;animation:riseIn 0.22s ease both;">
+        <h2 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:600;letter-spacing:-0.01em;">New workspace</h2>
+        <p style="margin:0 0 20px;font-size:13px;color:#8A91A3;">One workspace per codebase keeps retrieval sharp.</p>
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Name</label>
+        <input value="{{ draft.name }}" onChange="{{ setDraftName }}" placeholder="payments-api workspace" style="width:100%;padding:12px 14px;margin-bottom:16px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+        <label style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">What lives here</label>
+        <input value="{{ draft.description }}" onChange="{{ setDraftDesc }}" placeholder="Stripe billing, webhooks, reconciliation jobs" style="width:100%;padding:12px 14px;margin-bottom:16px;border-radius:10px;border:1px solid #232833;background:#161A23;color:#E8EAF0;font-size:13.5px;outline:none;" style-focus="border-color:#E9A84C;" />
+        <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:8px;">
+          <label style="font-size:12.5px;font-weight:600;color:#B9C0CF;">Tech stack</label>
+          <span style="font-size:11.5px;color:#5C6478;">{{ draftStackCount }}</span>
+        </div>
+        <div style="position:relative;margin-bottom:22px;">
+          <div onClick="{{ focusStack }}" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border-radius:10px;border:1px solid {{ stackBorder }};background:#161A23;cursor:text;">
+            <sc-for list="{{ draftStackTokens }}" as="t" hint-placeholder-count="2">
+              <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 5px 4px 9px;border-radius:7px;background:rgba(233,168,76,0.14);border:1px solid rgba(233,168,76,0.35);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#E9A84C;">{{ t.label }}<button onClick="{{ t.remove }}" style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border:0;border-radius:4px;background:transparent;color:#E9A84C;font-size:13px;line-height:1;cursor:pointer;padding:0;" style-hover="background:rgba(233,168,76,0.2);">×</button></span>
+            </sc-for>
+            <input value="{{ stackQuery }}" onChange="{{ setStackQuery }}" onFocus="{{ openStack }}" onBlur="{{ blurStack }}" onKeyDown="{{ stackKeyDown }}" ref="{{ stackRef }}" placeholder="{{ stackPlaceholder }}" style="flex:1 1 110px;min-width:110px;padding:4px 2px;border:0;background:transparent;color:#E8EAF0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none;" />
+          </div>
+          <sc-if value="{{ stackOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:10;max-height:190px;overflow:auto;padding:6px;border-radius:11px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 40px rgba(0,0,0,0.55);">
+              <sc-for list="{{ stackOptions }}" as="o" hint-placeholder-count="6">
+                <button onMouseDown="{{ o.pick }}" style="display:block;width:100%;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#D6DAE4;font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">{{ o.label }}</button>
+              </sc-for>
+              <sc-if value="{{ stackNoOptions }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:8px 10px;font-size:12px;color:#6B7285;">No matching technology</div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button onClick="{{ closeCreate }}" style="padding:11px 18px;border-radius:10px;border:1px solid #2A313F;background:transparent;color:#B9C0CF;font-size:13px;font-weight:600;cursor:pointer;">Cancel</button>
+          <button onClick="{{ createWorkspace }}" style="padding:11px 20px;border-radius:10px;border:0;cursor:{{ createCursor }};font-size:13px;font-weight:700;background:{{ createBg }};color:{{ createColor }};">Create workspace</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:70;padding:13px 20px;border-radius:12px;background:#171B24;border:1px solid #2E3543;box-shadow:0 18px 40px rgba(0,0,0,0.5);font-size:13.5px;font-weight:600;color:#E8EAF0;animation:riseIn 0.2s ease both;">{{ toast }}</div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const ACCENT = "#E9A84C";
+const MUTED = "#8A91A3";
+
+const CRITERIA = {
+  1: ["Unusable", "Model ignored the task or hallucinated the whole API surface."],
+  2: ["Very poor", "Wrong language or framework; required a full rewrite."],
+  3: ["Poor", "Right idea, wrong implementation. Faster to write by hand."],
+  4: ["Weak", "Compiles but misses the core requirement; heavy edits needed."],
+  5: ["Mixed", "Half usable. Structure kept, logic replaced."],
+  6: ["Fair", "Working draft with known gaps — error handling, edge cases."],
+  7: ["Good", "Shipped after light edits and a rename pass."],
+  8: ["Strong", "Correct on the first pass; only style nits changed."],
+  9: ["Excellent", "Correct, idiomatic, tested. Copy-paste ready."],
+  10: ["Exemplary", "Better than what the team would have written. Worth reusing verbatim."]
+};
+
+const STACKS = ["Python", "FastAPI", "Django", "Node", "TypeScript", "Next.js", "React", "Postgres", "Redis", "MongoDB", "Stripe", "GraphQL", "Go", "Rust", "Terraform", "Kubernetes", "GitHub Actions", "pytest", "JWT", "tRPC"];
+
+const LABEL_RULES = {
+  auth: ["auth", "jwt", "token", "password", "login", "session", "oauth"],
+  api: ["endpoint", "api", "route", "fastapi", "express", "webhook", "rest", "http"],
+  database: ["sql", "postgres", "query", "index", "migration", "table", "redis", "schema"],
+  testing: ["test", "pytest", "assert", "coverage", "fixture", "mock"],
+  refactor: ["refactor", "rewrite", "convert", "migrate", "rename", "clean up"],
+  infra: ["terraform", "kubernetes", "docker", "pipeline", "deploy", "ci", "aws"],
+  frontend: ["component", "react", "css", "hook", "render", "ui", "next.js"],
+  debugging: ["bug", "error", "fails", "debug", "stack trace", "exception", "slow"],
+  performance: ["performance", "latency", "optimi", "cache", "4s", "throughput"]
+};
+
+class Component extends DCLogic {
+  state = {
+    page: "workspaces",
+    activeWs: "auth-service",
+    wsMenu: "",
+    gWorkspace: "parser-utils",
+    gIntent: "Write unit tests for a function that parses dates from a string",
+    gStatus: "idle",
+    gResult: null,
+    gCopied: false,
+    sQuality: "any",
+    sSort: "best",
+    profileOpen: false,
+    vw: typeof window !== "undefined" ? window.innerWidth : 1200,
+    navOpen: false,
+    trainTab: "write",
+    promptId: null,
+    promptFrom: "search",
+    promptTab: "preview",
+    promptEdit: "",
+    pCopied: false,
+    stackQuery: "",
+    stackOpen: false,
+    cfgStackQuery: "",
+    cfgStackOpen: false,
+    editing: false,
+    editBody: "",
+    gEditing: false,
+    gEditBody: "",
+    gFbEditing: false,
+    gFbEditBody: "",
+    cfg: {},
+    query: "",
+    vis: "All",
+    sort: "recent",
+    createOpen: false,
+    draft: { name: "", description: "", stack: [] },
+    form: { workspace: "", intent: "", body: "", score: 0, tags: [] },
+    sQuery: "",
+    scope: "all",
+    sFilter: "All",
+    selectedId: null,
+    copied: false,
+    saved: false,
+    toast: "",
+    settings: { nickname: "Your name", tool: "Claude Code" },
+    workspaces: [
+      { id: 1, name: "auth-service", description: "Authentication service. FastAPI endpoints, token handling and session rotation.", stack: ["FastAPI", "Postgres", "JWT"], prompts: 300, target: 1000, score: 7.2, contributors: 1, delta: "+24", visibility: "Private", updated: "updated 2h ago" },
+      { id: 2, name: "payments-api", description: "Stripe billing, webhook reconciliation and the invoice backfill jobs.", stack: ["Node", "Stripe", "Redis"], prompts: 812, target: 1000, score: 8.4, contributors: 6, delta: "+91", visibility: "Shared", updated: "updated 18m ago" },
+      { id: 3, name: "web-console", description: "Next.js dashboard. Component prompts, data fetching and chart work.", stack: ["Next.js", "TypeScript", "tRPC"], prompts: 455, target: 1000, score: 6.9, contributors: 4, delta: "+37", visibility: "Shared", updated: "updated yesterday" },
+      { id: 5, name: "parser-utils", description: "Parsing and formatting helpers. Mostly test-generation prompts.", stack: ["Python", "pytest"], prompts: 96, target: 1000, score: 6.5, contributors: 2, delta: "+9", visibility: "Shared", updated: "updated 1d ago" },
+      { id: 4, name: "infra-platform", description: "Terraform modules, CI pipelines and the Kubernetes rollout scripts.", stack: ["Terraform", "K8s", "GitHub Actions"], prompts: 148, target: 1000, score: 5.8, contributors: 2, delta: "+12", visibility: "Private", updated: "updated 3d ago" }
+    ],
+    prompts: [
+      { id: 10, intent: "Unit tests for a string utility", workspace: "parser-utils", tool: "Claude Code", when: "1d ago", score: 8, tags: ["testing"], body: "Act as a senior engineer. Write unit tests for a string slugify utility.\n\n- Name tests by behavior, not by method name\n- One assertion per test\n- Cover empty input, unicode, repeated separators\n- Use pytest parametrize where the cases are pure data", outcome: "Adopted as the house style for test naming." },
+      { id: 11, intent: "Add tests for date parsing", workspace: "parser-utils", tool: "Cursor", when: "1d ago", score: 6, tags: ["testing", "debugging"], body: "Write tests for a date parser: valid ISO strings, invalid strings, leap years, timezone offsets. One assertion per test.", outcome: "Good coverage list, but the generated tests shared fixtures incorrectly." },
+      { id: 12, intent: "Production-ready FastAPI application scaffold", workspace: "auth-service", tool: "Claude Code", when: "1d ago", score: 9, tags: ["api", "infra"], body: "Act as an expert Python backend developer specializing in high-performance microservices. I want you to generate a clean, modern, and production-ready FastAPI application based on the specifications I will provide below.\n\nPlease adhere strictly to the following architectural standards and best practices:\n1. Framework Standards: Use the latest FastAPI conventions, exploiting native Pydantic v2 schemas for strict data validation and serialization.\n2. Async Everywhere: All path operations, database calls, and network requests must leverage asynchronous programming (`async/await`) where applicable.\n3. Code Structure: Organize code modularly (e.g., separating routers, schemas, dependencies, and business logic) using APIRouter.\n4. Robust Error Handling: Implement structured global error handling with explicit custom HTTPException responses and proper HTTP status codes.\n5. Configuration & Security: Use Pydantic-settings for Environment Variable management. Avoid hardcoded secrets.\n6. Type Hints & Docs: Provide strict type hints across all functions and include detailed docstrings for automatic Swagger/ReDoc generation.\n\n---\n[VARIABLES TO CUSTOMIZE]\n\n- APPLICATION_NAME: [e.g., Task Management API]\n- MAIN_OBJECTIVE: [e.g., A system to manage user todos, complete with user authentication and task tagging.]\n- ENDPOINTS_NEEDED:\n  - [e.g., POST /auth/register - Create a user account]\n  - [e.g., POST /auth/token - Login and retrieve a JWT]\n  - [e.g., GET/POST /tasks - Fetch or create tasks for the authenticated user]\n  - [e.g., PUT/DELETE /tasks/{id} - Modify or remove a specific task]\n- DATABASE_OR_STORAGE: [e.g., PostgreSQL using SQLAlchemy async session OR In-memory dictionary for mock testing]\n- EXTRA_REQUIREMENTS: [e.g., Include CORS middleware, request rate-limiting, or pagination for listing endpoints]\n\n---\nOUTPUT FORMAT:\nProvide the complete directory layout and fully implemented code files. Avoid using vague placeholders like \"# Implement logic here\" inside critical path functions. Provide the code inside clean, separate Markdown blocks.", outcome: "Injected into the workspace as a reusable template." },
+      { id: 1, intent: "Implement password reset flow", workspace: "auth-service", tool: "Claude Code", when: "2h ago", score: 4, tags: ["auth", "api"], body: "Add a password reset flow to our FastAPI app.\n\nRequirements:\n- POST /auth/reset-request takes an email, always returns 202\n- Signed token, 30 minute TTL, single use\n- POST /auth/reset consumes the token and rotates the password hash\n- Invalidate all existing refresh tokens on success\n\nUse the existing SQLAlchemy session dependency and our email sender in services/mail.py.", outcome: "Token TTL logic was wrong and refresh tokens weren't revoked. Rewritten by hand." },
+      { id: 2, intent: "JWT authentication on FastAPI", workspace: "auth-service", tool: "Claude Code", when: "5h ago", score: 9, tags: ["auth", "api", "testing"], body: "Add JWT auth to this FastAPI service.\n\n- /auth/login returns access (15m) + refresh (30d) tokens\n- Rotate refresh tokens on use, store hashes only\n- get_current_user dependency that 401s on expired tokens\n- pytest cases for expiry, reuse and tampering\n\nFollow the repo's existing dependency-injection style.", outcome: "Shipped as written. Only renamed two helpers." },
+      { id: 3, intent: "Stripe webhook idempotency", workspace: "payments-api", tool: "Cursor", when: "yesterday", score: 8, tags: ["api", "database"], body: "Make our Stripe webhook handler idempotent.\n\n- Dedupe on event id in a processed_events table\n- Wrap handler + insert in one transaction\n- Return 200 for already-processed events\n- Log and re-raise unknown event types", outcome: "Correct first pass. Added an index on event_id afterwards." },
+      { id: 4, intent: "Rate limit middleware with Redis", workspace: "payments-api", tool: "Cursor", when: "2d ago", score: 7, tags: ["api", "infra"], body: "Write a sliding-window rate limiter as Express middleware.\n\n- Redis sorted set per API key, 100 req/min\n- Return 429 with Retry-After\n- Skip limiting for internal service tokens\n- Unit tests with a fake clock", outcome: "Worked after fixing the window boundary off-by-one." },
+      { id: 5, intent: "Migrate class components to hooks", workspace: "web-console", tool: "Copilot", when: "3d ago", score: 6, tags: ["frontend", "refactor"], body: "Convert these three class components to function components with hooks.\n\nKeep prop names identical, preserve the existing data-fetch timing, and don't change styling. Point out any lifecycle behaviour that can't be mapped cleanly.", outcome: "Two converted cleanly; the third lost a cleanup call." },
+      { id: 6, intent: "Postgres query plan debugging", workspace: "web-console", tool: "Claude Code", when: "4d ago", score: 9, tags: ["database", "debugging"], body: "This query takes 4s on 2M rows. Explain the plan and propose indexes.\n\nSELECT o.id, o.total, u.email FROM orders o JOIN users u ON u.id = o.user_id WHERE o.created_at > now() - interval '30 days' AND o.status = 'paid' ORDER BY o.created_at DESC LIMIT 50;", outcome: "Suggested composite index dropped it to 40ms." },
+      { id: 7, intent: "Terraform module for RDS failover", workspace: "infra-platform", tool: "Claude Code", when: "5d ago", score: 5, tags: ["infra"], body: "Write a Terraform module for a multi-AZ RDS Postgres instance with automated failover, 7-day backups and a read replica in a second region.", outcome: "Missing parameter group and replica lag alarms." }
+    ]
+  };
+
+  nav = [
+    { key: "search", label: "Smart search", icon: "M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13z", icon2: "M15.5 15.5L21 21" },
+    { key: "workspaces", label: "Workspaces", icon: "M3 7.5A1.5 1.5 0 0 1 4.5 6h5l1.6 2H19.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z", icon2: "M3 11h18" },
+    { key: "training", label: "Training", icon: "M5 4.5h11.5L20 8v11.5A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5v-14A1 1 0 0 1 5 4.5z", icon2: "M8 12h8M8 16h5" },
+    { key: "settings", label: "Profile", icon: "M12 4a3.75 3.75 0 1 1 0 7.5A3.75 3.75 0 0 1 12 4z", icon2: "M4.5 20c0-3.6 3.4-5.5 7.5-5.5s7.5 1.9 7.5 5.5" }
+  ];
+
+  titles = {
+    search: ["Smart search", "Retrieve and browse every prompt your team logged"],
+    workspaces: ["Workspaces", "One workspace per codebase"],
+    training: ["Training", "Log a prompt and score how well it worked"],
+    generate: ["Generate", "Compose a new prompt from what already worked"],
+    config: ["Workspace config", "Name, tech stack and dataset target"],
+    prompt: ["Prompt", "Full prompt, labels and rating"],
+    settings: ["Profile", "Account, activity and security"]
+  };
+
+  _stackRef = React.createRef();
+  _cfgStackRef = React.createRef();
+
+  stackMatches(query, selected) {
+    const q = String(query || "").trim().toLowerCase();
+    return STACKS.filter((s) => !selected.includes(s) && (!q || s.toLowerCase().includes(q)));
+  }
+
+  addDraftStack(s) {
+    this.setState((prev) => ({ draft: { ...prev.draft, stack: [...prev.draft.stack, s] }, stackQuery: "", stackOpen: true }));
+    if (this._stackRef.current) this._stackRef.current.focus();
+  }
+
+  addCfgStack(s) {
+    this.setState((prev) => ({ cfg: { ...prev.cfg, stackList: [...(prev.cfg.stackList || []), s] }, cfgStackQuery: "", cfgStackOpen: true }));
+    if (this._cfgStackRef.current) this._cfgStackRef.current.focus();
+  }
+
+  componentDidMount() {
+    this._r = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener("resize", this._r);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this._r);
+  }
+
+  autoLabels(text) {
+    const t = String(text || "").toLowerCase();
+    const out = Object.keys(LABEL_RULES).filter((k) => LABEL_RULES[k].some((w) => t.includes(w)));
+    return out.length ? out.slice(0, 5) : t.trim() ? ["general"] : [];
+  }
+
+  openPrompt(id, from) {
+    this.setState({ page: "prompt", promptId: id, promptFrom: from || "search", promptTab: "preview", promptEdit: "", navOpen: false });
+  }
+
+  mdHtml(src) {
+    const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const inline = (s) =>
+      esc(s)
+        .replace(/`([^`]+)`/g, '<code style="font-family:\'IBM Plex Mono\',monospace;font-size:0.92em;padding:1px 5px;border-radius:5px;background:#1B202A;color:#E9C48C;">$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#F2F4F8;font-weight:600;">$1</strong>')
+        .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<span style="color:#E9A84C;">$1</span>');
+    const lines = String(src || "").split("\n");
+    let out = "";
+    let i = 0;
+    let listOpen = null;
+    const closeList = () => {
+      if (listOpen) {
+        out += "</" + listOpen + ">";
+        listOpen = null;
+      }
+    };
+    while (i < lines.length) {
+      const t = lines[i].trim();
+      if (/^```/.test(t)) {
+        closeList();
+        i++;
+        const buf = [];
+        while (i < lines.length && !/^```/.test(lines[i].trim())) {
+          buf.push(lines[i]);
+          i++;
+        }
+        i++;
+        out += '<pre style="margin:0 0 12px;padding:12px 14px;border-radius:10px;background:#080A0E;border:1px solid #1B202A;overflow:auto;"><code style="font-family:\'IBM Plex Mono\',monospace;font-size:12.5px;line-height:1.6;color:#C6CCD9;white-space:pre;">' + esc(buf.join("\n")) + "</code></pre>";
+        continue;
+      }
+      if (!t) {
+        closeList();
+        i++;
+        continue;
+      }
+      const h = t.match(/^(#{1,4})\s+(.*)$/);
+      if (h) {
+        closeList();
+        const sz = [19, 17, 15, 13.5][h[1].length - 1];
+        out += '<div style="font-family:\'Space Grotesk\',sans-serif;font-size:' + sz + 'px;font-weight:600;color:#F2F4F8;margin:16px 0 8px;letter-spacing:-0.01em;">' + inline(h[2]) + "</div>";
+        i++;
+        continue;
+      }
+      if (/^(---|\*\*\*|___)$/.test(t)) {
+        closeList();
+        out += '<div style="height:1px;background:#1B202A;margin:16px 0;"></div>';
+        i++;
+        continue;
+      }
+      if (/^>\s?/.test(t)) {
+        closeList();
+        out += '<div style="margin:0 0 10px;padding:9px 13px;border-left:2px solid #E9A84C;background:rgba(233,168,76,0.06);color:#C6CCD9;font-size:13px;line-height:1.6;">' + inline(t.replace(/^>\s?/, "")) + "</div>";
+        i++;
+        continue;
+      }
+      const ul = t.match(/^[-*+]\s+(.*)$/);
+      const ol = t.match(/^(\d+)[.)]\s+(.*)$/);
+      if (ul || ol) {
+        const want = ul ? "ul" : "ol";
+        if (listOpen && listOpen !== want) closeList();
+        if (!listOpen) {
+          out += "<" + want + ' style="margin:0 0 12px;padding-left:20px;color:#C6CCD9;font-size:13px;line-height:1.65;">';
+          listOpen = want;
+        }
+        out += '<li style="margin-bottom:5px;">' + inline(ul ? ul[1] : ol[2]) + "</li>";
+        i++;
+        continue;
+      }
+      closeList();
+      out += '<p style="margin:0 0 11px;font-size:13.5px;line-height:1.7;color:#C6CCD9;text-wrap:pretty;">' + inline(t) + "</p>";
+      i++;
+    }
+    closeList();
+    return out;
+  }
+
+  mdEl(src) {
+    if (!String(src || "").trim()) return React.createElement("div", { style: { fontSize: 13, color: "#5C6478" } }, "Nothing to preview yet.");
+    return React.createElement("div", { dangerouslySetInnerHTML: { __html: this.mdHtml(src) } });
+  }
+
+  tabSet(value, keys, setter) {
+    return keys.map((k) => ({
+      label: k[0].toUpperCase() + k.slice(1),
+      bg: value === k ? "#242A36" : "transparent",
+      color: value === k ? "#E8EAF0" : MUTED,
+      go: setter(k)
+    }));
+  }
+
+  flash(msg) {
+    clearTimeout(this._t);
+    this.setState({ toast: msg });
+    this._t = setTimeout(() => this.setState({ toast: "" }), 2400);
+  }
+
+  badge(score) {
+    if (!score) return { badgeBg: "#1B202A", badgeColor: "#7C8498" };
+    if (score >= 8) return { badgeBg: "rgba(111,207,151,0.14)", badgeColor: "#6FCF97" };
+    if (score >= 6) return { badgeBg: "rgba(233,168,76,0.14)", badgeColor: ACCENT };
+    return { badgeBg: "rgba(201,86,75,0.14)", badgeColor: "#D9695D" };
+  }
+
+  compose(intent, workspace) {
+    const stop = ["the", "a", "an", "for", "from", "that", "with", "and", "of", "in", "to", "on", "write", "add", "make"];
+    const words = intent.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2 && !stop.includes(w));
+    const scored = this.state.prompts
+      .filter((p) => p.score > 0)
+      .map((p) => {
+        const hay = (p.intent + " " + p.body + " " + p.tags.join(" ")).toLowerCase();
+        return { p, hits: words.filter((w) => hay.includes(w)).length };
+      })
+      .filter((x) => x.hits > 0)
+      .sort((a, b) => b.hits - a.hits || b.p.score - a.p.score);
+
+    const scopedFirst = scored.filter((x) => x.p.workspace === workspace).concat(scored.filter((x) => x.p.workspace !== workspace));
+    const sources = scopedFirst.slice(0, 2).map((x) => x.p);
+
+    if (sources.length < 2) {
+      const closest = sources[0] || this.state.prompts.filter((p) => p.score > 0).slice().sort((a, b) => b.score - a.score)[0];
+      return { kind: "fallback", closest };
+    }
+
+    const bullets = [];
+    sources.forEach((s) => {
+      s.body.split("\n").forEach((l) => {
+        const t = l.trim();
+        if (t.startsWith("-") && bullets.length < 5) bullets.push(t.replace(/^-\s*/, ""));
+      });
+    });
+    if (bullets.length < 2) bullets.push("Return the full implementation with no placeholder comments");
+
+    const best = sources.slice().sort((a, b) => b.score - a.score)[0];
+    const body =
+      "Act as a senior engineer working in " + workspace + ".\n\n" +
+      "Task: " + intent.trim().replace(/\.$/, "") + ".\n\n" +
+      "Constraints carried over from prompts that scored " + best.score + "/10:\n" +
+      bullets.map((b) => "- " + b).join("\n") +
+      "\n\nName things by behavior, keep one assertion per test, and return complete code — no placeholder comments.";
+
+    const why =
+      "Composed from " + sources.length + " stored prompts in this workspace. From “" + sources[0].intent +
+      "” (" + sources[0].score + "/10) the structure and role framing were kept. From “" + sources[1].intent +
+      "” (" + sources[1].score + "/10) the concrete coverage cases were carried over, along with the one-assertion-per-test constraint that made it reusable.";
+
+    return { kind: "composed", body, why, sources, confidence: Math.min(96, 58 + sources.length * 12 + best.score * 2) };
+  }
+
+  renderVals() {
+    const st = this.state;
+    const go = (key) => () => {
+      this.setState({ page: key, navOpen: false, wsMenu: "" });
+      if (typeof window !== "undefined") window.setTimeout(() => document.body.scrollTo({ top: 0, left: 0 }), 0);
+    };
+    const isMobile = st.vw < 860;
+    const activeWs = st.workspaces.some((w) => w.name === st.activeWs) ? st.activeWs : (st.workspaces[0] || {}).name || "";
+    const promptRec = st.prompts.find((p) => p.id === st.promptId);
+
+    // workspaces
+    const q = st.query.trim().toLowerCase();
+    let list = st.workspaces.filter((w) => {
+      const hay = (w.name + " " + w.description + " " + w.stack.join(" ")).toLowerCase();
+      return !q || hay.includes(q);
+    });
+    const sorters = {
+      recent: (a, b) => b.prompts - a.prompts,
+      readiness: (a, b) => b.prompts / b.target - a.prompts / a.target,
+      score: (a, b) => b.score - a.score
+    };
+    list = list.slice().sort(sorters[st.sort]);
+
+    const totalPrompts = st.workspaces.reduce((n, w) => n + w.prompts, 0) + st.prompts.filter((p) => p.isNew).length;
+    const avg = st.workspaces.length
+      ? (st.workspaces.reduce((n, w) => n + w.score, 0) / st.workspaces.length).toFixed(1)
+      : "—";
+    const people = new Set();
+    st.workspaces.forEach((w) => people.add(w.contributors));
+    const contributors = st.workspaces.reduce((n, w) => n + w.contributors, 0);
+
+    // training
+    const score = st.form.score;
+    const crit = CRITERIA[score] || ["Optional", "A score is not required to log. Unscored prompts are stored and searchable, but excluded from generation."];
+    const canSubmit = st.form.intent.trim() && st.form.body.trim();
+    const mapResult = (p) => ({
+      intent: p.intent,
+      score: p.score ? p.score + "/10" : "Unrated",
+      snippet: p.body.split("\n")[0],
+      workspace: p.workspace,
+      tool: p.tool,
+      when: p.when,
+      matchDisplay: sq ? "inline-flex" : "none",
+      matchLabel: p.matchHits > 1 ? "Strong match" : "Related match",
+      bg: selected && selected.id === p.id ? "#161A23" : "#11141B",
+      border: selected && selected.id === p.id ? "rgba(233,168,76,0.45)" : "#1B202A",
+      ...this.badge(p.score),
+      expanded: isMobile && st.selectedId === p.id,
+      disclosure: isMobile ? (st.selectedId === p.id ? "▴" : "▾") : "",
+      disclosureDisplay: isMobile ? "inline" : "none",
+      select: () =>
+        this.setState((current) => ({
+          selectedId: isMobile && current.selectedId === p.id ? null : p.id,
+          editing: false
+        }))
+    });
+
+    // search
+    const sq = st.sQuery.trim().toLowerCase();
+    const searchWords = sq.split(/[^a-z0-9]+/).filter((word) => word.length > 2);
+    const qualityMatches = (score) => {
+      if (st.sQuality === "proven") return score >= 8;
+      if (st.sQuality === "usable") return score >= 6;
+      if (st.sQuality === "needs-work") return score > 0 && score <= 5;
+      if (st.sQuality === "unrated") return !score;
+      return true;
+    };
+    let results = st.prompts.map((p) => {
+      const inScope = p.workspace === activeWs;
+      const hay = (p.intent + " " + p.body + " " + p.tags.join(" ")).toLowerCase();
+      const matchHits = searchWords.filter((word) => hay.includes(word)).length;
+      return { ...p, inScope, matchHits };
+    }).filter((p) => p.inScope && qualityMatches(p.score) && (!sq || p.matchHits > 0));
+    if (st.sSort === "best" && sq) results = results.slice().sort((a, b) => b.matchHits - a.matchHits || b.score - a.score);
+    if (st.sSort === "score") results = results.slice().sort((a, b) => b.score - a.score);
+    const selected = results.find((p) => p.id === st.selectedId) || (isMobile ? null : results[0]);
+    const selIdx = selected ? results.findIndex((p) => p.id === selected.id) : -1;
+    const splitAt = isMobile && selIdx >= 0 ? selIdx + 1 : results.length;
+    const gSaved = st.gResult && st.gResult.savedId ? st.prompts.find((p) => p.id === st.gResult.savedId) : null;
+
+    return {
+      navItems: this.nav.map((n) => {
+        const active = st.page === n.key || (n.key === "workspaces" && st.page === "config");
+        return {
+          label: n.label,
+          icon: n.icon,
+          icon2: n.icon2,
+          active,
+          color: active ? "#FFFFFF" : MUTED,
+          bg: active ? "#1A1F29" : "transparent",
+          go: go(n.key)
+        };
+      }),
+      genCtaBg: st.page === "generate" ? ACCENT : "#161A23",
+      genCtaColor: st.page === "generate" ? "#17120A" : "#E9A84C",
+      genCtaBorder: st.page === "generate" ? ACCENT : "rgba(233,168,76,0.4)",
+      indexPct: Math.min(100, Math.round((st.prompts.length / 20) * 100)),
+      asideOverflow: isMobile ? "auto" : "visible",
+      activeWs: activeWs,
+      activeWsInitials: activeWs.slice(0, 2).toLowerCase(),
+      wsMenuOpen: st.wsMenu === "workspace",
+      wsMenuGenOpen: st.wsMenu === "generate",
+      anyWsMenuOpen: !!st.wsMenu,
+      wsMenuBorder: st.wsMenu === "workspace" ? "rgba(233,168,76,0.45)" : "#232833",
+      wsGenBorder: st.wsMenu === "generate" ? "rgba(233,168,76,0.55)" : "#232833",
+      toggleWsMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "workspace" ? "" : "workspace" })),
+      toggleWsMenuGen: () => this.setState((s) => ({ wsMenu: s.wsMenu === "generate" ? "" : "generate" })),
+      closeWsMenu: () => this.setState({ wsMenu: "" }),
+      wsOptions: st.workspaces.map((w) => ({
+        label: w.name,
+        count: w.prompts.toLocaleString(),
+        bg: w.name === activeWs ? "#1A1F29" : "transparent",
+        color: w.name === activeWs ? "#E9A84C" : "#D6DAE4",
+        pick: () =>
+          this.setState({
+            activeWs: w.name,
+            wsMenu: "",
+            selectedId: null,
+            editing: false,
+            gStatus: "idle",
+            gResult: null,
+            form: { ...this.state.form, workspace: w.name }
+          })
+      })),
+      newWsFromMenu: () => this.setState({ wsMenu: "", page: "workspaces", createOpen: true }),
+      headRow: isMobile ? "auto" : "1",
+      paneCol: isMobile ? "1" : "2",
+      paneRow: isMobile ? "auto" : "1 / span 2",
+      tailRow: isMobile ? "auto" : "2",
+      panePad: isMobile ? "18px" : "22px",
+      cardPad: isMobile ? "18px" : "26px",
+      genBtnFlex: isMobile ? "1 1 100%" : "0 0 auto",
+      asidePos: isMobile ? "fixed" : "sticky",
+      asideZ: isMobile ? 90 : 1,
+      asideDisplay: !isMobile || st.navOpen ? "flex" : "none",
+      drawerOpen: isMobile && st.navOpen,
+      openDrawer: () => this.setState({ navOpen: true }),
+      closeDrawer: () => this.setState({ navOpen: false }),
+      burgerDisplay: isMobile ? "inline-flex" : "none",
+      nickDisplay: isMobile ? "none" : "inline",
+      headerPad: isMobile ? "12px 16px" : "14px 28px",
+      pagePad: isMobile ? "22px 16px 64px" : "36px 28px 80px",
+      twoCol: isMobile ? "minmax(0,1fr)" : "minmax(0,1fr) minmax(0,1fr)",
+      trainCol: isMobile ? "minmax(0,1fr)" : "minmax(0,1.4fr) minmax(0,1fr)",
+      paneStick: isMobile ? "static" : "sticky",
+      scoreCols: isMobile ? "repeat(5,1fr)" : "repeat(10,1fr)",
+      resultsHead: results.slice(0, isMobile && selIdx >= 0 ? selIdx : splitAt).map(mapResult),
+      resultsTail: results.slice(splitAt).map(mapResult),
+      hasTail: splitAt < results.length,
+      collapseSelected: () => {
+        if (isMobile) this.setState({ selectedId: null, editing: false });
+      },
+      detailHeaderCursor: isMobile ? "pointer" : "default",
+      detailDisclosureDisplay: isMobile ? "inline" : "none",
+      pageTitle: (this.titles[st.page] || this.titles.workspaces)[0],
+      pageSub: (this.titles[st.page] || this.titles.workspaces)[1],
+      profileOpen: st.profileOpen,
+      closeProfile: () => this.setState({ profileOpen: false }),
+      toggleProfile: () => this.setState((s) => ({ profileOpen: !s.profileOpen })),
+      goProfile: () => {
+        this.setState({ page: "settings", profileOpen: false });
+        if (typeof window !== "undefined") window.setTimeout(() => document.body.scrollTo({ top: 0, left: 0 }), 0);
+      },
+      signOut: () => {
+        this.setState({ profileOpen: false });
+        this.flash("Signed out");
+      },
+      email: "you@company.com",
+      cfg: st.cfg,
+      setCfgName: (e) => this.setState((s) => ({ cfg: { ...s.cfg, name: e.target.value } })),
+      setCfgDesc: (e) => this.setState((s) => ({ cfg: { ...s.cfg, description: e.target.value } })),
+      cfgStackTokens: (st.cfg.stackList || []).map((s) => ({
+        label: s,
+        remove: (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState((prev) => ({ cfg: { ...prev.cfg, stackList: (prev.cfg.stackList || []).filter((x) => x !== s) } }));
+        }
+      })),
+      cfgStackQuery: st.cfgStackQuery,
+      setCfgStackQuery: (e) => this.setState({ cfgStackQuery: e.target.value, cfgStackOpen: true }),
+      cfgStackRef: this._cfgStackRef,
+      focusCfgStack: () => {
+        if (this._cfgStackRef.current) this._cfgStackRef.current.focus();
+        this.setState({ cfgStackOpen: true });
+      },
+      openCfgStack: () => this.setState({ cfgStackOpen: true }),
+      blurCfgStack: () => {
+        clearTimeout(this._cfgSb);
+        this._cfgSb = setTimeout(() => this.setState({ cfgStackOpen: false }), 130);
+      },
+      cfgStackOpen: st.cfgStackOpen,
+      cfgStackBorder: st.cfgStackOpen ? "rgba(233,168,76,0.55)" : "#232833",
+      cfgStackPlaceholder: (st.cfg.stackList || []).length ? "Add another…" : "Search technologies…",
+      cfgStackOptions: this.stackMatches(st.cfgStackQuery, st.cfg.stackList || []).map((s) => ({
+        label: s,
+        pick: (e) => {
+          if (e && e.preventDefault) e.preventDefault();
+          this.addCfgStack(s);
+        }
+      })),
+      cfgStackNoOptions: this.stackMatches(st.cfgStackQuery, st.cfg.stackList || []).length === 0,
+      cfgStackKeyDown: (e) => {
+        const cur = this.state.cfg.stackList || [];
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const m = this.stackMatches(this.state.cfgStackQuery, cur)[0];
+          if (m) this.addCfgStack(m);
+        } else if (e.key === "Backspace" && !this.state.cfgStackQuery && cur.length) {
+          this.setState((prev) => ({ cfg: { ...prev.cfg, stackList: (prev.cfg.stackList || []).slice(0, -1) } }));
+        } else if (e.key === "Escape") {
+          this.setState({ cfgStackOpen: false });
+        }
+      },
+      cfgStackCount: ((st.cfg.stackList || []).length || 0) + " selected",
+      cfgTargets: ["500", "1000", "2500", "5000"].map((t) => ({
+        label: t,
+        bg: String(st.cfg.target) === t ? "rgba(233,168,76,0.14)" : "#161A23",
+        color: String(st.cfg.target) === t ? ACCENT : MUTED,
+        border: String(st.cfg.target) === t ? "rgba(233,168,76,0.4)" : "#232833",
+        pick: () => this.setState((s) => ({ cfg: { ...s.cfg, target: Number(t) } }))
+      })),
+      cfgPct: st.cfg.id ? Math.min(100, Math.round(((st.cfg.prompts || 0) / (st.cfg.target || 1000)) * 100)) : 0,
+      cfgBarColor: (() => {
+        const p = st.cfg.id ? Math.min(100, Math.round(((st.cfg.prompts || 0) / (st.cfg.target || 1000)) * 100)) : 0;
+        return p >= 70 ? "#6FCF97" : p >= 35 ? ACCENT : "#C9564B";
+      })(),
+      cfgSave: () => {
+        const c = this.state.cfg;
+        this.setState((s) => ({
+          workspaces: s.workspaces.map((w) =>
+            w.id === c.id
+              ? { ...w, name: c.name, description: c.description, target: Number(c.target) || 1000, stack: (c.stackList || []).slice(0, 6), updated: "updated just now" }
+              : w
+          )
+        }));
+        this.flash("Workspace settings saved");
+      },
+      cfgDelete: () => {
+        const c = this.state.cfg;
+        this.setState((s) => ({ workspaces: s.workspaces.filter((w) => w.id !== c.id), page: "workspaces" }));
+        this.flash("Deleted " + c.name);
+      },
+      onWorkspaces: st.page === "workspaces",
+      onTraining: st.page === "training",
+      onSearch: st.page === "search",
+      onSettings: st.page === "settings",
+      onPrompt: st.page === "prompt",
+      goTraining: go("training"),
+      toast: st.toast,
+
+      stats: [
+        { label: "Workspaces", value: String(st.workspaces.length), unit: "active", tone: "#E8EAF0" },
+        { label: "Prompts logged", value: totalPrompts.toLocaleString(), unit: "total", tone: ACCENT },
+        { label: "Avg score", value: avg, unit: "/ 10", tone: "#6FCF97" }
+      ],
+      query: st.query,
+      setQuery: (e) => this.setState({ query: e.target.value, wsMenu: "" }),
+      workspaceSortMenuOpen: st.wsMenu === "workspace-sort",
+      workspaceSortMenuBorder: st.wsMenu === "workspace-sort" ? "rgba(233,168,76,0.55)" : "#232833",
+      toggleWorkspaceSortMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "workspace-sort" ? "" : "workspace-sort" })),
+      workspaceSortLabel: st.sort === "readiness" ? "Dataset readiness" : st.sort === "score" ? "Average score" : "Recent activity",
+      workspaceSortOptions: [
+        { value: "recent", label: "Recent activity" },
+        { value: "readiness", label: "Dataset readiness" },
+        { value: "score", label: "Average score" }
+      ].map((option) => ({
+        ...option,
+        bg: st.sort === option.value ? "#1A1F29" : "transparent",
+        color: st.sort === option.value ? "#E8EAF0" : "#B9C0CF",
+        checkVisibility: st.sort === option.value ? "visible" : "hidden",
+        pick: () => this.setState({ sort: option.value, wsMenu: "" })
+      })),
+
+      visibleWorkspaces: list.map((w) => {
+        const pct = Math.min(100, Math.round((w.prompts / w.target) * 100));
+        return {
+          ...w,
+          pct,
+          prompts: w.prompts.toLocaleString(),
+          target: w.target.toLocaleString(),
+          score: w.score.toFixed(1),
+          barColor: pct >= 70 ? "#6FCF97" : pct >= 35 ? ACCENT : "#C9564B",
+          search: () => {
+            this.setState({ page: "search", activeWs: w.name, sQuery: "", sQuality: "any", selectedId: null });
+            if (typeof window !== "undefined") window.setTimeout(() => document.body.scrollTo({ top: 0, left: 0 }), 0);
+          },
+          config: () => {
+            this.setState({
+              page: "config",
+              cfg: { id: w.id, name: w.name, description: w.description, target: w.target, prompts: w.prompts, stackList: w.stack.slice(), score: w.score }
+            });
+            if (typeof window !== "undefined") window.setTimeout(() => document.body.scrollTo({ top: 0, left: 0 }), 0);
+          },
+          remove: () => {
+            this.setState((s) => ({ workspaces: s.workspaces.filter((x) => x.id !== w.id) }));
+            this.flash("Deleted " + w.name);
+          }
+        };
+      }),
+      noWorkspaces: list.length === 0,
+
+      createOpen: st.createOpen,
+      openCreate: () => this.setState({ createOpen: true }),
+      closeCreate: () => this.setState({ createOpen: false }),
+      draft: st.draft,
+      setDraftName: (e) => this.setState((s) => ({ draft: { ...s.draft, name: e.target.value } })),
+      setDraftDesc: (e) => this.setState((s) => ({ draft: { ...s.draft, description: e.target.value } })),
+      draftStackTokens: st.draft.stack.map((s) => ({
+        label: s,
+        remove: (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState((prev) => ({ draft: { ...prev.draft, stack: prev.draft.stack.filter((x) => x !== s) } }));
+        }
+      })),
+      stackQuery: st.stackQuery,
+      setStackQuery: (e) => this.setState({ stackQuery: e.target.value, stackOpen: true }),
+      stackRef: this._stackRef,
+      focusStack: () => {
+        if (this._stackRef.current) this._stackRef.current.focus();
+        this.setState({ stackOpen: true });
+      },
+      openStack: () => this.setState({ stackOpen: true }),
+      blurStack: () => {
+        clearTimeout(this._sb);
+        this._sb = setTimeout(() => this.setState({ stackOpen: false }), 130);
+      },
+      stackOpen: st.stackOpen,
+      stackBorder: st.stackOpen ? "rgba(233,168,76,0.55)" : "#232833",
+      stackPlaceholder: st.draft.stack.length ? "Add another…" : "Search technologies…",
+      stackOptions: this.stackMatches(st.stackQuery, st.draft.stack).map((s) => ({
+        label: s,
+        pick: (e) => {
+          if (e && e.preventDefault) e.preventDefault();
+          this.addDraftStack(s);
+        }
+      })),
+      stackNoOptions: this.stackMatches(st.stackQuery, st.draft.stack).length === 0,
+      stackKeyDown: (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const m = this.stackMatches(this.state.stackQuery, this.state.draft.stack)[0];
+          if (m) this.addDraftStack(m);
+        } else if (e.key === "Backspace" && !this.state.stackQuery && this.state.draft.stack.length) {
+          this.setState((prev) => ({ draft: { ...prev.draft, stack: prev.draft.stack.slice(0, -1) } }));
+        } else if (e.key === "Escape") {
+          this.setState({ stackOpen: false });
+        }
+      },
+      draftStackCount: st.draft.stack.length + " selected",
+      createCursor: st.draft.name.trim() ? "pointer" : "not-allowed",
+      createBg: st.draft.name.trim() ? ACCENT : "#1E2430",
+      createColor: st.draft.name.trim() ? "#17120A" : "#5C6478",
+      createWorkspace: () => {
+        const d = this.state.draft;
+        if (!d.name.trim()) return;
+        this.setState((s) => ({
+          workspaces: [
+            {
+              id: Date.now(),
+              name: d.name.trim(),
+              description: d.description.trim() || "No description yet.",
+              stack: d.stack.slice(0, 6),
+              prompts: 0,
+              target: 1000,
+              score: 0,
+              contributors: 1,
+              delta: "+0",
+              updated: "created just now"
+            },
+            ...s.workspaces
+          ],
+          createOpen: false,
+          activeWs: d.name.trim(),
+          draft: { name: "", description: "", stack: [] },
+          stackQuery: ""
+        }));
+        this.flash("Workspace created");
+      },
+
+      workspaceNames: st.workspaces.map((w) => w.name),
+      form: { ...st.form, charCount: st.form.body.length },
+      setFormWorkspace: (e) => this.setState((s) => ({ form: { ...s.form, workspace: e.target.value } })),
+      setFormIntent: (e) => this.setState((s) => ({ form: { ...s.form, intent: e.target.value } })),
+      setFormBody: (e) => this.setState((s) => ({ form: { ...s.form, body: e.target.value } })),
+      trainTabs: this.tabSet(st.trainTab, ["write", "preview"], (k) => () => this.setState({ trainTab: k })),
+      trainWrite: st.trainTab === "write",
+      trainPreview: st.trainTab === "preview",
+      formBodyMd: this.mdEl(st.form.body),
+      autoLabels: this.autoLabels(st.form.intent + " " + st.form.body),
+      hasAutoLabels: this.autoLabels(st.form.intent + " " + st.form.body).length > 0,
+      noAutoLabels: this.autoLabels(st.form.intent + " " + st.form.body).length === 0,
+      scoreItems: Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
+        const on = score === n;
+        const tone = n >= 8 ? "#6FCF97" : n >= 6 ? ACCENT : "#C9564B";
+        return {
+          n,
+          bg: on ? tone : "#161A23",
+          color: on ? "#12160E" : "#B9C0CF",
+          border: on ? tone : "#232833",
+          pick: () => this.setState((s) => ({ form: { ...s.form, score: n } }))
+        };
+      }),
+      criteriaLabel: crit[0],
+      criteriaText: crit[1],
+      criteriaTone: score === 0 ? MUTED : score >= 8 ? "#6FCF97" : score >= 6 ? ACCENT : "#D9695D",
+      submitBg: canSubmit ? ACCENT : "#1E2430",
+      submitColor: canSubmit ? "#17120A" : "#5C6478",
+      submitCursor: canSubmit ? "pointer" : "not-allowed",
+      submitHint: canSubmit ? (score > 0 ? "Indexed and available to generation." : "Saved unscored — it will not be used for generation until you score it.") : "Task intent and prompt body are required.",
+      submitPrompt: () => {
+        const f = this.state.form;
+        if (!(f.intent.trim() && f.body.trim())) return;
+        const ws = activeWs;
+        this.setState((s) => ({
+          prompts: [
+            { id: Date.now(), intent: f.intent.trim(), workspace: ws, tool: s.settings.tool, when: "just now", score: f.score, tags: this.autoLabels(f.intent + " " + f.body), body: f.body, isNew: true },
+            ...s.prompts
+          ],
+          workspaces: s.workspaces.map((w) => (w.name === ws ? { ...w, prompts: w.prompts + 1, updated: "updated just now" } : w)),
+          form: { workspace: ws, intent: "", body: "", score: 0, tags: [] },
+          trainTab: "write"
+        }));
+        this.flash(f.score > 0 ? "Prompt logged — index updated" : "Prompt logged without a score");
+      },
+      streak: 12,
+      streakCells: Array.from({ length: 14 }, (_, i) => ({
+        bg: i < 2 ? "#1B202A" : i % 5 === 3 ? "rgba(233,168,76,0.35)" : ACCENT
+      })),
+      recentPrompts: st.prompts.slice(0, 4).map((p) => ({
+        intent: p.intent,
+        score: p.score ? p.score + "/10" : "Unrated",
+        ...this.badge(p.score),
+        open: () => this.openPrompt(p.id, "training")
+      })),
+
+      sQuery: st.sQuery,
+      setSQuery: (e) => this.setState({ sQuery: e.target.value, selectedId: null, wsMenu: "" }),
+      scope: st.scope,
+      setScope: (e) => this.setState({ scope: e.target.value, selectedId: null }),
+      sBestSortLabel: sq ? "Best match" : "Recommended",
+      qualityMenuOpen: st.wsMenu === "quality",
+      sortMenuOpen: st.wsMenu === "sort",
+      qualityMenuBorder: st.wsMenu === "quality" ? "rgba(233,168,76,0.55)" : "#232833",
+      sortMenuBorder: st.wsMenu === "sort" ? "rgba(233,168,76,0.55)" : "#232833",
+      toggleQualityMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "quality" ? "" : "quality" })),
+      toggleSortMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "sort" ? "" : "sort" })),
+      qualityLabel: ({ any: "Any quality", proven: "Proven · 8–10", usable: "Usable · 6–10", "needs-work": "Needs improvement · 1–5", unrated: "Unrated" })[st.sQuality],
+      qualityOptions: [
+        { value: "any", label: "Any quality", hint: "Do not restrict by outcome" },
+        { value: "proven", label: "Proven · 8–10", hint: "Strong results worth reusing" },
+        { value: "usable", label: "Usable · 6–10", hint: "Working drafts and better" },
+        { value: "needs-work", label: "Needs improvement · 1–5", hint: "Review weak outcomes" },
+        { value: "unrated", label: "Unrated", hint: "Not evaluated yet" }
+      ].map((option) => ({
+        ...option,
+        bg: st.sQuality === option.value ? "#1A1F29" : "transparent",
+        color: st.sQuality === option.value ? "#E8EAF0" : "#B9C0CF",
+        checkVisibility: st.sQuality === option.value ? "visible" : "hidden",
+        pick: () => this.setState({ sQuality: option.value, selectedId: null, wsMenu: "" })
+      })),
+      sortLabel: st.sSort === "score" ? "Highest score" : st.sSort === "recent" ? "Newest first" : (sq ? "Best match" : "Recommended"),
+      sortOptions: [
+        { value: "best", label: sq ? "Best match" : "Recommended" },
+        { value: "recent", label: "Newest first" },
+        { value: "score", label: "Highest score" }
+      ].map((option) => ({
+        ...option,
+        bg: st.sSort === option.value ? "#1A1F29" : "transparent",
+        color: st.sSort === option.value ? "#E8EAF0" : "#B9C0CF",
+        checkVisibility: st.sSort === option.value ? "visible" : "hidden",
+        pick: () => this.setState({ sSort: option.value, wsMenu: "" })
+      })),
+      searchModeHint: sq
+        ? "Match describes relevance; quality reflects the recorded outcome."
+        : st.sQuality === "any"
+          ? "Showing this workspace's prompt history."
+          : "Quality narrows the workspace history by recorded outcome.",
+      sClear: () => this.setState({ sQuery: "", sQuality: "any", sSort: "best", wsMenu: "" }),
+      corpusLine: st.prompts.length + " prompts logged across " + st.workspaces.length + " workspaces. " + st.prompts.filter((p) => !p.score).length + " still unrated — rating one makes it available to generation.",
+      resultCount: results.length + (results.length === 1 ? " result" : " results"),
+      noResults: results.length === 0,
+      noResultsTitle: st.sQuality !== "any"
+        ? "No prompts match this quality level"
+        : sq
+          ? "No prompt logged for that yet"
+          : "No prompts in this workspace yet",
+      noResultsText: st.sQuality !== "any"
+        ? "Relevant prompts may exist outside the selected quality band."
+        : "Be the first to log it — it takes fifteen seconds.",
+      noResultsActionLabel: st.sQuality !== "any" ? "Show any quality" : "Log this prompt",
+      noResultsAction: st.sQuality !== "any"
+        ? () => this.setState({ sQuality: "any", selectedId: null })
+        : go("training"),
+      hasSelection: !!selected,
+      noSelection: !selected,
+      selected: selected
+        ? { ...selected, score: selected.score ? selected.score + "/10" : "Unrated", ...this.badge(selected.score) }
+        : {},
+      selectedUnrated: !!selected && !selected.score,
+      selectedRated: !!selected && !!selected.score,
+      selectedGenerated: !!selected && selected.origin === "generated",
+      rateHeading: selected && selected.score ? "Your rating" : "Rate this prompt",
+      rateBorder: selected && selected.score ? "#1B202A" : "rgba(233,168,76,0.35)",
+      rateTone: selected && selected.score ? (selected.score >= 8 ? "#6FCF97" : selected.score >= 6 ? ACCENT : "#D9695D") : MUTED,
+      rateHint: selected && selected.score
+        ? selected.score + " · " + CRITERIA[selected.score][0] + " — " + CRITERIA[selected.score][1]
+        : "Unrated prompts stay in the log and stay searchable. A rating is what lets generation draw on them.",
+      rateItems: Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
+        const tone = n >= 8 ? "#6FCF97" : n >= 6 ? ACCENT : "#C9564B";
+        const on = !!selected && selected.score === n;
+        return {
+          n,
+          bg: on ? tone : "#161A23",
+          color: on ? "#12160E" : "#B9C0CF",
+          border: on ? tone : "#232833",
+          pick: () => {
+            if (!selected) return;
+            this.setState((s) => ({
+              prompts: s.prompts.map((p) => (p.id === selected.id ? { ...p, score: n, outcome: p.origin === "generated" ? "Generated, then rated " + n + "/10." : p.outcome } : p))
+            }));
+            this.flash("Rated " + n + "/10 — now used in generation");
+          }
+        };
+      }),
+      bodyTabs: this.tabSet(st.editing ? "write" : "preview", ["preview", "write"], (k) => () =>
+        k === "write" ? this.setState({ editing: true, editBody: selected ? selected.body : "" }) : this.setState({ editing: false })
+      ),
+      selectedBodyMd: this.mdEl(selected ? selected.body : ""),
+      openSelectedPage: () => {
+        if (selected) this.openPrompt(selected.id, "search");
+      },
+      editing: st.editing,
+      notEditing: !st.editing,
+      editBody: st.editBody,
+      setEditBody: (e) => this.setState({ editBody: e.target.value }),
+      startEdit: () => this.setState({ editing: true, editBody: selected ? selected.body : "" }),
+      cancelEdit: () => this.setState({ editing: false }),
+      saveEdit: () => {
+        if (!selected) return;
+        const body = this.state.editBody;
+        this.setState((s) => ({ editing: false, prompts: s.prompts.map((p) => (p.id === selected.id ? { ...p, body } : p)) }));
+        this.flash("Prompt updated");
+      },
+      copyLabel: st.copied ? "Copied to clipboard" : "Copy prompt",
+      copySelected: () => {
+        if (selected && navigator.clipboard) navigator.clipboard.writeText(selected.body).catch(() => {});
+        this.setState({ copied: true });
+        clearTimeout(this._c);
+        this._c = setTimeout(() => this.setState({ copied: false }), 1800);
+      },
+      reuseSelected: () => {
+        if (!selected) return;
+        this.setState({
+          page: "training",
+          trainTab: "write",
+          activeWs: selected.workspace,
+          form: { workspace: selected.workspace, intent: selected.intent, body: selected.body, score: 0, tags: selected.tags }
+        });
+        this.flash("Forked into the training form");
+      },
+
+      onGenerate: st.page === "generate",
+      onConfig: st.page === "config",
+      gWorkspace: st.gWorkspace,
+      setGWorkspace: (e) => this.setState({ gWorkspace: e.target.value }),
+      gIntent: st.gIntent,
+      setGIntent: (e) => this.setState({ gIntent: e.target.value }),
+      gBtnLabel: st.gStatus === "loading" ? "Composing…" : "Generate",
+      gBtnBg: st.gIntent.trim() && st.gStatus !== "loading" ? ACCENT : "#1E2430",
+      gBtnColor: st.gIntent.trim() && st.gStatus !== "loading" ? "#17120A" : "#5C6478",
+      gBtnCursor: st.gIntent.trim() && st.gStatus !== "loading" ? "pointer" : "not-allowed",
+      runGenerate: () => {
+        if (!this.state.gIntent.trim() || this.state.gStatus === "loading") return;
+        this.setState({ gStatus: "loading", gResult: null });
+        clearTimeout(this._g);
+        this._g = setTimeout(() => {
+          const ws = activeWs;
+          const intent = this.state.gIntent.trim();
+          const r = this.compose(intent, ws);
+          if (r.kind !== "composed") {
+            this.setState({ gStatus: r.kind, gResult: r });
+            return;
+          }
+          const id = Date.now();
+          this.setState((s) => ({
+            gStatus: r.kind,
+            gResult: { ...r, savedId: id },
+            prompts: [
+              { id, intent, workspace: ws, tool: s.settings.tool, when: "just now", score: 0, tags: this.autoLabels(intent + " " + r.body), body: r.body, origin: "generated" },
+              ...s.prompts
+            ]
+          }));
+        }, 700);
+      },
+      gLoading: st.gStatus === "loading",
+      gComposed: st.gStatus === "composed",
+      gFallback: st.gStatus === "fallback",
+      gClosestId: st.gResult && st.gResult.closest ? st.gResult.closest.id : null,
+      gFbRateItems: Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
+        const cid = st.gResult && st.gResult.closest ? st.gResult.closest.id : null;
+        const rec = cid ? st.prompts.find((p) => p.id === cid) : null;
+        const tone = n >= 8 ? "#6FCF97" : n >= 6 ? ACCENT : "#C9564B";
+        const on = !!rec && rec.score === n;
+        return {
+          n,
+          bg: on ? tone : "#161A23",
+          color: on ? "#12160E" : "#B9C0CF",
+          border: on ? tone : "#232833",
+          pick: () => {
+            if (!cid) return;
+            this.setState((s) => ({ prompts: s.prompts.map((p) => (p.id === cid ? { ...p, score: n } : p)) }));
+            this.flash("Rated " + n + "/10");
+          }
+        };
+      }),
+      gFbScoreLabel: (() => {
+        const cid = st.gResult && st.gResult.closest ? st.gResult.closest.id : null;
+        const rec = cid ? st.prompts.find((p) => p.id === cid) : null;
+        return rec && rec.score ? rec.score + " / 10" : "Unrated";
+      })(),
+      gFbHint: "This is an existing prompt from your log — rating or editing it updates that entry. Nothing new was saved.",
+      gFbEditing: st.gFbEditing,
+      gFbNotEditing: !st.gFbEditing,
+      gFbEditBody: st.gFbEditBody,
+      setGFbEditBody: (e) => this.setState({ gFbEditBody: e.target.value }),
+      gFbStartEdit: () => this.setState({ gFbEditing: true, gFbEditBody: (this.state.gResult && this.state.gResult.closest && this.state.gResult.closest.body) || "" }),
+      gFbCancelEdit: () => this.setState({ gFbEditing: false }),
+      gFbSaveEdit: () => {
+        const cid = st.gResult && st.gResult.closest ? st.gResult.closest.id : null;
+        const body = this.state.gFbEditBody;
+        if (!cid) return;
+        this.setState((s) => ({
+          gFbEditing: false,
+          gResult: { ...s.gResult, closest: { ...s.gResult.closest, body } },
+          prompts: s.prompts.map((p) => (p.id === cid ? { ...p, body } : p))
+        }));
+        this.flash("Stored prompt updated");
+      },
+      gFbOpen: () => {
+        const cid = st.gResult && st.gResult.closest ? st.gResult.closest.id : null;
+        if (!cid) return;
+        this.setState({ page: "search", activeWs: st.gResult.closest.workspace, sQuery: "", sQuality: "any", selectedId: cid, editing: false });
+      },
+      gIdle: st.gStatus === "idle",
+      gResult: st.gResult
+        ? {
+            ...st.gResult,
+            confidenceLabel: st.gResult.confidence ? st.gResult.confidence + "% match confidence" : "",
+            sources: (st.gResult.sources || []).map((s, i) => ({
+              n: i + 1,
+              intent: s.intent,
+              workspace: s.workspace,
+              score: s.score + "/10",
+              ...this.badge(s.score),
+              open: () => this.openPrompt(s.id, "generate")
+            })),
+            closest: st.gResult.closest
+              ? (() => {
+                  const live = st.prompts.find((p) => p.id === st.gResult.closest.id) || st.gResult.closest;
+                  return { ...live, scoreLabel: live.score ? "Score " + live.score + " / 10" : "Unrated", ...this.badge(live.score) };
+                })()
+              : null
+          }
+        : {},
+      gBodyMd: this.mdEl(st.gResult && st.gResult.body),
+      gFbBodyMd: this.mdEl(st.gResult && st.gResult.closest ? (st.prompts.find((p) => st.gResult.closest && p.id === st.gResult.closest.id) || st.gResult.closest).body : ""),
+      gCopyLabel: st.gCopied ? "Copied" : "Copy prompt",
+      gCopy: () => {
+        const r = this.state.gResult;
+        const text = r && (r.body || (r.closest && r.closest.body));
+        if (text && navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+        this.setState({ gCopied: true });
+        clearTimeout(this._gc);
+        this._gc = setTimeout(() => this.setState({ gCopied: false }), 1800);
+      },
+      gRate: () => {
+        const r = this.state.gResult;
+        if (!r || !r.savedId) return;
+        this.setState({ page: "search", activeWs: (gSaved && gSaved.workspace) || activeWs, sQuery: "", sQuality: "any", selectedId: r.savedId, editing: false });
+      },
+      gSavedRecord: gSaved || {},
+      gScoreLabel: gSaved && gSaved.score ? gSaved.score + " / 10" : "Unrated",
+      gScoreTone: gSaved && gSaved.score ? (gSaved.score >= 8 ? "#6FCF97" : gSaved.score >= 6 ? ACCENT : "#D9695D") : "#7C8498",
+      gRateBorder: gSaved && gSaved.score ? "#1B202A" : "rgba(233,168,76,0.35)",
+      gRateHint: gSaved && gSaved.score
+        ? gSaved.score + " · " + CRITERIA[gSaved.score][0] + " — " + CRITERIA[gSaved.score][1]
+        : "Saved to the log as unrated. Rate it to make it available to future generations.",
+      gRateItems: Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
+        const tone = n >= 8 ? "#6FCF97" : n >= 6 ? ACCENT : "#C9564B";
+        const on = !!gSaved && gSaved.score === n;
+        return {
+          n,
+          bg: on ? tone : "#161A23",
+          color: on ? "#12160E" : "#B9C0CF",
+          border: on ? tone : "#232833",
+          pick: () => {
+            const id = this.state.gResult && this.state.gResult.savedId;
+            if (!id) return;
+            this.setState((s) => ({
+              prompts: s.prompts.map((p) => (p.id === id ? { ...p, score: n, outcome: (p.origin === "edited" ? "Generated, edited, then rated " : "Generated, then rated ") + n + "/10." } : p))
+            }));
+            this.flash("Rated " + n + "/10 — now used in generation");
+          }
+        };
+      }),
+      gEditing: st.gEditing,
+      gNotEditing: !st.gEditing,
+      gEditBody: st.gEditBody,
+      setGEditBody: (e) => this.setState({ gEditBody: e.target.value }),
+      gStartEdit: () => this.setState({ gEditing: true, gEditBody: (this.state.gResult && this.state.gResult.body) || "" }),
+      gCancelEdit: () => this.setState({ gEditing: false }),
+      gSaveEdit: () => {
+        const id = this.state.gResult && this.state.gResult.savedId;
+        const body = this.state.gEditBody;
+        this.setState((s) => ({
+          gEditing: false,
+          gResult: { ...s.gResult, body, edited: true },
+          prompts: s.prompts.map((p) => (p.id === id ? { ...p, body, origin: "edited", outcome: p.score ? "Generated, edited by you, rated " + p.score + "/10." : "Generated, then edited by you. Not yet rated.", tags: p.tags.map((t) => (t === "generated" ? "edited" : t)) } : p))
+        }));
+        this.flash("Saved as your own prompt");
+      },
+      gOriginLabel: gSaved && gSaved.origin === "edited" ? "EDITED BY YOU" : "GENERATED",
+      gOriginColor: gSaved && gSaved.origin === "edited" ? "#E9A84C" : "#6FD3E0",
+      gOriginBg: gSaved && gSaved.origin === "edited" ? "rgba(233,168,76,0.12)" : "rgba(111,211,224,0.12)",
+      gOriginBorder: gSaved && gSaved.origin === "edited" ? "rgba(233,168,76,0.3)" : "rgba(111,211,224,0.3)",
+      gExamples: [
+        "Cover the date parser with boundary value tests",
+        "Add JWT refresh rotation to FastAPI",
+        "Make the Stripe webhook idempotent"
+      ].map((x) => ({
+        label: x,
+        use: () => this.setState({ gIntent: x, gStatus: "idle", gResult: null })
+      })),
+
+      pHas: !!promptRec,
+      pMissing: st.page === "prompt" && !promptRec,
+      pRecord: promptRec ? { ...promptRec, scoreLabel: promptRec.score ? promptRec.score + " / 10" : "Unrated", ...this.badge(promptRec.score) } : { tags: [] },
+      pBodyMd: this.mdEl(promptRec ? promptRec.body : ""),
+      pTabs: this.tabSet(st.promptTab, ["preview", "write"], (k) => () =>
+        this.setState({ promptTab: k, promptEdit: k === "write" && promptRec ? promptRec.body : "" })
+      ),
+      pPreview: st.promptTab === "preview",
+      pWrite: st.promptTab === "write",
+      pEditBody: st.promptEdit,
+      setPEditBody: (e) => this.setState({ promptEdit: e.target.value }),
+      pSave: () => {
+        const id = st.promptId;
+        const body = this.state.promptEdit;
+        this.setState((s) => ({
+          promptTab: "preview",
+          prompts: s.prompts.map((p) => (p.id === id ? { ...p, body, origin: p.origin === "generated" ? "edited" : p.origin, tags: this.autoLabels(p.intent + " " + body) } : p))
+        }));
+        this.flash("Prompt updated");
+      },
+      pCancel: () => this.setState({ promptTab: "preview" }),
+      pUnrated: !!promptRec && !promptRec.score,
+      pRateHeading: promptRec && promptRec.score ? "Your rating" : "Rate this prompt",
+      pRateBorder: promptRec && promptRec.score ? "#1B202A" : "rgba(233,168,76,0.35)",
+      pRateTone: promptRec && promptRec.score ? (promptRec.score >= 8 ? "#6FCF97" : promptRec.score >= 6 ? ACCENT : "#D9695D") : MUTED,
+      pRateHint: promptRec && promptRec.score
+        ? promptRec.score + " · " + CRITERIA[promptRec.score][0] + " — " + CRITERIA[promptRec.score][1]
+        : "Unrated prompts stay searchable, but generation only draws on rated ones.",
+      pRateItems: Array.from({ length: 10 }, (_, i) => i + 1).map((n) => {
+        const tone = n >= 8 ? "#6FCF97" : n >= 6 ? ACCENT : "#C9564B";
+        const on = !!promptRec && promptRec.score === n;
+        return {
+          n,
+          bg: on ? tone : "#161A23",
+          color: on ? "#12160E" : "#B9C0CF",
+          border: on ? tone : "#232833",
+          pick: () => {
+            const id = st.promptId;
+            this.setState((s) => ({ prompts: s.prompts.map((p) => (p.id === id ? { ...p, score: n } : p)) }));
+            this.flash("Rated " + n + "/10 — now used in generation");
+          }
+        };
+      }),
+      pOrigin: !!promptRec && !!promptRec.origin,
+      pOriginLabel: promptRec && promptRec.origin === "edited" ? "EDITED BY YOU" : "GENERATED",
+      pOriginColor: promptRec && promptRec.origin === "edited" ? "#E9A84C" : "#6FD3E0",
+      pOriginBg: promptRec && promptRec.origin === "edited" ? "rgba(233,168,76,0.12)" : "rgba(111,211,224,0.12)",
+      pOriginBorder: promptRec && promptRec.origin === "edited" ? "rgba(233,168,76,0.3)" : "rgba(111,211,224,0.3)",
+      pCopyLabel: st.pCopied ? "Copied" : "Copy prompt",
+      pCopy: () => {
+        if (promptRec && navigator.clipboard) navigator.clipboard.writeText(promptRec.body).catch(() => {});
+        this.setState({ pCopied: true });
+        clearTimeout(this._pc);
+        this._pc = setTimeout(() => this.setState({ pCopied: false }), 1800);
+      },
+      pFork: () => {
+        if (!promptRec) return;
+        this.setState({ page: "training", trainTab: "write", activeWs: promptRec.workspace, form: { workspace: promptRec.workspace, intent: promptRec.intent, body: promptRec.body, score: 0, tags: [] } });
+        this.flash("Forked into the training form");
+      },
+      pOpenInLog: () => {
+        if (!promptRec) return;
+        this.setState({ page: "search", activeWs: promptRec.workspace, sQuery: "", sQuality: "any", selectedId: promptRec.id, editing: false });
+      },
+      promptBackLabel: st.promptFrom === "training" ? "Back to training" : st.promptFrom === "generate" ? "Back to generate" : "Back to search",
+      promptBack: () => this.setState({ page: st.promptFrom === "training" ? "training" : st.promptFrom === "generate" ? "generate" : "search" }),
+
+      hTotal: String(st.prompts.length),
+      hAvg: st.prompts.length ? (st.prompts.reduce((n, p) => n + p.score, 0) / st.prompts.length).toFixed(1) + " / 10" : "—",
+      hTopWorkspace: (() => {
+        const counts = {};
+        st.prompts.forEach((p) => (counts[p.workspace] = (counts[p.workspace] || 0) + 1));
+        const top = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+        return top || "—";
+      })(),
+      memberSince: "Sep 10, 2026",
+      profilePrompts: String(st.prompts.length),
+      profileAvg: st.prompts.length ? (st.prompts.reduce((n, p) => n + p.score, 0) / st.prompts.length).toFixed(1) : "0",
+      profileHasActivity: st.prompts.length > 0,
+      profileEmpty: st.prompts.length === 0,
+      goGenerate: go("generate"),
+      goSearch: go("search"),
+      goWorkspaces: go("workspaces"),
+      settings: st.settings,
+      accountLine: "Member since " + "Sep 10, 2026" + " · " + st.prompts.length + " prompts contributed",
+      setNickname: (e) => this.setState((s) => ({ settings: { ...s.settings, nickname: e.target.value }, saved: false })),
+      toolMenuOpen: st.wsMenu === "tool",
+      toolMenuBorder: st.wsMenu === "tool" ? "rgba(233,168,76,0.55)" : "#232833",
+      toggleToolMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "tool" ? "" : "tool" })),
+      toolOptions: ["Claude Code", "Cursor", "Copilot", "Windsurf", "Aider", "Not specified"].map((tool) => ({
+        label: tool,
+        bg: st.settings.tool === tool ? "#1A1F29" : "transparent",
+        color: st.settings.tool === tool ? "#E8EAF0" : "#B9C0CF",
+        checkVisibility: st.settings.tool === tool ? "visible" : "hidden",
+        pick: () => this.setState((s) => ({ settings: { ...s.settings, tool }, saved: false, wsMenu: "" }))
+      })),
+      saveHint: st.saved ? "Saved." : "Applies to every prompt you log next.",
+      saveSettings: () => {
+        this.setState({ saved: true });
+        this.flash("Settings saved");
+      },
+      memberSinceLine: "Sep 10, 2026"
+    };
+  }
+}
+
+</script>
+</body>
+</html>
