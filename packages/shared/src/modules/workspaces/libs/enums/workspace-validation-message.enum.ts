@@ -1,6 +1,8 @@
 import { WorkspaceValidationRule } from "./workspace-validation-rule.enum.js";
 
 const WorkspaceValidationMessage = {
+	CURSOR_ID_INVALID: "Cursor user ID must be a positive integer",
+	CURSOR_NICKNAME_REQUIRED: "Cursor nickname is required",
 	ID_INVALID: "Workspace ID must be a positive integer",
 	NAME_HAS_LEADING_OR_TRAILING_SPACES:
 		"Name must not start or end with a space",

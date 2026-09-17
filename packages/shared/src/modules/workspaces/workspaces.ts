@@ -1,4 +1,7 @@
 export {
+	ContributorsErrorCode,
+	ContributorsErrorMessage,
+	WorkspaceListScope,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
@@ -21,6 +24,13 @@ export {
 	TechStackTechDictionary,
 } from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {
+	type ContributorDto,
+	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorCandidatesCursor,
+	type WorkspaceContributorCandidatesQueryDto,
+	type WorkspaceContributorCandidatesResponseDto,
+	type WorkspaceContributorRouteParametersDto,
+	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
@@ -28,8 +38,13 @@ export {
 	type WorkspaceListItemDto,
 	type WorkspaceRouteParametersDto,
 	type WorkspaceUpdateRequestDto,
+	type WorkspaceUserSummaryDto,
 } from "./libs/types/types.js";
 export {
+	workspaceAddContributorValidationSchema,
+	workspaceContributorCandidatesCursorValidationSchema,
+	workspaceContributorCandidatesQueryValidationSchema,
+	workspaceContributorRouteParametersValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	workspaceRouteParametersValidationSchema,
