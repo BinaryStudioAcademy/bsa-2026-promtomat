@@ -1,7 +1,4 @@
-import {
-	AiCodingTool,
-	aiCodingToolToLabel,
-} from "~/modules/users/users.js";
+import { AiCodingTool, aiCodingToolToLabel } from "~/modules/users/users.js";
 
 const EMPTY_AI_CODING_TOOL = "" as const;
 

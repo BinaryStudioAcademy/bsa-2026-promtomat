@@ -79,7 +79,9 @@ class UserController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
-				this.getProfileSummary(options as APIHandlerOptions & { user: UserDto }),
+				this.getProfileSummary(
+					options as APIHandlerOptions & { user: UserDto },
+				),
 			method: HTTPMethod.GET,
 			path: UsersApiPath.ME_SUMMARY,
 		});
