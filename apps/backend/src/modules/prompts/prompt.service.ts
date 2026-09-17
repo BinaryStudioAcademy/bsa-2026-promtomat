@@ -175,7 +175,7 @@ class PromptService {
 		);
 
 		if (!workspace) {
-			throw PromptDeliveryError.forbidden();
+			throw PromptDeliveryError.notFound();
 		}
 
 		return prompt;

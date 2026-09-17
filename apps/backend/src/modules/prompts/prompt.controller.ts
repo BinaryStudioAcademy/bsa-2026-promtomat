@@ -337,12 +337,6 @@ class PromptController extends BaseController {
 	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/Error"
-	 *        403:
-	 *          description: Prompt workspace is not readable by the caller
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Error"
 	 *        404:
 	 *          description: Prompt not found
 	 *          content:

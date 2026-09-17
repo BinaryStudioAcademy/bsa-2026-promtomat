@@ -16,14 +16,6 @@ class PromptDeliveryError extends HTTPError {
 		super({ cause, code, message, status });
 	}
 
-	public static forbidden(): PromptDeliveryError {
-		return new PromptDeliveryError({
-			code: ErrorCode.FORBIDDEN,
-			message: PromptsErrorMessage.FORBIDDEN,
-			status: HTTPCode.FORBIDDEN,
-		});
-	}
-
 	public static notFound(): PromptDeliveryError {
 		return new PromptDeliveryError({
 			code: ErrorCode.NOT_FOUND,
