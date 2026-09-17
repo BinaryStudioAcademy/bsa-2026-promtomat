@@ -4,6 +4,7 @@ import {
 	UniqueViolationError,
 } from "objection";
 
+import { SortOrder } from "~/libs/enums/enums.js";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
@@ -67,7 +68,10 @@ class WorkspaceRepository {
 				userId,
 			)
 			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
-			.orderBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`);
+			.orderBy(
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
+				SortOrder.DESC,
+			);
 
 		if (workspaceName) {
 			const escapedWorkspaceName = escapeILikePattern(workspaceName);

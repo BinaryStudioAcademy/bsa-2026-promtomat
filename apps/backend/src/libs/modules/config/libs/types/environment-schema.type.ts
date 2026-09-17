@@ -13,9 +13,12 @@ type EnvironmentSchema = {
 		REGION: string;
 	};
 	BEDROCK: {
+		CONNECTION_TIMEOUT_MS: number;
+		MAX_ATTEMPTS: number;
 		MODEL: {
 			ID: string;
 		};
+		REQUEST_TIMEOUT_MS: number;
 	};
 	DB: {
 		DIALECT: string;
@@ -33,6 +36,11 @@ type EnvironmentSchema = {
 		MODEL_ID: string;
 		S3_BUCKET: string;
 		S3_PREFIX: string;
+	};
+	GENERATION: {
+		CANDIDATE_LIMIT: number;
+		MAX_TOKENS: number;
+		SOURCE_BODY_MAX_LENGTH: number;
 	};
 	HASHING: {
 		SALT_LENGTH: number;

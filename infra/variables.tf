@@ -127,3 +127,33 @@ variable "bedrock_model_id" {
   type = string
   default = "qwen.qwen3-32b-v1:0"
 }
+
+variable "bedrock_request_timeout_ms" {
+  type    = number
+  default = 30000
+}
+
+variable "bedrock_connection_timeout_ms" {
+  type    = number
+  default = 3000
+}
+
+variable "bedrock_max_attempts" {
+  type    = number
+  default = 3
+}
+
+variable "generation_candidate_limit" {
+  type    = number
+  default = 5
+}
+
+variable "generation_max_tokens" {
+  type    = number
+  default = 2048
+}
+
+variable "generation_source_body_max_length" {
+  type    = number
+  default = 8000
+}

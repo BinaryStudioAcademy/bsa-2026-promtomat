@@ -2,10 +2,16 @@ import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
-import { PromptsApiPath, PromptsApiTag } from "./libs/enums/enums.js";
+import {
+	PaginationValue,
+	PromptsApiPath,
+	PromptsApiTag,
+} from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
 	type PromptSearchRequestDto,
@@ -39,6 +45,29 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.RECENT}`,
 				}),
 			}),
+			getPrompts: builder.infiniteQuery<
+				PromptGetAllResponseDto,
+				Omit<PromptGetQueryDto, "page">,
+				number
+			>({
+				infiniteQueryOptions: {
+					getNextPageParam: (lastPage, _allPages, lastPageParameter) => {
+						const isLastPage =
+							lastPageParameter * PaginationValue.DEFAULT_LIMIT >=
+							lastPage.totalCount;
+
+						return isLastPage
+							? undefined
+							: lastPageParameter + PaginationValue.DEFAULT_OFFSET;
+					},
+					initialPageParam: PaginationValue.DEFAULT_PAGE,
+				},
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ pageParam, queryArg }) => ({
+					params: { ...queryArg, page: pageParam },
+					url: APIPath.PROMPTS,
+				}),
+			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
 				invalidatesTags: [PromptsApiTag.PROMPT, WorkspacesApiTag.WORKSPACE],
 				query: (payload) => ({
@@ -62,6 +91,7 @@ const promptApi = baseApi
 const {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
+	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 } = promptApi;
@@ -69,6 +99,7 @@ const {
 export {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
+	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
 	useSearchPromptsQuery,
 };
