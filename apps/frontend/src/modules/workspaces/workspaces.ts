@@ -1,5 +1,6 @@
 export { WorkspaceListScope, WorkspacesApiTag } from "./libs/enums/enums.js";
 export {
+	workspaceAddContributorValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -8,7 +9,6 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
-	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

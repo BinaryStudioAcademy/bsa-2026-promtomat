@@ -13,13 +13,11 @@ import { workspaceContributorDeleteAccessHook } from "../workspaces/libs/hooks/w
 import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorRouteParametersDto,
 	type WorkspaceRouteParametersDto,
 } from "../workspaces/libs/types/types.js";
 import {
 	workspaceAddContributorValidationSchema,
-	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceRouteParametersValidationSchema,
 } from "../workspaces/libs/validation-schemas/validation-schemas.js";
@@ -61,20 +59,6 @@ import { type ContributorService } from "./contributor.service.js";
  *           minimum: 1
  *         nickname:
  *           type: string
- *     WorkspaceContributorCandidatesResponse:
- *       type: object
- *       required:
- *         - items
- *         - nextCursor
- *       properties:
- *         items:
- *           type: array
- *           items:
- *             $ref: "#/components/schemas/WorkspaceUserSummary"
- *         nextCursor:
- *           type: string
- *           nullable: true
- *           description: Opaque cursor for loading the next page
  *     WorkspaceContributorsResponse:
  *       type: object
  *       required:
@@ -112,23 +96,6 @@ class ContributorController extends BaseController {
 			preHandler: workspaceContributorDeleteAccessHook(workspaceService),
 			validation: {
 				params: workspaceContributorRouteParametersValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.findCandidates(
-					options as APIHandlerOptions<{
-						params: WorkspaceRouteParametersDto;
-						query: WorkspaceContributorCandidatesQueryDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.CONTRIBUTOR_CANDIDATES,
-			preHandler: workspaceOwnerAccessHook(workspaceService),
-			validation: {
-				params: workspaceRouteParametersValidationSchema,
-				query: workspaceContributorCandidatesQueryValidationSchema,
 			},
 		});
 
@@ -362,81 +329,6 @@ class ContributorController extends BaseController {
 		return {
 			payload: await this.contributorService.findAllByWorkspaceId(
 				options.params.workspaceId,
-			),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /workspaces/{workspaceId}/contributor-candidates:
-	 *   get:
-	 *     description: Returns users who can be added as workspace contributors
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: path
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *       - in: query
-	 *         name: userQuery
-	 *         required: false
-	 *         description: Filters users by nickname or email
-	 *         schema:
-	 *           type: string
-	 *       - in: query
-	 *         name: cursor
-	 *         required: false
-	 *         description: Opaque cursor returned by the previous response
-	 *         schema:
-	 *           type: string
-	 *     responses:
-	 *       200:
-	 *         description: Contributor candidates returned successfully
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/WorkspaceContributorCandidatesResponse"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Error"
-	 *       403:
-	 *         description: Only the workspace owner can view contributor candidates
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Error"
-	 *       404:
-	 *         description: Workspace not found or the user does not have access
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Error"
-	 *       422:
-	 *         description: Invalid workspace identifier, query, or cursor
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationError"
-	 */
-
-	private async findCandidates(
-		options: APIHandlerOptions<{
-			params: WorkspaceRouteParametersDto;
-			query: WorkspaceContributorCandidatesQueryDto;
-		}>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.contributorService.findCandidates(
-				options.params.workspaceId,
-				options.user?.id as number,
-				options.query,
 			),
 			status: HTTPCode.OK,
 		};

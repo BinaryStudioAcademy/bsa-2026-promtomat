@@ -12,7 +12,7 @@ import {
 
 import { SOLO_MEMBER_COUNT } from "../../libs/constants/constants.js";
 import { WorkspaceContributorsMessage } from "../../libs/enums/enums.js";
-import { CandidateSearch } from "./components/candidate-search/candidate-search.js";
+import { AddContributorForm } from "./components/add-contributor-form/add-contributor-form.js";
 import { ContributorItem } from "./components/contributor-item/contributor-item.js";
 import { UserList } from "./components/user-list/user-list.js";
 import styles from "./styles.module.css";
@@ -74,8 +74,10 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 		>
 			<div className={styles["body"]}>
 				<div className={styles["section"]}>
-					<h3 className={styles["section-label"]}>Find a user</h3>
-					<CandidateSearch workspaceId={workspace.id} />
+					<h3 className={styles["section-label"]}>
+						Add a contributor by email
+					</h3>
+					<AddContributorForm workspaceId={workspace.id} />
 				</div>
 
 				<hr className={styles["divider"]} />

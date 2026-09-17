@@ -1,6 +1,6 @@
 .remove-button {
 	color: var(--fg-danger);
-	background-color: var(--surface-canvas);
+	background-color: var(--surface-card);
 	border: var(--border-width-hairline) solid var(--border-danger);
 	border-radius: var(--radius-md);
 }

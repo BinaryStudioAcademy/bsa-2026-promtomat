@@ -6,7 +6,6 @@ import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
@@ -92,31 +91,6 @@ const workspacesApi = baseApi
 					),
 				}),
 			}),
-			getWorkspaceContributorCandidates: builder.infiniteQuery<
-				WorkspaceContributorCandidatesResponseDto,
-				{ userQuery: string; workspaceId: number },
-				null | string
-			>({
-				infiniteQueryOptions: {
-					getNextPageParam: (lastPage) => lastPage.nextCursor,
-					initialPageParam: null,
-				},
-				providesTags: [WorkspacesApiTag.WORKSPACE],
-				query: ({ pageParam, queryArg }) => ({
-					params: {
-						cursor: pageParam ?? undefined,
-						userQuery: queryArg.userQuery,
-					},
-					url: configureString(
-						APIPath.WORKSPACES_$WORKSPACE_ID,
-						WorkspacesApiPath.CONTRIBUTOR_CANDIDATES,
-						{
-							workspaceId: String(queryArg.workspaceId),
-						},
-					),
-				}),
-			}),
-
 			getWorkspaceContributors: builder.query<
 				WorkspaceContributorsResponseDto,
 				number
@@ -170,7 +144,6 @@ const {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
-	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
@@ -181,7 +154,6 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
-	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
