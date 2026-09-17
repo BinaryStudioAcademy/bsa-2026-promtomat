@@ -70,6 +70,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "BEDROCK_MODEL_ID", value = var.bedrock_model_id },
         { name = "BEDROCK_REQUEST_TIMEOUT_MS", value = tostring(var.bedrock_request_timeout_ms) },
         { name = "BEDROCK_CONNECTION_TIMEOUT_MS", value = tostring(var.bedrock_connection_timeout_ms) },
+        { name = "BEDROCK_MAX_ATTEMPTS", value = tostring(var.bedrock_max_attempts) },
         { name = "GENERATION_CANDIDATE_LIMIT", value = tostring(var.generation_candidate_limit) },
         { name = "GENERATION_MAX_TOKENS", value = tostring(var.generation_max_tokens) },
         { name = "GENERATION_SOURCE_BODY_MAX_LENGTH", value = tostring(var.generation_source_body_max_length) },

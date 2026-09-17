@@ -35,6 +35,9 @@ const HeaderNavigation: React.FC<Properties> = ({
 						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
 					</li>
 					<li>
+						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
+					</li>
+					<li>
 						<Link to={AppRoute.WORKSPACES}>Workspaces</Link>
 					</li>
 					<li>
