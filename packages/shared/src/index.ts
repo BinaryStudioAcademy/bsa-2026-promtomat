@@ -4,6 +4,7 @@ export {
 	AppEnvironment,
 	ContentType,
 	ErrorCode,
+	PaginationValue,
 	SortOrder,
 } from "./libs/enums/enums.js";
 export {
@@ -17,7 +18,10 @@ export {
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
-export { configureString } from "./libs/helpers/helpers.js";
+export {
+	configureString,
+	getRelativeTimeLabel,
+} from "./libs/helpers/helpers.js";
 export { type Config } from "./libs/modules/config/config.js";
 export {
 	type HTTP,
@@ -77,7 +81,10 @@ export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptSearchRequestDto,
@@ -85,7 +92,7 @@ export {
 	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
+	promptGetQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorMessage,
