@@ -67,6 +67,18 @@ class BaseConfig implements Config {
 				},
 			},
 			BEDROCK: {
+				CONNECTION_TIMEOUT_MS: {
+					default: null,
+					doc: "Milliseconds allowed to establish a connection to Bedrock",
+					env: "BEDROCK_CONNECTION_TIMEOUT_MS",
+					format: Number,
+				},
+				MAX_ATTEMPTS: {
+					default: null,
+					doc: "Total Bedrock attempts, including the first; attempts multiply the wait a caller sees",
+					env: "BEDROCK_MAX_ATTEMPTS",
+					format: Number,
+				},
 				MODEL: {
 					ID: {
 						default: null,

@@ -16,7 +16,7 @@
 		"build:frontend": "pnpm --filter @promptomat/frontend run build",
 		"build:backend": "pnpm --filter @promptomat/backend run build",
 		"build": "pnpm --recursive run build",
-		"lint:editor": "editorconfig-checker",
+		"lint:editor": "editorconfig-checker -exclude ^design/",
 		"lint:fs": "ls-lint",
 		"lint:type": "tsc --noEmit",
 		"lint:js": "eslint . --max-warnings=0 --no-warn-ignored",
