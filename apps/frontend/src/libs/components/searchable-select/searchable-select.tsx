@@ -85,11 +85,35 @@ const SearchableSelect = <T extends FieldValues>({
 		valuesDictionary,
 	});
 
-	useLayoutEffect(() => {
-		if (isSuggestionsOpen && controlReference.current) {
-			setControlRect(controlReference.current.getBoundingClientRect());
+	const updateControlRect = useCallback((): void => {
+		const controlElement = controlReference.current;
+
+		if (controlElement === null) {
+			return;
 		}
-	}, [isSuggestionsOpen, suggestions]);
+
+		setControlRect(controlElement.getBoundingClientRect());
+	}, []);
+
+	useLayoutEffect(() => {
+		if (!isSuggestionsOpen) {
+			return;
+		}
+
+		updateControlRect();
+	}, [isSuggestionsOpen, suggestions, updateControlRect]);
+
+	useEffect(() => {
+		if (!isSuggestionsOpen) {
+			return;
+		}
+
+		window.addEventListener("resize", updateControlRect);
+
+		return () => {
+			window.removeEventListener("resize", updateControlRect);
+		};
+	}, [isSuggestionsOpen, updateControlRect]);
 
 	useEffect(() => {
 		activeSuggestionReference.current?.scrollIntoView({
