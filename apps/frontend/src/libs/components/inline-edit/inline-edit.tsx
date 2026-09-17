@@ -6,7 +6,7 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { ControlSize, TabIndex } from "~/libs/enums/enums.js";
+import { ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -82,9 +82,9 @@ const InlineEdit = <T extends FieldValues>({
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent<HTMLDivElement>) => {
 			event.stopPropagation();
-			if (event.key === "Enter") {
+			if (event.key === KeyboardKey.ENTER) {
 				handleSaveEditing();
-			} else if (event.key === "Escape") {
+			} else if (event.key === KeyboardKey.ESCAPE) {
 				handleCancelEditing();
 			}
 		},
@@ -137,7 +137,7 @@ const InlineEdit = <T extends FieldValues>({
 				{label}
 			</label>
 			<div className={inputStyles["control"]}>
-				<span
+				<button
 					className={getValidClasses(
 						styles["preview"],
 						inputStyles[size],
@@ -145,12 +145,9 @@ const InlineEdit = <T extends FieldValues>({
 					)}
 					onClick={handleStartEditing}
 					onFocus={handleStartEditing}
-					onKeyDown={handleStartEditing}
-					role="button"
-					tabIndex={isDisabled ? TabIndex.HIDDEN : TabIndex.FOCUSABLE}
 				>
 					{field.value || placeholder}
-				</span>
+				</button>
 			</div>
 		</div>
 	);
