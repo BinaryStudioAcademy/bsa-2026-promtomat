@@ -13,7 +13,6 @@ import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
 import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import {
-	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
 	type PromptSearchRequestDto,
@@ -21,7 +20,6 @@ import {
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
@@ -141,21 +139,6 @@ class PromptController extends BaseController {
 
 		this.promptService = promptService;
 		this.workspaceService = workspaceService;
-
-		this.addRoute({
-			handler: (options) =>
-				this.findAllByWorkspace(
-					options as APIHandlerOptions<{
-						query: GetPromptsRequestDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.ROOT,
-			preHandler: workspaceAccessHook(this.workspaceService),
-			validation: {
-				query: promptGetByQueryValidationSchema,
-			},
-		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -351,84 +334,6 @@ class PromptController extends BaseController {
 	 *               $ref: "#/components/schemas/ErrorResponse"
 	 *       403:
 	 *         description: You do not have permission to access this workspace
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	/**
-	 * @swagger
-	 * /prompts:
-	 *    get:
-	 *      description: Returns the prompts of a workspace, optionally narrowed to one label
-	 *      security:
-	 *        - bearerAuth: []
-	 *      parameters:
-	 *        - in: query
-	 *          name: workspaceId
-	 *          required: true
-	 *          schema:
-	 *            type: number
-	 *        - in: query
-	 *          name: labelId
-	 *          required: false
-	 *          schema:
-	 *            type: number
-	 *      responses:
-	 *        200:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                type: array
-	 *                items:
-	 *                  $ref: "#/components/schemas/Prompt"
-	 */
-	private async findAllByWorkspace(
-		options: APIHandlerOptions<{ query: GetPromptsRequestDto }>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.promptService.findByWorkspace(options.query),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /prompts/progress:
-	 *   get:
-	 *     description: Returns recorded prompt count and target for a workspace
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: query
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: number
-	 *           minimum: 1
-	 *         description: Workspace to count prompts in
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/PromptProgress"
-	 *       401:
-	 *         description: Unauthorized
 	 *         content:
 	 *           application/json:
 	 *             schema:

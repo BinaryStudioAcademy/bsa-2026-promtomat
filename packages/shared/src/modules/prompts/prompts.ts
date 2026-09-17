@@ -24,7 +24,6 @@ export {
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,

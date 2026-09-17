@@ -92,7 +92,6 @@ export {
 	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
