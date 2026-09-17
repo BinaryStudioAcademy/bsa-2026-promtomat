@@ -2,8 +2,10 @@ import React, { useCallback } from "react";
 
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
 import {
 	type ComposeRequestDto,
+	ComposeResultKind,
 	useComposeMutation,
 } from "~/modules/composed-prompts/composed-prompts.js";
 
@@ -21,6 +23,11 @@ const Generate: React.FC = () => {
 		[compose],
 	);
 
+	const composedPrompt =
+		data?.kind === ComposeResultKind.COMPOSED ? data.composedPrompt : null;
+	const shouldShowFallbackResult =
+		data !== undefined && data.kind !== ComposeResultKind.COMPOSED;
+
 	return (
 		<div className={styles["content-column"]}>
 			<GenerateForm
@@ -29,7 +36,14 @@ const Generate: React.FC = () => {
 				onSubmit={handleCompose}
 			/>
 			{isLoading && <Loader variant={LoaderVariant.SECTION} />}
-			{data && <ComposeResult result={data} />}
+			{!isLoading && composedPrompt && (
+				<PromptDeliveryView
+					body={composedPrompt.body}
+					explanation={composedPrompt.explanation.trim()}
+					sources={composedPrompt.sources}
+				/>
+			)}
+			{shouldShowFallbackResult && <ComposeResult result={data} />}
 		</div>
 	);
 };
