@@ -1,5 +1,4 @@
 import { APIPath } from "~/libs/enums/enums.js";
-import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { BaseController } from "~/libs/modules/controller/base-controller.module.js";
 import {
 	type APIHandlerOptions,
@@ -62,6 +61,8 @@ import { type PromptService } from "./prompt.service.js";
  *         id:
  *           type: number
  *           minimum: 1
+ *         label:
+ *           type: string
  *         efficiencyScore:
  *           type: number
  *           minimum: 1
@@ -273,13 +274,9 @@ class PromptController extends BaseController {
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
-		if (options.user === null) {
-			throw AuthError.unauthorized();
-		}
-
 		const payload = {
 			...options.body,
-			userId: options.user.id,
+			userId: options.user?.id as number,
 		};
 		return {
 			payload: await this.promptService.create(payload),

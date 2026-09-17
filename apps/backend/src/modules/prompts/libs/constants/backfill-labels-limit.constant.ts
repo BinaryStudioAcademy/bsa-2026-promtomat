@@ -1,0 +1,3 @@
+const BACKFILL_LABELS_LIMIT = 50;
+
+export { BACKFILL_LABELS_LIMIT };

@@ -2,6 +2,7 @@ type PromptRepositoryItem = {
 	createdAt: string;
 	efficiencyScore: number;
 	id: number;
+	labelId: number;
 	promptBody: string;
 	taskIntent: string;
 	updatedAt: string;
