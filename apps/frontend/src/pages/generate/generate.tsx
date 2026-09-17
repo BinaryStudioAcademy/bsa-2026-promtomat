@@ -43,7 +43,9 @@ const Generate: React.FC = () => {
 					sources={composedPrompt.sources}
 				/>
 			)}
-			{shouldShowFallbackResult && <ComposeResult result={data} />}
+			{!isLoading && shouldShowFallbackResult && (
+				<ComposeResult result={data} />
+			)}
 		</div>
 	);
 };
