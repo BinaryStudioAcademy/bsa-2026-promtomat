@@ -79,6 +79,10 @@ const Workspaces: React.FC = () => {
 		setActiveModal(null);
 	}, []);
 
+	const isActiveWorkspaceOwner =
+		activeModal?.type === "manage-access" &&
+		activeModal.workspace.userId === currentUserId;
+
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<header className={styles["header"]}>
@@ -155,6 +159,7 @@ const Workspaces: React.FC = () => {
 
 			{activeModal?.type === "manage-access" && (
 				<WorkspaceContributorsModal
+					isOwner={isActiveWorkspaceOwner}
 					onClose={handleModalClose}
 					workspace={activeModal.workspace}
 				/>
