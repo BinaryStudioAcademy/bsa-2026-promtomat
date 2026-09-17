@@ -31,7 +31,8 @@ import {
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
-/*** @swagger
+/**
+ * @swagger
  * components:
  *   schemas:
  *     ErrorResponse:
@@ -226,7 +227,7 @@ class PromptController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.PATCH,
-			path: PromptsApiPath.INTENT,
+			path: PromptsApiPath.$PROMPT_ID_INTENT,
 			preHandler: promptAccessHook(this.promptService),
 			validation: {
 				body: promptUpdateIntentValidationSchema,

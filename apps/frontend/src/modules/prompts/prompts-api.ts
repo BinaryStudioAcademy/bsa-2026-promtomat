@@ -123,9 +123,13 @@ const promptApi = baseApi
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
-					url: configureString(APIPath.PROMPTS, PromptsApiPath.INTENT, {
-						promptId: String(id),
-					}),
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_INTENT,
+						{
+							promptId: String(id),
+						},
+					),
 				}),
 			}),
 		}),
