@@ -1,5 +1,7 @@
+import { PromptDeliveryError } from "~/libs/exceptions/exceptions.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { PromptProgress } from "./libs/enums/enums.js";
 import {
@@ -17,12 +19,16 @@ class PromptService {
 
 	private promptRepository: PromptRepository;
 
+	private workspaceService: WorkspaceService;
+
 	public constructor(
 		promptRepository: PromptRepository,
 		promptEmbeddingService: PromptEmbeddingService,
+		workspaceService: WorkspaceService,
 	) {
 		this.promptRepository = promptRepository;
 		this.promptEmbeddingService = promptEmbeddingService;
+		this.workspaceService = workspaceService;
 	}
 
 	public async create(payload: PromptCreatePayload): Promise<PromptDto> {
@@ -44,6 +50,27 @@ class PromptService {
 		void this.promptEmbeddingService.embedForPrompt(promptDto);
 
 		return promptDto;
+	}
+
+	public async findById(id: number, userId: number): Promise<PromptDto> {
+		const prompt = await this.promptRepository.findById(id);
+
+		if (!prompt) {
+			throw PromptDeliveryError.notFound();
+		}
+
+		const { workspaceId } = prompt.toObject();
+
+		const workspace = await this.workspaceService.findByIdAndOwner(
+			workspaceId,
+			userId,
+		);
+
+		if (!workspace) {
+			throw PromptDeliveryError.forbidden();
+		}
+
+		return prompt.toObject();
 	}
 
 	public findCandidates({

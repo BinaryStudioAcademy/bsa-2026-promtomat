@@ -21,6 +21,12 @@ class PromptRepository {
 		return PromptEntity.initialize(prompt);
 	}
 
+	public async findById(id: number): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel.query().findById(id).execute();
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
+	}
+
 	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
 		return await this.promptModel.query().where({ workspaceId }).resultSize();
 	}

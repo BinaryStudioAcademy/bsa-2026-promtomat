@@ -1,4 +1,6 @@
 const PromptsErrorMessage = {
+	FORBIDDEN: "You are not allowed to access this prompt",
+	NOT_FOUND: "Prompt not found",
 	SERVICE_UNAVAILABLE: "Search is temporarily unavailable",
 } as const;
 

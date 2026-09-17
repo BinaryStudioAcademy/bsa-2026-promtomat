@@ -5,6 +5,7 @@ export {
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
+	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptSearchRequestDto,

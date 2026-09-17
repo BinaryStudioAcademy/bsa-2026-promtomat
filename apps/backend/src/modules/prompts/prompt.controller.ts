@@ -15,11 +15,13 @@ import { PromptsApiPath } from "./libs/enums/enums.js";
 import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import {
 	type PromptCreateRequestDto,
+	type PromptIdParameterDto,
 	type PromptSearchRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
+	promptIdParameterValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -135,6 +137,20 @@ class PromptController extends BaseController {
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: { query: searchPromptsValidationSchema },
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findById(
+					options as APIHandlerOptions<{
+						params: PromptIdParameterDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.$ID,
+			validation: {
+				params: promptIdParameterValidationSchema,
+			},
+		});
 	}
 
 	/**
@@ -228,6 +244,64 @@ class PromptController extends BaseController {
 		return {
 			payload: await this.promptService.create(payload),
 			status: HTTPCode.CREATED,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/{id}:
+	 *    get:
+	 *      description: Returns a prompt of a workspace the caller may read
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: path
+	 *          name: id
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Prompt"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        403:
+	 *          description: Prompt workspace is not readable by the caller
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        404:
+	 *          description: Prompt not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
+	 */
+	private async findById(
+		options: APIHandlerOptions<{ params: PromptIdParameterDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findById(
+				options.params.id,
+				options.user?.id as number,
+			),
+			status: HTTPCode.OK,
 		};
 	}
 

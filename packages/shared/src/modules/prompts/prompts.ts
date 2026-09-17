@@ -9,6 +9,7 @@ export {
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetRecentResponseDto,
+	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptSearchRequestDto,
@@ -18,6 +19,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
+	promptIdParameterValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
