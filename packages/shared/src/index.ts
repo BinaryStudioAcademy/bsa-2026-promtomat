@@ -104,6 +104,8 @@ export {
 	UserValidationMessage,
 } from "./modules/users/users.js";
 export {
+	type RepositoryIdentity,
+	type RepositoryIdentityOutcome,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
@@ -114,9 +116,11 @@ export {
 	checkIsValidTechStackTag,
 	FIRST_ELEMENT_INDEX,
 	MAX_TAGS_COUNT,
+	normalizeRepositoryIdentity,
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
+	RepositoryIdentityRefusalReason,
 	TechStackTagSchema,
 	TechStackTechDictionary,
 	workspaceCreationValidationSchema,

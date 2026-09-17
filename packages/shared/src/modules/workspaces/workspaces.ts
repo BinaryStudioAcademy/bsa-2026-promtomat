@@ -5,6 +5,12 @@ export {
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
 export {
+	type RepositoryIdentity,
+	type RepositoryIdentityOutcome,
+	normalizeRepositoryIdentity,
+	RepositoryIdentityRefusalReason,
+} from "./libs/modules/repository-bindings/repository-bindings.js";
+export {
 	checkIsValidTechStackTag,
 	FIRST_ELEMENT_INDEX,
 	MAX_TAGS_COUNT,
