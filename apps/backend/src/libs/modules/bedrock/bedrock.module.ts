@@ -21,6 +21,8 @@ import {
 } from "./libs/types/types.js";
 
 type Constructor = {
+	connectionTimeoutMs: number;
+	maxAttempts: number;
 	modelId: string;
 	region: string;
 	requestTimeoutMs: number;

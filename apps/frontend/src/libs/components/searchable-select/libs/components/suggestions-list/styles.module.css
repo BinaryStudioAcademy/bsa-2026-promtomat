@@ -7,7 +7,7 @@
 	max-height: 240px;
 	padding: var(--space-4);
 	margin: var(--space-4) 0 0;
-	overflow-y: auto;
+	overflow: hidden auto;
 	list-style: none;
 	background-color: var(--surface-raised);
 	border: var(--border-width-hairline) solid var(--border-subtle);
@@ -16,9 +16,12 @@
 }
 
 .suggestion {
+	min-width: 0;
+	max-width: 100%;
 	padding: var(--space-6) var(--space-8);
 	font-size: var(--font-size-body-base);
 	color: var(--text-body);
+	overflow-wrap: anywhere;
 	cursor: pointer;
 	background-color: transparent;
 	border-radius: var(--radius-sm);

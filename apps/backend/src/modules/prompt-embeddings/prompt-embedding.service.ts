@@ -1,6 +1,7 @@
 import { PromptSearchError } from "~/libs/exceptions/exceptions.js";
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
+	type Embedding,
 	EmbeddingFailedError,
 	EmbeddingNotReadyError,
 	type EmbeddingService,
@@ -14,6 +15,7 @@ import {
 	BACKFILL_CRON_EXPRESSION,
 	BACKFILL_PAGE_SIZE,
 	BACKFILL_TIMEZONE,
+	NEAREST_LABEL_LIMIT,
 } from "./libs/constants/constants.js";
 import { PromptEmbeddingErrorMessage } from "./libs/enums/enums.js";
 import { PromptEmbeddingError } from "./libs/exceptions/exceptions.js";
@@ -27,6 +29,7 @@ import {
 	type BackfillReport,
 	type IndexedPromptSource,
 	type NearestPrompt,
+	type NearestPromptLabelsQuery,
 	type NearestPromptQuery,
 	type PromptEmbeddingSource,
 } from "./libs/types/types.js";
@@ -119,6 +122,16 @@ class PromptEmbeddingService {
 			modelId === this.modelId &&
 			sourceHash === computeSourceHash(composeEmbeddedText(source))
 		);
+	}
+
+	private async embedSource(
+		source: Pick<PromptEmbeddingSource, "promptBody" | "taskIntent">,
+	): Promise<Embedding | undefined> {
+		const [embedding] = await this.embeddingService.embed([
+			composeEmbeddedText(source),
+		]);
+
+		return embedding;
 	}
 
 	private async embedSources(
@@ -316,6 +329,24 @@ class PromptEmbeddingService {
 
 			throw error;
 		}
+	}
+
+	public async findNearestLabelNames({
+		promptBody,
+		taskIntent,
+		workspaceId,
+	}: NearestPromptLabelsQuery): Promise<string[]> {
+		const embedding = await this.embedSource({ promptBody, taskIntent });
+
+		if (!embedding) {
+			return [];
+		}
+
+		return await this.promptEmbeddingRepository.findNearestLabelNames({
+			embedding,
+			limit: NEAREST_LABEL_LIMIT,
+			workspaceId,
+		});
 	}
 
 	public async regenerateForPrompt(

@@ -11,18 +11,14 @@ import {
 } from "~/libs/modules/generator/generator.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
-import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptRepository } from "./composed-prompt.repository.js";
-import {
-	GENERATION_TEMPERATURE,
-	GENERATION_TOP_P,
-	SYSTEM_PROMPT,
-} from "./libs/constants/constants.js";
+import { SYSTEM_PROMPT } from "./libs/constants/constants.js";
 import {
 	ComposeResultKind,
 	FallbackReason,
+	GenerationParameter,
 	ModelCallOutcome,
 } from "./libs/enums/enums.js";
 import { ComposedPromptDuplicateError } from "./libs/exceptions/exceptions.js";
@@ -53,7 +49,6 @@ type Constructor = {
 	modelId: string;
 	promptService: PromptService;
 	sourceBodyMaxLength: number;
-	workspaceService: WorkspaceService;
 };
 
 type Material = {
@@ -80,8 +75,6 @@ class ComposedPromptService {
 
 	private sourceBodyMaxLength: number;
 
-	private workspaceService: WorkspaceService;
-
 	public constructor({
 		candidateLimit,
 		composedPromptRepository,
@@ -91,7 +84,6 @@ class ComposedPromptService {
 		modelId,
 		promptService,
 		sourceBodyMaxLength,
-		workspaceService,
 	}: Constructor) {
 		this.candidateLimit = candidateLimit;
 		this.composedPromptRepository = composedPromptRepository;
@@ -101,7 +93,6 @@ class ComposedPromptService {
 		this.modelId = modelId;
 		this.promptService = promptService;
 		this.sourceBodyMaxLength = sourceBodyMaxLength;
-		this.workspaceService = workspaceService;
 	}
 
 	private async composeFromMaterial({
@@ -169,8 +160,8 @@ class ComposedPromptService {
 			const output = await this.generator.generate({
 				config: {
 					maxTokens: this.maxTokens,
-					temperature: GENERATION_TEMPERATURE,
-					topP: GENERATION_TOP_P,
+					temperature: GenerationParameter.TEMPERATURE,
+					topP: GenerationParameter.TOP_P,
 				},
 				message: renderMaterial({
 					candidates,
@@ -332,26 +323,18 @@ class ComposedPromptService {
 		});
 	}
 
-	public async findById(
-		id: number,
-		userId: number,
-	): Promise<ComposedPromptDto> {
+	public async findById(id: number): Promise<ComposedPromptDto> {
 		const composedPrompt = await this.composedPromptRepository.findById(id);
 
 		if (!composedPrompt) {
 			throw ComposedPromptError.notFound();
 		}
 
-		const workspace = await this.workspaceService.findByIdAndOwner(
-			composedPrompt.toObject().workspaceId,
-			userId,
-		);
-
-		if (!workspace) {
-			throw ComposedPromptError.notFound();
-		}
-
 		return this.toDto(composedPrompt);
+	}
+
+	public async findWorkspaceId(id: number): Promise<null | number> {
+		return await this.composedPromptRepository.findWorkspaceId(id);
 	}
 }
 

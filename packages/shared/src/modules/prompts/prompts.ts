@@ -6,8 +6,14 @@ export {
 	PromptValidationRule,
 } from "./libs/enums/enums.js";
 export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
+	type PromptItemResponseDto,
+} from "./libs/types/types.js";
+export {
 	type PromptGetRecentResponseDto,
 	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
@@ -19,6 +25,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
+	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,

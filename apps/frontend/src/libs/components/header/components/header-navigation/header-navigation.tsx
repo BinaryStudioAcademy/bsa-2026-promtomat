@@ -32,10 +32,10 @@ const HeaderNavigation: React.FC<Properties> = ({
 			{user ? (
 				<>
 					<li>
-						<Link to={AppRoute.ROOT}>Home</Link>
+						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
 					</li>
 					<li>
-						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
+						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
 					</li>
 					<li>
 						<Link to={AppRoute.WORKSPACES}>Workspaces</Link>
@@ -46,7 +46,10 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Link to={AppRoute.GENERATE}>Generate</Link>
 					</li>
-					<li className={styles["identity-label"]}>{user.email}</li>
+					<li>
+						<Link to={AppRoute.SETTINGS}>Settings</Link>
+					</li>
+					<li className={styles["identity-label"]}>{user.nickname}</li>
 					<li>
 						<Button
 							label="Sign out"

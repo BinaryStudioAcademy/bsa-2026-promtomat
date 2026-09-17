@@ -64,7 +64,7 @@ const Workspaces: React.FC = () => {
 					control={control}
 					label="Search"
 					name="search"
-					placeholder="Search workspace..."
+					placeholder="Search workspace"
 				/>
 			</div>
 
