@@ -243,15 +243,18 @@ class PromptService {
 
 		const generatedLabel = await this.generateLabel({
 			promptBody: existingPrompt.promptBody,
-			taskIntent: existingPrompt.taskIntent,
+			taskIntent,
 			workspaceId: existingPrompt.workspaceId,
 		});
 
 		const updatedPrompt = await this.database.transaction(async (trx) => {
-			const label = await this.labelService.getOrCreate({
-				name: generatedLabel,
-				workspaceId: promptObject.workspaceId,
-			});
+			const label = await this.labelService.getOrCreate(
+				{
+					name: generatedLabel,
+					workspaceId: existingPrompt.workspaceId,
+				},
+				trx,
+			);
 
 			const prompt = await this.promptRepository.update(
 				id,
