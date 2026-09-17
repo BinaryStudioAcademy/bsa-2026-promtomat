@@ -1,4 +1,4 @@
-import { type ValueOf } from "../../../../../../libs/types/types.js";
+import { type ValueOf } from "../../../../libs/types/value-of.type.js";
 import { type RepositoryIdentityRefusalReason } from "../enums/enums.js";
 import { type RepositoryIdentity } from "./repository-identity.type.js";
 

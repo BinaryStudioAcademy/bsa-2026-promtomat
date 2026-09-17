@@ -6,6 +6,7 @@ export {
 	LabelError,
 	PromptError,
 	PromptSearchError,
+	RepositoryBindingError,
 	UserError,
 	ValidationError,
 	WorkspaceError,

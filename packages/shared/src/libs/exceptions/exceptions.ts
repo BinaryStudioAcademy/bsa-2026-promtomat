@@ -6,6 +6,7 @@ export { HTTPError } from "./http-error/http-error.exception.js";
 export { LabelError } from "./label-error/label-error.exception.js";
 export { PromptError } from "./prompt-error/prompt-error.exception.js";
 export { PromptSearchError } from "./prompt-search-error/prompt-search-error.exception.js";
+export { RepositoryBindingError } from "./repository-binding-error/repository-binding-error.exception.js";
 export { UserError } from "./user-error/user-error.exception.js";
 export { ValidationError } from "./validation-error/validation-error.exception.js";
 export { WorkspaceError } from "./workspace-error/workspace-error.exception.js";

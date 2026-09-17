@@ -15,6 +15,7 @@ export {
 	LabelError,
 	PromptError,
 	PromptSearchError,
+	RepositoryBindingError,
 	UserError,
 	ValidationError,
 	WorkspaceError,
@@ -96,6 +97,22 @@ export {
 	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
+	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingDto,
+	type RepositoryBindingResolution,
+	type RepositoryIdentity,
+	type RepositoryIdentityOutcome,
+	type ResolveRepositoryBindingQueryDto,
+	createRepositoryBinding,
+	normalizeRepositoryIdentity,
+	resolveRepositoryBindingQuery,
+	RepositoryBindingResolutionStatus,
+	RepositoryBindingsApiPath,
+	RepositoryBindingsErrorCode,
+	RepositoryBindingsErrorMessage,
+	RepositoryIdentityRefusalReason,
+} from "./modules/repository-bindings/repository-bindings.js";
+export {
 	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserUpdateRequestDto,
@@ -108,8 +125,6 @@ export {
 } from "./modules/users/users.js";
 export {
 	type ContributorDto,
-	type RepositoryIdentity,
-	type RepositoryIdentityOutcome,
 	type WorkspaceAddContributorRequestDto,
 	type WorkspaceContributorCandidatesCursor,
 	type WorkspaceContributorCandidatesQueryDto,
@@ -129,11 +144,9 @@ export {
 	ContributorsErrorMessage,
 	FIRST_ELEMENT_INDEX,
 	MAX_TAGS_COUNT,
-	normalizeRepositoryIdentity,
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	RepositoryIdentityRefusalReason,
 	TechStackTagSchema,
 	TechStackTechDictionary,
 	workspaceAddContributorValidationSchema,
