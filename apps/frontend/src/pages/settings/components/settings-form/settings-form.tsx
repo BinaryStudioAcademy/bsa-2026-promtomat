@@ -1,11 +1,11 @@
 import { useCallback } from "react";
+import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
-import { removeSpaces } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -21,7 +21,10 @@ import {
 	EMPTY_AI_CODING_TOOL,
 } from "../../libs/constants.js";
 import { SettingsMessage } from "../../libs/enums/enums.js";
-import { getSettingsFormValues } from "../../libs/helpers/helpers.js";
+import {
+	checkHasSettingsChanged,
+	getSettingsFormValues,
+} from "../../libs/helpers/helpers.js";
 import { type SettingsFormValues } from "../../libs/types/types.js";
 import styles from "../../styles.module.css";
 
@@ -31,15 +34,20 @@ type Properties = {
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
-	const {
+	const { control, handleSubmit, reset, setError } =
+		useAppForm<SettingsFormValues>({
+			defaultValues: getSettingsFormValues(user),
+			validationSchema: updateProfileValidationSchema,
+		});
+	const nickname = useWatch({ control, name: "nickname" });
+	const primaryAiCodingTool = useWatch({
 		control,
-		formState: { isDirty },
-		handleSubmit,
-		reset,
-		setError,
-	} = useAppForm<SettingsFormValues>({
-		defaultValues: getSettingsFormValues(user),
-		validationSchema: updateProfileValidationSchema,
+		name: "primaryAiCodingTool",
+	});
+	const savedValues = getSettingsFormValues(user);
+	const hasProfileChanged = checkHasSettingsChanged({
+		current: savedValues,
+		next: { nickname, primaryAiCodingTool },
 	});
 
 	const isNicknameConflict =
@@ -47,11 +55,19 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
 	const generalError = isNicknameConflict ? undefined : error;
 
-	const isSaveDisabled = isLoading || !isDirty;
+	const isSaveDisabled = isLoading || !hasProfileChanged;
 
 	const handleSave = useCallback(
 		(payload: SettingsFormValues): void => {
-			if (!isDirty || payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL) {
+			const hasPayloadChanged = checkHasSettingsChanged({
+				current: getSettingsFormValues(user),
+				next: payload,
+			});
+
+			if (
+				!hasPayloadChanged ||
+				payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL
+			) {
 				return;
 			}
 
@@ -79,7 +95,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					}
 				});
 		},
-		[isDirty, reset, setError, updateProfile],
+		[reset, setError, updateProfile, user],
 	);
 
 	const handleFormSubmit = useCallback(
@@ -103,7 +119,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						name="nickname"
 						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
-						transformValue={removeSpaces}
 					/>
 					<Select
 						control={control}

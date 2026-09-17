@@ -6,7 +6,7 @@ import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
-import { getValidClasses, removeSpaces } from "~/libs/helpers/helpers.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
@@ -85,7 +85,6 @@ const SignUpForm: React.FC<Properties> = ({
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
 						placeholder="Enter a nickname"
-						transformValue={removeSpaces}
 						type="text"
 					/>
 					<Input
