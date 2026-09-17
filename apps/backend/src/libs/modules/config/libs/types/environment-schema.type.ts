@@ -13,6 +13,8 @@ type EnvironmentSchema = {
 		REGION: string;
 	};
 	BEDROCK: {
+		CONNECTION_TIMEOUT_MS: number;
+		MAX_ATTEMPTS: number;
 		MODEL: {
 			ID: string;
 		};

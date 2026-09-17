@@ -1,0 +1,3 @@
+const BACKFILL_TIMEZONE = "UTC";
+
+export { BACKFILL_TIMEZONE };

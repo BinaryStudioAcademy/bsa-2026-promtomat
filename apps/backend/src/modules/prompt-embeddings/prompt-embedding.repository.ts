@@ -7,6 +7,7 @@ import {
 } from "~/libs/constants/constants.js";
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
 import { type PromptRepositoryItem } from "~/modules/prompts/libs/types/types.js";
@@ -17,6 +18,8 @@ import {
 	DISTANCE_ALIAS,
 	MAX_EFFICIENCY_SCORE,
 	MAX_SIMILARITY,
+	NEAREST_LABEL_RELATION,
+	NEAREST_PROMPT_SEARCH_LIMIT,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
 	PROMPT_WORKSPACE_ALIAS,
@@ -232,6 +235,54 @@ class PromptEmbeddingRepository {
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();
+	}
+
+	public async findNearestLabelNames({
+		embedding,
+		limit,
+		workspaceId,
+	}: NearestPromptQuery): Promise<string[]> {
+		const labelName = `${DatabaseTableName.LABELS}.${LabelColumnName.NAME}`;
+
+		const rows = await this.promptEmbeddingModel
+			.query()
+			.with(NEAREST_LABEL_RELATION, (query) => {
+				query
+					.select(
+						labelName,
+						raw("?? <=> ?::vector AS ??", [
+							`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+							serializeEmbedding(embedding),
+							DISTANCE_ALIAS,
+						]),
+					)
+					.from(DatabaseTableName.PROMPT_EMBEDDINGS)
+					.innerJoin(
+						DatabaseTableName.PROMPTS,
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+						`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
+					)
+					.innerJoin(
+						DatabaseTableName.LABELS,
+						`${DatabaseTableName.LABELS}.${LabelColumnName.ID}`,
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`,
+					)
+					.where(
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						workspaceId,
+					)
+					.orderBy(DISTANCE_ALIAS)
+					.limit(NEAREST_PROMPT_SEARCH_LIMIT);
+			})
+			.from(NEAREST_LABEL_RELATION)
+			.select(LabelColumnName.NAME)
+			.groupBy(LabelColumnName.NAME)
+			.orderByRaw("MIN(??)", [DISTANCE_ALIAS])
+			.limit(limit)
+			.castTo<{ name: string }[]>()
+			.execute();
+
+		return rows.map((row) => row.name);
 	}
 
 	public async findSchemaDimension(): Promise<null | number> {
