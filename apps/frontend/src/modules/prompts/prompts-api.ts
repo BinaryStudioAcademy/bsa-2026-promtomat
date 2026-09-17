@@ -109,7 +109,7 @@ const promptApi = baseApi
 											(prompt) => prompt.id === id,
 										);
 										if (promptToUpdate) {
-											Object.assign(promptToUpdate, updatedPrompt);
+											promptToUpdate.intent = updatedPrompt.taskIntent;
 											break;
 										}
 									}
