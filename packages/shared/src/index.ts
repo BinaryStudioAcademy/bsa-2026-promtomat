@@ -94,7 +94,6 @@ export {
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	PromptProgress,
 	promptRouteParametersValidationSchema,

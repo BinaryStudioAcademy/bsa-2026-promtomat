@@ -43,7 +43,6 @@ class PromptService {
 	private labelService: LabelService;
 
 	private promptEmbeddingService: PromptEmbeddingService;
-
 	private promptRepository: PromptRepository;
 
 	public constructor({
@@ -155,19 +154,19 @@ class PromptService {
 		};
 	}
 
-	public async findByWorkspace(
-		payload: PromptFindByWorkspacePayload,
-	): Promise<PromptDto[]> {
-		return await this.promptRepository.findByWorkspace(payload);
-	}
-
 	public async findByIdAndOwner(
 		id: number,
 		userId: number,
 	): Promise<null | PromptDto> {
 		const prompt = await this.promptRepository.findByIdAndUserId(id, userId);
 
-		return prompt ? prompt.toObject() : null;
+		return prompt ? { ...prompt.toObject(), label: "TODO" } : null;
+	}
+
+	public async findByWorkspace(
+		payload: PromptFindByWorkspacePayload,
+	): Promise<PromptDto[]> {
+		return await this.promptRepository.findByWorkspace(payload);
 	}
 
 	public findCandidates({
@@ -258,7 +257,7 @@ class PromptService {
 
 		void this.promptEmbeddingService.embedForPrompt(promptDto);
 
-		return promptDto;
+		return { ...promptDto, label: "TODO" };
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {

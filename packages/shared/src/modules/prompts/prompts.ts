@@ -26,7 +26,6 @@ export {
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
 	promptGetQueryValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptUpdateIntentValidationSchema,

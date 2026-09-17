@@ -1,5 +1,4 @@
 export { promptCreate as promptCreateValidationSchema } from "./create-prompt.validation-schema.js";
-export { promptGetByQuery as promptGetByQueryValidationSchema } from "./prompt-get-by-query.validation-schema.js";
 export { promptGetQuery as promptGetQueryValidationSchema } from "./prompt-get-query.validation-schema.js";
 export { promptRouteParameters as promptRouteParametersValidationSchema } from "./prompt-route-parameters.validation-schema.js";
 export { promptUpdateIntent as promptUpdateIntentValidationSchema } from "./prompt-update-intent.validation-schema.js";
