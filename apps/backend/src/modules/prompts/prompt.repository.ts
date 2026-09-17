@@ -1,11 +1,6 @@
 import { raw, type Transaction } from "objection";
 
-import {
-	AVERAGE_SCORE_ALIAS,
-	COUNT_ALIAS,
-	WORKSPACE_NAME_ALIAS,
-} from "~/libs/constants/constants.js";
-import { QueryClearTarget, SortOrder } from "~/libs/enums/enums.js";
+import { QueryClearTarget, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
@@ -80,10 +75,10 @@ class PromptRepository {
 			.clear(QueryClearTarget.LIMIT)
 			.clear(QueryClearTarget.OFFSET)
 			.count(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as ${COUNT_ALIAS}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`,
 			)
 			.avg(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${AVERAGE_SCORE_ALIAS}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
 			)
 			.castTo<{ averageScore: null | string; count: string }[]>()
 			.execute();
@@ -143,7 +138,7 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				raw("?? AS ??", [
 					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,
-					WORKSPACE_NAME_ALIAS,
+					SQLAlias.WORKSPACE_NAME,
 				]),
 			)
 			.joinRelated(WORKSPACE_RELATION)

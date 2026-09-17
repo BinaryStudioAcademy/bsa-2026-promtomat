@@ -1,11 +1,6 @@
 import { raw } from "objection";
 
-import {
-	AVERAGE_SCORE_ALIAS,
-	COUNT_ALIAS,
-	WORKSPACE_NAME_ALIAS,
-} from "~/libs/constants/constants.js";
-import { SortOrder } from "~/libs/enums/enums.js";
+import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
@@ -113,9 +108,9 @@ class PromptEmbeddingRepository {
 		const [aggregation] = await baseQuery
 			.clone()
 			.clearSelect()
-			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${COUNT_ALIAS}`)
+			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`)
 			.avg(
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${AVERAGE_SCORE_ALIAS}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
 			)
 			.castTo<PromptAggregateRow[]>()
 			.execute();
@@ -133,7 +128,7 @@ class PromptEmbeddingRepository {
 				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				raw("?? AS ??", [
 					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
-					WORKSPACE_NAME_ALIAS,
+					SQLAlias.WORKSPACE_NAME,
 				]),
 			)
 			.orderByRaw(
