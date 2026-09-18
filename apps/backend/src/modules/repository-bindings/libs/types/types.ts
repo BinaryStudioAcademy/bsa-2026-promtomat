@@ -1,6 +1,7 @@
 export { type RepositoryBindingCreatePayload } from "./repository-binding-create-payload.type.js";
 export {
 	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryIdentity,

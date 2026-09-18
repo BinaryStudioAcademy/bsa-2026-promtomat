@@ -86,9 +86,13 @@ class RepositoryBindingService {
 			};
 		}
 
+		const workspaces = accessibleWorkspaces
+			.filter((workspace) => matchingWorkspaceIds.includes(workspace.id))
+			.map((workspace) => ({ id: workspace.id, name: workspace.name }));
+
 		return {
 			status: RepositoryBindingResolutionStatus.AMBIGUOUS,
-			workspaceIds: matchingWorkspaceIds,
+			workspaces,
 		};
 	}
 }

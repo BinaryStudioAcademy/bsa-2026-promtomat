@@ -8,6 +8,7 @@ export {
 export { normalizeRepositoryIdentity } from "./libs/helpers/helpers.js";
 export {
 	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryIdentity,

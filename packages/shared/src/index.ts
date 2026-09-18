@@ -98,6 +98,7 @@ export {
 } from "./modules/prompts/prompts.js";
 export {
 	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryIdentity,

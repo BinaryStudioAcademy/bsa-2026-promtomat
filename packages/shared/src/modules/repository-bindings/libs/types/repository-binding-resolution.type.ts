@@ -1,9 +1,10 @@
 import { type RepositoryBindingResolutionStatus } from "../enums/enums.js";
+import { type RepositoryBindingCandidateWorkspace } from "./repository-binding-candidate-workspace.type.js";
 
 type RepositoryBindingResolution =
 	| {
 			status: typeof RepositoryBindingResolutionStatus.AMBIGUOUS;
-			workspaceIds: number[];
+			workspaces: RepositoryBindingCandidateWorkspace[];
 	  }
 	| {
 			status: typeof RepositoryBindingResolutionStatus.RESOLVED;

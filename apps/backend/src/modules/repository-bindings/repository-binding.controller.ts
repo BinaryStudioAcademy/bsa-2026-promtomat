@@ -60,11 +60,19 @@ import { type RepositoryBindingService } from "./repository-binding.service.js";
  *         workspaceId:
  *           type: integer
  *           minimum: 1
- *         workspaceIds:
+ *         workspaces:
  *           type: array
  *           items:
- *             type: integer
- *             minimum: 1
+ *             type: object
+ *             required:
+ *               - id
+ *               - name
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 minimum: 1
+ *               name:
+ *                 type: string
  */
 class RepositoryBindingController extends BaseController {
 	private repositoryBindingService: RepositoryBindingService;
