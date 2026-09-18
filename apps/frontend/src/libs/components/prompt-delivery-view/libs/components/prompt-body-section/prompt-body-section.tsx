@@ -17,10 +17,10 @@ const PromptBodySection: React.FC<Properties> = ({
 	onCopyPrompt,
 }: Properties) => (
 	<PromptDeliveryCard>
-		<div className={styles["card-header"]}>
-			<h2 className={styles["heading"]}>
+		<PromptDeliveryCard.Header>
+			<PromptDeliveryCard.Title>
 				{PromptDeliveryViewLabel.OPTIMIZED_PROMPT_HEADING}
-			</h2>
+			</PromptDeliveryCard.Title>
 			<Button
 				label={PromptDeliveryViewLabel.COPY_PROMPT}
 				onClick={onCopyPrompt}
@@ -28,8 +28,10 @@ const PromptBodySection: React.FC<Properties> = ({
 				type="button"
 				variant={ButtonVariant.PRIMARY}
 			/>
-		</div>
-		<pre className={styles["body"]}>{body}</pre>
+		</PromptDeliveryCard.Header>
+		<PromptDeliveryCard.Body>
+			<pre className={styles["prompt-body"]}>{body}</pre>
+		</PromptDeliveryCard.Body>
 	</PromptDeliveryCard>
 );
 
