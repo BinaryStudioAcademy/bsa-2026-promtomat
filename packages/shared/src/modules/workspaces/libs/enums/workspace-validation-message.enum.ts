@@ -1,6 +1,8 @@
 import { WorkspaceValidationRule } from "./workspace-validation-rule.enum.js";
 
 const WorkspaceValidationMessage = {
+	EMAIL_OR_NICKNAME_REQUIRED: "Email or nickname is required",
+	EMAIL_OR_NICKNAME_TOO_LONG: `Email or nickname must be at most ${String(WorkspaceValidationRule.EMAIL_OR_NICKNAME_MAXIMUM_LENGTH)} characters`,
 	ID_INVALID: "Workspace ID must be a positive integer",
 	NAME_HAS_LEADING_OR_TRAILING_SPACES:
 		"Name must not start or end with a space",
