@@ -16,7 +16,7 @@ import {
 	workspaceAddContributorValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
-import { EMAIL_ERROR_CODES } from "./libs/constants/constants.js";
+import { EMAIL_OR_NICKNAME_ERROR_CODES } from "./libs/constants/constants.js";
 import { AddContributorFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -30,7 +30,7 @@ const AddContributorForm: React.FC<Properties> = ({
 	const [addContributor, { isLoading }] = useAddWorkspaceContributorMutation();
 	const { control, handleSubmit, reset, setError } =
 		useAppForm<WorkspaceAddContributorRequestDto>({
-			defaultValues: { email: "" },
+			defaultValues: { emailOrNickname: "" },
 			mode: FormValidationMode.ON_TOUCHED,
 			validationSchema: workspaceAddContributorValidationSchema,
 		});
@@ -46,9 +46,12 @@ const AddContributorForm: React.FC<Properties> = ({
 
 				if (
 					isServerError(result.error) &&
-					EMAIL_ERROR_CODES.has(result.error.code)
+					EMAIL_OR_NICKNAME_ERROR_CODES.has(result.error.code)
 				) {
-					setError("email", { message: result.error.message, type: "server" });
+					setError("emailOrNickname", {
+						message: result.error.message,
+						type: "server",
+					});
 				}
 			})(event);
 		},
@@ -61,9 +64,10 @@ const AddContributorForm: React.FC<Properties> = ({
 				<Input
 					control={control}
 					isLabelHidden
-					label="Email address"
-					name="email"
-					placeholder={AddContributorFormMessage.EMAIL_PLACEHOLDER}
+					label="Email or nickname"
+					name="emailOrNickname"
+
+					placeholder={AddContributorFormMessage.EMAIL_OR_NICKNAME_PLACEHOLDER}
 				/>
 				<Button
 					iconName={IconName.PLUS}

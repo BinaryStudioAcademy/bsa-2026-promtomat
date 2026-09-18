@@ -153,11 +153,12 @@ class ContributorController extends BaseController {
 	 *           schema:
 	 *             type: object
 	 *             required:
-	 *               - userId
+	 *               - emailOrNickname
 	 *             properties:
-	 *               userId:
-	 *                 type: integer
-	 *                 minimum: 1
+	 *               emailOrNickname:
+	 *                 type: string
+	 *                 maxLength: 254
+	 *                 description: Full match on the email, case-insensitive, or on the nickname, case-sensitive
 	 *     responses:
 	 *       201:
 	 *         description: Contributor added successfully

@@ -90,6 +90,17 @@ class UserService {
 		return await this.userRepository.findByEmail(email);
 	}
 
+	public async findByEmailOrNickname(
+		emailOrNickname: string,
+	): Promise<null | UserDto> {
+		const user = await this.userRepository.findByEmailOrNickname(
+			emailOrNickname.toLowerCase(),
+			emailOrNickname,
+		);
+
+		return user ? user.toObject() : null;
+	}
+
 	public async findById(id: number): Promise<null | UserDto> {
 		const user = await this.userRepository.findById(id);
 

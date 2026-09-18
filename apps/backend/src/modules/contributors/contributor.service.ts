@@ -26,13 +26,15 @@ class ContributorService {
 		payload: WorkspaceAddContributorRequestDto & { workspaceId: number },
 		ownerId: number,
 	): Promise<ContributorDto> {
-		const targetUser = await this.userService.findByEmail(payload.email);
+		const targetUser = await this.userService.findByEmailOrNickname(
+			payload.emailOrNickname,
+		);
 
 		if (!targetUser) {
 			throw UserError.notFound();
 		}
 
-		const { id: userId } = targetUser.toObject();
+		const { id: userId } = targetUser;
 
 		if (userId === ownerId) {
 			throw ContributorError.ownerCannotBeAdded();

@@ -1,1 +1,1 @@
-export { EMAIL_ERROR_CODES } from "./email-error-codes.constant.js";
+export { EMAIL_OR_NICKNAME_ERROR_CODES } from "./email-or-nickname-error-codes.constant.js";

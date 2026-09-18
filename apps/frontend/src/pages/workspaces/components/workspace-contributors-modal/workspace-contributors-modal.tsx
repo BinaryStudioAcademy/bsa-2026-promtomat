@@ -83,7 +83,7 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 					<>
 						<div className={styles["section"]}>
 							<h3 className={styles["section-label"]}>
-								Add a contributor by email
+								Add a contributor by email or nickname
 							</h3>
 							<AddContributorForm workspaceId={workspace.id} />
 						</div>

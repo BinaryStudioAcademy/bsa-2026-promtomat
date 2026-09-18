@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { emailFieldValidationSchema } from "../../../auth/auth.js";
+import { emailOrNicknameField } from "./email-or-nickname-field.validation-schema.js";
 
 const workspaceAddContributor = z.strictObject({
-	email: emailFieldValidationSchema,
+	emailOrNickname: emailOrNicknameField,
 });
 
 export { workspaceAddContributor };
