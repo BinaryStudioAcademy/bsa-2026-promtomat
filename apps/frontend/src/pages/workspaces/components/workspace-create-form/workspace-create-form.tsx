@@ -93,7 +93,11 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					/>
 					<Button
 						isLoading={isLoading}
-						label={WorkspaceFormMessage.CREATE}
+						label={
+							isLoading
+								? WorkspaceFormMessage.CREATING
+								: WorkspaceFormMessage.CREATE
+						}
 						size={ControlSize.MD}
 						type="submit"
 					/>

@@ -122,7 +122,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				<Button
 					isDisabled={isSaveDisabled}
 					isLoading={isLoading}
-					label={SettingsMessage.SAVE}
+					label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
 					size={ControlSize.LG}
 					type="submit"
 				/>
