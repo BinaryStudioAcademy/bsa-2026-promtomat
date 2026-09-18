@@ -1,0 +1,30 @@
+{
+	"name": "@promptomat/mcp",
+	"type": "module",
+	"version": "0.1.0",
+	"description": "Promptomat MCP server: a stdio server that lets a coding agent act as a Promptomat user",
+	"bin": {
+		"promptomat-mcp": "build/index.js"
+	},
+	"files": [
+		"build"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"lint:type": "tsc --noEmit",
+		"lint:js": "eslint . --max-warnings=0",
+		"lint": "concurrently \"pnpm:lint:*\"",
+		"build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --external:@modelcontextprotocol/sdk --external:zod --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outfile=build/index.js"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "1.30.0",
+		"zod": "4.4.3"
+	},
+	"devDependencies": {
+		"@promptomat/shared": "workspace:*",
+		"esbuild": "0.28.2",
+		"pino": "10.3.1"
+	}
+}
