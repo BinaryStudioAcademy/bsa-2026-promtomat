@@ -14,7 +14,7 @@ import {
 } from "react-hook-form";
 
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
-import { ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import { ControlSize, EventType, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -85,7 +85,7 @@ const SearchableSelect = <T extends FieldValues>({
 		valuesDictionary,
 	});
 
-	const updateControlRect = useCallback((): void => {
+	const handleUpdateControlRect = useCallback((): void => {
 		const controlElement = controlReference.current;
 
 		if (controlElement === null) {
@@ -100,20 +100,20 @@ const SearchableSelect = <T extends FieldValues>({
 			return;
 		}
 
-		updateControlRect();
-	}, [isSuggestionsOpen, suggestions, updateControlRect]);
+		handleUpdateControlRect();
+	}, [isSuggestionsOpen, suggestions, handleUpdateControlRect]);
 
 	useEffect(() => {
 		if (!isSuggestionsOpen) {
 			return;
 		}
 
-		window.addEventListener("resize", updateControlRect);
+		addEventListener(EventType.RESIZE, handleUpdateControlRect);
 
 		return () => {
-			window.removeEventListener("resize", updateControlRect);
+			removeEventListener(EventType.RESIZE, handleUpdateControlRect);
 		};
-	}, [isSuggestionsOpen, updateControlRect]);
+	}, [isSuggestionsOpen, handleUpdateControlRect]);
 
 	useEffect(() => {
 		activeSuggestionReference.current?.scrollIntoView({
