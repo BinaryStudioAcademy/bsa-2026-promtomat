@@ -115,6 +115,7 @@ class PromptEntity implements Entity {
 
 	public toDto(workspaceName: string): {
 		body: string;
+		computedScore: null | number;
 		createdAt: string;
 		id: number;
 		intent: string;
@@ -124,6 +125,7 @@ class PromptEntity implements Entity {
 	} {
 		return {
 			body: this.promptBody,
+			computedScore: null,
 			createdAt: this.createdAt,
 			id: this.id as number,
 			intent: this.taskIntent,
@@ -152,6 +154,7 @@ class PromptEntity implements Entity {
 	}
 
 	public toObject(): {
+		computedScore: null | number;
 		createdAt: string;
 		efficiencyScore: number;
 		id: number;
@@ -163,6 +166,7 @@ class PromptEntity implements Entity {
 		workspaceId: number;
 	} {
 		return {
+			computedScore: null,
 			createdAt: this.createdAt,
 			efficiencyScore: this.efficiencyScore,
 			id: this.id as number,

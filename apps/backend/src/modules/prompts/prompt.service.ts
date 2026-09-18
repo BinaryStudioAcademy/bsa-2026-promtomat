@@ -125,6 +125,7 @@ class PromptService {
 			const object = entity.toObject();
 
 			return {
+				computedScore: null,
 				efficiencyScore: object.efficiencyScore,
 				id: object.id,
 				label: label.name,

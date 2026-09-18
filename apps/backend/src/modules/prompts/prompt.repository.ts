@@ -78,13 +78,13 @@ class PromptRepository {
 		const {
 			limit = PaginationValue.DEFAULT_LIMIT,
 			page = PaginationValue.DEFAULT_PAGE,
-			score,
+			qualityTier,
 			search,
 			workspaceId,
 		} = query;
 
 		const baseQuery = this.promptModel.query().modify("filterByQuery", {
-			score,
+			qualityTier,
 			search,
 			userId,
 			workspaceId,

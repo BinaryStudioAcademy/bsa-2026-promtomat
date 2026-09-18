@@ -20,6 +20,8 @@ import { PromptColumnName } from "./libs/enums/enums.js";
 import { type PromptFilterByQueryParameters } from "./libs/types/types.js";
 
 class PromptModel extends AbstractModel {
+	public computedScore!: null | number;
+
 	public efficiencyScore!: number;
 
 	public labelId!: number;
@@ -40,7 +42,7 @@ class PromptModel extends AbstractModel {
 		return {
 			filterByQuery(
 				builder,
-				{ score, search, userId, workspaceId }: PromptFilterByQueryParameters,
+				{ search, userId, workspaceId }: PromptFilterByQueryParameters,
 			) {
 				builder.where(
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
@@ -51,13 +53,6 @@ class PromptModel extends AbstractModel {
 					builder.where(
 						`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 						workspaceId,
-					);
-				}
-
-				if (score) {
-					builder.where(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-						score,
 					);
 				}
 
