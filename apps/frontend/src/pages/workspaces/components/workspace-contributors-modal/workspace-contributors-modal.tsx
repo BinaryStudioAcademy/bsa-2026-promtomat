@@ -42,16 +42,18 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 
 	const handleRemove = useCallback(
 		(userId: number): void => {
+			if (!isOwner) {
+				return;
+			}
+
 			void removeContributor({ userId, workspaceId: workspace.id });
 		},
-		[removeContributor, workspace.id],
+		[isOwner, removeContributor, workspace.id],
 	);
 
 	const handleRetry = useCallback((): void => {
 		void refetch();
 	}, [refetch]);
-
-	const removeHandler = isOwner ? handleRemove : undefined;
 
 	return (
 		<Modal
@@ -93,8 +95,9 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 						errorMessage={WorkspaceContributorsMessage.CONTRIBUTORS_LOAD_FAILED}
 						isError={isError}
 						isLoading={isLoading}
+						isOwner={isOwner}
 						isRemoving={isRemoving}
-						onRemove={removeHandler}
+						onRemove={handleRemove}
 						onRetry={handleRetry}
 					/>
 				</div>

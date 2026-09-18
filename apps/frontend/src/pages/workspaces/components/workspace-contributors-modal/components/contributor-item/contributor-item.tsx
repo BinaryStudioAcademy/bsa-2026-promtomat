@@ -8,20 +8,21 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	isDisabled?: boolean | undefined;
-	onRemove?: ((userId: number) => void) | undefined;
+	isOwner: boolean;
+	onRemove: (userId: number) => void;
 	user: WorkspaceUserSummaryDto;
 };
 
 const ContributorItem: React.FC<Properties> = ({
 	isDisabled = false,
+	isOwner,
 	onRemove,
 	user,
 }: Properties) => {
 	const contributorRemoveLabel = `Remove ${user.nickname}`;
-	const hasRemoveAction = Boolean(onRemove);
 
 	const handleRemove = useCallback((): void => {
-		onRemove?.(user.id);
+		onRemove(user.id);
 	}, [onRemove, user.id]);
 
 	return (
@@ -30,7 +31,7 @@ const ContributorItem: React.FC<Properties> = ({
 				<span className={styles["name"]}>{user.nickname}</span>
 				<span className={styles["email"]}>{user.email}</span>
 			</div>
-			{hasRemoveAction && (
+			{isOwner && (
 				<IconButton
 					ariaLabel={contributorRemoveLabel}
 					className={styles["remove-button"]}

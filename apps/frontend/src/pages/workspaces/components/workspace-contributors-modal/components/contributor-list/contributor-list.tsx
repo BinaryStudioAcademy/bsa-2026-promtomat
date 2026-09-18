@@ -15,8 +15,9 @@ type Properties = {
 	errorMessage?: string;
 	isError?: boolean;
 	isLoading: boolean;
+	isOwner: boolean;
 	isRemoving?: boolean;
-	onRemove?: ((userId: number) => void) | undefined;
+	onRemove: (userId: number) => void;
 	onRetry?: () => void;
 };
 
@@ -26,6 +27,7 @@ const ContributorList: React.FC<Properties> = ({
 	errorMessage,
 	isError = false,
 	isLoading,
+	isOwner,
 	isRemoving = false,
 	onRemove,
 	onRetry,
@@ -69,6 +71,7 @@ const ContributorList: React.FC<Properties> = ({
 					return (
 						<ContributorItem
 							isDisabled={isRemoving}
+							isOwner={isOwner}
 							key={contributor.id}
 							onRemove={onRemove}
 							user={contributor}
