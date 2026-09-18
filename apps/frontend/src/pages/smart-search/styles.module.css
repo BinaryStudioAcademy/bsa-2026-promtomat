@@ -12,8 +12,11 @@
 
 .search-scope-row {
 	display: flex;
+	flex-wrap: wrap;
 	gap: var(--space-10);
 	align-items: center;
+	justify-content: center;
+	width: 100%;
 }
 
 .search-scope-label {
@@ -23,6 +26,7 @@
 
 .workspace-select {
 	width: 320px;
+	max-width: 100%;
 }
 
 .search-zone {
