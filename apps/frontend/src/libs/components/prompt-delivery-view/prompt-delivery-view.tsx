@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -21,7 +21,6 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	sources = [],
 	workspaceName,
 }: PromptDeliveryViewProperties) => {
-	const [, setSelectedScore] = useState<null | number>(null);
 	const feedbackReference = useRef<HTMLDivElement>(null);
 
 	const handleCopyPrompt = useCallback((): void => {
@@ -42,10 +41,8 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			});
 	}, [body]);
 
-	const handleScoreSelect = useCallback((score: number) => {
-		return (): void => {
-			setSelectedScore(score);
-		};
+	const handleScoreSelect = useCallback(() => {
+		return (): void => {};
 	}, []);
 
 	return (
