@@ -12,6 +12,7 @@ export {
 	type SignUpResponseDto,
 } from "./libs/types/types.js";
 export {
+	emailFieldValidationSchema,
 	nicknameFieldValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
