@@ -96,7 +96,7 @@ const PromptHistory: React.FC = () => {
 						control={control}
 						label="Search Logs"
 						name="search"
-						placeholder="Search logs..."
+						placeholder="Search logs"
 					/>
 					<ScoreGrid
 						isRadio

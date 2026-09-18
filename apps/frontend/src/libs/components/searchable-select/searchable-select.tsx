@@ -14,7 +14,7 @@ import {
 } from "react-hook-form";
 
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
-import { ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import { ControlSize, EventType, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -85,11 +85,35 @@ const SearchableSelect = <T extends FieldValues>({
 		valuesDictionary,
 	});
 
-	useLayoutEffect(() => {
-		if (isSuggestionsOpen && controlReference.current) {
-			setControlRect(controlReference.current.getBoundingClientRect());
+	const handleUpdateControlRect = useCallback((): void => {
+		const controlElement = controlReference.current;
+
+		if (controlElement === null) {
+			return;
 		}
-	}, [isSuggestionsOpen, suggestions]);
+
+		setControlRect(controlElement.getBoundingClientRect());
+	}, []);
+
+	useLayoutEffect(() => {
+		if (!isSuggestionsOpen) {
+			return;
+		}
+
+		handleUpdateControlRect();
+	}, [isSuggestionsOpen, suggestions, handleUpdateControlRect]);
+
+	useEffect(() => {
+		if (!isSuggestionsOpen) {
+			return;
+		}
+
+		addEventListener(EventType.RESIZE, handleUpdateControlRect);
+
+		return () => {
+			removeEventListener(EventType.RESIZE, handleUpdateControlRect);
+		};
+	}, [isSuggestionsOpen, handleUpdateControlRect]);
 
 	useEffect(() => {
 		activeSuggestionReference.current?.scrollIntoView({

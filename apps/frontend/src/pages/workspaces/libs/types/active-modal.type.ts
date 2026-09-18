@@ -4,6 +4,8 @@ type ActiveModal =
 	| null
 	| { type: "config"; workspace: WorkspaceListItemDto }
 	| { type: "create" }
-	| { type: "delete"; workspace: WorkspaceListItemDto };
+	| { type: "delete"; workspace: WorkspaceListItemDto }
+	| { type: "leave"; workspace: WorkspaceListItemDto }
+	| { type: "manage-access"; workspace: WorkspaceListItemDto };
 
 export { type ActiveModal };

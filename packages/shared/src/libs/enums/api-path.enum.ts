@@ -6,6 +6,7 @@ const APIPath = {
 	PROMPTS: "/prompts",
 	USERS: "/users",
 	WORKSPACES: "/workspaces",
+	WORKSPACES_$WORKSPACE_ID: "/workspaces/:workspaceId",
 } as const;
 
 export { APIPath };
