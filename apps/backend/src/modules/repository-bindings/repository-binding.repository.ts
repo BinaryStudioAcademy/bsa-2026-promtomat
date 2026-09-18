@@ -1,5 +1,6 @@
 import { type Transaction, UniqueViolationError } from "objection";
 
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
 
 import { RepositoryBindingColumnName } from "./libs/enums/enums.js";
@@ -48,7 +49,7 @@ class RepositoryBindingRepository {
 		identity: RepositoryIdentity,
 		workspaceIds: number[],
 	): Promise<number[]> {
-		if (workspaceIds.length === 0) {
+		if (workspaceIds.length === EMPTY_LENGTH) {
 			return [];
 		}
 

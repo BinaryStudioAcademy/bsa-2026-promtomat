@@ -3,6 +3,7 @@ export {
 	RepositoryBindingsApiPath,
 	RepositoryBindingsErrorCode,
 	RepositoryBindingsErrorMessage,
+	RepositoryBindingValidationRule,
 	RepositoryIdentityRefusalReason,
 } from "./libs/enums/enums.js";
 export { normalizeRepositoryIdentity } from "./libs/helpers/helpers.js";
@@ -16,6 +17,6 @@ export {
 	type ResolveRepositoryBindingQueryDto,
 } from "./libs/types/types.js";
 export {
-	createRepositoryBinding,
+	repositoryBindingCreation,
 	resolveRepositoryBindingQuery,
 } from "./libs/validation-schemas/validation-schemas.js";

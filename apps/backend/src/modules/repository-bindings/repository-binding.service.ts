@@ -1,3 +1,7 @@
+import {
+	EMPTY_LENGTH,
+	FIRST_ELEMENT_INDEX,
+} from "~/libs/constants/constants.js";
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
@@ -15,6 +19,8 @@ import {
 } from "./libs/types/types.js";
 import { RepositoryBindingEntity } from "./repository-binding.entity.js";
 import { type RepositoryBindingRepository } from "./repository-binding.repository.js";
+
+const SINGLE_MATCH_COUNT = 1;
 
 class RepositoryBindingService {
 	private repositoryBindingRepository: RepositoryBindingRepository;
@@ -57,6 +63,13 @@ class RepositoryBindingService {
 			}),
 		);
 
+		if (payload.stackTags.length > EMPTY_LENGTH) {
+			await this.workspaceService.appendStackTags(
+				payload.workspaceId,
+				payload.stackTags,
+			);
+		}
+
 		return repositoryBinding.toObject();
 	}
 
@@ -75,14 +88,14 @@ class RepositoryBindingService {
 				accessibleWorkspaces.map((workspace) => workspace.id),
 			);
 
-		if (matchingWorkspaceIds.length === 0) {
+		if (matchingWorkspaceIds.length === EMPTY_LENGTH) {
 			return { status: RepositoryBindingResolutionStatus.UNRESOLVED };
 		}
 
-		if (matchingWorkspaceIds.length === 1) {
+		if (matchingWorkspaceIds.length === SINGLE_MATCH_COUNT) {
 			return {
 				status: RepositoryBindingResolutionStatus.RESOLVED,
-				workspaceId: matchingWorkspaceIds[0] as number,
+				workspaceId: matchingWorkspaceIds[FIRST_ELEMENT_INDEX] as number,
 			};
 		}
 

@@ -104,14 +104,15 @@ export {
 	type RepositoryIdentity,
 	type RepositoryIdentityOutcome,
 	type ResolveRepositoryBindingQueryDto,
-	createRepositoryBinding,
 	normalizeRepositoryIdentity,
-	resolveRepositoryBindingQuery,
+	repositoryBindingCreation,
 	RepositoryBindingResolutionStatus,
 	RepositoryBindingsApiPath,
 	RepositoryBindingsErrorCode,
 	RepositoryBindingsErrorMessage,
+	RepositoryBindingValidationRule,
 	RepositoryIdentityRefusalReason,
+	resolveRepositoryBindingQuery,
 } from "./modules/repository-bindings/repository-bindings.js";
 export {
 	type PrimaryAiCodingTool,

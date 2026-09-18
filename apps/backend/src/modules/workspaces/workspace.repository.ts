@@ -169,6 +169,12 @@ class WorkspaceRepository {
 		});
 	}
 
+	public async findById(id: number): Promise<null | WorkspaceEntity> {
+		const workspace = await this.workspaceModel.query().findById(id);
+
+		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
+
 	public async findByIdAndContributorUserId(
 		id: number,
 		contributorUserId: number,

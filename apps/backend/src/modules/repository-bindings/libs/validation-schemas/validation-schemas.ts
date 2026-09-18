@@ -1,4 +1,4 @@
 export {
-	createRepositoryBinding,
+	repositoryBindingCreation,
 	resolveRepositoryBindingQuery,
 } from "@promptomat/shared";

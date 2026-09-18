@@ -16,7 +16,7 @@ import {
 	type ResolveRepositoryBindingQueryDto,
 } from "./libs/types/types.js";
 import {
-	createRepositoryBinding,
+	repositoryBindingCreation,
 	resolveRepositoryBindingQuery,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingService } from "./repository-binding.service.js";
@@ -97,7 +97,7 @@ class RepositoryBindingController extends BaseController {
 			path: RepositoryBindingsApiPath.ROOT,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
-				body: createRepositoryBinding,
+				body: repositoryBindingCreation,
 			},
 		});
 
@@ -135,6 +135,11 @@ class RepositoryBindingController extends BaseController {
 	 *             properties:
 	 *               remoteUrl:
 	 *                 type: string
+	 *               stackTags:
+	 *                 type: array
+	 *                 items:
+	 *                   type: string
+	 *                 description: Detected technologies, filtered to the known tech stack dictionary
 	 *               workspaceId:
 	 *                 type: integer
 	 *                 minimum: 1
