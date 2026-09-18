@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
-import { useController } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
@@ -38,25 +37,17 @@ const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
 
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const [updateIntent] = useUpdateTaskIntentMutation();
-	const { control, handleSubmit, reset } =
+	const { control, errors, handleSubmit, reset } =
 		useAppForm<PromptUpdateIntentRequestDto>({
 			defaultValues: { taskIntent: prompt.intent },
 			validationSchema: promptUpdateIntentValidationSchema,
 		});
 
-	const {
-		fieldState: { error },
-	} = useController({
-		control,
-		name: "taskIntent",
-	});
-
 	const descriptionId = useId();
-
-	const errorMessage = error?.message;
-	const isOwner = user?.id === prompt.userId;
-
 	const lastValidIntentReference = useRef(prompt.intent);
+
+	const errorMessage = errors.taskIntent?.message;
+	const isOwner = user?.id === prompt.userId;
 
 	useEffect(() => {
 		lastValidIntentReference.current = prompt.intent;
