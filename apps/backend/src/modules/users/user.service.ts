@@ -2,15 +2,21 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type SignUpRequestDto } from "~/modules/auth/libs/types/types.js";
+import { type PromptService } from "~/modules/prompts/prompt.service.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { UserRepository } from "~/modules/users/user.repository.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
-import { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
+import {
+	type UserDto,
+	type UserProfileSummaryResponseDto,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 
 type Constructor = {
 	database: Database;
 	hashing: Hashing;
+	promptService: PromptService;
 	userRepository: UserRepository;
 	workspaceService: WorkspaceService;
 };
@@ -20,6 +26,8 @@ class UserService {
 
 	private hashing: Hashing;
 
+	private promptService: PromptService;
+
 	private userRepository: UserRepository;
 
 	private workspaceService: WorkspaceService;
@@ -27,11 +35,13 @@ class UserService {
 	public constructor({
 		database,
 		hashing,
+		promptService,
 		userRepository,
 		workspaceService,
 	}: Constructor) {
 		this.database = database;
 		this.hashing = hashing;
+		this.promptService = promptService;
 		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
 	}
@@ -111,6 +121,22 @@ class UserService {
 		const user = await this.userRepository.findByNickname(nickname);
 
 		return user ? user.toObject() : null;
+	}
+
+	public async getProfileSummary(
+		user: UserDto,
+	): Promise<UserProfileSummaryResponseDto> {
+		const { averageScore, totalCount } =
+			await this.promptService.findUserPromptSummary(user.id);
+
+		return {
+			averageScore,
+			id: user.id,
+			memberSince: user.createdAt,
+			nickname: user.nickname,
+			primaryAiCodingTool: user.primaryAiCodingTool,
+			totalPrompts: totalCount,
+		};
 	}
 
 	public async updateProfile(

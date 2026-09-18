@@ -126,7 +126,7 @@ class PromptService {
 			};
 		});
 
-		await this.promptEmbeddingService.embedForPrompt(prompt);
+		void this.promptEmbeddingService.embedForPrompt(prompt);
 
 		return prompt;
 	}
@@ -203,6 +203,13 @@ class PromptService {
 		);
 
 		return { items };
+	}
+
+	public async findUserPromptSummary(userId: number): Promise<{
+		averageScore: null | number;
+		totalCount: number;
+	}> {
+		return await this.promptRepository.findUserPromptSummary(userId);
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {

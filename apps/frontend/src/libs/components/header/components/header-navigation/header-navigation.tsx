@@ -49,6 +49,9 @@ const HeaderNavigation: React.FC<Properties> = ({
 					<li>
 						<Link to={AppRoute.SETTINGS}>Settings</Link>
 					</li>
+					<li>
+						<Link to={AppRoute.PROFILE}>Profile</Link>
+					</li>
 					<li className={styles["identity-label"]}>{user.nickname}</li>
 					<li>
 						<Button

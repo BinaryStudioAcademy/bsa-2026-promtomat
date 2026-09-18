@@ -1,6 +1,7 @@
 import { database } from "~/libs/modules/database/database.js";
 import { hashing } from "~/libs/modules/hashing/hashing.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { promptService } from "~/modules/prompts/prompts.js";
 import { workspaceService } from "~/modules/workspaces/workspaces.js";
 
 import { UserController } from "./user.controller.js";
@@ -12,6 +13,7 @@ const userRepository = new UserRepository(UserModel);
 const userService = new UserService({
 	database,
 	hashing,
+	promptService,
 	userRepository,
 	workspaceService,
 });

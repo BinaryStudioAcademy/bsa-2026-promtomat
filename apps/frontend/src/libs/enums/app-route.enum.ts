@@ -2,6 +2,7 @@ const AppRoute = {
 	ANY: "*",
 	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
+	PROFILE: "/profile",
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	PROMPTS_HISTORY: "/prompts/history",
 	ROOT: "/",

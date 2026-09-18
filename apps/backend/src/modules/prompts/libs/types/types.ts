@@ -7,7 +7,6 @@ export { type PromptFindByWorkspacePayload } from "./prompt-find-by-workspace-pa
 export { type PromptGenerateLabelPayload } from "./prompt-generate-label-payload.type.js";
 export { type PromptLabelSource } from "./prompt-label-source.type.js";
 export { type PromptRepositoryFindAllResponseDto } from "./prompt-repository-find-all-response-dto.type.js";
-
 export { type PromptRepositoryItem } from "./prompt-repository-item.type.js";
 export {
 	type GetPromptsRequestDto,

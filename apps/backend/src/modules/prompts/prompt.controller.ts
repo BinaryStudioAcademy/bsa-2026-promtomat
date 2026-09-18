@@ -214,6 +214,63 @@ class PromptController extends BaseController {
 		});
 	}
 
+	/**
+	 * @swagger
+	 * /prompts:
+	 *   post:
+	 *     description: Creates a new prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     requestBody:
+	 *       description: Prompt data
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               efficiencyScore:
+	 *                 type: number
+	 *                 minimum: 1
+	 *                 maximum: 10
+	 *               promptBody:
+	 *                 type: string
+	 *               taskIntent:
+	 *                 type: string
+	 *               workspaceId:
+	 *                 type: number
+	 *     responses:
+	 *       201:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       403:
+	 *         description: You do not have permission to access this workspace
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       404:
+	 *         description: Workspace not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 */
 	private async create(
 		options: APIHandlerOptions<{ body: PromptCreateRequestDto }>,
 	): Promise<APIHandlerResponse> {
@@ -296,44 +353,28 @@ class PromptController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /prompts:
-	 *   post:
-	 *     description: Creates a new prompt
+	 * /prompts/progress:
+	 *   get:
+	 *     description: Returns recorded prompt count and target for a workspace
 	 *     security:
 	 *       - bearerAuth: []
-	 *     requestBody:
-	 *       description: Prompt data
-	 *       required: true
-	 *       content:
-	 *         application/json:
-	 *           schema:
-	 *             type: object
-	 *             properties:
-	 *               efficiencyScore:
-	 *                 type: number
-	 *                 minimum: 1
-	 *                 maximum: 10
-	 *               promptBody:
-	 *                 type: string
-	 *               taskIntent:
-	 *                 type: string
-	 *               workspaceId:
-	 *                 type: number
+	 *     parameters:
+	 *       - in: query
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: number
+	 *           minimum: 1
+	 *         description: Workspace to count prompts in
 	 *     responses:
-	 *       201:
+	 *       200:
 	 *         description: Successful operation
 	 *         content:
 	 *           application/json:
 	 *             schema:
-	 *               $ref: "#/components/schemas/Prompt"
+	 *               $ref: "#/components/schemas/PromptProgress"
 	 *       401:
 	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       403:
-	 *         description: You do not have permission to access this workspace
 	 *         content:
 	 *           application/json:
 	 *             schema:
