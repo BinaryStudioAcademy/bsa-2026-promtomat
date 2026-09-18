@@ -64,7 +64,7 @@ const Confirmation = ({
 			titleIconName={titleIconName}
 			tone={tone}
 		>
-			{children}
+			<div className={styles["confirmation-body"]}>{children}</div>
 		</Modal>
 	);
 };

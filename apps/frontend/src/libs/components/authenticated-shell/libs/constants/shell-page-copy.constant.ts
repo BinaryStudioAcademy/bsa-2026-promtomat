@@ -21,13 +21,19 @@ const GENERATE_PAGE_COPY: ShellPageCopy = {
 };
 
 const PROFILE_PAGE_COPY: ShellPageCopy = {
-	subtitle: "Account, activity and security",
+	subtitle: "Account details and prompt activity",
 	title: "Profile",
+};
+
+const SETTINGS_PAGE_COPY: ShellPageCopy = {
+	subtitle: "Update your account details and security",
+	title: "Settings",
 };
 
 export {
 	GENERATE_PAGE_COPY,
 	PROFILE_PAGE_COPY,
+	SETTINGS_PAGE_COPY,
 	SMART_SEARCH_PAGE_COPY,
 	TRAINING_PAGE_COPY,
 	WORKSPACES_PAGE_COPY,

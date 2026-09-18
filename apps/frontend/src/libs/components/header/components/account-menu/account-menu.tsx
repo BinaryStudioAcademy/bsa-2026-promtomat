@@ -190,7 +190,7 @@ const AccountMenu: React.FC<Properties> = ({
 						</span>
 					</div>
 					<div className={styles["list"]}>
-						<NavLink className={getProfileClassName} to={AppRoute.SETTINGS}>
+						<NavLink className={getProfileClassName} to={AppRoute.PROFILE}>
 							<Icon iconName={IconName.USER} />
 							{HeaderLabel.PROFILE}
 						</NavLink>

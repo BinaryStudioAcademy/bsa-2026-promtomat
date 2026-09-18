@@ -6,15 +6,22 @@ const IconName = {
 	CIRCLE_X: "circle-x",
 	CLIPBOARD_LIST: "clipboard-list",
 	CLOSE: "close",
+	EDIT: "edit",
 	EYE: "eye",
 	EYE_FILLED: "eye-filled",
 	FOLDER: "folder",
 	INFO: "info",
+	LOCK: "lock",
 	LOG_OUT: "log-out",
 	MENU: "menu",
+	PLUS: "plus",
 	SEARCH: "search",
+	SETTINGS: "settings",
 	SPARKLES: "sparkles",
+	TRASH_2: "trash-2",
 	USER: "user",
+	USER_COG: "user-cog",
+	USERS: "users",
 } as const;
 
 export { IconName };

@@ -9,6 +9,7 @@ import { AuthenticatedShell } from "~/libs/components/authenticated-shell/authen
 import {
 	GENERATE_PAGE_COPY,
 	PROFILE_PAGE_COPY,
+	SETTINGS_PAGE_COPY,
 	SMART_SEARCH_PAGE_COPY,
 	TRAINING_PAGE_COPY,
 	WORKSPACES_PAGE_COPY,
@@ -46,21 +47,21 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												handle: PROFILE_PAGE_COPY,
 												lazy: async () => {
 													const pageModule =
+														await import("~/pages/profile/profile.js");
+
+													return { Component: pageModule.Profile };
+												},
+												path: AppRoute.PROFILE,
+											},
+											{
+												handle: SETTINGS_PAGE_COPY,
+												lazy: async () => {
+													const pageModule =
 														await import("~/pages/settings/settings.js");
 
 													return { Component: pageModule.SettingsPage };
 												},
 												path: AppRoute.SETTINGS,
-											},
-											{
-												handle: SMART_SEARCH_PAGE_COPY,
-												lazy: async () => {
-													const pageModule =
-														await import("~/pages/smart-search/smart-search.js");
-
-													return { Component: pageModule.SmartSearch };
-												},
-												path: AppRoute.SMART_SEARCH,
 											},
 											{
 												handle: TRAINING_PAGE_COPY,
