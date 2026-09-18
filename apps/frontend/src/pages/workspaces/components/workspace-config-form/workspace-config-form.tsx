@@ -121,7 +121,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						isDisabled={isLoading}
 						label="Workspace name"
 						name="name"
-						placeholder="Name..."
+						placeholder="Name"
 					/>
 					<SearchableSelect
 						control={control}
