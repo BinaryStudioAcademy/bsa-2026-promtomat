@@ -17,11 +17,11 @@ const getContributorsModalValues = ({
 	workspaceName: string;
 }): {
 	contributorCount: string;
-	contributors: undefined | WorkspaceUserSummaryDto[];
+	contributors: WorkspaceUserSummaryDto[];
 	subtitle: string;
 	title: string;
 } => {
-	const contributors = data?.contributors;
+	const contributors = data?.contributors ?? [];
 	const members =
 		data && !isError ? [data.owner, ...data.contributors] : undefined;
 	const memberLabel =
@@ -33,7 +33,7 @@ const getContributorsModalValues = ({
 			? `Owned by ${ownerLabel} · ${String(members.length)} ${memberLabel}`
 			: fallbackSubtitle;
 	const contributorCount =
-		contributors && !isError ? String(contributors.length) : "–";
+		data && !isError ? String(data.contributors.length) : "–";
 	const title = isOwner
 		? `Manage Access: ${workspaceName}`
 		: `Members: ${workspaceName}`;

@@ -10,7 +10,7 @@ import { ContributorItem } from "../contributor-item/contributor-item.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	contributors?: undefined | WorkspaceUserSummaryDto[];
+	contributors: WorkspaceUserSummaryDto[];
 	emptyMessage: string;
 	errorMessage?: string;
 	isError?: boolean;
@@ -22,7 +22,7 @@ type Properties = {
 };
 
 const ContributorList: React.FC<Properties> = ({
-	contributors = [],
+	contributors,
 	emptyMessage,
 	errorMessage,
 	isError = false,
