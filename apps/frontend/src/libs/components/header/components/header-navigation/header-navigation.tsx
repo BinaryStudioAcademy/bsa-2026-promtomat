@@ -32,7 +32,7 @@ const HeaderNavigation: React.FC<Properties> = ({
 			{user ? (
 				<>
 					<li>
-						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
+						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
 					</li>
 					<li>
 						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>

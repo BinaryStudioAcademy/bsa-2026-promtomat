@@ -62,15 +62,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
-												await import("~/pages/smart-search/smart-search.js");
-
-											return { Component: pageModule.SmartSearch };
-										},
-										path: AppRoute.SMART_SEARCH,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
 												await import("~/pages/training/training.js");
 
 											return { Component: pageModule.Training };

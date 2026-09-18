@@ -90,9 +90,6 @@ export {
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
-	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
-	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
@@ -101,7 +98,6 @@ export {
 	PromptsErrorMessage,
 	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
-	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,
