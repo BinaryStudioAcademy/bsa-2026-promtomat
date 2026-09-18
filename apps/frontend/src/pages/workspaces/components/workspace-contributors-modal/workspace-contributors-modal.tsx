@@ -9,8 +9,8 @@ import {
 	useGetWorkspaceContributorsQuery,
 } from "~/modules/workspaces/workspaces.js";
 
-import { SOLO_MEMBER_COUNT } from "../../libs/constants/constants.js";
 import { WorkspaceContributorsMessage } from "../../libs/enums/enums.js";
+import { getContributorsModalValues } from "../../libs/helpers/helpers.js";
 import { AddContributorForm } from "./components/add-contributor-form/add-contributor-form.js";
 import { ContributorList } from "./components/contributor-list/contributor-list.js";
 import styles from "./styles.module.css";
@@ -32,23 +32,13 @@ const WorkspaceContributorsModal: React.FC<Properties> = ({
 	const [removeContributor, { isLoading: isRemoving }] =
 		useDeleteWorkspaceContributorMutation();
 
-	const contributors = data?.contributors;
-	const members =
-		data && !isError ? [data.owner, ...data.contributors] : undefined;
-	const memberLabel =
-		members?.length === SOLO_MEMBER_COUNT ? "member" : "members";
-	const ownerLabel = isOwner ? "you" : data?.owner.nickname;
-	const fallbackSubtitle = isOwner ? "Owned by you" : "Members";
-	const subtitle =
-		members && ownerLabel
-			? `Owned by ${ownerLabel} · ${String(members.length)} ${memberLabel}`
-			: fallbackSubtitle;
-
-	const contributorCount =
-		contributors && !isError ? String(contributors.length) : "–";
-	const title = isOwner
-		? `Manage Access: ${workspace.name}`
-		: `Members: ${workspace.name}`;
+	const { contributorCount, contributors, subtitle, title } =
+		getContributorsModalValues({
+			data,
+			isError,
+			isOwner,
+			workspaceName: workspace.name,
+		});
 
 	const handleRemove = useCallback(
 		(userId: number): void => {
