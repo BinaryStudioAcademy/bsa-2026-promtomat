@@ -1,4 +1,5 @@
 import { ServerIdentity, ToolName } from "~/libs/enums/enums.js";
+import { createTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import { type AuthApi } from "./auth-api.js";
@@ -11,14 +12,9 @@ const createWhoAmITool = (authApi: AuthApi): Tool => ({
 	execute: async () => {
 		const user = await authApi.getAuthenticatedUser();
 
-		return {
-			content: [
-				{
-					text: `${ServerIdentity.COMMAND} ${ServerIdentity.VERSION}: authenticated as ${user.nickname} (${user.email}), user id ${String(user.id)}`,
-					type: "text",
-				},
-			],
-		};
+		return createTextResult(
+			`${ServerIdentity.COMMAND} ${ServerIdentity.VERSION}: authenticated as ${user.nickname} (${user.email}), user id ${String(user.id)}`,
+		);
 	},
 	name: ToolName.WHO_AM_I,
 });

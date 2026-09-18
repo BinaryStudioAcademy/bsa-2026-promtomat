@@ -1,1 +1,5 @@
-export { type HTTP, type HTTPOptions } from "@promptomat/shared";
+export {
+	type HTTP,
+	type HTTPOptions,
+	type ValidationSchema,
+} from "@promptomat/shared";

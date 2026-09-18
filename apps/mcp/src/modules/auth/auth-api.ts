@@ -1,8 +1,13 @@
 import { APIPath } from "~/libs/enums/enums.js";
-import { type HTTP, HTTPMethod } from "~/libs/modules/http/http.js";
-import { type UserDto } from "~/libs/types/types.js";
+import {
+	type HTTP,
+	HTTPMethod,
+	parseResponseBody,
+} from "~/libs/modules/http/http.js";
 
 import { AuthApiPath } from "./libs/enums/enums.js";
+import { type AuthenticatedUser } from "./libs/types/types.js";
+import { authenticatedUserValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
 class AuthApi {
 	private http: HTTP;
@@ -11,22 +16,17 @@ class AuthApi {
 		this.http = http;
 	}
 
-	public async getAuthenticatedUser(): Promise<UserDto> {
-		const path = `${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`;
+	public async getAuthenticatedUser(): Promise<AuthenticatedUser> {
+		const response = await this.http.load(
+			`${APIPath.AUTH}${AuthApiPath.AUTHENTICATED_USER}`,
+			{
+				headers: new Headers(),
+				method: HTTPMethod.GET,
+				payload: null,
+			},
+		);
 
-		const response = await this.http.load(path, {
-			headers: new Headers(),
-			method: HTTPMethod.GET,
-			payload: null,
-		});
-
-		if (!response.ok) {
-			throw new Error(
-				`Promptomat API answered ${String(response.status)} for ${path}`,
-			);
-		}
-
-		return (await response.json()) as UserDto;
+		return await parseResponseBody(response, authenticatedUserValidationSchema);
 	}
 }
 

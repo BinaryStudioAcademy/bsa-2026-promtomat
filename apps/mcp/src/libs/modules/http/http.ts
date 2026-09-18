@@ -11,4 +11,5 @@ const http = new FetchHTTP({
 
 export { http };
 export { HTTPMethod } from "./libs/enums/enums.js";
+export { parseResponseBody } from "./libs/helpers/helpers.js";
 export { type HTTP } from "./libs/types/types.js";
