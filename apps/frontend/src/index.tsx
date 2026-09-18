@@ -54,11 +54,11 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
-												await import("~/pages/smart-search/smart-search.js");
+												await import("~/pages/profile/profile.js");
 
-											return { Component: pageModule.SmartSearch };
+											return { Component: pageModule.Profile };
 										},
-										path: AppRoute.SMART_SEARCH,
+										path: AppRoute.PROFILE,
 									},
 									{
 										lazy: async () => {

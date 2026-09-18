@@ -3,6 +3,8 @@ import { type Entity } from "~/libs/types/types.js";
 import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
 
 class UserEntity implements Entity {
+	private createdAt: null | string;
+
 	private email: string;
 
 	private id: null | number;
@@ -18,6 +20,7 @@ class UserEntity implements Entity {
 	private primaryAiCodingTool: null | PrimaryAiCodingTool;
 
 	private constructor({
+		createdAt,
 		email,
 		id,
 		nickname,
@@ -26,6 +29,7 @@ class UserEntity implements Entity {
 		passwordSalt,
 		primaryAiCodingTool,
 	}: {
+		createdAt: null | string;
 		email: string;
 		id: null | number;
 		nickname: string;
@@ -35,6 +39,7 @@ class UserEntity implements Entity {
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}) {
 		this.id = id;
+		this.createdAt = createdAt;
 		this.email = email;
 		this.nickname = nickname;
 		this.passwordChangedAt = passwordChangedAt;
@@ -44,6 +49,7 @@ class UserEntity implements Entity {
 	}
 
 	public static initialize({
+		createdAt,
 		email,
 		id,
 		nickname,
@@ -52,6 +58,7 @@ class UserEntity implements Entity {
 		passwordSalt,
 		primaryAiCodingTool,
 	}: {
+		createdAt: string;
 		email: string;
 		id: number;
 		nickname: string;
@@ -61,6 +68,7 @@ class UserEntity implements Entity {
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}): UserEntity {
 		return new UserEntity({
+			createdAt,
 			email,
 			id,
 			nickname,
@@ -83,6 +91,7 @@ class UserEntity implements Entity {
 		passwordSalt: string;
 	}): UserEntity {
 		return new UserEntity({
+			createdAt: null,
 			email,
 			id: null,
 			nickname,
@@ -127,6 +136,7 @@ class UserEntity implements Entity {
 
 	public toObject(): UserDto {
 		return {
+			createdAt: this.createdAt as string,
 			email: this.email,
 			id: this.id as number,
 			nickname: this.nickname,

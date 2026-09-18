@@ -32,7 +32,7 @@ const HeaderNavigation: React.FC<Properties> = ({
 			{user ? (
 				<>
 					<li>
-						<Link to={AppRoute.SMART_SEARCH}>Smart search</Link>
+						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
 					</li>
 					<li>
 						<Link to={AppRoute.PROMPTS_HISTORY}>History</Link>
@@ -48,6 +48,9 @@ const HeaderNavigation: React.FC<Properties> = ({
 					</li>
 					<li>
 						<Link to={AppRoute.SETTINGS}>Settings</Link>
+					</li>
+					<li>
+						<Link to={AppRoute.PROFILE}>Profile</Link>
 					</li>
 					<li className={styles["identity-label"]}>{user.nickname}</li>
 					<li>

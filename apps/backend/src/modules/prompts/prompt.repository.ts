@@ -1,6 +1,6 @@
 import { raw, type Transaction } from "objection";
 
-import { SortOrder } from "~/libs/enums/enums.js";
+import { QueryClearTarget, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
@@ -10,6 +10,7 @@ import {
 	PROMPT_ID,
 	PROMPT_LABEL_ID,
 	PROMPT_WORKSPACE_ID,
+	WORKSPACE_RELATION,
 	ZERO_VALUE,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
@@ -18,10 +19,12 @@ import {
 } from "~/modules/prompts/libs/enums/enums.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
+import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 
 import {
 	type PromptAggregateResult,
 	type PromptDto,
+	type PromptFilterByQueryParameters,
 	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
 	type PromptRecentDto,
@@ -36,6 +39,32 @@ class PromptRepository {
 		this.promptModel = promptModel;
 	}
 
+	private applyFilters(
+		query: ReturnType<typeof this.promptModel.query>,
+		{ score, userId, workspaceId }: PromptFilterByQueryParameters,
+	): ReturnType<typeof this.promptModel.query> {
+		query.where(
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+			userId,
+		);
+
+		if (workspaceId) {
+			query.where(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+				workspaceId,
+			);
+		}
+
+		if (score) {
+			query.where(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				score,
+			);
+		}
+
+		return query;
+	}
+
 	private async findAggregate(
 		baseQuery: ReturnType<typeof this.promptModel.query>,
 	): Promise<PromptAggregateResult> {
@@ -43,10 +72,14 @@ class PromptRepository {
 			.clone()
 			.clearSelect()
 			.clearOrder()
-			.clear("limit")
-			.clear("offset")
-			.count(`${DatabaseTableName.PROMPTS}.id as count`)
-			.avg(`${DatabaseTableName.PROMPTS}.efficiencyScore as averageScore`)
+			.clear(QueryClearTarget.LIMIT)
+			.clear(QueryClearTarget.OFFSET)
+			.count(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`,
+			)
+			.avg(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			)
 			.castTo<{ averageScore: null | string; count: string }[]>()
 			.execute();
 
@@ -79,13 +112,11 @@ class PromptRepository {
 			limit = PaginationValue.DEFAULT_LIMIT,
 			page = PaginationValue.DEFAULT_PAGE,
 			score,
-			search,
 			workspaceId,
 		} = query;
 
-		const baseQuery = this.promptModel.query().modify("filterByQuery", {
+		const baseQuery = this.applyFilters(this.promptModel.query(), {
 			score,
-			search,
 			userId,
 			workspaceId,
 		});
@@ -97,18 +128,24 @@ class PromptRepository {
 		const items = await baseQuery
 			.clone()
 			.select(
-				`${DatabaseTableName.PROMPTS}.id`,
-				`${DatabaseTableName.PROMPTS}.taskIntent`,
-				`${DatabaseTableName.PROMPTS}.promptBody`,
-				`${DatabaseTableName.PROMPTS}.efficiencyScore`,
-				`${DatabaseTableName.PROMPTS}.createdAt`,
-				`${DatabaseTableName.PROMPTS}.updatedAt`,
-				`${DatabaseTableName.PROMPTS}.userId`,
-				`${DatabaseTableName.PROMPTS}.workspaceId`,
-				raw("?? AS ??", ["workspace.name", "workspaceName"]),
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.UPDATED_AT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+				raw("?? AS ??", [
+					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,
+					SQLAlias.WORKSPACE_NAME,
+				]),
 			)
-			.joinRelated("workspace")
-			.orderBy(`${DatabaseTableName.PROMPTS}.createdAt`, "desc")
+			.joinRelated(WORKSPACE_RELATION)
+			.orderBy(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
+				SortOrder.DESC,
+			)
 			.offset(offset)
 			.limit(limit)
 			.castTo<PromptRepositoryItem[]>()
@@ -179,9 +216,13 @@ class PromptRepository {
 	): Promise<PromptRecentDto[]> {
 		return await this.promptModel
 			.query()
-			.select("efficiencyScore", "id", "taskIntent")
+			.select(
+				PromptColumnName.EFFICIENCY_SCORE,
+				PromptColumnName.ID,
+				PromptColumnName.TASK_INTENT,
+			)
 			.where({ workspaceId })
-			.orderBy("createdAt", SortOrder.DESC)
+			.orderBy(PromptColumnName.CREATED_AT, SortOrder.DESC)
 			.limit(limit)
 			.execute();
 	}
@@ -189,9 +230,7 @@ class PromptRepository {
 	public async findUserPromptSummary(
 		userId: number,
 	): Promise<PromptAggregateResult> {
-		const baseQuery = this.promptModel
-			.query()
-			.modify("filterByQuery", { userId });
+		const baseQuery = this.applyFilters(this.promptModel.query(), { userId });
 
 		return await this.findAggregate(baseQuery);
 	}
