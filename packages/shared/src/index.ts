@@ -4,17 +4,24 @@ export {
 	AppEnvironment,
 	ContentType,
 	ErrorCode,
+	PaginationValue,
 	SortOrder,
 } from "./libs/enums/enums.js";
 export {
 	ApplicationError,
 	AuthError,
+	ComposedPromptError,
 	HTTPError,
+	LabelError,
+	PromptError,
 	PromptSearchError,
 	ValidationError,
 	WorkspaceError,
 } from "./libs/exceptions/exceptions.js";
-export { configureString } from "./libs/helpers/helpers.js";
+export {
+	configureString,
+	getRelativeTimeLabel,
+} from "./libs/helpers/helpers.js";
 export { type Config } from "./libs/modules/config/config.js";
 export {
 	type HTTP,
@@ -47,11 +54,37 @@ export {
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
+export {
+	type ComposedPromptDto,
+	type ComposedPromptIdParametersDto,
+	type ComposedPromptSourceDto,
+	type ComposeRequestDto,
+	type ComposeResponseDto,
+	type PromptCandidateDto,
+	composedPromptIdParametersValidationSchema,
+	ComposedPromptsApiPath,
+	ComposedPromptsErrorCode,
+	ComposedPromptsErrorMessage,
+	ComposedPromptValidationMessage,
+	ComposeResultKind,
+	composeValidationSchema,
+	FallbackReason,
+} from "./modules/composed-prompts/composed-prompts.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
+	type GetLabelsRequestDto,
+	type LabelWithPromptCountDto,
+	labelGetByQueryValidationSchema,
+	LabelsApiPath,
+} from "./modules/labels/labels.js";
+export {
+	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptSearchRequestDto,
@@ -59,9 +92,11 @@ export {
 	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
+	promptGetQueryValidationSchema,
 	PromptProgress,
 	PromptsApiPath,
 	PromptsErrorMessage,
+	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
 	searchPromptsValidationSchema,
 } from "./modules/prompts/prompts.js";

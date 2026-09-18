@@ -71,11 +71,29 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
+												await import("~/pages/generate/generate.js");
+
+											return { Component: pageModule.Generate };
+										},
+										path: AppRoute.GENERATE,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
 												await import("~/pages/workspaces/workspaces.js");
 
 											return { Component: pageModule.Workspaces };
 										},
 										path: AppRoute.WORKSPACES,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-history/prompt-history.js");
+
+											return { Component: pageModule.PromptHistory };
+										},
+										path: AppRoute.PROMPTS_HISTORY,
 									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,

@@ -4,7 +4,7 @@ import { type PromptEmbeddingSource } from "../types/types.js";
 const composeEmbeddedText = ({
 	promptBody,
 	taskIntent,
-}: PromptEmbeddingSource): string =>
+}: Pick<PromptEmbeddingSource, "promptBody" | "taskIntent">): string =>
 	`${taskIntent}${EMBEDDED_TEXT_SEPARATOR}${promptBody}`;
 
 export { composeEmbeddedText };

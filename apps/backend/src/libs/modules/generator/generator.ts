@@ -7,5 +7,6 @@ const generator = new Generator({
 });
 
 export { generator };
-export { SchemaKey } from "./libs/enums/enums.js";
+export { SchemaKey, TextGenerationErrorCode } from "./libs/enums/enums.js";
+export { TextGenerationError } from "./libs/exceptions/exceptions.js";
 export { type GeneratorInterface } from "./libs/types/types.js";

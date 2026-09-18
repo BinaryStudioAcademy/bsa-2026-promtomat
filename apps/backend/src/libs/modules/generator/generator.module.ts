@@ -5,7 +5,7 @@ import {
 } from "~/libs/modules/bedrock/bedrock.js";
 
 import { TOKENS_THRESHOLD } from "./libs/constants/constants.js";
-import { getOutputSchema } from "./libs/helpers/helpers.js";
+import { checkIsOutputValid, getOutputSchema } from "./libs/helpers/helpers.js";
 import {
 	type GeneratorInterface,
 	type SchemaResultMap,
@@ -40,6 +40,14 @@ class Generator implements GeneratorInterface {
 		return commandOptions;
 	}
 
+	private parseOutput(text: string): unknown {
+		try {
+			return JSON.parse(text);
+		} catch (error) {
+			throw TextGenerationError.outputUnusable(error);
+		}
+	}
+
 	private throwIfExceedsTokenLimit(options: TextGenerationOptions) {
 		if (options.config.maxTokens > TOKENS_THRESHOLD) {
 			throw TextGenerationError.maxTokensExceedsAllowedThreshold(
@@ -68,13 +76,13 @@ class Generator implements GeneratorInterface {
 			throw TextGenerationError.outputUnusable();
 		}
 
-		const text = this.tryGetContent(result.text);
+		const output = this.parseOutput(this.tryGetContent(result.text));
 
-		try {
-			return JSON.parse(text) as SchemaResultMap[K];
-		} catch (error) {
-			throw TextGenerationError.outputUnusable(error);
+		if (!checkIsOutputValid(options.schemaKey, output)) {
+			throw TextGenerationError.outputUnusable();
 		}
+
+		return output;
 	}
 
 	public async generateText(options: TextGenerationOptions): Promise<string> {
