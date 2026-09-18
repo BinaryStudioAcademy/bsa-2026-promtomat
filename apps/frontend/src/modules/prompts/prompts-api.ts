@@ -15,8 +15,6 @@ import {
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptProgressResponseDto,
-	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
@@ -78,15 +76,6 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
-			searchPrompts: builder.query<
-				PromptSearchResponseDto,
-				PromptSearchRequestDto
-			>({
-				query: (queryPayload) => ({
-					params: queryPayload,
-					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
-				}),
-			}),
 			updateTaskIntent: builder.mutation<
 				PromptDto,
 				{
@@ -140,7 +129,6 @@ const {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
-	useSearchPromptsQuery,
 	useUpdateTaskIntentMutation,
 } = promptApi;
 
@@ -149,6 +137,5 @@ export {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
-	useSearchPromptsQuery,
 	useUpdateTaskIntentMutation,
 };

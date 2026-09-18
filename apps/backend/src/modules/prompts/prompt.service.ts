@@ -9,7 +9,7 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 
 import { LabelService } from "../labels/labels.js";
 import { ROUND_FACTOR } from "./libs/constants/constants.js";
-import { PromptProgress } from "./libs/enums/enums.js";
+import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
 	type PromptCandidateQuery,
@@ -135,8 +135,26 @@ class PromptService {
 	public async findAll(
 		options: PromptFindAllOptions,
 	): Promise<PromptGetAllResponseDto> {
-		const { averageScore, items, page, pageSize, totalCount } =
-			await this.promptRepository.findAll(options);
+		const { query, userId } = options;
+		const {
+			limit = PaginationValue.DEFAULT_LIMIT,
+			page = PaginationValue.DEFAULT_PAGE,
+			score,
+			search,
+			workspaceId,
+		} = query;
+		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
+
+		const { averageScore, items, totalCount } = search
+			? await this.promptEmbeddingService.findAllByQuery({
+					limit,
+					offset,
+					score,
+					search,
+					userId,
+					workspaceId,
+				})
+			: await this.promptRepository.findAll(options);
 
 		const formattedAverageScore =
 			averageScore === null
@@ -149,7 +167,7 @@ class PromptService {
 				PromptEntity.initialize(item).toDto(item.workspaceName),
 			),
 			page,
-			pageSize,
+			pageSize: limit,
 			totalCount,
 		};
 	}

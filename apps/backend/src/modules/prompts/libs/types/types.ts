@@ -20,9 +20,6 @@ export {
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptRouteParametersDto,
-	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
-	type PromptSearchResult,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";

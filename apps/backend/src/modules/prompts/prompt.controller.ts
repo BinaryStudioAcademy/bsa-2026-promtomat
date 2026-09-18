@@ -9,15 +9,12 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
-import { MAX_SUGGESTIONS } from "./libs/constants/constants.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
-import { convertToPromptSearchResponseDto } from "./libs/helpers/helpers.js";
 import { promptAccessHook } from "./libs/hooks/prompt-access.hook.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
 	type PromptRouteParametersDto,
-	type PromptSearchRequestDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
@@ -27,7 +24,6 @@ import {
 	promptRouteParametersValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
-	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
 
@@ -205,17 +201,6 @@ class PromptController extends BaseController {
 			validation: {
 				query: promptGetQueryValidationSchema,
 			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.searchCandidates(
-					options as APIHandlerOptions<{ query: PromptSearchRequestDto }>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.SEARCH,
-			preHandler: workspaceAccessHook(this.workspaceService),
-			validation: { query: searchPromptsValidationSchema },
 		});
 
 		this.addRoute({
@@ -469,83 +454,6 @@ class PromptController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.promptService.findRecent(options.query.workspaceId),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /prompts/search:
-	 *   get:
-	 *     description: Returns ranked prompt candidates for a task description within a workspace
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: query
-	 *         name: description
-	 *         required: true
-	 *         schema:
-	 *           type: string
-	 *         description: Task description to search for
-	 *       - in: query
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: number
-	 *         description: Workspace to search within
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               type: object
-	 *               properties:
-	 *                 items:
-	 *                   type: array
-	 *                   items:
-	 *                     type: object
-	 *                     properties:
-	 *                       promptId:
-	 *                         type: number
-	 *                       taskIntent:
-	 *                         type: string
-	 *                       efficiencyScore:
-	 *                         type: number
-	 *                         minimum: 1
-	 *                         maximum: 10
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	private async searchCandidates(
-		options: APIHandlerOptions<{ query: PromptSearchRequestDto }>,
-	): Promise<APIHandlerResponse> {
-		const promptCandidates = await this.promptService.findCandidates({
-			...options.query,
-			limit: MAX_SUGGESTIONS,
-			userId: options.user?.id as number,
-		});
-
-		const payload = convertToPromptSearchResponseDto(promptCandidates);
-
-		return {
-			payload,
 			status: HTTPCode.OK,
 		};
 	}

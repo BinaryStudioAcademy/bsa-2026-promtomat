@@ -4,5 +4,4 @@ export {
 	promptRouteParametersValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
-	searchPromptsValidationSchema,
 } from "@promptomat/shared";
