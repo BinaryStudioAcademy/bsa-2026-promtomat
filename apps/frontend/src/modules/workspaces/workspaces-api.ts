@@ -4,6 +4,9 @@ import { baseApi } from "~/libs/modules/api/base-api.js";
 
 import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
+	type ContributorDto,
+	type WorkspaceAddContributorRequestDto,
+	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
@@ -15,6 +18,29 @@ const workspacesApi = baseApi
 	.enhanceEndpoints({ addTagTypes: [WorkspacesApiTag.WORKSPACE] })
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			addWorkspaceContributor: builder.mutation<
+				ContributorDto,
+				{ payload: WorkspaceAddContributorRequestDto; workspaceId: number }
+			>({
+				extraOptions: { shouldSuppressToast: true },
+				invalidatesTags: (_result, error) => {
+					const hasError = Boolean(error);
+
+					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+				},
+				query: ({ payload, workspaceId }) => ({
+					body: payload,
+					method: HTTPMethod.POST,
+					url: configureString(
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
+						{
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+
 			createWorkspace: builder.mutation<
 				WorkspaceDto,
 				WorkspaceCreateRequestDto
@@ -41,6 +67,42 @@ const workspacesApi = baseApi
 						WorkspacesApiPath.$WORKSPACE_ID,
 						{
 							workspaceId: String(id),
+						},
+					),
+				}),
+			}),
+
+			deleteWorkspaceContributor: builder.mutation<
+				null,
+				{ userId: number; workspaceId: number }
+			>({
+				invalidatesTags: (_result, error) => {
+					const hasError = Boolean(error);
+					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+				},
+				query: ({ userId, workspaceId }) => ({
+					method: HTTPMethod.DELETE,
+					url: configureString(
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS_USER_ID,
+						{
+							userId: String(userId),
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+			getWorkspaceContributors: builder.query<
+				WorkspaceContributorsResponseDto,
+				number
+			>({
+				providesTags: [WorkspacesApiTag.WORKSPACE],
+				query: (workspaceId) => ({
+					url: configureString(
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
+						{
+							workspaceId: String(workspaceId),
 						},
 					),
 				}),
@@ -79,15 +141,21 @@ const workspacesApi = baseApi
 	});
 
 const {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 } = workspacesApi;
 
 export {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 };

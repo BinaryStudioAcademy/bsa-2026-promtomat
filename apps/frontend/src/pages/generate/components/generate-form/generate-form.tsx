@@ -106,7 +106,7 @@ const GenerateForm: React.FC<Properties> = ({
 					className={styles["submit"]}
 					isDisabled={!hasWorkspace}
 					isLoading={isLoading}
-					label={GenerateLabel.SUBMIT}
+					label={isLoading ? GenerateLabel.SUBMITTING : GenerateLabel.SUBMIT}
 					size={ControlSize.LG}
 					type="submit"
 				/>

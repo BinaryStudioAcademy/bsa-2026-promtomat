@@ -53,6 +53,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
+												await import("~/pages/profile/profile.js");
+
+											return { Component: pageModule.Profile };
+										},
+										path: AppRoute.PROFILE,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
 												await import("~/pages/training/training.js");
 
 											return { Component: pageModule.Training };
