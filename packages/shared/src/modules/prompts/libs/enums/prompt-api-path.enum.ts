@@ -1,4 +1,5 @@
 const PromptsApiPath = {
+	$ID: "/:id",
 	PROGRESS: "/progress",
 	RECENT: "/recent",
 	ROOT: "/",

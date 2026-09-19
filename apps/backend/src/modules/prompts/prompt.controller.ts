@@ -13,11 +13,13 @@ import { PromptsApiPath } from "./libs/enums/enums.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
+	type PromptIdParameterDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
+	promptIdParameterValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
@@ -197,6 +199,20 @@ class PromptController extends BaseController {
 				query: promptGetQueryValidationSchema,
 			},
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findById(
+					options as APIHandlerOptions<{
+						params: PromptIdParameterDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.$ID,
+			validation: {
+				params: promptIdParameterValidationSchema,
+			},
+		});
 	}
 
 	/**
@@ -332,6 +348,58 @@ class PromptController extends BaseController {
 				query: options.query,
 				userId: options.user?.id as number,
 			}),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/{id}:
+	 *    get:
+	 *      description: Returns a prompt of a workspace the caller may read
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: path
+	 *          name: id
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *      responses:
+	 *        200:
+	 *          description: Successful operation
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/PromptItem"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        404:
+	 *          description: Prompt not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
+	 */
+	private async findById(
+		options: APIHandlerOptions<{ params: PromptIdParameterDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findById(
+				options.params.id,
+				options.user?.id as number,
+			),
 			status: HTTPCode.OK,
 		};
 	}

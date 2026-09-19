@@ -15,6 +15,8 @@ export {
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
+	type PromptIdParameterDto,
+	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptWorkspaceQueryDto,

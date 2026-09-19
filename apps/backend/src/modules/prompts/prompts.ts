@@ -19,6 +19,7 @@ const promptService = new PromptService({
 	labelService,
 	promptEmbeddingService,
 	promptRepository,
+	workspaceService,
 });
 
 const backFillPromptLabelsJob = new BackFillPromptLabelsJob({
