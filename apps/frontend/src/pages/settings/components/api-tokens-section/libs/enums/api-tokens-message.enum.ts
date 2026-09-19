@@ -23,6 +23,7 @@ const ApiTokensMessage = {
 	REVOKE: "Revoke",
 	REVOKE_CONFIRM:
 		"Anything using this token will immediately lose access. This cannot be undone.",
+	REVOKE_ERROR: "Could not revoke the token.",
 	REVOKE_TITLE: "Revoke token",
 	REVOKED: "Token revoked.",
 	SECTION_DESCRIPTION:

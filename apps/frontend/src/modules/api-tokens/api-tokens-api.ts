@@ -33,6 +33,7 @@ const apiTokensApi = baseApi
 			}),
 
 			revokeApiToken: builder.mutation<null, string>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
 

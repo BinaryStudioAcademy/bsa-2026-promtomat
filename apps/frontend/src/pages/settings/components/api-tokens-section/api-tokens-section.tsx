@@ -94,6 +94,12 @@ const ApiTokensSection: React.FC = () => {
 					type: "success",
 				});
 			})
+			.catch(() => {
+				showNotification({
+					message: ApiTokensMessage.REVOKE_ERROR,
+					type: "danger",
+				});
+			})
 			.finally(() => {
 				setPendingRevokeId(null);
 			});
