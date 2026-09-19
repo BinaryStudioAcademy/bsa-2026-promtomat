@@ -43,8 +43,13 @@ migrations enable.
 erDiagram
     users ||--o{ prompts : "user_id"
     workspaces ||--o{ prompts : "workspace_id"
+    labels |o--o{ prompts : "label_id"
     users ||--o{ workspaces : "user_id"
     prompts ||--o| prompt_embeddings : "prompt_id"
+    workspaces ||--o{ composed_prompts : "workspace_id"
+    users ||--o{ composed_prompts : "requester_id"
+    composed_prompts ||--o{ composed_prompt_sources : "composed_prompt_id"
+    prompts ||--o{ composed_prompt_sources : "prompt_id"
 
     users {
         int id PK "auto-increment"
@@ -66,10 +71,19 @@ erDiagram
         datetime updated_at "not null, defaults to now()"
     }
 
+    labels {
+        int id PK "auto-increment"
+        varchar name "not null, unique per workspace"
+        int workspace_id FK "not null, onDelete CASCADE"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
     prompts {
         int id PK "auto-increment"
         int user_id FK "not null, onDelete CASCADE"
         int workspace_id FK "not null, onDelete CASCADE"
+        int label_id FK "nullable, indexed, onDelete SET NULL"
         varchar task_intent "not null"
         text prompt_body "not null"
         int efficiency_score "not null, check(1-10)"
@@ -83,6 +97,28 @@ erDiagram
         vector embedding "not null, vector(1024)"
         varchar model_id "not null"
         varchar source_hash "not null, sha256 of the embedded text"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    composed_prompts {
+        int id PK "auto-increment"
+        int workspace_id FK "not null, onDelete CASCADE, unique with description_hash"
+        int requester_id FK "not null, references users, onDelete CASCADE"
+        text description "not null"
+        varchar description_hash "not null, varchar(64), sha256 of the normalized description, unique with workspace_id"
+        text body "not null"
+        text explanation "not null"
+        varchar model_id "not null"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    composed_prompt_sources {
+        int id PK "auto-increment"
+        int composed_prompt_id FK "not null, onDelete CASCADE, unique with prompt_id"
+        int prompt_id FK "not null, onDelete CASCADE, unique with composed_prompt_id"
+        int rank "not null, check(>= 1), number the source had in the composition request"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }

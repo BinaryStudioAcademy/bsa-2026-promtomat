@@ -5,6 +5,8 @@ import {
 	DatabaseTableName,
 } from "~/libs/modules/database/database.js";
 
+import { LabelModel } from "../labels/label.model.js";
+import { LabelColumnName } from "../labels/libs/enums/enums.js";
 import { UserColumnName } from "../users/libs/enums/enums.js";
 import { UserModel } from "../users/user.model.js";
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
@@ -14,16 +16,28 @@ import { PromptColumnName } from "./libs/enums/enums.js";
 class PromptModel extends AbstractModel {
 	public efficiencyScore!: number;
 
+	public labelId!: number;
+
 	public promptBody!: string;
 
 	public taskIntent!: string;
 
 	public userId!: number;
 
+	public workspace!: WorkspaceModel;
+
 	public workspaceId!: number;
 
-	public static get relationMappings(): RelationMappings {
+	public static override get relationMappings(): RelationMappings {
 		return {
+			label: {
+				join: {
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`,
+					to: `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`,
+				},
+				modelClass: LabelModel,
+				relation: this.BelongsToOneRelation,
+			},
 			user: {
 				join: {
 					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,

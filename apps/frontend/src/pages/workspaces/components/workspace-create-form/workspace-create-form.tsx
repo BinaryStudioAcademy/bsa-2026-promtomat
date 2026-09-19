@@ -1,8 +1,7 @@
-import { useCallback, useState } from "react";
-import { useController, useWatch } from "react-hook-form";
+import { useCallback } from "react";
+import { useController } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
-import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import {
@@ -32,19 +31,12 @@ const STACK_TAGS = "stackTags";
 
 const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
-	const [conflict, setConflict] = useState<
-		undefined | { message: string; name: string }
-	>(undefined);
-	const { control, handleSubmit } = useAppForm<WorkspaceCreateRequestDto>({
-		defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
-		mode: FormValidationMode.ON_CHANGE,
-		validationSchema: workspaceCreationValidationSchema,
-	});
-
-	const workspaceName = useWatch({ control, name: "name" });
-
-	const errorField =
-		conflict?.name === workspaceName ? conflict.message : undefined;
+	const { control, handleSubmit, setError } =
+		useAppForm<WorkspaceCreateRequestDto>({
+			defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
+			mode: FormValidationMode.ON_CHANGE,
+			validationSchema: workspaceCreationValidationSchema,
+		});
 
 	const { field: stackTagsField } = useController({
 		control,
@@ -63,18 +55,17 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					isServerError(error) &&
 					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
 				) {
-					setConflict({ message: error.message, name: payload.name });
+					setError("name", { message: error.message, type: "server" });
 				}
 			})(event);
 		},
-		[createWorkspace, handleSubmit, onClose],
+		[createWorkspace, handleSubmit, onClose, setError],
 	);
 
 	return (
 		<>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
-					{errorField && <FormAlert message={errorField} />}
 					<Input
 						control={control}
 						label="Workspace name"
@@ -102,7 +93,11 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 					/>
 					<Button
 						isLoading={isLoading}
-						label={WorkspaceFormMessage.CREATE}
+						label={
+							isLoading
+								? WorkspaceFormMessage.CREATING
+								: WorkspaceFormMessage.CREATE
+						}
 						size={ControlSize.MD}
 						type="submit"
 					/>

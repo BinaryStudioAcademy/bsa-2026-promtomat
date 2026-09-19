@@ -4,3 +4,7 @@
 	gap: var(--space-8);
 	justify-content: flex-end;
 }
+
+.confirmation-body {
+	padding-block: var(--space-12);
+}

@@ -1,6 +1,11 @@
 export { type BackfillReport } from "./backfill-report.type.js";
 export { type ColumnTypeRow } from "./column-type-row.type.js";
 export { type IndexedPromptSource } from "./indexed-prompt-source.type.js";
+export { type NearestPromptLabelsQuery } from "./nearest-prompt-labels-query.type.js";
 export { type NearestPromptQuery } from "./nearest-prompt-query.type.js";
 export { type NearestPrompt } from "./nearest-prompt.type.js";
+export { type PromptAggregateRow } from "./prompt-aggregate-row.type.js";
 export { type PromptEmbeddingSource } from "./prompt-embedding-source.type.js";
+export { type PromptSemanticSearchQuery } from "./prompt-semantic-search-query.type.js";
+export { type PromptSemanticSearchResult } from "./prompt-semantic-search-result.type.js";
+export { type PromptSemanticSearchTextQuery } from "./prompt-semantic-search-text-query.type.js";
