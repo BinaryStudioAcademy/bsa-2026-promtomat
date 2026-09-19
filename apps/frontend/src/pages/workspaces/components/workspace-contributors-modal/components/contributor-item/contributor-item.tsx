@@ -4,17 +4,18 @@ import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type WorkspaceUserSummaryDto } from "~/modules/workspaces/libs/types/types.js";
 
-import { UserItem } from "../user-item/user-item.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	isDisabled: boolean;
+	isDisabled?: boolean | undefined;
+	isOwner: boolean;
 	onRemove: (userId: number) => void;
 	user: WorkspaceUserSummaryDto;
 };
 
 const ContributorItem: React.FC<Properties> = ({
-	isDisabled,
+	isDisabled = false,
+	isOwner,
 	onRemove,
 	user,
 }: Properties) => {
@@ -25,8 +26,12 @@ const ContributorItem: React.FC<Properties> = ({
 	}, [onRemove, user.id]);
 
 	return (
-		<UserItem
-			action={
+		<li className={styles["item"]}>
+			<div className={styles["identity"]}>
+				<span className={styles["name"]}>{user.nickname}</span>
+				<span className={styles["email"]}>{user.email}</span>
+			</div>
+			{isOwner && (
 				<IconButton
 					ariaLabel={contributorRemoveLabel}
 					className={styles["remove-button"]}
@@ -35,9 +40,8 @@ const ContributorItem: React.FC<Properties> = ({
 					onClick={handleRemove}
 					size={ControlSize.MD}
 				/>
-			}
-			user={user}
-		/>
+			)}
+		</li>
 	);
 };
 

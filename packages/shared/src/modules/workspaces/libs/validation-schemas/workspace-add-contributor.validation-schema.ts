@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { emailOrNicknameField } from "./email-or-nickname-field.validation-schema.js";
+
 const workspaceAddContributor = z.strictObject({
-	userId: z.number().int().positive(),
+	emailOrNickname: emailOrNicknameField,
 });
 
 export { workspaceAddContributor };

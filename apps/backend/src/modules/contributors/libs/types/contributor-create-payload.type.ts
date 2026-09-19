@@ -1,6 +1,5 @@
-import { type WorkspaceAddContributorRequestDto } from "~/modules/workspaces/libs/types/types.js";
-
-type ContributorCreatePayload = WorkspaceAddContributorRequestDto & {
+type ContributorCreatePayload = {
+	userId: number;
 	workspaceId: number;
 };
 

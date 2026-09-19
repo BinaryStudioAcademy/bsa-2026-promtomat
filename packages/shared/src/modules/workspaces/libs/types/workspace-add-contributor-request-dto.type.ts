@@ -1,5 +1,5 @@
 type WorkspaceAddContributorRequestDto = {
-	userId: number;
+	emailOrNickname: string;
 };
 
 export { type WorkspaceAddContributorRequestDto };

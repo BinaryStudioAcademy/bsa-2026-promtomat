@@ -6,7 +6,6 @@ import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,
 	type WorkspaceDto,
@@ -23,6 +22,7 @@ const workspacesApi = baseApi
 				ContributorDto,
 				{ payload: WorkspaceAddContributorRequestDto; workspaceId: number }
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
 
@@ -32,8 +32,8 @@ const workspacesApi = baseApi
 					body: payload,
 					method: HTTPMethod.POST,
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
 						{
 							workspaceId: String(workspaceId),
 						},
@@ -83,8 +83,8 @@ const workspacesApi = baseApi
 				query: ({ userId, workspaceId }) => ({
 					method: HTTPMethod.DELETE,
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS_USER_ID,
 						{
 							userId: String(userId),
 							workspaceId: String(workspaceId),
@@ -92,31 +92,6 @@ const workspacesApi = baseApi
 					),
 				}),
 			}),
-			getWorkspaceContributorCandidates: builder.infiniteQuery<
-				WorkspaceContributorCandidatesResponseDto,
-				{ userQuery: string; workspaceId: number },
-				null | string
-			>({
-				infiniteQueryOptions: {
-					getNextPageParam: (lastPage) => lastPage.nextCursor,
-					initialPageParam: null,
-				},
-				providesTags: [WorkspacesApiTag.WORKSPACE],
-				query: ({ pageParam, queryArg }) => ({
-					params: {
-						cursor: pageParam ?? undefined,
-						userQuery: queryArg.userQuery,
-					},
-					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
-						{
-							workspaceId: String(queryArg.workspaceId),
-						},
-					),
-				}),
-			}),
-
 			getWorkspaceContributors: builder.query<
 				WorkspaceContributorsResponseDto,
 				number
@@ -124,8 +99,8 @@ const workspacesApi = baseApi
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (workspaceId) => ({
 					url: configureString(
-						APIPath.WORKSPACES,
-						WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+						APIPath.WORKSPACES_$WORKSPACE_ID,
+						WorkspacesApiPath.CONTRIBUTORS,
 						{
 							workspaceId: String(workspaceId),
 						},
@@ -170,7 +145,6 @@ const {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
-	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
@@ -181,7 +155,6 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
-	useGetWorkspaceContributorCandidatesInfiniteQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

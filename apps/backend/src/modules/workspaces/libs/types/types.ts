@@ -3,9 +3,6 @@ export { type WorkspaceEntityInitializeNewPayload } from "./workspace-entity-ini
 export { type WorkspaceEntityPayload } from "./workspace-entity-payload.type.js";
 export {
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceContributorCandidatesCursor,
-	type WorkspaceContributorCandidatesQueryDto,
-	type WorkspaceContributorCandidatesResponseDto,
 	type WorkspaceContributorRouteParametersDto,
 	type WorkspaceContributorsResponseDto,
 	type WorkspaceCreateRequestDto,

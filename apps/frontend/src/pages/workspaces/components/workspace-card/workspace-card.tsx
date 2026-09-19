@@ -117,15 +117,25 @@ const WorkspaceCard: React.FC<Properties> = ({
 						/>
 					</>
 				) : (
-					<Button
-						className={styles["leave-button"]}
-						iconName={IconName.LOG_OUT}
-						label="Leave workspace"
-						onClick={handleLeaveClick}
-						size={ControlSize.MD}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
+					<>
+						<Button
+							iconName={IconName.USERS}
+							label="Members"
+							onClick={handleManageAccessClick}
+							size={ControlSize.MD}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+						<Button
+							className={styles["leave-button"]}
+							iconName={IconName.LOG_OUT}
+							label="Leave workspace"
+							onClick={handleLeaveClick}
+							size={ControlSize.MD}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+					</>
 				)}
 			</div>
 		</div>

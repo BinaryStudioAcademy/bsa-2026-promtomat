@@ -4,6 +4,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
@@ -21,7 +22,7 @@ import { WorkspaceContributorsModal } from "./components/workspace-contributors-
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
 import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
-import { WorkspaceListScopeFilter } from "./components/workspace-list-scope-filter/workspace-list-scope-filter.js";
+import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
@@ -78,6 +79,10 @@ const Workspaces: React.FC = () => {
 		setActiveModal(null);
 	}, []);
 
+	const isActiveWorkspaceOwner =
+		activeModal?.type === "manage-access" &&
+		activeModal.workspace.userId === currentUserId;
+
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<header className={styles["header"]}>
@@ -91,9 +96,11 @@ const Workspaces: React.FC = () => {
 			</header>
 
 			<div className={styles["filter-container"]}>
-				<WorkspaceListScopeFilter
-					activeScope={scope}
-					onScopeChange={setScope}
+				<SegmentedControl
+					label="Filter workspaces by ownership"
+					onChange={setScope}
+					options={WORKSPACE_LIST_SCOPE_OPTIONS}
+					value={scope}
 				/>
 			</div>
 
@@ -152,6 +159,7 @@ const Workspaces: React.FC = () => {
 
 			{activeModal?.type === "manage-access" && (
 				<WorkspaceContributorsModal
+					isOwner={isActiveWorkspaceOwner}
 					onClose={handleModalClose}
 					workspace={activeModal.workspace}
 				/>

@@ -13,13 +13,11 @@ import { workspaceContributorDeleteAccessHook } from "../workspaces/libs/hooks/w
 import { workspaceOwnerAccessHook } from "../workspaces/libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceAddContributorRequestDto,
-	type WorkspaceContributorCandidatesQueryDto,
 	type WorkspaceContributorRouteParametersDto,
 	type WorkspaceRouteParametersDto,
 } from "../workspaces/libs/types/types.js";
 import {
 	workspaceAddContributorValidationSchema,
-	workspaceContributorCandidatesQueryValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,
 	workspaceRouteParametersValidationSchema,
 } from "../workspaces/libs/validation-schemas/validation-schemas.js";
@@ -61,20 +59,6 @@ import { type ContributorService } from "./contributor.service.js";
  *           minimum: 1
  *         nickname:
  *           type: string
- *     WorkspaceContributorCandidatesResponse:
- *       type: object
- *       required:
- *         - items
- *         - nextCursor
- *       properties:
- *         items:
- *           type: array
- *           items:
- *             $ref: "#/components/schemas/WorkspaceUserSummary"
- *         nextCursor:
- *           type: string
- *           nullable: true
- *           description: Opaque cursor for loading the next page
  *     WorkspaceContributorsResponse:
  *       type: object
  *       required:
@@ -96,7 +80,7 @@ class ContributorController extends BaseController {
 		contributorService: ContributorService,
 		workspaceService: WorkspaceService,
 	) {
-		super(logger, APIPath.WORKSPACES);
+		super(logger, APIPath.WORKSPACES_$WORKSPACE_ID);
 
 		this.contributorService = contributorService;
 
@@ -108,27 +92,10 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.DELETE,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS_USER_ID,
+			path: WorkspacesApiPath.CONTRIBUTORS_USER_ID,
 			preHandler: workspaceContributorDeleteAccessHook(workspaceService),
 			validation: {
 				params: workspaceContributorRouteParametersValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.findCandidates(
-					options as APIHandlerOptions<{
-						params: WorkspaceRouteParametersDto;
-						query: WorkspaceContributorCandidatesQueryDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTOR_CANDIDATES,
-			preHandler: workspaceOwnerAccessHook(workspaceService),
-			validation: {
-				params: workspaceRouteParametersValidationSchema,
-				query: workspaceContributorCandidatesQueryValidationSchema,
 			},
 		});
 
@@ -140,7 +107,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.GET,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+			path: WorkspacesApiPath.CONTRIBUTORS,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
@@ -156,7 +123,7 @@ class ContributorController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.POST,
-			path: WorkspacesApiPath.$WORKSPACE_ID_CONTRIBUTORS,
+			path: WorkspacesApiPath.CONTRIBUTORS,
 			preHandler: workspaceOwnerAccessHook(workspaceService),
 			validation: {
 				body: workspaceAddContributorValidationSchema,
@@ -186,11 +153,12 @@ class ContributorController extends BaseController {
 	 *           schema:
 	 *             type: object
 	 *             required:
-	 *               - userId
+	 *               - emailOrNickname
 	 *             properties:
-	 *               userId:
-	 *                 type: integer
-	 *                 minimum: 1
+	 *               emailOrNickname:
+	 *                 type: string
+	 *                 maxLength: 254
+	 *                 description: Full match on the email, case-insensitive, or on the nickname, case-sensitive
 	 *     responses:
 	 *       201:
 	 *         description: Contributor added successfully
@@ -200,14 +168,34 @@ class ContributorController extends BaseController {
 	 *               $ref: "#/components/schemas/Contributor"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       403:
 	 *         description: Only the workspace owner can add contributors
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace or target user not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       409:
 	 *         description: User is already a contributor or is the workspace owner
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid route parameters or request body
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async create(
@@ -253,12 +241,28 @@ class ContributorController extends BaseController {
 	 *         description: Contributor removed successfully
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       403:
 	 *         description: The action is forbidden or the workspace owner was targeted
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace or contributor not found, or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid route parameters
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async delete(
@@ -300,10 +304,22 @@ class ContributorController extends BaseController {
 	 *               $ref: "#/components/schemas/WorkspaceContributorsResponse"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       404:
 	 *         description: Workspace not found or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Invalid workspace identifier
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 
 	private async findAllByWorkspaceId(
@@ -314,65 +330,6 @@ class ContributorController extends BaseController {
 		return {
 			payload: await this.contributorService.findAllByWorkspaceId(
 				options.params.workspaceId,
-			),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /workspaces/{workspaceId}/contributor-candidates:
-	 *   get:
-	 *     description: Returns users who can be added as workspace contributors
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: path
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *       - in: query
-	 *         name: userQuery
-	 *         required: false
-	 *         description: Filters users by nickname or email
-	 *         schema:
-	 *           type: string
-	 *       - in: query
-	 *         name: cursor
-	 *         required: false
-	 *         description: Opaque cursor returned by the previous response
-	 *         schema:
-	 *           type: string
-	 *     responses:
-	 *       200:
-	 *         description: Contributor candidates returned successfully
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/WorkspaceContributorCandidatesResponse"
-	 *       401:
-	 *         description: Unauthorized
-	 *       403:
-	 *         description: Only the workspace owner can view contributor candidates
-	 *       404:
-	 *         description: Workspace not found or the user does not have access
-	 *       422:
-	 *         description: Invalid workspace identifier, query, or cursor
-	 */
-
-	private async findCandidates(
-		options: APIHandlerOptions<{
-			params: WorkspaceRouteParametersDto;
-			query: WorkspaceContributorCandidatesQueryDto;
-		}>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.contributorService.findCandidates(
-				options.params.workspaceId,
-				options.user?.id as number,
-				options.query,
 			),
 			status: HTTPCode.OK,
 		};
