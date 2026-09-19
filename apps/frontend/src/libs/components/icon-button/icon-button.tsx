@@ -11,7 +11,7 @@ type Properties = {
 	ariaControls?: string;
 	ariaExpanded?: boolean;
 	ariaLabel: string;
-	className?: string;
+	className?: string | undefined;
 	iconName: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	onClick?: () => void;

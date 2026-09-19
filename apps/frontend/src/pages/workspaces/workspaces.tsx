@@ -4,15 +4,25 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
+import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
+import { type ValueOf } from "~/libs/types/types.js";
+import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
+import {
+	useGetWorkspacesQuery,
+	WorkspaceListScope,
+} from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
 import { WorkspaceConfigModal } from "./components/workspace-config-modal/workspace-config-modal.js";
+import { WorkspaceContributorsModal } from "./components/workspace-contributors-modal/workspace-contributors-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
+import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
+import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
@@ -20,9 +30,16 @@ const SEARCH_DELAY_MS = 300;
 
 const Workspaces: React.FC = () => {
 	const { control, debouncedSearch } = useSearch(SEARCH_DELAY_MS);
+	const [scope, setScope] = useState<ValueOf<typeof WorkspaceListScope>>(
+		WorkspaceListScope.ALL,
+	);
+	const { data: user } = useGetAuthenticatedUserQuery(undefined);
+	const currentUserId = user?.id;
 	const { data, isLoading } = useGetWorkspacesQuery({
+		scope,
 		workspaceName: debouncedSearch,
 	});
+	const workspaces = data?.items ?? [];
 
 	const [activeModal, setActiveModal] = useState<ActiveModal>(null);
 
@@ -44,20 +61,48 @@ const Workspaces: React.FC = () => {
 		[],
 	);
 
+	const handleLeaveOpen = useCallback(
+		(workspace: WorkspaceListItemDto): void => {
+			setActiveModal({ type: "leave", workspace });
+		},
+		[],
+	);
+
+	const handleManageAccessOpen = useCallback(
+		(workspace: WorkspaceListItemDto): void => {
+			setActiveModal({ type: "manage-access", workspace });
+		},
+		[],
+	);
+
 	const handleModalClose = useCallback((): void => {
 		setActiveModal(null);
 	}, []);
 
+	const isActiveWorkspaceOwner =
+		activeModal?.type === "manage-access" &&
+		activeModal.workspace.userId === currentUserId;
+
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<header className={styles["header"]}>
-				<h2 className={styles["title"]}>WORKSPACES / PROJECT MANAGER</h2>
+				<h1 className={styles["title"]}>Workspaces</h1>
 				<Button
+					iconName={IconName.PLUS}
 					label="Create Workspace"
 					onClick={handleCreateOpen}
 					type="button"
 				/>
 			</header>
+
+			<div className={styles["filter-container"]}>
+				<SegmentedControl
+					label="Filter workspaces by ownership"
+					onChange={setScope}
+					options={WORKSPACE_LIST_SCOPE_OPTIONS}
+					value={scope}
+				/>
+			</div>
 
 			<div className={styles["search-container"]}>
 				<Input
@@ -70,13 +115,16 @@ const Workspaces: React.FC = () => {
 
 			<div className={styles["list"]}>
 				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
-
-				{data?.items.map((workspace) => {
+				{workspaces.map((workspace) => {
+					const isOwner = workspace.userId === currentUserId;
 					return (
 						<WorkspaceCard
+							isOwner={isOwner}
 							key={workspace.id}
 							onConfig={handleConfigOpen}
 							onDelete={handleDeleteOpen}
+							onLeave={handleLeaveOpen}
+							onManageAccess={handleManageAccessOpen}
 							workspace={workspace}
 						/>
 					);
@@ -96,6 +144,22 @@ const Workspaces: React.FC = () => {
 
 			{activeModal?.type === "delete" && (
 				<WorkspaceDeleteModal
+					onClose={handleModalClose}
+					workspace={activeModal.workspace}
+				/>
+			)}
+
+			{activeModal?.type === "leave" && user && (
+				<WorkspaceLeaveModal
+					currentUserId={user.id}
+					onClose={handleModalClose}
+					workspace={activeModal.workspace}
+				/>
+			)}
+
+			{activeModal?.type === "manage-access" && (
+				<WorkspaceContributorsModal
+					isOwner={isActiveWorkspaceOwner}
 					onClose={handleModalClose}
 					workspace={activeModal.workspace}
 				/>
