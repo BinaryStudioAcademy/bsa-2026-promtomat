@@ -92,3 +92,9 @@
 	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
 }
+
+.modal-body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+}

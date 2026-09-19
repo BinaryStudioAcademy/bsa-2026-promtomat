@@ -4,8 +4,8 @@ import { Button } from "~/libs/components/button/button.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { type ApiTokenDto } from "~/modules/api-tokens/api-tokens.js";
 
-import { ApiTokensMessage } from "./libs/enums/enums.js";
-import styles from "./styles.module.css";
+import { ApiTokensMessage } from "../../libs/enums/enums.js";
+import styles from "../../styles.module.css";
 
 type Properties = {
 	onRevoke: (id: string) => void;

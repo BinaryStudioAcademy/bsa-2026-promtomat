@@ -20,8 +20,8 @@ import {
 	tokenCreateValidationSchema,
 } from "~/modules/api-tokens/api-tokens.js";
 
-import { ApiTokenRow } from "./api-token-row.js";
-import { IssuedTokenDialog } from "./issued-token-dialog.js";
+import { ApiTokenRow } from "./components/api-token-row/api-token-row.js";
+import { IssuedTokenDialog } from "./components/issued-token-dialog/issued-token-dialog.js";
 import { ApiTokensMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
