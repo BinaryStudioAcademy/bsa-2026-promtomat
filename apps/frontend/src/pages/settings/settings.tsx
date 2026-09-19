@@ -1,12 +1,10 @@
-import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
+import { SecurityCard } from "./components/security-card/security-card.js";
 import { SettingsForm } from "./components/settings-form/settings-form.js";
-import { SettingsMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 const SettingsPage: React.FC = () => {
@@ -27,15 +25,7 @@ const SettingsPage: React.FC = () => {
 				<h1 className={styles["title"]}>User settings</h1>
 				<div className={styles["content"]}>
 					<SettingsForm user={user} />
-					<section className={styles["card"]}>
-						<h2 className={styles["section-title"]}>SECURITY</h2>
-						<Button
-							label={SettingsMessage.RESET_PASSWORD}
-							size={ControlSize.LG}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
-						/>
-					</section>
+					<SecurityCard email={user.email} />
 				</div>
 			</div>
 		</main>
