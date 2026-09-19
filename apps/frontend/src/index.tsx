@@ -53,11 +53,11 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
-												await import("~/pages/smart-search/smart-search.js");
+												await import("~/pages/profile/profile.js");
 
-											return { Component: pageModule.SmartSearch };
+											return { Component: pageModule.Profile };
 										},
-										path: AppRoute.SMART_SEARCH,
+										path: AppRoute.PROFILE,
 									},
 									{
 										lazy: async () => {
@@ -85,6 +85,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 											return { Component: pageModule.Workspaces };
 										},
 										path: AppRoute.WORKSPACES,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-history/prompt-history.js");
+
+											return { Component: pageModule.PromptHistory };
+										},
+										path: AppRoute.PROMPTS_HISTORY,
 									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,

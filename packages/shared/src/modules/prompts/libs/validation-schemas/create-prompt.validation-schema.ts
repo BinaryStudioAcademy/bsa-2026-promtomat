@@ -26,12 +26,20 @@ const promptCreate = z.object({
 		.string()
 		.trim()
 		.min(
-			PromptValidationRule.INTENT_MINIMUM_LENGTH,
-			PromptValidationMessage.INTENT_TOO_SHORT,
+			PromptValidationRule.INTENT_REQUIRED,
+			PromptValidationMessage.INTENT_REQUIRED,
 		)
-		.max(
-			PromptValidationRule.INTENT_MAXIMUM_LENGTH,
-			PromptValidationMessage.INTENT_TOO_LONG,
+		.pipe(
+			z
+				.string()
+				.min(
+					PromptValidationRule.INTENT_MINIMUM_LENGTH,
+					PromptValidationMessage.INTENT_TOO_SHORT,
+				)
+				.max(
+					PromptValidationRule.INTENT_MAXIMUM_LENGTH,
+					PromptValidationMessage.INTENT_TOO_LONG,
+				),
 		),
 	workspaceId: z.number(PromptValidationMessage.INVALID_CONTEXT),
 });
