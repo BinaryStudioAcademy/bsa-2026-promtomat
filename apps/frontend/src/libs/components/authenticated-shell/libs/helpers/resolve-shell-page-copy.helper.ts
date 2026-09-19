@@ -1,5 +1,4 @@
-import { WORKSPACES_PAGE_COPY } from "../constants/constants.js";
-import { type ShellPageCopy } from "../types/types.js";
+import { ShellPageCopy, type ShellPageCopyValue } from "../enums/enums.js";
 import { checkIsShellPageCopy } from "./check-is-shell-page-copy.helper.js";
 
 type RouteMatchWithHandle = {
@@ -8,14 +7,14 @@ type RouteMatchWithHandle = {
 
 const resolveShellPageCopy = (
 	matches: readonly RouteMatchWithHandle[],
-): ShellPageCopy => {
+): ShellPageCopyValue => {
 	const matchedHandle = matches
 		.map((match) => match.handle)
-		.findLast((handle): handle is ShellPageCopy =>
+		.findLast((handle): handle is ShellPageCopyValue =>
 			checkIsShellPageCopy(handle),
 		);
 
-	return matchedHandle ?? WORKSPACES_PAGE_COPY;
+	return matchedHandle ?? ShellPageCopy.WORKSPACES;
 };
 
 export { resolveShellPageCopy };

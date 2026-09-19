@@ -1,6 +1,6 @@
-import { type ShellPageCopy } from "../types/types.js";
+import { type ShellPageCopyValue } from "../enums/enums.js";
 
-const checkIsShellPageCopy = (value: unknown): value is ShellPageCopy => {
+const checkIsShellPageCopy = (value: unknown): value is ShellPageCopyValue => {
 	if (typeof value !== "object" || value === null) {
 		return false;
 	}

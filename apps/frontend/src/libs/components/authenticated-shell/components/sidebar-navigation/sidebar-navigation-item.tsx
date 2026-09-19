@@ -1,11 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { useCallback } from "react";
 
 import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
 import { type IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
 
-import { checkIsShellRouteActive } from "../../libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -19,15 +19,14 @@ const SidebarNavigationItem: React.FC<Properties> = ({
 	label,
 	to,
 }: Properties) => {
-	const { pathname } = useLocation();
-	const isActive = checkIsShellRouteActive({ pathname, to });
+	const getClassName = useCallback(
+		({ isActive }: { isActive: boolean }): string =>
+			getValidClasses(styles["item"], isActive && styles["active"]),
+		[],
+	);
 
 	return (
-		<Link
-			aria-current={isActive ? "page" : undefined}
-			className={getValidClasses(styles["item"], isActive && styles["active"])}
-			to={to}
-		>
+		<Link className={getClassName} hasDefaultStyles={false} to={to}>
 			<Icon iconName={iconName} />
 			{label}
 		</Link>

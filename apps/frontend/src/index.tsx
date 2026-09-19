@@ -6,14 +6,7 @@ import { Navigate } from "react-router-dom";
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
 import { AuthenticatedShell } from "~/libs/components/authenticated-shell/authenticated-shell.js";
-import {
-	GENERATE_PAGE_COPY,
-	PROFILE_PAGE_COPY,
-	SETTINGS_PAGE_COPY,
-	SMART_SEARCH_PAGE_COPY,
-	TRAINING_PAGE_COPY,
-	WORKSPACES_PAGE_COPY,
-} from "~/libs/components/authenticated-shell/libs/constants/constants.js";
+import { ShellPageCopy } from "~/libs/components/authenticated-shell/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
@@ -44,7 +37,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												index: true,
 											},
 											{
-												handle: PROFILE_PAGE_COPY,
+												handle: ShellPageCopy.PROFILE,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/profile/profile.js");
@@ -54,7 +47,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.PROFILE,
 											},
 											{
-												handle: SETTINGS_PAGE_COPY,
+												handle: ShellPageCopy.SETTINGS,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/settings/settings.js");
@@ -64,7 +57,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.SETTINGS,
 											},
 											{
-												handle: TRAINING_PAGE_COPY,
+												handle: ShellPageCopy.TRAINING,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/training/training.js");
@@ -74,7 +67,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.TRAINING,
 											},
 											{
-												handle: GENERATE_PAGE_COPY,
+												handle: ShellPageCopy.GENERATE,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/generate/generate.js");
@@ -84,7 +77,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.GENERATE,
 											},
 											{
-												handle: WORKSPACES_PAGE_COPY,
+												handle: ShellPageCopy.WORKSPACES,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/workspaces/workspaces.js");
@@ -94,7 +87,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.WORKSPACES,
 											},
 											{
-												handle: SMART_SEARCH_PAGE_COPY,
+												handle: ShellPageCopy.SMART_SEARCH,
 												lazy: async () => {
 													const pageModule =
 														await import("~/pages/prompt-history/prompt-history.js");
