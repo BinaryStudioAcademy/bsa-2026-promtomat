@@ -6,7 +6,6 @@ import { Loader } from "~/libs/components/loader/loader.js";
 import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 import styles from "./styles.module.css";
@@ -16,7 +15,6 @@ const PromptDelivery: React.FC = () => {
 	const parsedPromptId = Number(promptId);
 
 	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
-	const { data: workspacesData } = useGetWorkspacesQuery({});
 
 	if (isLoading) {
 		return <Loader variant={LoaderVariant.SECTION} />;
@@ -26,16 +24,12 @@ const PromptDelivery: React.FC = () => {
 		return <NotFoundPage />;
 	}
 
-	const workspaceName = workspacesData?.items.find(
-		(workspace) => workspace.id === data.workspaceId,
-	)?.name;
-
 	return (
 		<div className={getValidClasses("page-container", styles["page"])}>
 			<PromptDeliveryView
-				body={data.promptBody}
-				efficiencyScore={data.efficiencyScore}
-				{...(workspaceName === undefined ? {} : { workspaceName })}
+				body={data.body}
+				efficiencyScore={data.score}
+				workspaceName={data.workspaceName}
 			/>
 		</div>
 	);

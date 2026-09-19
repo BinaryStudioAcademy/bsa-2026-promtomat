@@ -24,6 +24,7 @@ import {
 	type PromptGenerateLabelPayload,
 	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
@@ -180,19 +181,28 @@ class PromptService {
 		};
 	}
 
-	public async findById(id: number, userId: number): Promise<PromptDto> {
+	public async findById(
+		id: number,
+		userId: number,
+	): Promise<PromptItemResponseDto> {
 		const prompt = await this.promptRepository.findById(id);
 
 		if (!prompt) {
 			throw PromptDeliveryError.notFound();
 		}
 
-		const workspace = await this.workspaceService.findByIdAndOwner(
+		const ownedWorkspace = await this.workspaceService.findByIdAndOwner(
 			prompt.workspaceId,
 			userId,
 		);
+		const contributedWorkspace = ownedWorkspace
+			? null
+			: await this.workspaceService.findByIdAndContributor(
+					prompt.workspaceId,
+					userId,
+				);
 
-		if (!workspace) {
+		if (!ownedWorkspace && !contributedWorkspace) {
 			throw PromptDeliveryError.notFound();
 		}
 

@@ -372,7 +372,7 @@ class PromptController extends BaseController {
 	 *          content:
 	 *            application/json:
 	 *              schema:
-	 *                $ref: "#/components/schemas/Prompt"
+	 *                $ref: "#/components/schemas/PromptItem"
 	 *        401:
 	 *          description: Unauthorized
 	 *          content:

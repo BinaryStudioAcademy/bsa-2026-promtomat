@@ -27,6 +27,7 @@ import {
 	type PromptFilterByQueryParameters,
 	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
+	type PromptItemResponseDto,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
@@ -160,33 +161,48 @@ class PromptRepository {
 		};
 	}
 
-	public async findById(id: number): Promise<null | PromptDto> {
+	public async findById(id: number): Promise<null | PromptItemResponseDto> {
 		const rows = await this.promptModel
 			.knex()
 			.select(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				PROMPT_ID,
-				`${DatabaseTableName.LABELS}.${LabelColumnName.NAME} as ${LABEL_ALIAS}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
 				PROMPT_WORKSPACE_ID,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
 			)
 			.from(DatabaseTableName.PROMPTS)
-			.leftJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
+			.innerJoin(
+				DatabaseTableName.WORKSPACES,
+				PROMPT_WORKSPACE_ID,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+			)
 			.where(PROMPT_ID, "=", id);
 
-		const [row] = rows as Array<
-			Omit<PromptDto, "label"> & { label: null | string }
-		>;
+		const [row] = rows as Array<{
+			createdAt: string;
+			efficiencyScore: number;
+			id: number;
+			promptBody: string;
+			taskIntent: string;
+			workspaceId: number;
+			workspaceName: string;
+		}>;
 
 		if (!row) {
 			return null;
 		}
 
 		return {
-			...row,
-			label: row.label ?? "",
+			body: row.promptBody,
+			createdAt: row.createdAt,
+			id: row.id,
+			intent: row.taskIntent,
+			score: row.efficiencyScore,
+			workspaceId: row.workspaceId,
+			workspaceName: row.workspaceName,
 		};
 	}
 
