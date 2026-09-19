@@ -28,4 +28,3 @@ const ShellPageCopy = {
 type ShellPageCopyValue = (typeof ShellPageCopy)[keyof typeof ShellPageCopy];
 
 export { type ShellPageCopyValue, ShellPageCopy };
-

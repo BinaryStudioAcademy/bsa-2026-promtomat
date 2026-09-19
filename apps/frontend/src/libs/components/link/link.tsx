@@ -6,9 +6,7 @@ import { type NavigableRoute } from "~/libs/types/types.js";
 
 import styles from "./styles.module.css";
 
-type LinkClassName =
-	| ((state: { isActive: boolean }) => string)
-	| string;
+type LinkClassName = ((state: { isActive: boolean }) => string) | string;
 
 type Properties = {
 	children: React.ReactNode;
