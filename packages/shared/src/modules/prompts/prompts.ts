@@ -12,6 +12,8 @@ export {
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
+	type PromptRouteParametersDto,
+	type PromptUpdateIntentRequestDto,
 } from "./libs/types/types.js";
 export {
 	type PromptGetRecentResponseDto,
@@ -22,5 +24,7 @@ export {
 export {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
+	promptRouteParametersValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
