@@ -248,12 +248,6 @@ const typescriptConfig = {
 			},
 		],
 		"@typescript-eslint/no-unnecessary-type-parameters": "off",
-		// `redirect()` from react-router returns a Response, and throwing it is the
-		// documented way to redirect from a route middleware or loader.
-		"@typescript-eslint/only-throw-error": [
-			"error",
-			{ allow: [{ from: "lib", name: "Response" }] },
-		],
 		"@typescript-eslint/return-await": ["error", "always"],
 	},
 };
