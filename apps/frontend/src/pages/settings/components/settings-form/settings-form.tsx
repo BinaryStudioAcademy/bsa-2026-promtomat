@@ -21,7 +21,10 @@ import {
 	EMPTY_AI_CODING_TOOL,
 } from "../../libs/constants.js";
 import { SettingsMessage } from "../../libs/enums/enums.js";
-import { getSettingsFormValues } from "../../libs/helpers/helpers.js";
+import {
+	checkHasSettingsChanged,
+	getSettingsFormValues,
+} from "../../libs/helpers/helpers.js";
 import { type SettingsFormValues } from "../../libs/types/types.js";
 import styles from "../../styles.module.css";
 
@@ -38,6 +41,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		handleSubmit,
 		reset,
 		setError,
+		setValue,
 	} = useAppForm<SettingsFormValues>({
 		defaultValues: getSettingsFormValues(user),
 		validationSchema: updateProfileValidationSchema,
@@ -50,9 +54,24 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 
 	const isSaveDisabled = isLoading || !isDirty;
 
+	const handleNicknameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("nickname", event.target.value.trim(), { shouldDirty: true });
+		},
+		[setValue],
+	);
+
 	const handleSave = useCallback(
 		(payload: SettingsFormValues): void => {
-			if (!isDirty || payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL) {
+			const hasPayloadChanged = checkHasSettingsChanged({
+				current: getSettingsFormValues(user),
+				next: payload,
+			});
+
+			if (
+				!hasPayloadChanged ||
+				payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL
+			) {
 				return;
 			}
 
@@ -80,7 +99,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					}
 				});
 		},
-		[isDirty, reset, setError, updateProfile],
+		[reset, setError, updateProfile, user],
 	);
 
 	const handleFormSubmit = useCallback(
@@ -106,6 +125,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
+						onBlur={handleNicknameBlur}
 						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
