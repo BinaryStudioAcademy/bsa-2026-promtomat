@@ -8,7 +8,10 @@ import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import {
+	isServerError,
+	isToastedError,
+} from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	AuthValidationRule,
 	type SignUpRequestDto,
@@ -63,9 +66,7 @@ const SignUpForm: React.FC<Properties> = ({
 		setHasPasswordBeenFocused(true);
 	}, []);
 
-	const isToastedError =
-		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
-	const generalError = isToastedError ? undefined : error;
+	const generalError = isToastedError(error) ? undefined : error;
 
 	const handleFormSubmit = useCallback(
 		(event_: React.BaseSyntheticEvent): void => {

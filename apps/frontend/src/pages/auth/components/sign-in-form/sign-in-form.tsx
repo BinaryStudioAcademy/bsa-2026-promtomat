@@ -5,10 +5,10 @@ import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Link } from "~/libs/components/link/link.js";
-import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
+import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { isToastedError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
@@ -33,9 +33,8 @@ const SignInForm: React.FC = () => {
 		fields: SIGN_IN_FIELDS,
 		setError,
 	});
-	const isToastedError =
-		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
-	const generalError = hasFieldErrors || isToastedError ? undefined : error;
+	const generalError =
+		hasFieldErrors || isToastedError(error) ? undefined : error;
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
