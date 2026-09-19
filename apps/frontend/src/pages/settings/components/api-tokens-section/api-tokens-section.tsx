@@ -5,7 +5,6 @@ import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { Modal } from "~/libs/components/modal/modal.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
@@ -22,6 +21,7 @@ import {
 } from "~/modules/api-tokens/api-tokens.js";
 
 import { ApiTokenRow } from "./api-token-row.js";
+import { IssuedTokenDialog } from "./issued-token-dialog.js";
 import { ApiTokensMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -68,19 +68,6 @@ const ApiTokensSection: React.FC = () => {
 		},
 		[handleCreate, handleSubmit],
 	);
-
-	const handleCopy = useCallback((): void => {
-		if (!issuedToken) {
-			return;
-		}
-
-		void navigator.clipboard.writeText(issuedToken.value).then(() => {
-			showNotification({
-				message: ApiTokensMessage.COPIED,
-				type: "success",
-			});
-		});
-	}, [issuedToken]);
 
 	const handleIssuedDialogClose = useCallback((): void => {
 		setIssuedToken(null);
@@ -161,32 +148,11 @@ const ApiTokensSection: React.FC = () => {
 				</ul>
 			)}
 
-			<Modal
-				footer={
-					<Button
-						label={ApiTokensMessage.DIALOG_CLOSE}
-						onClick={handleIssuedDialogClose}
-						type="button"
-						variant={ButtonVariant.PRIMARY}
-					/>
-				}
-				isOpen={Boolean(issuedToken)}
+			<IssuedTokenDialog
+				key={issuedToken?.id}
 				onClose={handleIssuedDialogClose}
-				title={ApiTokensMessage.CREATED_TITLE}
-			>
-				<p className={styles["warning"]}>{ApiTokensMessage.ONE_TIME_WARNING}</p>
-				<div className={styles["value-box"]}>
-					<code className={styles["value"]}>{issuedToken?.value}</code>
-					<Button
-						label={ApiTokensMessage.COPY}
-						onClick={handleCopy}
-						size={ControlSize.SM}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
-				</div>
-				<p className={styles["hint"]}>{ApiTokensMessage.CONNECT_HINT}</p>
-			</Modal>
+				token={issuedToken}
+			/>
 
 			<Confirmation
 				confirmLabel={ApiTokensMessage.REVOKE}

@@ -1,0 +1,88 @@
+import { useCallback, useState } from "react";
+
+import { Button } from "~/libs/components/button/button.js";
+import { Modal } from "~/libs/components/modal/modal.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
+import { type ApiTokenResponseDto } from "~/modules/api-tokens/api-tokens.js";
+
+import { UNCOPIED_NOTIFICATION_DURATION_MS } from "./libs/constants/constants.js";
+import { ApiTokensMessage } from "./libs/enums/enums.js";
+import styles from "./styles.module.css";
+
+type Properties = {
+	onClose: () => void;
+	token: ApiTokenResponseDto | null;
+};
+
+const IssuedTokenDialog: React.FC<Properties> = ({
+	onClose,
+	token,
+}: Properties) => {
+	const { copyToClipboard } = useClipboard();
+	const [hasCopied, setHasCopied] = useState<boolean>(false);
+
+	const handleCopy = useCallback((): void => {
+		if (!token) {
+			return;
+		}
+
+		void copyToClipboard(token.value).then((isCopySuccessful: boolean) => {
+			setHasCopied(isCopySuccessful);
+			showNotification({
+				message: isCopySuccessful
+					? ApiTokensMessage.COPIED
+					: ApiTokensMessage.COPY_FAILED,
+				type: isCopySuccessful ? "success" : "danger",
+			});
+		});
+	}, [copyToClipboard, token]);
+
+	const handleClose = useCallback((): void => {
+		if (!hasCopied) {
+			showNotification({
+				duration: UNCOPIED_NOTIFICATION_DURATION_MS,
+				message: ApiTokensMessage.CLOSE_WITHOUT_COPY,
+				type: "warning",
+			});
+		}
+
+		onClose();
+	}, [hasCopied, onClose]);
+
+	return (
+		<Modal
+			footer={
+				<Button
+					label={
+						hasCopied
+							? ApiTokensMessage.DIALOG_CLOSE
+							: ApiTokensMessage.DIALOG_CLOSE_UNCOPIED
+					}
+					onClick={handleClose}
+					type="button"
+					variant={ButtonVariant.PRIMARY}
+				/>
+			}
+			isOpen={Boolean(token)}
+			onClose={handleClose}
+			title={ApiTokensMessage.CREATED_TITLE}
+		>
+			<p className={styles["warning"]}>{ApiTokensMessage.ONE_TIME_WARNING}</p>
+			<div className={styles["value-box"]}>
+				<code className={styles["value"]}>{token?.value}</code>
+				<Button
+					label={ApiTokensMessage.COPY}
+					onClick={handleCopy}
+					size={ControlSize.SM}
+					type="button"
+					variant={ButtonVariant.SECONDARY}
+				/>
+			</div>
+			<p className={styles["hint"]}>{ApiTokensMessage.CONNECT_HINT}</p>
+		</Modal>
+	);
+};
+
+export { IssuedTokenDialog };

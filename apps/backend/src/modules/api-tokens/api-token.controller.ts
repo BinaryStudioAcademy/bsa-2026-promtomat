@@ -18,6 +18,35 @@ import {
 	tokenRouteParametersValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     ApiToken:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         lastUsedAt:
+ *           type: string
+ *           format: date-time
+ *           nullable: true
+ *         name:
+ *           type: string
+ *     ApiTokenCreated:
+ *       allOf:
+ *         - $ref: "#/components/schemas/ApiToken"
+ *         - type: object
+ *           required:
+ *             - value
+ *           properties:
+ *             value:
+ *               type: string
+ *               description: >
+ *                 The token value. Returned by this endpoint only and never
+ *                 recoverable afterwards, from the API or the database.
+ */
 class ApiTokenController extends BaseController {
 	private apiTokenService: ApiTokenService;
 
@@ -61,6 +90,49 @@ class ApiTokenController extends BaseController {
 		});
 	}
 
+	/**
+	 * @swagger
+	 * /api-tokens:
+	 *   post:
+	 *     description: Issues an API token and returns its value exactly once
+	 *     security:
+	 *       - bearerAuth: []
+	 *     requestBody:
+	 *       description: Token name
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               name:
+	 *                 type: string
+	 *     responses:
+	 *       201:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ApiTokenCreated"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       409:
+	 *         description: A token with this name already exists
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
 	private async create(
 		options: APIHandlerOptions<{ body: ApiTokenRequestDto }>,
 	): Promise<APIHandlerResponse> {
@@ -73,6 +145,29 @@ class ApiTokenController extends BaseController {
 		};
 	}
 
+	/**
+	 * @swagger
+	 * /api-tokens:
+	 *   get:
+	 *     description: Returns the tokens issued by the authenticated user
+	 *     security:
+	 *       - bearerAuth: []
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: array
+	 *               items:
+	 *                 $ref: "#/components/schemas/ApiToken"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 */
 	private async findAllByUserId(
 		options: APIHandlerOptions,
 	): Promise<APIHandlerResponse> {
@@ -84,6 +179,45 @@ class ApiTokenController extends BaseController {
 		};
 	}
 
+	/**
+	 * @swagger
+	 * /api-tokens/revoke/{id}:
+	 *   delete:
+	 *     description: >
+	 *       Revokes one of the authenticated user's tokens. Takes effect on the
+	 *       next request. A token belonging to another user is reported as not
+	 *       found, so the response does not confirm which tokens exist.
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: id
+	 *         required: true
+	 *         schema:
+	 *           type: string
+	 *           format: uuid
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       404:
+	 *         description: Token not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
 	private async revoke(
 		options: APIHandlerOptions<{ params: ApiTokenRouteParametersDto }>,
 	): Promise<APIHandlerResponse> {

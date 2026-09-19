@@ -13,7 +13,7 @@
 .form {
 	display: flex;
 	gap: var(--space-12);
-	align-items: flex-end;
+	align-items: center;
 }
 
 .form-field {
