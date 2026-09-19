@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
@@ -34,20 +33,16 @@ type Properties = {
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
-	const { control, handleSubmit, reset, setError } =
-		useAppForm<SettingsFormValues>({
-			defaultValues: getSettingsFormValues(user),
-			validationSchema: updateProfileValidationSchema,
-		});
-	const nickname = useWatch({ control, name: "nickname" });
-	const primaryAiCodingTool = useWatch({
+	const {
 		control,
-		name: "primaryAiCodingTool",
-	});
-	const savedValues = getSettingsFormValues(user);
-	const hasProfileChanged = checkHasSettingsChanged({
-		current: savedValues,
-		next: { nickname, primaryAiCodingTool },
+		formState: { isDirty },
+		handleSubmit,
+		reset,
+		setError,
+		setValue,
+	} = useAppForm<SettingsFormValues>({
+		defaultValues: getSettingsFormValues(user),
+		validationSchema: updateProfileValidationSchema,
 	});
 
 	const isNicknameConflict =
@@ -55,7 +50,14 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
 	const generalError = isNicknameConflict ? undefined : error;
 
-	const isSaveDisabled = isLoading || !hasProfileChanged;
+	const isSaveDisabled = isLoading || !isDirty;
+
+	const handleNicknameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("nickname", event.target.value.trim(), { shouldDirty: true });
+		},
+		[setValue],
+	);
 
 	const handleSave = useCallback(
 		(payload: SettingsFormValues): void => {
@@ -117,6 +119,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
+						onBlur={handleNicknameBlur}
 						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>

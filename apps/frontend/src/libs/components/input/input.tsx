@@ -23,6 +23,7 @@ type Properties<T extends FieldValues> = {
 	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
+	onBlur?: React.FocusEventHandler<HTMLInputElement>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
@@ -39,6 +40,7 @@ const Input = <T extends FieldValues>({
 	label,
 	maxLength,
 	name,
+	onBlur,
 	onFocus,
 	placeholder = "",
 	size = ControlSize.MD,
@@ -72,6 +74,14 @@ const Input = <T extends FieldValues>({
 		setIsPasswordVisible((previous) => !previous);
 	}, []);
 
+	const handleBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			field.onBlur();
+			onBlur?.(event);
+		},
+		[field, onBlur],
+	);
+
 	return (
 		<div className={styles["field"]}>
 			<label
@@ -103,6 +113,7 @@ const Input = <T extends FieldValues>({
 					)}
 					id={inputId}
 					maxLength={maxLength}
+					onBlur={handleBlur}
 					onFocus={onFocus}
 					placeholder={placeholder}
 					type={inputType}
