@@ -28,14 +28,25 @@ const workspaceAccessHook = (
 			throw WorkspaceError.notFound();
 		}
 
-		const workspace = await workspaceService.findByIdAndOwner(
+		const ownedWorkspace = await workspaceService.findByIdAndOwner(
 			workspaceId,
 			request.user.id,
 		);
 
-		if (!workspace) {
-			throw WorkspaceError.notFound();
+		if (ownedWorkspace) {
+			return;
 		}
+
+		const contributedWorkspace = await workspaceService.findByIdAndContributor(
+			workspaceId,
+			request.user.id,
+		);
+
+		if (contributedWorkspace) {
+			return;
+		}
+
+		throw WorkspaceError.notFound();
 	};
 };
 

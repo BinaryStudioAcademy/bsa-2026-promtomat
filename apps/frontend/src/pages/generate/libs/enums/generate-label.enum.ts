@@ -9,6 +9,7 @@ const GenerateLabel = {
 	SCORE: "Score",
 	SOURCES_HEADING: "Sources",
 	SUBMIT: "Generate",
+	SUBMITTING: "Generating",
 	WORKSPACE_CAPTION: "Generate in:",
 	WORKSPACE_FIELD: "Generate in",
 	WORKSPACE_PLACEHOLDER: "Select workspace",
