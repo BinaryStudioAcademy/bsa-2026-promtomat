@@ -50,6 +50,3 @@ mise.toml
 
 # locally provisioned embedding model store (EMBEDDING_LOCAL_PATH)
 .model-cache
-
-# local Bedrock probe script
-apps/backend/src/scripts/probe-bedrock.ts
