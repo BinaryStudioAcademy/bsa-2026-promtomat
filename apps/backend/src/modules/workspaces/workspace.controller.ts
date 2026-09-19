@@ -8,7 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
-import { workspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
+import { workspaceOwnerAccessHook } from "./libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceCreateRequestDto,
 	type WorkspaceGetAllRequestDto,
@@ -48,8 +48,12 @@ import { type WorkspaceService } from "./workspace.service.js";
  *         - $ref: "#/components/schemas/Workspace"
  *         - type: object
  *           required:
+ *             - memberCount
  *             - promptCount
  *           properties:
+ *             memberCount:
+ *               type: integer
+ *               minimum: 1
  *             promptCount:
  *               type: integer
  *               minimum: 0
@@ -99,7 +103,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.DELETE,
 			path: WorkspacesApiPath.$WORKSPACE_ID,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceOwnerAccessHook(this.workspaceService),
 			validation: {
 				params: workspaceRouteParametersValidationSchema,
 			},
@@ -115,7 +119,7 @@ class WorkspaceController extends BaseController {
 				),
 			method: HTTPMethod.PATCH,
 			path: WorkspacesApiPath.$WORKSPACE_ID,
-			preHandler: workspaceAccessHook(this.workspaceService),
+			preHandler: workspaceOwnerAccessHook(this.workspaceService),
 			validation: {
 				body: workspaceUpdateValidationSchema,
 				params: workspaceRouteParametersValidationSchema,
@@ -155,6 +159,7 @@ class WorkspaceController extends BaseController {
 	 *        409:
 	 *          description: Workspace name already exists
 	 */
+
 	private async create(
 		options: APIHandlerOptions<{
 			body: WorkspaceCreateRequestDto;
@@ -193,6 +198,13 @@ class WorkspaceController extends BaseController {
 	 *      security:
 	 *        - bearerAuth: []
 	 *      parameters:
+	 *        - in: query
+	 *          name: scope
+	 *          schema:
+	 *            type: string
+	 *            enum: [all, owned, shared]
+	 *            default: all
+	 *          description: Limits the list to owned or shared workspaces
 	 *        - in: query
 	 *          name: workspaceName
 	 *          schema:
@@ -233,7 +245,7 @@ class WorkspaceController extends BaseController {
 		return {
 			payload: await this.workspaceService.findAllByUserId(
 				options.user?.id as number,
-				options.query.workspaceName,
+				options.query,
 			),
 			status: HTTPCode.OK,
 		};
