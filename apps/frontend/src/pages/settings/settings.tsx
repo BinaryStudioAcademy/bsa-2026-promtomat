@@ -5,6 +5,7 @@ import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
+import { ApiTokensSection } from "./components/api-tokens-section/api-tokens-section.js";
 import { SettingsForm } from "./components/settings-form/settings-form.js";
 import { SettingsMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -35,6 +36,7 @@ const SettingsPage: React.FC = () => {
 							type="button"
 							variant={ButtonVariant.SECONDARY}
 						/>
+						<ApiTokensSection />
 					</section>
 				</div>
 			</div>
