@@ -74,11 +74,13 @@ class ApiTokenEntity implements Entity {
 	}
 
 	public toAuthObject(): {
+		lastUsedAt: null | string;
 		publicId: string;
 		tokenHash: string;
 		userId: number;
 	} {
 		return {
+			lastUsedAt: this.lastUsedAt,
 			publicId: this.publicId as string,
 			tokenHash: this.tokenHash,
 			userId: this.userId,

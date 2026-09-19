@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { getRelativeTimeLabel } from "~/libs/helpers/helpers.js";
 import { type ApiTokenDto } from "~/modules/api-tokens/api-tokens.js";
 
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
@@ -18,7 +19,7 @@ const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 	}, [onRevoke, token.id]);
 
 	const lastUsedLabel = token.lastUsedAt
-		? new Date(token.lastUsedAt).toLocaleDateString()
+		? `${ApiTokensMessage.LAST_USED_PREFIX} ${getRelativeTimeLabel(token.lastUsedAt)}`
 		: ApiTokensMessage.LAST_USED_NEVER;
 
 	return (

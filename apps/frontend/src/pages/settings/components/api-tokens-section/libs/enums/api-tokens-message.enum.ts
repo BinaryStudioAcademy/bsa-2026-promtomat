@@ -14,6 +14,7 @@ const ApiTokensMessage = {
 	DIALOG_CLOSE_UNCOPIED: "Close without copying",
 	EMPTY: "You have no API tokens yet. Generate one to connect a coding agent.",
 	LAST_USED_NEVER: "Never used",
+	LAST_USED_PREFIX: "Last used",
 	LOADING: "Loading tokens",
 	NAME_LABEL: "Token name",
 	NAME_PLACEHOLDER: "My laptop",

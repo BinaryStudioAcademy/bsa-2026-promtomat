@@ -6,7 +6,7 @@ import { ApiTokenRepository } from "./api-token.repository.js";
 import { ApiTokenService } from "./api-token.service.js";
 
 const apiTokenRepository = new ApiTokenRepository(ApiTokenModel);
-const apiTokenService = new ApiTokenService(apiTokenRepository);
+const apiTokenService = new ApiTokenService(apiTokenRepository, logger);
 const apiTokenController = new ApiTokenController(logger, apiTokenService);
 
 export { apiTokenController, apiTokenService };
