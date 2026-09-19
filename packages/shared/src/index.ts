@@ -77,7 +77,12 @@ export {
 	labelGetByQueryValidationSchema,
 	LabelsApiPath,
 } from "./modules/labels/labels.js";
-export { MCPEnvironmentVariable } from "./modules/mcp/mcp.js";
+export {
+	type MCPConnectCommandParameters,
+	getMCPConnectCommand,
+	MCPEnvironmentVariable,
+	MCPSetup,
+} from "./modules/mcp/mcp.js";
 export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,

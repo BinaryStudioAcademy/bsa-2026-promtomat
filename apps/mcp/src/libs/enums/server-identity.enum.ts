@@ -1,8 +1,10 @@
+import { MCPSetup } from "@promptomat/shared";
+
 import packageManifest from "../../../package.json" with { type: "json" };
 
 const ServerIdentity = {
-	COMMAND: "promptomat-mcp",
-	NAME: "promptomat",
+	COMMAND: MCPSetup.SERVER_COMMAND,
+	NAME: MCPSetup.SERVER_KEY,
 	VERSION: packageManifest.version,
 } as const;
 
