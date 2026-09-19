@@ -8,6 +8,7 @@ export {
 	SortOrder,
 } from "./libs/enums/enums.js";
 export {
+	ApiTokenError,
 	ApplicationError,
 	AuthError,
 	ComposedPromptError,
@@ -100,6 +101,18 @@ export {
 	promptWorkspaceQueryValidationSchema,
 } from "./modules/prompts/prompts.js";
 export {
+	type ApiTokenDto,
+	type ApiTokenRequestDto,
+	type ApiTokenResponseDto,
+	type ApiTokenRouteParametersDto,
+	API_TOKEN_PREFIX,
+	TokenApiPath,
+	tokenCreateValidationSchema,
+	TokenErrorCode,
+	TokenErrorMessage,
+	tokenRouteParametersValidationSchema,
+} from "./modules/tokens/tokens.js";
+export {
 	type PrimaryAiCodingTool,
 	type UserDto,
 	type UserProfileSummaryResponseDto,
@@ -111,6 +124,7 @@ export {
 	UsersErrorCode,
 	UserValidationMessage,
 } from "./modules/users/users.js";
+
 export {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,

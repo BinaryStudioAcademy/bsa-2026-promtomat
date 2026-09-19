@@ -1,6 +1,10 @@
 import { config } from "~/libs/modules/config/config.js";
 import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import {
+	apiTokenController,
+	apiTokenService,
+} from "~/modules/api-tokens/api-tokens.js";
 import { authController } from "~/modules/auth/auth.js";
 import { composedPromptController } from "~/modules/composed-prompts/composed-prompts.js";
 import { contributorController } from "~/modules/contributors/contributors.js";
@@ -15,11 +19,12 @@ import { token } from "../token/token.js";
 import { BaseServerApplicationApi } from "./base-server-application-api.js";
 import { BaseServerApplication } from "./base-server-application.js";
 
-const authGuard = new AuthGuard(token, userService);
+const authGuard = new AuthGuard(token, userService, apiTokenService);
 
 const apiV1 = new BaseServerApplicationApi(
 	"v1",
 	config,
+	...apiTokenController.routes,
 	...authController.routes,
 	...contributorController.routes,
 	...composedPromptController.routes,
