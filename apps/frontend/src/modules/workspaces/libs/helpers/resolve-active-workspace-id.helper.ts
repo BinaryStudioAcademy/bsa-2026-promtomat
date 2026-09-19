@@ -20,7 +20,7 @@ const resolveActiveWorkspaceId = ({
 	storedWorkspaceState,
 	workspaces,
 }: Parameters): number | undefined => {
-	if (workspaces === undefined || workspaces.length === EMPTY_LENGTH) {
+	if (!workspaces || workspaces.length === EMPTY_LENGTH) {
 		return undefined;
 	}
 
