@@ -1,0 +1,3 @@
+const OUT_OF_TAB_ORDER_INDEX = -1;
+
+export { OUT_OF_TAB_ORDER_INDEX };

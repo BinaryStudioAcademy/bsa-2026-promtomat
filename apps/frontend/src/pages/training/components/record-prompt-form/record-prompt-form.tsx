@@ -84,7 +84,7 @@ const RecordPromptForm: React.FC = () => {
 				/>
 			)}
 			<div>
-				<h1 className={styles["heading"]}>Log This Prompt</h1>
+				<h2 className={styles["heading"]}>Log This Prompt</h2>
 				<span className={styles["sub-heading"]}>
 					Every submission trains the retrieval index.
 				</span>

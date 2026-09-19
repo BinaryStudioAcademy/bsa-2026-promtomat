@@ -86,7 +86,7 @@ const Workspaces: React.FC = () => {
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<header className={styles["header"]}>
-				<h1 className={styles["title"]}>Workspaces</h1>
+				<h2 className={styles["title"]}>Workspaces</h2>
 				<Button
 					iconName={IconName.PLUS}
 					label="Create Workspace"

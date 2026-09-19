@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { Header } from "~/libs/components/header/header.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -21,14 +20,7 @@ const PrivateRoute: React.FC<Properties> = ({ redirectTo }: Properties) => {
 		return <Navigate to={redirectTo} />;
 	}
 
-	return (
-		<>
-			<Header isLoading={false} user={user} />
-			<main>
-				<Outlet />
-			</main>
-		</>
-	);
+	return <Outlet />;
 };
 
 export { PrivateRoute };
