@@ -1,4 +1,8 @@
-import { type Transaction, UniqueViolationError } from "objection";
+import {
+	NotFoundError,
+	type Transaction,
+	UniqueViolationError,
+} from "objection";
 
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
@@ -45,6 +49,28 @@ class RepositoryBindingRepository {
 		}
 	}
 
+	public async deleteById(id: number): Promise<number> {
+		const deletedRepositoryBindingCount = await this.repositoryBindingModel
+			.query()
+			.deleteById(id)
+			.execute();
+
+		return deletedRepositoryBindingCount;
+	}
+
+	public async findAllByWorkspaceId(
+		workspaceId: number,
+	): Promise<RepositoryBindingEntity[]> {
+		const repositoryBindings = await this.repositoryBindingModel
+			.query()
+			.where(RepositoryBindingColumnName.WORKSPACE_ID, workspaceId)
+			.execute();
+
+		return repositoryBindings.map((repositoryBinding) =>
+			RepositoryBindingEntity.initialize(repositoryBinding),
+		);
+	}
+
 	public async findWorkspaceIdsByIdentity(
 		identity: RepositoryIdentity,
 		workspaceIds: number[],
@@ -65,6 +91,38 @@ class RepositoryBindingRepository {
 		return repositoryBindings.map(
 			(repositoryBinding) => repositoryBinding.workspaceId,
 		);
+	}
+
+	public async update(
+		id: number,
+		identity: RepositoryIdentity,
+	): Promise<RepositoryBindingEntity> {
+		try {
+			const repositoryBinding = await this.repositoryBindingModel
+				.query()
+				.patchAndFetchById(id, {
+					host: identity.host,
+					owner: identity.owner,
+					repo: identity.repo,
+				})
+				.throwIfNotFound();
+
+			return RepositoryBindingEntity.initialize(repositoryBinding);
+		} catch (error) {
+			if (
+				error instanceof UniqueViolationError &&
+				error.constraint ===
+					RepositoryBindingConstraintName.WORKSPACE_ID_HOST_OWNER_REPO_UNIQUE
+			) {
+				throw RepositoryBindingError.alreadyExists();
+			}
+
+			if (error instanceof NotFoundError) {
+				throw RepositoryBindingError.notFound();
+			}
+
+			throw error;
+		}
 	}
 }
 

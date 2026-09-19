@@ -73,6 +73,28 @@ class RepositoryBindingService {
 		return repositoryBinding.toObject();
 	}
 
+	public async delete(id: number): Promise<void> {
+		const deletedRepositoryBindingCount =
+			await this.repositoryBindingRepository.deleteById(id);
+
+		if (!deletedRepositoryBindingCount) {
+			throw RepositoryBindingError.notFound();
+		}
+	}
+
+	public async findAllByWorkspaceId(
+		workspaceId: number,
+	): Promise<RepositoryBindingDto[]> {
+		const repositoryBindings =
+			await this.repositoryBindingRepository.findAllByWorkspaceId(
+				workspaceId,
+			);
+
+		return repositoryBindings.map((repositoryBinding) =>
+			repositoryBinding.toObject(),
+		);
+	}
+
 	public async resolve(
 		payload: ResolveRepositoryBindingQueryDto,
 		callerUserId: number,
@@ -107,6 +129,20 @@ class RepositoryBindingService {
 			status: RepositoryBindingResolutionStatus.AMBIGUOUS,
 			workspaces,
 		};
+	}
+
+	public async update(
+		id: number,
+		remoteUrl: string,
+	): Promise<RepositoryBindingDto> {
+		const identity = this.resolveIdentityOrThrow(remoteUrl);
+
+		const repositoryBinding = await this.repositoryBindingRepository.update(
+			id,
+			identity,
+		);
+
+		return repositoryBinding.toObject();
 	}
 }
 

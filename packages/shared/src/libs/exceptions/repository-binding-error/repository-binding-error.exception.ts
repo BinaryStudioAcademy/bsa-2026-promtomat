@@ -40,6 +40,14 @@ class RepositoryBindingError extends HTTPError {
 		});
 	}
 
+	public static notFound(): RepositoryBindingError {
+		return new RepositoryBindingError({
+			code: RepositoryBindingsErrorCode.REPOSITORY_BINDING_NOT_FOUND,
+			message: RepositoryBindingsErrorMessage.REPOSITORY_BINDING_NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
+		});
+	}
+
 	public static unrecognizedFormat(): RepositoryBindingError {
 		return new RepositoryBindingError({
 			code: RepositoryBindingsErrorCode.UNRECOGNIZED_REPOSITORY_FORMAT,
