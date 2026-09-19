@@ -2,11 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 
 import { storage, StorageKey } from "~/libs/modules/storage/storage.js";
 
+import { StoredWorkspaceStatus } from "../../enums/enums.js";
 import {
 	parseStoredWorkspaceId,
 	resolveActiveWorkspaceId,
 } from "../../helpers/helpers.js";
-import { type WorkspaceListItemDto } from "../../types/types.js";
+import {
+	type StoredWorkspaceState,
+	type WorkspaceListItemDto,
+} from "../../types/types.js";
 
 type Parameters = {
 	formWorkspaceId: number | undefined;
@@ -17,12 +21,14 @@ const useActiveWorkspace = ({
 	formWorkspaceId,
 	workspaces,
 }: Parameters): number | undefined => {
-	const [storedWorkspaceId, setStoredWorkspaceId] = useState<
-		null | number | undefined
-	>();
+	const [storedWorkspaceState, setStoredWorkspaceState] =
+		useState<StoredWorkspaceState>({ status: StoredWorkspaceStatus.LOADING });
 
 	const persistActiveWorkspaceId = useCallback((workspaceId: number): void => {
-		setStoredWorkspaceId(workspaceId);
+		setStoredWorkspaceState({
+			status: StoredWorkspaceStatus.RESOLVED,
+			workspaceId,
+		});
 		void storage.set(StorageKey.ACTIVE_WORKSPACE_ID, String(workspaceId));
 	}, []);
 
@@ -30,7 +36,10 @@ const useActiveWorkspace = ({
 		const loadStoredWorkspaceId = async (): Promise<void> => {
 			const storedValue = await storage.get(StorageKey.ACTIVE_WORKSPACE_ID);
 
-			setStoredWorkspaceId(parseStoredWorkspaceId(storedValue));
+			setStoredWorkspaceState({
+				status: StoredWorkspaceStatus.RESOLVED,
+				workspaceId: parseStoredWorkspaceId(storedValue),
+			});
 		};
 
 		void loadStoredWorkspaceId();
@@ -38,20 +47,21 @@ const useActiveWorkspace = ({
 
 	const activeWorkspaceId = resolveActiveWorkspaceId({
 		formWorkspaceId,
-		storedWorkspaceId,
+		storedWorkspaceState,
 		workspaces,
 	});
 
 	useEffect(() => {
 		if (
 			activeWorkspaceId === undefined ||
-			storedWorkspaceId === activeWorkspaceId
+			(storedWorkspaceState.status === StoredWorkspaceStatus.RESOLVED &&
+				storedWorkspaceState.workspaceId === activeWorkspaceId)
 		) {
 			return;
 		}
 
 		persistActiveWorkspaceId(activeWorkspaceId);
-	}, [activeWorkspaceId, persistActiveWorkspaceId, storedWorkspaceId]);
+	}, [activeWorkspaceId, persistActiveWorkspaceId, storedWorkspaceState]);
 
 	return activeWorkspaceId;
 };
