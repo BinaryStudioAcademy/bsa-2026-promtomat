@@ -7,7 +7,7 @@ type Properties = {
 };
 
 const EmptyMessage = ({ hasTokens, isLoading }: Properties) => {
-	if (!isLoading && !hasTokens) {
+	if (isLoading || hasTokens) {
 		return null;
 	}
 

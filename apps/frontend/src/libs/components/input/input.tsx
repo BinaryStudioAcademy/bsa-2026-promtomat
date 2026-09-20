@@ -15,22 +15,28 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	autoComplete?: React.HTMLInputAutoCompleteAttribute;
+	className?: string | undefined;
 	control: Control<T, null>;
-	descriptionId?: string;
+	descriptionId?: string | undefined;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
+	onBlur?: React.FocusEventHandler<HTMLInputElement>;
+	onClick?: React.MouseEventHandler<HTMLInputElement>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
+	onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 	placeholder?: string;
+	ref?: React.Ref<HTMLInputElement>;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
 };
 
 const Input = <T extends FieldValues>({
 	autoComplete,
+	className = "",
 	control,
 	descriptionId,
 	isDisabled = false,
@@ -39,8 +45,12 @@ const Input = <T extends FieldValues>({
 	label,
 	maxLength,
 	name,
+	onBlur,
+	onClick,
 	onFocus,
+	onKeyDown,
 	placeholder = "",
+	ref,
 	size = ControlSize.MD,
 	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
@@ -100,11 +110,16 @@ const Input = <T extends FieldValues>({
 						styles[size],
 						hasError && styles["error"],
 						isPasswordField && styles["with-toggle"],
+						className,
 					)}
 					id={inputId}
 					maxLength={maxLength}
+					onBlur={onBlur}
+					onClick={onClick}
 					onFocus={onFocus}
+					onKeyDown={onKeyDown}
 					placeholder={placeholder}
+					ref={ref}
 					type={inputType}
 				/>
 				{isPasswordField && (

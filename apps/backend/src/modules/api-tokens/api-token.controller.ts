@@ -12,10 +12,10 @@ import {
 } from "~/libs/types/types.js";
 
 import { type ApiTokenService } from "./api-token.service.js";
-import { TokenApiPath } from "./libs/enums/enums.js";
+import { ApiTokenApiPath } from "./libs/enums/enums.js";
 import {
-	tokenCreateValidationSchema,
-	tokenRouteParametersValidationSchema,
+	apiTokenCreateValidationSchema,
+	apiTokenRouteParametersValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 
 /**
@@ -58,7 +58,7 @@ class ApiTokenController extends BaseController {
 		this.addRoute({
 			handler: (options) => this.findAllByUserId(options),
 			method: HTTPMethod.GET,
-			path: TokenApiPath.ROOT,
+			path: ApiTokenApiPath.ROOT,
 		});
 
 		this.addRoute({
@@ -69,9 +69,9 @@ class ApiTokenController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.POST,
-			path: TokenApiPath.ROOT,
+			path: ApiTokenApiPath.ROOT,
 			validation: {
-				body: tokenCreateValidationSchema,
+				body: apiTokenCreateValidationSchema,
 			},
 		});
 
@@ -83,9 +83,9 @@ class ApiTokenController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.DELETE,
-			path: TokenApiPath.REVOKE_$ID,
+			path: ApiTokenApiPath.REVOKE_$ID,
 			validation: {
-				params: tokenRouteParametersValidationSchema,
+				params: apiTokenRouteParametersValidationSchema,
 			},
 		});
 	}

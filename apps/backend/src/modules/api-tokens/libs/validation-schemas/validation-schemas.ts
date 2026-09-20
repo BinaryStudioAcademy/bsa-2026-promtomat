@@ -1,4 +1,4 @@
 export {
-	tokenCreateValidationSchema,
-	tokenRouteParametersValidationSchema,
+	apiTokenCreateValidationSchema,
+	apiTokenRouteParametersValidationSchema,
 } from "@promptomat/shared";

@@ -33,7 +33,7 @@ const ApiTokensSection: React.FC = () => {
 		useTokenCreate(resetValuesToDefault);
 
 	return (
-		<section className={styles["section"]}>
+		<div className={styles["section"]}>
 			<SectionDescription />
 
 			<CreateTokenForm
@@ -63,7 +63,7 @@ const ApiTokensSection: React.FC = () => {
 				isRevoking={isRevoking}
 				pendingRevokeId={pendingRevokeId}
 			/>
-		</section>
+		</div>
 	);
 };
 

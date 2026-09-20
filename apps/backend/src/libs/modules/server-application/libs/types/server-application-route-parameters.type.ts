@@ -7,7 +7,10 @@ import {
 import { type HTTPMethod } from "~/libs/modules/http/http.js";
 import { type ValidationSchema, type ValueOf } from "~/libs/types/types.js";
 
+import { type RouteConfig } from "./route-config.type.js";
+
 type ServerApplicationRouteParameters = {
+	config?: RouteConfig;
 	handler: (
 		request: FastifyRequest,
 		reply: FastifyReply,

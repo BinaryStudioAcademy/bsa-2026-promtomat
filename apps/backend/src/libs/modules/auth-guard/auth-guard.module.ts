@@ -1,4 +1,7 @@
-import { API_TOKEN_PREFIX } from "~/libs/constants/constants.js";
+import {
+	API_TOKEN_PREFIX,
+	MILLISECONDS_IN_SECOND,
+} from "~/libs/constants/constants.js";
 import { ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserDto } from "~/libs/types/types.js";
@@ -8,7 +11,8 @@ import { type UserService } from "~/modules/users/user.service.js";
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
 import { BEARER } from "./libs/constants/constants.js";
-import { AuthErrorMesssage } from "./libs/enums/enums.js";
+import { AuthErrorMesssage, AuthSuccessMessage } from "./libs/enums/enums.js";
+import { isAuthPayload } from "./libs/helpers/helpers.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
 class AuthGuard {
@@ -28,20 +32,54 @@ class AuthGuard {
 		this.apiTokenService = apiTokenService;
 	}
 
+	private assertTokenPredatesNoPasswordChange(
+		payload: AuthPayload,
+		passwordChangedAt: null | string,
+	): void {
+		if (!passwordChangedAt) {
+			return;
+		}
+
+		if (!payload.iat) {
+			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+		}
+
+		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
+
+		if (Number.isNaN(changedAtMilliseconds)) {
+			this.throwUnauthorized(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
+		}
+
+		const changedAtSeconds = Math.floor(
+			changedAtMilliseconds / MILLISECONDS_IN_SECOND,
+		);
+
+		if (payload.iat <= changedAtSeconds) {
+			this.throwUnauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
+		}
+	}
+
 	private extractBearerToken(header?: string): null | string {
 		return header?.startsWith(BEARER)
 			? header.slice(BEARER.length).trim()
 			: null;
 	}
 
-	private async resolveUserId(token: string): Promise<null | number> {
+	private async resolveUserId(token: string): Promise<Partial<AuthPayload>> {
 		if (token.startsWith(API_TOKEN_PREFIX)) {
-			return await this.apiTokenService.verify(token);
+			const userId = await this.apiTokenService.verify(token);
+			if (!userId) {
+				this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
+			}
+
+			return {
+				userId,
+			};
 		}
 
 		const payload = await this.verifyToken(token);
 
-		return payload.userId;
+		return payload;
 	}
 
 	private throwUnauthorized(message: string): never {
@@ -54,6 +92,7 @@ class AuthGuard {
 
 	private async verifyToken(token: string): Promise<AuthPayload> {
 		let payload: AuthPayload;
+
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
@@ -62,6 +101,12 @@ class AuthGuard {
 
 		if (typeof payload.userId !== "number") {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+		}
+
+		const hasPurpose = Boolean(payload.purpose);
+
+		if (hasPurpose) {
+			this.throwUnauthorized(AuthErrorMesssage.WRONG_PURPOSE);
 		}
 
 		return payload;
@@ -74,19 +119,26 @@ class AuthGuard {
 			this.throwUnauthorized(AuthErrorMesssage.MISSING_TOKEN);
 		}
 
-		const userId = await this.resolveUserId(token);
+		const { userId, ...payload } = await this.resolveUserId(token);
 
-		if (userId === null) {
+		if (!userId) {
 			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
 
-		const user = await this.userService.findById(userId);
+		const userEntity = await this.userService.findEntityById(userId);
 
-		if (!user) {
+		if (!userEntity) {
 			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
-		return user;
+		if (isAuthPayload(payload)) {
+			this.assertTokenPredatesNoPasswordChange(
+				payload,
+				userEntity.toAuthObject().passwordChangedAt,
+			);
+		}
+
+		return userEntity.toObject();
 	}
 }
 

@@ -1,1 +1,1 @@
-export { tokenCreateValidationSchema } from "@promptomat/shared";
+export { apiTokenCreateValidationSchema } from "@promptomat/shared";

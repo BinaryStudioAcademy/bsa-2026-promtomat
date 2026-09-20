@@ -84,6 +84,10 @@ resource "aws_instance" "bastion" {
   tags = {
     Name = "promptomat-bastion"
   }
+
+  lifecycle {
+    ignore_changes = [ ami ]
+  }
 }
 
 resource "aws_iam_policy" "qa_db_access" {

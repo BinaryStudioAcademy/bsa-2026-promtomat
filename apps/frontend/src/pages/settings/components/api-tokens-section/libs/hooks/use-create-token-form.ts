@@ -2,8 +2,8 @@ import { useCallback } from "react";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
+	apiTokenCreateValidationSchema,
 	ApiTokenRequestDto,
-	tokenCreateValidationSchema,
 } from "~/modules/api-tokens/api-tokens.js";
 
 const DEFAULT_VALUES: ApiTokenRequestDto = { name: "" };
@@ -11,7 +11,7 @@ const DEFAULT_VALUES: ApiTokenRequestDto = { name: "" };
 const useCreateTokenForm = () => {
 	const { control, handleSubmit, reset } = useAppForm<ApiTokenRequestDto>({
 		defaultValues: DEFAULT_VALUES,
-		validationSchema: tokenCreateValidationSchema,
+		validationSchema: apiTokenCreateValidationSchema,
 	});
 
 	const handleCreateSubmit = (create: (payload: ApiTokenRequestDto) => void) =>

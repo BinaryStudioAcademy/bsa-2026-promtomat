@@ -1,9 +1,9 @@
 import { HTTPCode } from "../../../libs/modules/http/http.js";
 import { type ValueOf } from "../../../libs/types/value-of.type.js";
 import {
-	TokenErrorCode,
-	TokenErrorMessage,
-} from "../../../modules/tokens/tokens.js";
+	ApiTokenErrorCode,
+	ApiTokenErrorMessage,
+} from "../../../modules/api-tokens/api-tokens.js";
 import { ErrorCode } from "../../enums/error-code.enum.js";
 import { HTTPError } from "../http-error/http-error.exception.js";
 
@@ -26,8 +26,8 @@ class ApiTokenError extends HTTPError {
 
 	public static nameAlreadyExists(): ApiTokenError {
 		return new ApiTokenError({
-			code: TokenErrorCode.API_TOKEN_ALREADY_EXISTS,
-			message: TokenErrorMessage.API_TOKEN_ALREADY_EXISTS,
+			code: ApiTokenErrorCode.API_TOKEN_ALREADY_EXISTS,
+			message: ApiTokenErrorMessage.API_TOKEN_ALREADY_EXISTS,
 			status: HTTPCode.CONFLICT,
 		});
 	}
@@ -35,7 +35,7 @@ class ApiTokenError extends HTTPError {
 	public static notFound(): ApiTokenError {
 		return new ApiTokenError({
 			code: ErrorCode.NOT_FOUND,
-			message: TokenErrorMessage.API_TOKEN_NOT_FOUND,
+			message: ApiTokenErrorMessage.API_TOKEN_NOT_FOUND,
 			status: HTTPCode.NOT_FOUND,
 		});
 	}

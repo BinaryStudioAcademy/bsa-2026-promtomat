@@ -2,7 +2,7 @@ import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
-import { ApiTokensApiTag, TokenApiPath } from "./libs/enums/enums.js";
+import { ApiTokenApiPath, ApiTokensApiTag } from "./libs/enums/enums.js";
 import {
 	type ApiTokenDto,
 	type ApiTokenRequestDto,
@@ -41,7 +41,7 @@ const apiTokensApi = baseApi
 				},
 				query: (id) => ({
 					method: HTTPMethod.DELETE,
-					url: configureString(APIPath.API_TOKENS, TokenApiPath.REVOKE_$ID, {
+					url: configureString(APIPath.API_TOKENS, ApiTokenApiPath.REVOKE_$ID, {
 						id,
 					}),
 				}),
