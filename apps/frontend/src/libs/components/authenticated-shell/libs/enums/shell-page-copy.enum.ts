@@ -25,6 +25,4 @@ const ShellPageCopy = {
 	},
 } as const;
 
-type ShellPageCopyValue = (typeof ShellPageCopy)[keyof typeof ShellPageCopy];
-
-export { type ShellPageCopyValue, ShellPageCopy };
+export { ShellPageCopy };

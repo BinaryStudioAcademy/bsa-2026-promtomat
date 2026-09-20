@@ -1,4 +1,5 @@
-import { ShellPageCopy, type ShellPageCopyValue } from "../enums/enums.js";
+import { ShellPageCopy } from "../enums/enums.js";
+import { type ShellPageCopyValue } from "../types/types.js";
 import { checkIsShellPageCopy } from "./check-is-shell-page-copy.helper.js";
 
 type RouteMatchWithHandle = {
