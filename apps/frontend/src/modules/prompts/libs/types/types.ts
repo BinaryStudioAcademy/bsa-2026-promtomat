@@ -6,7 +6,6 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
-	type PromptRecentDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";

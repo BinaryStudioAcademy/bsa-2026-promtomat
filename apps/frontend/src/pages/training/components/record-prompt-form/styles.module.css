@@ -1,0 +1,23 @@
+.heading {
+	margin: 0;
+	font-size: var(--font-size-title-2);
+	color: var(--text-strong);
+}
+
+.sub-heading {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-32);
+}
+
+.input-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
