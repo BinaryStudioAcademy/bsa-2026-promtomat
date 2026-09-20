@@ -9,6 +9,7 @@ import { ControlSize } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
+import { PROMPT_BODY_ROWS } from "./libs/constants/constants.js";
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -73,7 +74,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 						label={RecordPromptFormMessage.BODY_LABEL}
 						name="promptBody"
 						placeholder={RecordPromptFormMessage.BODY_PLACEHOLDER}
-						rows={8}
+						rows={PROMPT_BODY_ROWS}
 					/>
 					<ScoreGrid
 						isDisabled={isSubmitting}
