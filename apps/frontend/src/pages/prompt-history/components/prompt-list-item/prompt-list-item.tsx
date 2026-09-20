@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef } from "react";
+import { Link } from "react-router-dom";
 
-import { Button } from "~/libs/components/button/button.js";
 import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute } from "~/libs/enums/enums.js";
 import {
+	configureString,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import {
@@ -28,13 +28,10 @@ type Properties = {
 	queryPayload: Omit<PromptGetQueryDto, "page">;
 };
 
-const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const { copyToClipboard, isCopied } = useClipboard();
-
-	const scoreColorClass = styles[getScoreColor(prompt.score)];
-	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
-
+const PromptListItem: React.FC<Properties> = ({
+	prompt,
+	queryPayload,
+}: Properties) => {
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const [updateIntent] = useUpdateTaskIntentMutation();
 	const { control, errors, handleSubmit, reset } =
@@ -53,16 +50,11 @@ const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
 		lastValidIntentReference.current = prompt.intent;
 	}, [prompt.intent]);
 
-	const handleToggle = useCallback(
-		(event: React.SyntheticEvent<HTMLDetailsElement>): void => {
-			setIsOpen(event.currentTarget.open);
-		},
-		[],
-	);
-
-	const handleCopyClick = useCallback((): void => {
-		void copyToClipboard(prompt.body);
-	}, [copyToClipboard, prompt.body]);
+	const scoreColorClass = styles[getScoreColor(prompt.score)];
+	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
+	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
+		promptId: String(prompt.id),
+	});
 
 	const handleSaveUpdatedIntent = useCallback((): void => {
 		void handleSubmit(
@@ -95,8 +87,8 @@ const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
 	}, [handleSubmit, updateIntent, prompt.id, reset, queryPayload]);
 
 	return (
-		<details className={styles["item"]} onToggle={handleToggle} open={isOpen}>
-			<summary className={styles["row"]}>
+		<Link className={styles["item"]} to={deliveryPath}>
+			<div className={styles["row"]}>
 				<div
 					className={getValidClasses(styles["score-badge"], scoreColorClass)}
 				>
@@ -126,32 +118,9 @@ const PromptListItem: React.FC<Properties> = ({ prompt, queryPayload }) => {
 				</div>
 				<div className={styles["right-controls"]}>
 					<span className={styles["timestamp"]}>Injected {relativeTime}</span>
-					<span
-						className={getValidClasses(
-							styles["chevron"],
-							isOpen && styles["chevron-expanded"],
-						)}
-					>
-						▾
-					</span>
 				</div>
-			</summary>
-
-			<div className={styles["expanded"]}>
-				<div className={styles["expanded-header"]}>
-					<span className={styles["expanded-label"]}>Prompt Body</span>
-					<Button
-						className={styles["copy-button"]}
-						label={isCopied ? "Copied!" : "Copy"}
-						onClick={handleCopyClick}
-						size={ControlSize.SM}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
-				</div>
-				<pre className={styles["body"]}>{prompt.body}</pre>
 			</div>
-		</details>
+		</Link>
 	);
 };
 

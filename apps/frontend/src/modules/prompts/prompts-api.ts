@@ -14,6 +14,7 @@ import {
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
@@ -25,6 +26,14 @@ const promptApi = baseApi
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
+			getPromptById: builder.query<PromptItemResponseDto, number>({
+				extraOptions: { shouldSuppressToast: true },
+				query: (id) => ({
+					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
+						id: String(id),
+					}),
+				}),
+			}),
 			getPromptProgress: builder.query<
 				PromptProgressResponseDto,
 				PromptWorkspaceQueryDto
@@ -125,6 +134,7 @@ const promptApi = baseApi
 	});
 
 const {
+	useGetPromptByIdQuery,
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
@@ -133,6 +143,7 @@ const {
 } = promptApi;
 
 export {
+	useGetPromptByIdQuery,
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,

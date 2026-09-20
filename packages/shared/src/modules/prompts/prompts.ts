@@ -17,6 +17,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	type PromptGetRecentResponseDto,
+	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptWorkspaceQueryDto,
@@ -24,6 +25,7 @@ export {
 export {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
+	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,

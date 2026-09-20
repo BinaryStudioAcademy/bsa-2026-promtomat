@@ -27,6 +27,7 @@ import {
 	type PromptFilterByQueryParameters,
 	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
+	type PromptItemResponseDto,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
@@ -161,10 +162,52 @@ class PromptRepository {
 		};
 	}
 
-	public async findById(id: number): Promise<null | PromptEntity> {
-		const prompt = await this.promptModel.query().findById(id);
+	public async findById(id: number): Promise<null | PromptItemResponseDto> {
+		const rows = await this.promptModel
+			.knex()
+			.select(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				PROMPT_ID,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+				PROMPT_WORKSPACE_ID,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
+			)
+			.from(DatabaseTableName.PROMPTS)
+			.innerJoin(
+				DatabaseTableName.WORKSPACES,
+				PROMPT_WORKSPACE_ID,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+			)
+			.where(PROMPT_ID, "=", id);
 
-		return prompt ? PromptEntity.initialize(prompt) : null;
+		const [row] = rows as Array<{
+			createdAt: string;
+			efficiencyScore: number;
+			id: number;
+			promptBody: string;
+			taskIntent: string;
+			userId: number;
+			workspaceId: number;
+			workspaceName: string;
+		}>;
+
+		if (!row) {
+			return null;
+		}
+
+		return {
+			body: row.promptBody,
+			createdAt: row.createdAt,
+			id: row.id,
+			intent: row.taskIntent,
+			score: row.efficiencyScore,
+			userId: row.userId,
+			workspaceId: row.workspaceId,
+			workspaceName: row.workspaceName,
+		};
 	}
 
 	public async findByIdAndUserId(

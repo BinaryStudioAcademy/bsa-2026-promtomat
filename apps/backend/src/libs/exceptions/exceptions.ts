@@ -4,6 +4,7 @@ export {
 	ComposedPromptError,
 	ContributorError,
 	LabelError,
+	PromptDeliveryError,
 	PromptError,
 	PromptSearchError,
 	UserError,

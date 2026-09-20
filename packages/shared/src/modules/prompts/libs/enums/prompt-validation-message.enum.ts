@@ -8,6 +8,7 @@ const PromptValidationMessage = {
 	INTENT_TOO_LONG: `Task Intent must be at most ${String(PromptValidationRule.INTENT_MAXIMUM_LENGTH)} characters`,
 	INTENT_TOO_SHORT: `Task Intent must be at least ${String(PromptValidationRule.INTENT_MINIMUM_LENGTH)} characters`,
 	INVALID_CONTEXT: "Invalid context",
+	INVALID_ID: "Invalid prompt id",
 } as const;
 
 export { PromptValidationMessage };

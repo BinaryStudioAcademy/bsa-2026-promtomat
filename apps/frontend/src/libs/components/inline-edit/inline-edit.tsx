@@ -78,6 +78,7 @@ const InlineEdit = <T extends FieldValues>({
 				| React.FocusEvent<HTMLButtonElement>
 				| React.MouseEvent<HTMLButtonElement>,
 		): void => {
+			event.preventDefault();
 			event.stopPropagation();
 			if (isDisabled) {
 				return;
@@ -92,8 +93,10 @@ const InlineEdit = <T extends FieldValues>({
 		(event: React.KeyboardEvent<HTMLDivElement>) => {
 			event.stopPropagation();
 			if (event.key === KeyboardKey.ENTER) {
+				event.preventDefault();
 				handleSaveEditing();
 			} else if (event.key === KeyboardKey.ESCAPE) {
+				event.preventDefault();
 				handleCancelEditing();
 			}
 		},
@@ -110,6 +113,7 @@ const InlineEdit = <T extends FieldValues>({
 	);
 
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+		event.preventDefault();
 		event.stopPropagation();
 	}, []);
 
@@ -154,6 +158,7 @@ const InlineEdit = <T extends FieldValues>({
 					)}
 					onClick={handleStartEditing}
 					ref={previewButtonReference}
+					type="button"
 				>
 					{field.value || placeholder}
 				</button>
