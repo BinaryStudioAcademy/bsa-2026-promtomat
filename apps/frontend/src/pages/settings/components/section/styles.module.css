@@ -1,8 +1,8 @@
 .section {
 	padding: var(--space-18);
 	margin-bottom: var(--space-14);
-	background-color: #11141b;
-	border: var(--border-width-hairline) solid #1b202a;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: 18px;
 }
 
@@ -15,8 +15,8 @@
 
 .section-title {
 	margin: 0 0 var(--space-16);
-	font-size: 11px;
-	color: #7c8498;
+	font-size: var(--font-size-meta);
+	color: var(--text-muted);
 	text-transform: uppercase;
 	letter-spacing: 0.9px;
 }

@@ -1,7 +1,7 @@
 .small {
 	margin: 0;
-	font-size: 12px;
-	color: #7c8498;
+	font-size: var(--font-size-label-sm);
+	color: var(--text-muted);
 }
 
 .fields {

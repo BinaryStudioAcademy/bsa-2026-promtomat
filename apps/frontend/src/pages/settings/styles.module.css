@@ -23,6 +23,6 @@
 
 @media (width >=600px) {
 	.title {
-		font-size: 28px;
+		font-size: var(--font-size-display-2);
 	}
 }

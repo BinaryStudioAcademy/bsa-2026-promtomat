@@ -18,12 +18,12 @@
 
 .nickname {
 	margin: 0;
-	font-size: 16px;
+	font-size: var(--font-size-body-xl);
 	font-weight: 600;
 }
 
 .details {
 	margin: 0;
-	font-size: 12px;
-	color: #7c8498;
+	font-size: var(--font-size-label-sm);
+	color: var(--text-muted);
 }

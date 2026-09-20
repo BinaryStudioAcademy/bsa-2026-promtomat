@@ -18,8 +18,8 @@
 	gap: var(--space-4);
 	padding: var(--space-14) var(--space-6);
 	text-align: center;
-	background-color: #161a23;
-	border: var(--border-width-hairline) solid #1f2530;
+	background-color: var(--surface-inset);
+	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: 12px;
 }
 
@@ -58,7 +58,7 @@
 
 .stat-label {
 	font-size: 10px;
-	color: #7c8498;
+	color: var(--text-muted);
 }
 
 @media (width >=600px) {
