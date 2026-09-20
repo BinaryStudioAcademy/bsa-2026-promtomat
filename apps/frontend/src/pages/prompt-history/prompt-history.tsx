@@ -6,6 +6,7 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-varian
 import { Loader } from "~/libs/components/loader/loader.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
@@ -13,8 +14,6 @@ import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
 import styles from "./styles.module.css";
-
-const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
 	const { control, handleScoreChange, queryPayload } = usePromptFilters();

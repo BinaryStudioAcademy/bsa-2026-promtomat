@@ -1,3 +1,4 @@
+import { ROUND_FACTOR } from "~/libs/constants/constants.js";
 import { PromptError } from "~/libs/exceptions/exceptions.js";
 import { Database } from "~/libs/modules/database/database.js";
 import {
@@ -8,7 +9,6 @@ import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 
 import { LabelService } from "../labels/labels.js";
-import { ROUND_FACTOR } from "./libs/constants/constants.js";
 import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {

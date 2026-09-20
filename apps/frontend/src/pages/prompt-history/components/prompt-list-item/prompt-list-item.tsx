@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
-import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
@@ -20,7 +20,6 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const { copyToClipboard, isCopied } = useClipboard();
 
-	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 
 	const handleToggle = useCallback(
@@ -37,11 +36,7 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 	return (
 		<details className={styles["item"]} onToggle={handleToggle} open={isOpen}>
 			<summary className={styles["row"]}>
-				<div
-					className={getValidClasses(styles["score-badge"], scoreColorClass)}
-				>
-					{prompt.score}
-				</div>
+				<ScoreBadge efficiencyScore={prompt.score} />
 				<div className={styles["info"]}>
 					<span className={styles["intent"]}>{prompt.intent}</span>
 					<span className={styles["meta"]}>{prompt.workspaceName}</span>

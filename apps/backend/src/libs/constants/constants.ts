@@ -1,1 +1,5 @@
-export { FIRST_ELEMENT_INDEX } from "@promptomat/shared";
+export {
+	FIRST_ELEMENT_INDEX,
+	ROUND_FACTOR,
+	ZERO_VALUE,
+} from "@promptomat/shared";

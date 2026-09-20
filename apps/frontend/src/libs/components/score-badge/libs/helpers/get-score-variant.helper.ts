@@ -1,4 +1,4 @@
-import { ScoreThreshold } from "~/libs/components/score-grid/libs/enums/enums.js";
+import { ScoreThreshold } from "~/libs/enums/enums.js";
 
 import { BadgeVariant } from "../enums/badge-variant.enum.js";
 import { type ScoreVariant } from "../types/types.js";
