@@ -33,10 +33,10 @@
 	gap: var(--space-32);
 }
 
-.input-wrapper {
+.fields {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-4);
+	gap: var(--space-18);
 }
 
 @media (width >= 768px) {

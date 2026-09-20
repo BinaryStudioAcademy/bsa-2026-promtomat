@@ -5,6 +5,7 @@ import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
+import { ControlSize } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
@@ -47,34 +48,36 @@ const RecordPromptForm: React.FC<Properties> = ({
 				<p className={styles["subtitle"]}>{RecordPromptFormMessage.SUBTITLE}</p>
 			</header>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<div className={styles["input-wrapper"]}>
+				<div className={styles["fields"]}>
 					<Select
 						control={control}
 						isDisabled={isSubmitting}
-						label="Context"
+						label={RecordPromptFormMessage.WORKSPACE_LABEL}
 						name="workspaceId"
 						options={options}
-						placeholder="Select a workspace"
+						placeholder={RecordPromptFormMessage.WORKSPACE_PLACEHOLDER}
+						size={ControlSize.LG}
 					/>
 					<Input
 						control={control}
 						isDisabled={isSubmitting}
-						label="Task Intent"
+						label={RecordPromptFormMessage.INTENT_LABEL}
 						name="taskIntent"
-						placeholder="What were you trying to achieve? (e.g., JWT Authentication on FastAPI)"
+						placeholder={RecordPromptFormMessage.INTENT_PLACEHOLDER}
+						size={ControlSize.LG}
 					/>
 					<Textarea
 						autoComplete="off"
 						control={control}
 						isDisabled={isSubmitting}
-						label="Prompt Body"
+						label={RecordPromptFormMessage.BODY_LABEL}
 						name="promptBody"
-						placeholder="Paste the exact prompt you sent to your &#10;coding AI tool here"
-						rows={6}
+						placeholder={RecordPromptFormMessage.BODY_PLACEHOLDER}
+						rows={8}
 					/>
 					<ScoreGrid
 						isDisabled={isSubmitting}
-						label="Efficiency Score"
+						label={RecordPromptFormMessage.SCORE_LABEL}
 						onScoreSelect={onScoreSelect}
 					/>
 				</div>
