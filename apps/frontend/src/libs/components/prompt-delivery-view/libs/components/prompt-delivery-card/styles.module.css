@@ -1,0 +1,36 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-20);
+	padding: var(--space-20);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-lg);
+}
+
+.card:focus {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-title-3);
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-20);
+	min-width: 0;
+}

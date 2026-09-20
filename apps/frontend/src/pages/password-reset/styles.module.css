@@ -1,0 +1,153 @@
+.page {
+	position: relative;
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: var(--space-24);
+	overflow: hidden;
+	background-color: var(--surface-canvas);
+}
+
+.glow-accent-top,
+.glow-info-bottom,
+.glow-accent-bottom,
+.lift {
+	position: absolute;
+	pointer-events: none;
+}
+
+.glow-accent-top {
+	top: -220px;
+	right: -180px;
+	width: 560px;
+	height: 560px;
+	background: radial-gradient(
+		circle closest-side,
+		rgb(200 155 94 / 34%),
+		rgb(200 155 94 / 14%) 45%,
+		rgb(200 155 94 / 0%) 100%
+	);
+}
+
+.glow-info-bottom {
+	bottom: -260px;
+	left: -240px;
+	width: 620px;
+	height: 620px;
+	background: radial-gradient(
+		circle closest-side,
+		rgb(138 169 196 / 26%),
+		rgb(138 169 196 / 10%) 45%,
+		rgb(138 169 196 / 0%) 100%
+	);
+}
+
+.glow-accent-bottom {
+	right: -120px;
+	bottom: -300px;
+	width: 520px;
+	height: 520px;
+	background: radial-gradient(
+		circle closest-side,
+		rgb(200 155 94 / 12%),
+		rgb(200 155 94 / 0%) 100%
+	);
+}
+
+.lift {
+	inset: 0;
+	background: radial-gradient(
+		75% 75% at 50% 0%,
+		rgb(255 255 255 / 5%),
+		rgb(255 255 255 / 0%)
+	);
+}
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-20);
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-24);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.head {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-6);
+}
+
+.heading {
+	margin: 0;
+	font-size: var(--font-size-title-2);
+	font-weight: 700;
+	line-height: 1.2;
+	color: var(--text-strong);
+}
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+}
+
+.footer {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.action-link {
+	justify-content: center;
+	width: 100%;
+}
+
+@media (width >= 768px) {
+	.page {
+		padding: var(--space-48);
+	}
+
+	.card {
+		gap: var(--space-24);
+		padding: var(--space-40);
+	}
+
+	.heading {
+		font-size: var(--font-size-display-2);
+	}
+}
+
+@media (width >= 1440px) {
+	.glow-accent-top {
+		top: -460px;
+		right: -320px;
+		width: 1120px;
+		height: 1120px;
+	}
+
+	.glow-info-bottom {
+		bottom: -480px;
+		left: -480px;
+		width: 1080px;
+		height: 1080px;
+	}
+
+	.glow-accent-bottom {
+		width: 1000px;
+		height: 1000px;
+	}
+}

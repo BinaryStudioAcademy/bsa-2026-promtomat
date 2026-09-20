@@ -28,7 +28,7 @@ const SettingsPage: React.FC = () => {
 			<h1 className={styles["title"]}>Profile</h1>
 			<SettingsForm user={{ ...user, totalPrompts: summary.totalPrompts }} />
 			<Activity summary={summary} />
-			<Security />
+			<Security email={user.email} />
 		</main>
 	);
 };
