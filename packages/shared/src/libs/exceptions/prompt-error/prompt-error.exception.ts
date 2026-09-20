@@ -32,6 +32,14 @@ class PromptError extends HTTPError {
 			status: HTTPCode.SERVICE_UNAVAILABLE,
 		});
 	}
+
+	public static notFound(): PromptError {
+		return new PromptError({
+			code: PromptsErrorCode.NOT_FOUND,
+			message: PromptsErrorMessage.NOT_FOUND,
+			status: HTTPCode.NOT_FOUND,
+		});
+	}
 }
 
 export { PromptError };

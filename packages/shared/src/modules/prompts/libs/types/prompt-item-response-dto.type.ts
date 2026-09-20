@@ -4,6 +4,7 @@ type PromptItemResponseDto = {
 	id: number;
 	intent: string;
 	score: number;
+	userId: number;
 	workspaceId: number;
 	workspaceName: string;
 };
