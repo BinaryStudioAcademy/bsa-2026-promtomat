@@ -1,10 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { type Control } from "react-hook-form";
 
+import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize } from "~/libs/enums/enums.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 import { PromptBodyField } from "~/pages/training/components/prompt-body-field/prompt-body-field.js";
@@ -14,14 +16,22 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	control: Control<PromptCreateRequestDto, null>;
+	error: unknown;
+	isScoreInvalid: boolean;
 	isSubmitting: boolean;
 	onScoreSelect: (score: number) => () => void;
+	onSubmit: (event: React.BaseSyntheticEvent) => void;
+	score: null | number;
 };
 
 const RecordPromptForm: React.FC<Properties> = ({
 	control,
+	error,
+	isScoreInvalid,
 	isSubmitting,
 	onScoreSelect,
+	onSubmit,
+	score,
 }: Properties) => {
 	const { data } = useGetWorkspacesQuery({});
 
@@ -33,13 +43,6 @@ const RecordPromptForm: React.FC<Properties> = ({
 			};
 		}) ?? [];
 
-	const handleFormSubmit = useCallback(
-		(event: React.SubmitEvent<HTMLFormElement>) => {
-			event.preventDefault();
-		},
-		[],
-	);
-
 	return (
 		<>
 			<header className={styles["header"]}>
@@ -47,7 +50,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 				<h1 className={styles["title"]}>{RecordPromptFormMessage.TITLE}</h1>
 				<p className={styles["subtitle"]}>{RecordPromptFormMessage.SUBTITLE}</p>
 			</header>
-			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+			<form className={styles["form"]} noValidate onSubmit={onSubmit}>
 				<div className={styles["fields"]}>
 					<Select
 						control={control}
@@ -67,11 +70,38 @@ const RecordPromptForm: React.FC<Properties> = ({
 						size={ControlSize.LG}
 					/>
 					<PromptBodyField control={control} isDisabled={isSubmitting} />
-					<ScoreGrid
-						isDisabled={isSubmitting}
-						label={RecordPromptFormMessage.SCORE_LABEL}
-						onScoreSelect={onScoreSelect}
+					<div className={styles["score-field"]}>
+						<ScoreGrid
+							isDisabled={isSubmitting}
+							isRadio={true}
+							label={RecordPromptFormMessage.SCORE_LABEL}
+							onScoreSelect={onScoreSelect}
+							selectedScore={score}
+						/>
+						{isScoreInvalid && (
+							<p className={styles["score-error"]} role="alert">
+								{RecordPromptFormMessage.SCORE_REQUIRED}
+							</p>
+						)}
+						<p className={styles["note"]}>
+							<span className={styles["note-tag"]}>
+								{RecordPromptFormMessage.SCORE_NOTE_TAG}
+							</span>{" "}
+							{RecordPromptFormMessage.SCORE_NOTE}
+						</p>
+					</div>
+				</div>
+				<FormAlert error={error} />
+				<div className={styles["actions"]}>
+					<Button
+						iconName={IconName.CHECK}
+						isLoading={isSubmitting}
+						label={RecordPromptFormMessage.SUBMIT}
+						type="submit"
 					/>
+					<span className={styles["hint"]}>
+						{RecordPromptFormMessage.SUBMIT_HINT}
+					</span>
 				</div>
 			</form>
 		</>

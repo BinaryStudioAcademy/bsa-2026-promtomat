@@ -7,16 +7,28 @@ import { useRecordPromptForm } from "./libs/hooks/use-record-prompt-form/use-rec
 import styles from "./styles.module.css";
 
 const Training: React.FC = () => {
-	const { control, isSubmitting, onScoreSelect, workspaceId } =
-		useRecordPromptForm();
+	const {
+		control,
+		error,
+		isScoreInvalid,
+		isSubmitting,
+		onScoreSelect,
+		onSubmit,
+		score,
+		workspaceId,
+	} = useRecordPromptForm();
 
 	return (
 		<main className={styles["page"]}>
 			<section className={styles["panel"]}>
 				<RecordPromptForm
 					control={control}
+					error={error}
+					isScoreInvalid={isScoreInvalid}
 					isSubmitting={isSubmitting}
 					onScoreSelect={onScoreSelect}
+					onSubmit={onSubmit}
+					score={score}
 				/>
 			</section>
 			<aside className={styles["aside"]}>
