@@ -1,13 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { Button } from "~/libs/components/button/button.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute } from "~/libs/enums/enums.js";
 import {
+	configureString,
 	getRelativeTimeLabel,
-	getValidClasses,
 } from "~/libs/helpers/helpers.js";
-import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
 import styles from "./styles.module.css";
@@ -16,26 +15,15 @@ type Properties = {
 	prompt: PromptItemResponseDto;
 };
 
-const PromptListItem: React.FC<Properties> = ({ prompt }) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const { copyToClipboard, isCopied } = useClipboard();
-
+const PromptListItem: React.FC<Properties> = ({ prompt }: Properties) => {
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
-
-	const handleToggle = useCallback(
-		(event: React.SyntheticEvent<HTMLDetailsElement>): void => {
-			setIsOpen(event.currentTarget.open);
-		},
-		[],
-	);
-
-	const handleCopyClick = useCallback((): void => {
-		void copyToClipboard(prompt.body);
-	}, [copyToClipboard, prompt.body]);
+	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
+		promptId: String(prompt.id),
+	});
 
 	return (
-		<details className={styles["item"]} onToggle={handleToggle} open={isOpen}>
-			<summary className={styles["row"]}>
+		<Link className={styles["item"]} to={deliveryPath}>
+			<div className={styles["row"]}>
 				<ScoreBadge efficiencyScore={prompt.score} />
 				<div className={styles["info"]}>
 					<span className={styles["intent"]}>{prompt.intent}</span>
@@ -43,32 +31,9 @@ const PromptListItem: React.FC<Properties> = ({ prompt }) => {
 				</div>
 				<div className={styles["right-controls"]}>
 					<span className={styles["timestamp"]}>Injected {relativeTime}</span>
-					<span
-						className={getValidClasses(
-							styles["chevron"],
-							isOpen && styles["chevron-expanded"],
-						)}
-					>
-						▾
-					</span>
 				</div>
-			</summary>
-
-			<div className={styles["expanded"]}>
-				<div className={styles["expanded-header"]}>
-					<span className={styles["expanded-label"]}>Prompt Body</span>
-					<Button
-						className={styles["copy-button"]}
-						label={isCopied ? "Copied!" : "Copy"}
-						onClick={handleCopyClick}
-						size={ControlSize.SM}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
-				</div>
-				<pre className={styles["body"]}>{prompt.body}</pre>
 			</div>
-		</details>
+		</Link>
 	);
 };
 
