@@ -12,7 +12,12 @@ import { Header } from "~/libs/components/header/header.js";
 import { Link } from "~/libs/components/link/link.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { Logo } from "~/libs/components/logo/logo.js";
-import { AppRoute, ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import {
+	AppRoute,
+	ControlSize,
+	EventType,
+	KeyboardKey,
+} from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 
@@ -62,10 +67,10 @@ const AuthenticatedShell: React.FC = () => {
 			}
 		};
 
-		mediaQuery.addEventListener("change", handleMediaChange);
+		mediaQuery.addEventListener(EventType.CHANGE, handleMediaChange);
 
 		return () => {
-			mediaQuery.removeEventListener("change", handleMediaChange);
+			mediaQuery.removeEventListener(EventType.CHANGE, handleMediaChange);
 		};
 	}, []);
 
@@ -100,10 +105,10 @@ const AuthenticatedShell: React.FC = () => {
 			handleDrawerClose();
 		};
 
-		document.addEventListener("keydown", handleKeyDown);
+		document.addEventListener(EventType.KEYDOWN, handleKeyDown);
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
+			document.removeEventListener(EventType.KEYDOWN, handleKeyDown);
 		};
 	}, [handleDrawerClose, isDrawerOpen]);
 
@@ -118,10 +123,10 @@ const AuthenticatedShell: React.FC = () => {
 			return;
 		}
 
-		sidebarElement.addEventListener("click", handleDrawerClose);
+		sidebarElement.addEventListener(EventType.CLICK, handleDrawerClose);
 
 		return () => {
-			sidebarElement.removeEventListener("click", handleDrawerClose);
+			sidebarElement.removeEventListener(EventType.CLICK, handleDrawerClose);
 		};
 	}, [handleDrawerClose, isDrawerOpen]);
 

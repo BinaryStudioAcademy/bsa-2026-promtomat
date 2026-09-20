@@ -10,7 +10,7 @@ const resolveShellPageCopy = (
 	matches: readonly RouteMatchWithHandle[],
 ): ShellPageCopyValue => {
 	const matchedHandle = matches
-		.map((match) => match.handle)
+		.map(({ handle }) => handle)
 		.findLast((handle): handle is ShellPageCopyValue =>
 			checkIsShellPageCopy(handle),
 		);

@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { Icon } from "~/libs/components/icon/icon.js";
-import { AppRoute, IconName, KeyboardKey } from "~/libs/enums/enums.js";
+import { Link } from "~/libs/components/link/link.js";
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+import {
+	AppRoute,
+	EventType,
+	IconName,
+	KeyboardKey,
+} from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSignOut } from "~/modules/auth/auth.js";
 import { type UserDto } from "~/modules/users/users.js";
@@ -10,7 +17,6 @@ import { type UserDto } from "~/modules/users/users.js";
 import {
 	ACCOUNT_MENU_ID,
 	PANEL_CLOSE_DURATION_MS,
-	REDUCED_MOTION_DURATION_MS,
 } from "../../libs/constants/constants.js";
 import { HeaderLabel } from "../../libs/enums/enums.js";
 import { getNicknameInitials } from "../../libs/helpers/helpers.js";
@@ -31,6 +37,7 @@ const AccountMenu: React.FC<Properties> = ({
 	const [isOpen, setIsOpen] = useState(false);
 	const [previousPathname, setPreviousPathname] = useState(pathname);
 	const containerReference = useRef<HTMLDivElement>(null);
+	const panelReference = useRef<HTMLDivElement>(null);
 	const triggerReference = useRef<HTMLButtonElement>(null);
 	const initials = getNicknameInitials(user.nickname);
 	const isPanelRendered = isClosing || isOpen;
@@ -38,6 +45,10 @@ const AccountMenu: React.FC<Properties> = ({
 	const beginClose = useCallback((): void => {
 		setIsClosing(true);
 		setIsOpen(false);
+	}, []);
+
+	const finishClose = useCallback((): void => {
+		setIsClosing(false);
 	}, []);
 
 	if (pathname !== previousPathname) {
@@ -75,20 +86,30 @@ const AccountMenu: React.FC<Properties> = ({
 			return;
 		}
 
-		const isReducedMotion = matchMedia(
-			"(prefers-reduced-motion: reduce)",
-		).matches;
-		const timeoutId = setTimeout(
-			() => {
-				setIsClosing(false);
-			},
-			isReducedMotion ? REDUCED_MOTION_DURATION_MS : PANEL_CLOSE_DURATION_MS,
-		);
+		const panelElement = panelReference.current;
+
+		if (!panelElement || panelElement.getAnimations().length === EMPTY_LENGTH) {
+			finishClose();
+			return;
+		}
+
+		const timeoutId = setTimeout(finishClose, PANEL_CLOSE_DURATION_MS);
 
 		return () => {
 			clearTimeout(timeoutId);
 		};
-	}, [isClosing]);
+	}, [finishClose, isClosing]);
+
+	const handlePanelAnimationEnd = useCallback(
+		(event: React.AnimationEvent<HTMLDivElement>): void => {
+			if (!isClosing || event.target !== event.currentTarget) {
+				return;
+			}
+
+			finishClose();
+		},
+		[finishClose, isClosing],
+	);
 
 	const handleCloseAndFocusTrigger = useCallback((): void => {
 		handleClose();
@@ -99,12 +120,6 @@ const AccountMenu: React.FC<Properties> = ({
 		handleClose();
 		void signOut();
 	}, [handleClose, signOut]);
-
-	const getProfileClassName = useCallback(
-		({ isActive }: { isActive: boolean }): string =>
-			getValidClasses(styles["item"], isActive && styles["active"]),
-		[],
-	);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -120,10 +135,12 @@ const AccountMenu: React.FC<Properties> = ({
 			handleCloseAndFocusTrigger();
 		};
 
-		document.addEventListener("keydown", handleKeyDown, { capture: true });
+		document.addEventListener(EventType.KEYDOWN, handleKeyDown, {
+			capture: true,
+		});
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown, true);
+			document.removeEventListener(EventType.KEYDOWN, handleKeyDown, true);
 		};
 	}, [handleCloseAndFocusTrigger, isOpen]);
 
@@ -146,10 +163,10 @@ const AccountMenu: React.FC<Properties> = ({
 			handleClose();
 		};
 
-		document.addEventListener("pointerdown", handlePointerDown);
+		document.addEventListener(EventType.POINTER_DOWN, handlePointerDown);
 
 		return () => {
-			document.removeEventListener("pointerdown", handlePointerDown);
+			document.removeEventListener(EventType.POINTER_DOWN, handlePointerDown);
 		};
 	}, [handleClose, isOpen]);
 
@@ -181,6 +198,8 @@ const AccountMenu: React.FC<Properties> = ({
 						isClosing && styles["panel-out"],
 					)}
 					id={ACCOUNT_MENU_ID}
+					onAnimationEnd={handlePanelAnimationEnd}
+					ref={panelReference}
 				>
 					<div className={styles["identity"]}>
 						<span className={styles["avatar"]}>{initials}</span>
@@ -190,10 +209,15 @@ const AccountMenu: React.FC<Properties> = ({
 						</span>
 					</div>
 					<div className={styles["list"]}>
-						<NavLink className={getProfileClassName} to={AppRoute.PROFILE}>
+						<Link
+							activeClassName={styles["active"]}
+							className={styles["item"]}
+							hasDefaultStyles={false}
+							to={AppRoute.PROFILE}
+						>
 							<Icon iconName={IconName.USER} />
 							{HeaderLabel.PROFILE}
-						</NavLink>
+						</Link>
 						<button
 							className={getValidClasses(styles["item"], styles["sign-out"])}
 							onClick={handleSignOut}

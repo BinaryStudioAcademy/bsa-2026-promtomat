@@ -6,37 +6,30 @@ import { type NavigableRoute } from "~/libs/types/types.js";
 
 import styles from "./styles.module.css";
 
-type LinkClassName = ((state: { isActive: boolean }) => string) | string;
-
 type Properties = {
+	activeClassName?: string | undefined;
 	children: React.ReactNode;
-	className?: LinkClassName | undefined;
+	className?: string | undefined;
 	hasDefaultStyles?: boolean;
 	to: NavigableRoute;
 };
 
 const Link: React.FC<Properties> = ({
+	activeClassName,
 	children,
 	className,
 	hasDefaultStyles = true,
 	to,
 }: Properties) => {
 	const getLinkClassName = useCallback(
-		({ isActive }: { isActive: boolean }): string => {
-			const resolvedClassName =
-				typeof className === "function" ? className({ isActive }) : className;
-
-			if (!hasDefaultStyles) {
-				return getValidClasses(resolvedClassName);
-			}
-
-			return getValidClasses(
-				styles["link"],
-				isActive && styles["active"],
-				resolvedClassName,
-			);
-		},
-		[className, hasDefaultStyles],
+		({ isActive }: { isActive: boolean }): string =>
+			getValidClasses(
+				hasDefaultStyles && styles["link"],
+				hasDefaultStyles && isActive && styles["active"],
+				className,
+				isActive && activeClassName,
+			),
+		[activeClassName, className, hasDefaultStyles],
 	);
 
 	return (
