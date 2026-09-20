@@ -1,4 +1,7 @@
-import { PromptError } from "~/libs/exceptions/exceptions.js";
+import {
+	PromptDeliveryError,
+	PromptError,
+} from "~/libs/exceptions/exceptions.js";
 import { Database } from "~/libs/modules/database/database.js";
 import {
 	GeneratorInterface,
@@ -6,6 +9,7 @@ import {
 } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
 import { ROUND_FACTOR } from "./libs/constants/constants.js";
@@ -20,6 +24,7 @@ import {
 	type PromptGenerateLabelPayload,
 	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
@@ -32,6 +37,7 @@ type Constructor = {
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
+	workspaceService: WorkspaceService;
 };
 
 class PromptService {
@@ -44,18 +50,22 @@ class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
 	private promptRepository: PromptRepository;
 
+	private workspaceService: WorkspaceService;
+
 	public constructor({
 		database,
 		generator,
 		labelService,
 		promptEmbeddingService,
 		promptRepository,
+		workspaceService,
 	}: Constructor) {
 		this.promptRepository = promptRepository;
 		this.labelService = labelService;
 		this.generator = generator;
 		this.database = database;
 		this.promptEmbeddingService = promptEmbeddingService;
+		this.workspaceService = workspaceService;
 	}
 
 	private async generateLabel({
@@ -169,6 +179,34 @@ class PromptService {
 			pageSize: limit,
 			totalCount,
 		};
+	}
+
+	public async findById(
+		id: number,
+		userId: number,
+	): Promise<PromptItemResponseDto> {
+		const prompt = await this.promptRepository.findById(id);
+
+		if (!prompt) {
+			throw PromptDeliveryError.notFound();
+		}
+
+		const ownedWorkspace = await this.workspaceService.findByIdAndOwner(
+			prompt.workspaceId,
+			userId,
+		);
+		const contributedWorkspace = ownedWorkspace
+			? null
+			: await this.workspaceService.findByIdAndContributor(
+					prompt.workspaceId,
+					userId,
+				);
+
+		if (!ownedWorkspace && !contributedWorkspace) {
+			throw PromptDeliveryError.notFound();
+		}
+
+		return prompt;
 	}
 
 	public async findByWorkspace(
