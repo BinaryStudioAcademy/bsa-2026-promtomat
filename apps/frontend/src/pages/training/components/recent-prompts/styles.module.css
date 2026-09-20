@@ -74,7 +74,7 @@
 	background-color: var(--bg-success);
 }
 
-.empty {
+.message {
 	margin: 0;
 	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
