@@ -1,5 +1,6 @@
 const PromptsApiPath = {
 	$ID: "/:id",
+	$PROMPT_ID_INTENT: "/:promptId/intent",
 	PROGRESS: "/progress",
 	RECENT: "/recent",
 	ROOT: "/",

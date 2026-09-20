@@ -16,6 +16,7 @@ import {
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
@@ -84,6 +85,51 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			updateTaskIntent: builder.mutation<
+				PromptDto,
+				{
+					id: number;
+					payload: PromptUpdateIntentRequestDto;
+					queryArgs: Omit<PromptGetQueryDto, "page">;
+				}
+			>({
+				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
+					try {
+						const { data: updatedPrompt } = await queryFulfilled;
+
+						dispatch(
+							promptApi.util.updateQueryData(
+								"getPrompts",
+								queryArgs,
+								(draft) => {
+									for (const pageData of draft.pages) {
+										const promptToUpdate = pageData.items.find(
+											(prompt) => prompt.id === id,
+										);
+										if (promptToUpdate) {
+											promptToUpdate.intent = updatedPrompt.taskIntent;
+											break;
+										}
+									}
+								},
+							),
+						);
+					} catch {
+						// The UI will naturally handle the error
+					}
+				},
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_INTENT,
+						{
+							promptId: String(id),
+						},
+					),
+				}),
+			}),
 		}),
 	});
 
@@ -93,6 +139,7 @@ const {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
+	useUpdateTaskIntentMutation,
 } = promptApi;
 
 export {
@@ -101,4 +148,5 @@ export {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
+	useUpdateTaskIntentMutation,
 };

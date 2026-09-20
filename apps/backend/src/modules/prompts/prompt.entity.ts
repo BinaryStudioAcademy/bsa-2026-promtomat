@@ -119,6 +119,7 @@ class PromptEntity implements Entity {
 		id: number;
 		intent: string;
 		score: number;
+		userId: number;
 		workspaceId: number;
 		workspaceName: string;
 	} {
@@ -128,6 +129,7 @@ class PromptEntity implements Entity {
 			id: this.id as number,
 			intent: this.taskIntent,
 			score: this.efficiencyScore,
+			userId: this.userId,
 			workspaceId: this.workspaceId,
 			workspaceName,
 		};

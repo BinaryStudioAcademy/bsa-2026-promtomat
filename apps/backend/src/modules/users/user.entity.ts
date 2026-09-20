@@ -11,6 +11,8 @@ class UserEntity implements Entity {
 
 	private nickname: string;
 
+	private passwordChangedAt: null | string;
+
 	private passwordHash: string;
 
 	private passwordSalt: string;
@@ -22,6 +24,7 @@ class UserEntity implements Entity {
 		email,
 		id,
 		nickname,
+		passwordChangedAt,
 		passwordHash,
 		passwordSalt,
 		primaryAiCodingTool,
@@ -30,6 +33,7 @@ class UserEntity implements Entity {
 		email: string;
 		id: null | number;
 		nickname: string;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
@@ -38,6 +42,7 @@ class UserEntity implements Entity {
 		this.createdAt = createdAt;
 		this.email = email;
 		this.nickname = nickname;
+		this.passwordChangedAt = passwordChangedAt;
 		this.passwordHash = passwordHash;
 		this.passwordSalt = passwordSalt;
 		this.primaryAiCodingTool = primaryAiCodingTool;
@@ -48,6 +53,7 @@ class UserEntity implements Entity {
 		email,
 		id,
 		nickname,
+		passwordChangedAt,
 		passwordHash,
 		passwordSalt,
 		primaryAiCodingTool,
@@ -56,6 +62,7 @@ class UserEntity implements Entity {
 		email: string;
 		id: number;
 		nickname: string;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
@@ -65,6 +72,7 @@ class UserEntity implements Entity {
 			email,
 			id,
 			nickname,
+			passwordChangedAt,
 			passwordHash,
 			passwordSalt,
 			primaryAiCodingTool,
@@ -87,6 +95,7 @@ class UserEntity implements Entity {
 			email,
 			id: null,
 			nickname,
+			passwordChangedAt: null,
 			passwordHash,
 			passwordSalt,
 			primaryAiCodingTool: null,
@@ -96,12 +105,14 @@ class UserEntity implements Entity {
 	public toAuthObject(): {
 		email: string;
 		id: number;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 	} {
 		return {
 			email: this.email,
 			id: this.id as number,
+			passwordChangedAt: this.passwordChangedAt,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
 		};

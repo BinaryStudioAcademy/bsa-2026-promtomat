@@ -1,4 +1,4 @@
-import { ErrorCode } from "~/libs/enums/enums.js";
+import { TokenErrorCode } from "~/libs/enums/enums.js";
 import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -6,14 +6,15 @@ import { TokenErrorMessage } from "../enums/enums.js";
 
 type Constructor = {
 	cause?: unknown;
+	code: ValueOf<typeof TokenErrorCode>;
 	message: ValueOf<typeof TokenErrorMessage>;
 };
 
 class TokenError extends HTTPError {
-	public constructor({ cause, message }: Constructor) {
+	public constructor({ cause, code, message }: Constructor) {
 		super({
 			cause,
-			code: ErrorCode.UNAUTHENTICATED,
+			code,
 			message,
 			status: HTTPCode.UNAUTHORIZED,
 		});
@@ -22,6 +23,7 @@ class TokenError extends HTTPError {
 	public static invalidToken(cause?: unknown): TokenError {
 		return new TokenError({
 			cause,
+			code: TokenErrorCode.INVALID_TOKEN,
 			message: TokenErrorMessage.INVALID_TOKEN,
 		});
 	}
@@ -29,6 +31,7 @@ class TokenError extends HTTPError {
 	public static invalidTokenPayload(cause?: unknown): TokenError {
 		return new TokenError({
 			cause,
+			code: TokenErrorCode.INVALID_TOKEN_PAYLOAD,
 			message: TokenErrorMessage.INVALID_TOKEN_PAYLOAD,
 		});
 	}
@@ -36,6 +39,7 @@ class TokenError extends HTTPError {
 	public static invalidTokenSignature(cause?: unknown): TokenError {
 		return new TokenError({
 			cause,
+			code: TokenErrorCode.INVALID_TOKEN_SIGNATURE,
 			message: TokenErrorMessage.INVALID_TOKEN_SIGNATURE,
 		});
 	}
@@ -43,6 +47,7 @@ class TokenError extends HTTPError {
 	public static tokenHasExpired(cause?: unknown): TokenError {
 		return new TokenError({
 			cause,
+			code: TokenErrorCode.TOKEN_HAS_EXPIRED,
 			message: TokenErrorMessage.TOKEN_HAS_EXPIRED,
 		});
 	}
