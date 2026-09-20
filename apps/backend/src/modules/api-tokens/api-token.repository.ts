@@ -45,6 +45,12 @@ class ApiTokenRepository {
 	public async findAllByUserId(userId: number): Promise<ApiTokenEntity[]> {
 		const tokens = await this.apiTokenModel
 			.query()
+			.select(
+				ApiTokenColumnName.LAST_USED_AT,
+				ApiTokenColumnName.NAME,
+				ApiTokenColumnName.PUBLIC_ID,
+				ApiTokenColumnName.USER_ID,
+			)
 			.where({ userId })
 			.orderBy(ApiTokenColumnName.CREATED_AT, SortOrder.DESC)
 			.execute();

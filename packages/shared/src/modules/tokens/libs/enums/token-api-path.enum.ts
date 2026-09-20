@@ -1,5 +1,5 @@
 const TokenApiPath = {
-	REVOKE: "/revoke/:id",
+	REVOKE_$ID: "/revoke/:id",
 	ROOT: "/",
 } as const;
 

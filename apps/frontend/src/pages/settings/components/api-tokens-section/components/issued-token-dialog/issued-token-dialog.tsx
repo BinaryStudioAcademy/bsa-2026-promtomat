@@ -4,11 +4,13 @@ import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useClipboard } from "~/libs/hooks/use-clipboard/use-clipboard.hook.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type ApiTokenResponseDto } from "~/modules/api-tokens/api-tokens.js";
 
-import { UNCOPIED_NOTIFICATION_DURATION_MS } from "../../libs/constants/constants.js";
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
+import {
+	showTokenCopiedNotification,
+	showTokenNotCopiedNotification,
+} from "../../libs/helpers/helpers.js";
 import styles from "../../styles.module.css";
 
 type Properties = {
@@ -23,29 +25,25 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 	const { copyToClipboard } = useClipboard();
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 
+	const onTokenCopied = useCallback(
+		(isCopySuccessful: boolean) => {
+			setHasCopied(isCopySuccessful);
+			showTokenCopiedNotification(isCopySuccessful);
+		},
+		[setHasCopied],
+	);
+
 	const handleCopy = useCallback((): void => {
 		if (!token) {
 			return;
 		}
 
-		void copyToClipboard(token.value).then((isCopySuccessful: boolean) => {
-			setHasCopied(isCopySuccessful);
-			showNotification({
-				message: isCopySuccessful
-					? ApiTokensMessage.COPIED
-					: ApiTokensMessage.COPY_FAILED,
-				type: isCopySuccessful ? "success" : "danger",
-			});
-		});
-	}, [copyToClipboard, token]);
+		void copyToClipboard(token.value).then(onTokenCopied);
+	}, [copyToClipboard, token, onTokenCopied]);
 
 	const handleClose = useCallback((): void => {
 		if (!hasCopied) {
-			showNotification({
-				duration: UNCOPIED_NOTIFICATION_DURATION_MS,
-				message: ApiTokensMessage.CLOSE_WITHOUT_COPY,
-				type: "warning",
-			});
+			showTokenNotCopiedNotification();
 		}
 
 		onClose();

@@ -41,7 +41,7 @@ const apiTokensApi = baseApi
 				},
 				query: (id) => ({
 					method: HTTPMethod.DELETE,
-					url: configureString(APIPath.API_TOKENS, TokenApiPath.REVOKE, {
+					url: configureString(APIPath.API_TOKENS, TokenApiPath.REVOKE_$ID, {
 						id,
 					}),
 				}),

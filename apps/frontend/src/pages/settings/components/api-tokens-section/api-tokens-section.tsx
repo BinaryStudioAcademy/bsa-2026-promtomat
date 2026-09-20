@@ -1,177 +1,68 @@
-import { useCallback, useState } from "react";
+import { useGetApiTokensQuery } from "~/modules/api-tokens/api-tokens-api.js";
 
-import { Button } from "~/libs/components/button/button.js";
-import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
-import { Input } from "~/libs/components/input/input.js";
-import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
-import { Loader } from "~/libs/components/loader/loader.js";
-import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
-import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
-import {
-	useCreateApiTokenMutation,
-	useGetApiTokensQuery,
-	useRevokeApiTokenMutation,
-} from "~/modules/api-tokens/api-tokens-api.js";
-import {
-	type ApiTokenRequestDto,
-	type ApiTokenResponseDto,
-	tokenCreateValidationSchema,
-} from "~/modules/api-tokens/api-tokens.js";
-
-import { ApiTokenRow } from "./components/api-token-row/api-token-row.js";
+import { ApiTokensList } from "./components/api-tokens-list/api-tokens-list.js";
+import { CreateTokenForm } from "./components/create-token-form/create-token-form.js";
+import { EmptyMessage } from "./components/empty-message/empty-message.js";
 import { IssuedTokenDialog } from "./components/issued-token-dialog/issued-token-dialog.js";
-import { ApiTokensMessage } from "./libs/enums/enums.js";
+import { LoadingIndicator } from "./components/loading-indicator/loading-indicator.js";
+import { RevokeTokenConfirmation } from "./components/revoke-token-confirmation/revoke-token-confirmation.js";
+import { SectionDescription } from "./components/section-description/section-description.js";
+import { EMPTY_TOKEN_LEN } from "./libs/constants/constants.js";
+import {
+	useCreateTokenForm,
+	useTokenCreate,
+	useTokenRevoke,
+} from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
-
-const DEFAULT_VALUES: ApiTokenRequestDto = { name: "" };
 
 const ApiTokensSection: React.FC = () => {
 	const { data: tokens, isLoading } = useGetApiTokensQuery(undefined);
-	const [createApiToken, { isLoading: isCreating }] =
-		useCreateApiTokenMutation();
-	const [revokeApiToken, { isLoading: isRevoking }] =
-		useRevokeApiTokenMutation();
 
-	const [issuedToken, setIssuedToken] = useState<ApiTokenResponseDto | null>(
-		null,
-	);
-	const [pendingRevokeId, setPendingRevokeId] = useState<null | string>(null);
+	const {
+		confirmRevoke,
+		handleRevokeCancel,
+		handleRevokeRequest,
+		isRevoking,
+		pendingRevokeId,
+	} = useTokenRevoke();
 
-	const { control, handleSubmit, reset } = useAppForm<ApiTokenRequestDto>({
-		defaultValues: DEFAULT_VALUES,
-		validationSchema: tokenCreateValidationSchema,
-	});
+	const { control, handleCreateSubmit, resetValuesToDefault } =
+		useCreateTokenForm();
 
-	const handleCreate = useCallback(
-		(payload: ApiTokenRequestDto): void => {
-			void createApiToken(payload)
-				.unwrap()
-				.then((created: ApiTokenResponseDto) => {
-					setIssuedToken(created);
-					reset(DEFAULT_VALUES);
-				})
-				.catch(() => {
-					showNotification({
-						message: ApiTokensMessage.CREATE_ERROR,
-						type: "danger",
-					});
-				});
-		},
-		[createApiToken, reset],
-	);
-
-	const handleCreateSubmit = useCallback(
-		(event: React.BaseSyntheticEvent): void => {
-			void handleSubmit(handleCreate)(event);
-		},
-		[handleCreate, handleSubmit],
-	);
-
-	const handleIssuedDialogClose = useCallback((): void => {
-		setIssuedToken(null);
-	}, []);
-
-	const handleRevokeRequest = useCallback((id: string): void => {
-		setPendingRevokeId(id);
-	}, []);
-
-	const handleRevokeCancel = useCallback((): void => {
-		setPendingRevokeId(null);
-	}, []);
-
-	const handleRevokeConfirm = useCallback((): void => {
-		if (!pendingRevokeId) {
-			return;
-		}
-
-		void revokeApiToken(pendingRevokeId)
-			.unwrap()
-			.then(() => {
-				showNotification({
-					message: ApiTokensMessage.REVOKED,
-					type: "success",
-				});
-			})
-			.catch(() => {
-				showNotification({
-					message: ApiTokensMessage.REVOKE_ERROR,
-					type: "danger",
-				});
-			})
-			.finally(() => {
-				setPendingRevokeId(null);
-			});
-	}, [pendingRevokeId, revokeApiToken]);
-
-	const hasTokens = Boolean(tokens && tokens.length > EMPTY_LENGTH);
+	const { handleCreate, isCreating, issuedToken, resetIssuedToken } =
+		useTokenCreate(resetValuesToDefault);
 
 	return (
 		<section className={styles["section"]}>
-			<p className={styles["description"]}>
-				{ApiTokensMessage.SECTION_DESCRIPTION}
-			</p>
+			<SectionDescription />
 
-			<form className={styles["form"]} onSubmit={handleCreateSubmit}>
-				<div className={styles["form-field"]}>
-					<Input
-						control={control}
-						label={ApiTokensMessage.NAME_LABEL}
-						name="name"
-						placeholder={ApiTokensMessage.NAME_PLACEHOLDER}
-					/>
-				</div>
-				<Button
-					isDisabled={isCreating}
-					label={ApiTokensMessage.CREATE}
-					size={ControlSize.MD}
-					type="submit"
-					variant={ButtonVariant.PRIMARY}
-				/>
-			</form>
+			<CreateTokenForm
+				control={control}
+				isCreating={isCreating}
+				onSubmit={handleCreateSubmit(handleCreate)}
+			/>
 
-			{isLoading && (
-				<Loader
-					label={ApiTokensMessage.LOADING}
-					variant={LoaderVariant.SECTION}
-				/>
-			)}
+			<LoadingIndicator isLoading={isLoading} />
 
-			{!isLoading && !hasTokens && (
-				<p className={styles["empty"]}>{ApiTokensMessage.EMPTY}</p>
-			)}
+			<EmptyMessage
+				hasTokens={Boolean(tokens && tokens.length > EMPTY_TOKEN_LEN)}
+				isLoading={isLoading}
+			/>
 
-			{hasTokens && (
-				<ul className={styles["list"]}>
-					{tokens?.map((token) => (
-						<ApiTokenRow
-							key={token.id}
-							onRevoke={handleRevokeRequest}
-							token={token}
-						/>
-					))}
-				</ul>
-			)}
+			<ApiTokensList handleRevoke={handleRevokeRequest} tokens={tokens} />
 
 			<IssuedTokenDialog
 				key={issuedToken?.id}
-				onClose={handleIssuedDialogClose}
+				onClose={resetIssuedToken}
 				token={issuedToken}
 			/>
 
-			<Confirmation
-				confirmLabel={ApiTokensMessage.REVOKE}
-				confirmVariant={ButtonVariant.PRIMARY}
-				isLoading={isRevoking}
-				isOpen={Boolean(pendingRevokeId)}
-				onCancel={handleRevokeCancel}
-				onConfirm={handleRevokeConfirm}
-				title={ApiTokensMessage.REVOKE_TITLE}
-				tone="danger"
-			>
-				{ApiTokensMessage.REVOKE_CONFIRM}
-			</Confirmation>
+			<RevokeTokenConfirmation
+				confirmRevoke={confirmRevoke}
+				handleRevokeCancel={handleRevokeCancel}
+				isRevoking={isRevoking}
+				pendingRevokeId={pendingRevokeId}
+			/>
 		</section>
 	);
 };

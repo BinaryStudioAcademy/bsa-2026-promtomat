@@ -18,7 +18,7 @@ import { type ApiTokenRepository } from "./api-token.repository.js";
 import {
 	DIGEST_ALGORITHM,
 	LAST_USED_THROTTLE_MS,
-	NO_ROWS_DELETED,
+	NO_ROWS_COUNT,
 	SECRET_BYTE_LENGTH,
 	SECRET_ENCODING,
 	TOKEN_PARTS_LIMIT,
@@ -74,7 +74,7 @@ class ApiTokenService {
 		const deletedCount =
 			await this.apiTokenRepository.deleteByPublicIdAndUserId(publicId, userId);
 
-		if (deletedCount === NO_ROWS_DELETED) {
+		if (deletedCount === NO_ROWS_COUNT) {
 			throw ApiTokenError.notFound();
 		}
 	}

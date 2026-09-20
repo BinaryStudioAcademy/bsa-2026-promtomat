@@ -83,7 +83,7 @@ class ApiTokenController extends BaseController {
 					}>,
 				),
 			method: HTTPMethod.DELETE,
-			path: TokenApiPath.REVOKE,
+			path: TokenApiPath.REVOKE_$ID,
 			validation: {
 				params: tokenRouteParametersValidationSchema,
 			},
