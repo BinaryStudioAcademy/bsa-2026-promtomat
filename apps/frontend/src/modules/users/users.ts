@@ -1,4 +1,8 @@
 export { AiCodingTool, UsersApiTag } from "./libs/enums/enums.js";
 export { aiCodingToolToLabel } from "./libs/maps/maps.js";
-export { type UserDto, type UserUpdateRequestDto } from "./libs/types/types.js";
+export {
+	type UserDto,
+	type UserProfileSummaryResponseDto,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 export { updateProfileValidationSchema } from "./libs/validation-schemas/validation-schemas.js";

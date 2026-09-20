@@ -1,0 +1,29 @@
+.info {
+	display: flex;
+	gap: var(--space-16);
+	align-items: center;
+	margin-bottom: var(--space-24);
+}
+
+.avatar-wrapper {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	background-color: var(--border-accent);
+	border-radius: 50%;
+}
+
+.nickname {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.details {
+	margin: 0;
+	font-size: 12px;
+	color: #7c8498;
+}

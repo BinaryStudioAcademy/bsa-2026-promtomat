@@ -1,0 +1,15 @@
+.security-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-10);
+}
+
+.security-row > button {
+	flex: 1 1 100%;
+}
+
+@media (width >=600px) {
+	.security-row > button {
+		flex: 0;
+	}
+}

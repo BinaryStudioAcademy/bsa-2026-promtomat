@@ -1,0 +1,27 @@
+.small {
+	margin: 0;
+	font-size: 12px;
+	color: #7c8498;
+}
+
+.fields {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: var(--space-10);
+	margin-bottom: var(--space-10);
+}
+
+.profile-save-row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+	align-items: stretch;
+}
+
+@media (width >=600px) {
+	.profile-save-row {
+		flex-direction: row;
+		gap: var(--space-14);
+		align-items: center;
+	}
+}

@@ -23,10 +23,12 @@ import {
 import { SettingsMessage } from "../../libs/enums/enums.js";
 import { getSettingsFormValues } from "../../libs/helpers/helpers.js";
 import { type SettingsFormValues } from "../../libs/types/types.js";
-import styles from "../../styles.module.css";
+import { Section } from "../section/section.js";
+import { UserInfo } from "../user-info/user-info.js";
+import styles from "./styles.module.css";
 
 type Properties = {
-	user: UserDto;
+	user: UserDto & { totalPrompts: number };
 };
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
@@ -95,8 +97,8 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	}
 
 	return (
-		<section className={styles["card"]}>
-			<h2 className={styles["section-title"]}>PROFILE SETUP</h2>
+		<Section title="PROFILE">
+			<UserInfo user={user} />
 			<FormAlert error={generalError} />
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
@@ -119,15 +121,20 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						size={ControlSize.LG}
 					/>
 				</div>
-				<Button
-					isDisabled={isSaveDisabled}
-					isLoading={isLoading}
-					label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
-					size={ControlSize.LG}
-					type="submit"
-				/>
+				<div className={styles["profile-save-row"]}>
+					<Button
+						isDisabled={isSaveDisabled}
+						isLoading={isLoading}
+						label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
+						size={ControlSize.LG}
+						type="submit"
+					/>
+					<span className={styles["small"]}>
+						Applies to every prompt you log next.
+					</span>
+				</div>
 			</form>
-		</section>
+		</Section>
 	);
 };
 

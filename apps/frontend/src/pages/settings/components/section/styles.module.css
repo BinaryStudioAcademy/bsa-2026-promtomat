@@ -1,0 +1,22 @@
+.section {
+	padding: var(--space-18);
+	margin-bottom: var(--space-14);
+	background-color: #11141b;
+	border: var(--border-width-hairline) solid #1b202a;
+	border-radius: 18px;
+}
+
+@media (width >=600px) {
+	.section {
+		padding: var(--space-24);
+		border-radius: 16px;
+	}
+}
+
+.section-title {
+	margin: 0 0 var(--space-16);
+	font-size: 11px;
+	color: #7c8498;
+	text-transform: uppercase;
+	letter-spacing: 0.9px;
+}
