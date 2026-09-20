@@ -104,7 +104,7 @@ const RecordPromptForm: React.FC = () => {
 						label="Context"
 						name="workspaceId"
 						options={options ?? []}
-						placeholder="Loading workspaces..."
+						placeholder="Select a workspace"
 					/>
 					<Input
 						control={control}
