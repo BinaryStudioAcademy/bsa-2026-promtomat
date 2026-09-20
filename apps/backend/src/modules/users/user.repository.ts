@@ -8,7 +8,11 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
-import { type UserUpdateRequestDto } from "./libs/types/types.js";
+import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
+import {
+	type ResetPasswordPayload,
+	type UserUpdateRequestDto,
+} from "./libs/types/types.js";
 
 const UsersConstraintName = {
 	NICKNAME_UNIQUE: "users_nickname_unique",
@@ -90,6 +94,26 @@ class UserRepository {
 
 			throw error;
 		}
+	}
+
+	public async updatePasswordIfUnchangedSince(
+		id: number,
+		payload: ResetPasswordPayload,
+		trx?: Transaction,
+	): Promise<boolean> {
+		const { issuedAt, ...columns } = payload;
+
+		const updatedRows = await this.userModel
+			.query(trx)
+			.patch(columns)
+			.where("id", id)
+			.where((builder) => {
+				void builder
+					.whereNull("passwordChangedAt")
+					.orWhere("passwordChangedAt", "<", issuedAt);
+			});
+
+		return updatedRows !== NO_UPDATED_ROWS;
 	}
 }
 
