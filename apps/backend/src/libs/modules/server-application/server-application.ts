@@ -14,12 +14,18 @@ import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
 import { workspaceController } from "~/modules/workspaces/workspaces.js";
 
-import { AuthGuard } from "../auth-guard/auth-guard.js";
+import {
+	ApiTokenGuard,
+	AuthGuard,
+	JwtTokenGuard,
+} from "../auth-guard/auth-guard.js";
 import { token } from "../token/token.js";
 import { BaseServerApplicationApi } from "./base-server-application-api.js";
 import { BaseServerApplication } from "./base-server-application.js";
 
-const authGuard = new AuthGuard(token, userService, apiTokenService);
+const apiTokenGuard = new ApiTokenGuard(apiTokenService, userService);
+const jwtTokenGuard = new JwtTokenGuard(token, userService);
+const authGuard = new AuthGuard(apiTokenGuard, jwtTokenGuard);
 
 const apiV1 = new BaseServerApplicationApi(
 	"v1",
