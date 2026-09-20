@@ -1,0 +1,17 @@
+.meta-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.badge {
+	padding: var(--space-6) var(--space-12);
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-label-sm);
+	color: var(--text-muted);
+	background-color: var(--surface-raised);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-pill);
+}
