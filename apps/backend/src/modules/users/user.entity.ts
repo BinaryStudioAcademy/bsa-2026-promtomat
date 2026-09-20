@@ -3,11 +3,15 @@ import { type Entity } from "~/libs/types/types.js";
 import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
 
 class UserEntity implements Entity {
+	private createdAt: null | string;
+
 	private email: string;
 
 	private id: null | number;
 
 	private nickname: string;
+
+	private passwordChangedAt: null | string;
 
 	private passwordHash: string;
 
@@ -16,47 +20,59 @@ class UserEntity implements Entity {
 	private primaryAiCodingTool: null | PrimaryAiCodingTool;
 
 	private constructor({
+		createdAt,
 		email,
 		id,
 		nickname,
+		passwordChangedAt,
 		passwordHash,
 		passwordSalt,
 		primaryAiCodingTool,
 	}: {
+		createdAt: null | string;
 		email: string;
 		id: null | number;
 		nickname: string;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}) {
 		this.id = id;
+		this.createdAt = createdAt;
 		this.email = email;
 		this.nickname = nickname;
+		this.passwordChangedAt = passwordChangedAt;
 		this.passwordHash = passwordHash;
 		this.passwordSalt = passwordSalt;
 		this.primaryAiCodingTool = primaryAiCodingTool;
 	}
 
 	public static initialize({
+		createdAt,
 		email,
 		id,
 		nickname,
+		passwordChangedAt,
 		passwordHash,
 		passwordSalt,
 		primaryAiCodingTool,
 	}: {
+		createdAt: string;
 		email: string;
 		id: number;
 		nickname: string;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 		primaryAiCodingTool: null | PrimaryAiCodingTool;
 	}): UserEntity {
 		return new UserEntity({
+			createdAt,
 			email,
 			id,
 			nickname,
+			passwordChangedAt,
 			passwordHash,
 			passwordSalt,
 			primaryAiCodingTool,
@@ -75,9 +91,11 @@ class UserEntity implements Entity {
 		passwordSalt: string;
 	}): UserEntity {
 		return new UserEntity({
+			createdAt: null,
 			email,
 			id: null,
 			nickname,
+			passwordChangedAt: null,
 			passwordHash,
 			passwordSalt,
 			primaryAiCodingTool: null,
@@ -87,12 +105,14 @@ class UserEntity implements Entity {
 	public toAuthObject(): {
 		email: string;
 		id: number;
+		passwordChangedAt: null | string;
 		passwordHash: string;
 		passwordSalt: string;
 	} {
 		return {
 			email: this.email,
 			id: this.id as number,
+			passwordChangedAt: this.passwordChangedAt,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
 		};
@@ -116,6 +136,7 @@ class UserEntity implements Entity {
 
 	public toObject(): UserDto {
 		return {
+			createdAt: this.createdAt as string,
 			email: this.email,
 			id: this.id as number,
 			nickname: this.nickname,

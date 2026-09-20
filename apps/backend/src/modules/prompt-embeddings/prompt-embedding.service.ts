@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { PromptSearchError } from "~/libs/exceptions/exceptions.js";
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
 import {
@@ -32,6 +34,8 @@ import {
 	type NearestPromptLabelsQuery,
 	type NearestPromptQuery,
 	type PromptEmbeddingSource,
+	type PromptSemanticSearchResult,
+	type PromptSemanticSearchTextQuery,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingRepository } from "./prompt-embedding.repository.js";
@@ -288,11 +292,55 @@ class PromptEmbeddingService {
 		return report;
 	}
 
+	public async deleteForPrompt(
+		promptId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptEmbeddingRepository.deleteByPromptId(promptId, trx);
+	}
+
 	public async embedForPrompt(prompt: PromptEmbeddingSource): Promise<void> {
 		try {
 			await this.regenerateForPrompt(prompt);
 		} catch (error) {
 			this.logFailure(prompt.id, error);
+		}
+	}
+
+	public async findAllByQuery({
+		limit,
+		offset,
+		score,
+		search,
+		userId,
+		workspaceId,
+	}: PromptSemanticSearchTextQuery): Promise<PromptSemanticSearchResult> {
+		try {
+			const [embedding] = await this.embeddingService.embed([search]);
+
+			if (!embedding) {
+				throw new PromptEmbeddingError(
+					PromptEmbeddingErrorMessage.EMPTY_RESULT,
+				);
+			}
+
+			return await this.promptEmbeddingRepository.findAll({
+				embedding,
+				limit,
+				offset,
+				score,
+				userId,
+				workspaceId,
+			});
+		} catch (error) {
+			if (
+				error instanceof EmbeddingNotReadyError ||
+				error instanceof EmbeddingFailedError
+			) {
+				throw PromptSearchError.unavailable();
+			}
+
+			throw error;
 		}
 	}
 

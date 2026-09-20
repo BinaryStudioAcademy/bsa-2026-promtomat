@@ -1,8 +1,12 @@
-import { raw } from "objection";
+import { raw, type Transaction } from "objection";
 
+import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
+import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
+import { type PromptRepositoryItem } from "~/modules/prompts/libs/types/types.js";
+import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 
 import {
 	COLUMN_TYPE_ALIAS,
@@ -13,6 +17,8 @@ import {
 	NEAREST_PROMPT_SEARCH_LIMIT,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
+	PROMPT_WORKSPACE_ALIAS,
+	PROMPT_WORKSPACE_RELATION,
 	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
@@ -29,6 +35,9 @@ import {
 	type IndexedPromptSource,
 	type NearestPrompt,
 	type NearestPromptQuery,
+	type PromptAggregateRow,
+	type PromptSemanticSearchQuery,
+	type PromptSemanticSearchResult,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
@@ -57,6 +66,107 @@ class PromptEmbeddingRepository {
 			.execute();
 
 		return PromptEmbeddingEntity.initialize(promptEmbedding);
+	}
+
+	public async deleteByPromptId(
+		promptId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptEmbeddingModel
+			.query(trx)
+			.delete()
+			.where(PromptEmbeddingColumnName.PROMPT_ID, promptId)
+			.execute();
+	}
+
+	public async findAll({
+		embedding,
+		limit,
+		offset,
+		score,
+		userId,
+		workspaceId,
+	}: PromptSemanticSearchQuery): Promise<PromptSemanticSearchResult> {
+		const serializedEmbeddings = serializeEmbedding(embedding);
+
+		const baseQuery = this.promptEmbeddingModel
+			.query()
+			.joinRelated(PROMPT_WORKSPACE_RELATION)
+			.where(`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`, userId)
+			.where(
+				raw("?? <=> ?::vector", [
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+				]),
+				"<",
+				SIMILARITY_THRESHOLD,
+			);
+
+		if (workspaceId) {
+			baseQuery.where(
+				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
+				workspaceId,
+			);
+		}
+
+		if (score) {
+			baseQuery.where(
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				score,
+			);
+		}
+
+		const [aggregation] = await baseQuery
+			.clone()
+			.clearSelect()
+			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`)
+			.avg(
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			)
+			.castTo<PromptAggregateRow[]>()
+			.execute();
+
+		const items = await baseQuery
+			.clone()
+			.select(
+				`${PROMPT_RELATION}.${PromptColumnName.ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.TASK_INTENT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.CREATED_AT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.UPDATED_AT}`,
+				`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`,
+				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				raw("?? AS ??", [
+					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
+					SQLAlias.WORKSPACE_NAME,
+				]),
+			)
+			.orderByRaw(
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				[
+					RelevanceWeight.SIMILARITY_WEIGHT,
+					MAX_SIMILARITY,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+					serializedEmbeddings,
+					SIMILARITY_THRESHOLD,
+					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					MAX_EFFICIENCY_SCORE,
+				],
+			)
+			.offset(offset)
+			.limit(limit)
+			.castTo<PromptRepositoryItem[]>()
+			.execute();
+
+		return {
+			averageScore: aggregation?.averageScore
+				? Number(aggregation.averageScore)
+				: null,
+			items,
+			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
+		};
 	}
 
 	public async findIndexedSourcesAfter(
@@ -116,7 +226,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				"(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) DESC",
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,

@@ -15,6 +15,9 @@ const workspaceNameField = z
 	})
 	.refine((value) => value === value.trim(), {
 		error: WorkspaceValidationMessage.NAME_HAS_LEADING_OR_TRAILING_SPACES,
+	})
+	.regex(WorkspaceValidationRule.NAME_REGEX, {
+		error: WorkspaceValidationMessage.NAME_INVALID,
 	});
 
 export { workspaceNameField };

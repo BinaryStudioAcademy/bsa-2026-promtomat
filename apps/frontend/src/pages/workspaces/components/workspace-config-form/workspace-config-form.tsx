@@ -47,6 +47,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		formState: { isDirty, isValid },
 		handleSubmit,
 		setError,
+		trigger,
 	} = useAppForm<WorkspaceEditableFields>({
 		defaultValues: {
 			name: workspace.name,
@@ -55,6 +56,10 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		mode: FormValidationMode.ON_CHANGE,
 		validationSchema: workspaceUpdateValidationSchema,
 	});
+
+	useEffect(() => {
+		void trigger();
+	}, [trigger]);
 
 	const [updateWorkspace, { error, isLoading }] = useUpdateWorkspaceMutation();
 	const { hasFieldErrors } = useServerFormErrors({
@@ -121,7 +126,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						isDisabled={isLoading}
 						label="Workspace name"
 						name="name"
-						placeholder="Name..."
+						placeholder="Name"
 					/>
 					<SearchableSelect
 						control={control}

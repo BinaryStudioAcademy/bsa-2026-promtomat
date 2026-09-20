@@ -70,14 +70,24 @@ resource "aws_ecs_task_definition" "fargate_backend" {
         { name = "BEDROCK_MODEL_ID", value = var.bedrock_model_id },
         { name = "BEDROCK_REQUEST_TIMEOUT_MS", value = tostring(var.bedrock_request_timeout_ms) },
         { name = "BEDROCK_CONNECTION_TIMEOUT_MS", value = tostring(var.bedrock_connection_timeout_ms) },
+        { name = "BEDROCK_MAX_ATTEMPTS", value = tostring(var.bedrock_max_attempts) },
         { name = "GENERATION_CANDIDATE_LIMIT", value = tostring(var.generation_candidate_limit) },
         { name = "GENERATION_MAX_TOKENS", value = tostring(var.generation_max_tokens) },
         { name = "GENERATION_SOURCE_BODY_MAX_LENGTH", value = tostring(var.generation_source_body_max_length) },
+        { name = "PASSWORD_RESET_LINK_BASE_URL", value = "${aws_alb.lb.dns_name}/reset-password" },
+        { name = "PASSWORD_RESET_REQUEST_LIMIT", value = tostring(var.password_reset_request_limit) },
+        { name = "PASSWORD_RESET_WINDOW_MINUTES", value = tostring(var.password_reset_window_minutes) },
+        { name = "PASSWORD_RESET_TOKEN_TTL_MINUTES", value = tostring(var.password_reset_token_ttl_minutes) },
       ]
 
       secrets = [
         { name = "DB_PASSWORD", valueFrom = "${local.db_secret_arn}:password::" },
-        { name = "JWT_SECRET", valueFrom = "${aws_secretsmanager_secret.jwt.arn}:secret::" }
+        { name = "JWT_SECRET", valueFrom = "${aws_secretsmanager_secret.jwt.arn}:secret::" },
+        { name = "MAIL_USER", valueFrom = "${var.aws_secret_mail_arn}:mail_user::" },
+        { name = "MAIL_PASSWORD", valueFrom = "${var.aws_secret_mail_arn}:mail_password::" },
+        { name = "MAIL_HOST", valueFrom = "${var.aws_secret_mail_arn}:mail_host::" },
+        { name = "MAIL_PORT", valueFrom = "${var.aws_secret_mail_arn}:mail_port::" },
+        { name = "MAIL_FROM", valueFrom = "${var.aws_secret_mail_arn}:mail_from::" }
       ]
 
       logConfiguration = {

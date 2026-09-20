@@ -6,6 +6,7 @@ import { type WorkspaceService } from "../../workspace.service.js";
 
 const workspaceAccessHook = (
 	workspaceService: WorkspaceService,
+	options: { isWorkspaceOptional?: boolean } = {},
 ): preHandlerAsyncHookHandler => {
 	return async (request) => {
 		if (!request.user) {
@@ -21,17 +22,31 @@ const workspaceAccessHook = (
 			requestQuery?.workspaceId;
 
 		if (!workspaceId) {
+			if (options.isWorkspaceOptional) {
+				return;
+			}
 			throw WorkspaceError.notFound();
 		}
 
-		const workspace = await workspaceService.findByIdAndOwner(
+		const ownedWorkspace = await workspaceService.findByIdAndOwner(
 			workspaceId,
 			request.user.id,
 		);
 
-		if (!workspace) {
-			throw WorkspaceError.notFound();
+		if (ownedWorkspace) {
+			return;
 		}
+
+		const contributedWorkspace = await workspaceService.findByIdAndContributor(
+			workspaceId,
+			request.user.id,
+		);
+
+		if (contributedWorkspace) {
+			return;
+		}
+
+		throw WorkspaceError.notFound();
 	};
 };
 

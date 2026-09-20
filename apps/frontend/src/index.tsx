@@ -12,6 +12,7 @@ import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { ErrorPage } from "~/pages/error/error.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { PasswordReset } from "~/pages/password-reset/password-reset.js";
 
 const loadAuthPage = async (): Promise<{ Component: ComponentType }> => {
 	const pageModule = await import("~/pages/auth/auth.jsx");
@@ -53,11 +54,11 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
-												await import("~/pages/smart-search/smart-search.js");
+												await import("~/pages/profile/profile.js");
 
-											return { Component: pageModule.SmartSearch };
+											return { Component: pageModule.Profile };
 										},
-										path: AppRoute.SMART_SEARCH,
+										path: AppRoute.PROFILE,
 									},
 									{
 										lazy: async () => {
@@ -86,6 +87,24 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 										},
 										path: AppRoute.WORKSPACES,
 									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-history/prompt-history.js");
+
+											return { Component: pageModule.PromptHistory };
+										},
+										path: AppRoute.PROMPTS_HISTORY,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+											return { Component: pageModule.PromptDelivery };
+										},
+										path: AppRoute.PROMPTS_$PROMPT_ID,
+									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
 								hydrateFallbackElement: <Loader />,
@@ -99,6 +118,14 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								hydrateFallbackElement: <Loader />,
 								lazy: loadAuthPage,
 								path: AppRoute.SIGN_UP,
+							},
+							{
+								element: <PasswordReset />,
+								path: AppRoute.FORGOT_PASSWORD,
+							},
+							{
+								element: <PasswordReset />,
+								path: AppRoute.RESET_PASSWORD,
 							},
 							{
 								element: <NotFoundPage />,

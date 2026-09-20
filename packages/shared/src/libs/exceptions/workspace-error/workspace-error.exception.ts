@@ -24,6 +24,14 @@ class WorkspaceError extends HTTPError {
 		});
 	}
 
+	public static forbidden(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_ACTION_FORBIDDEN,
+			message: WorkspacesErrorMessage.WORKSPACE_ACTION_FORBIDDEN,
+			status: HTTPCode.FORBIDDEN,
+		});
+	}
+
 	public static lastWorkspaceDeletionNotAllowed(): WorkspaceError {
 		return new WorkspaceError({
 			code: WorkspacesErrorCode.LAST_WORKSPACE_DELETION_NOT_ALLOWED,
@@ -45,6 +53,14 @@ class WorkspaceError extends HTTPError {
 			code: WorkspacesErrorCode.WORKSPACE_NOT_FOUND,
 			message: WorkspacesErrorMessage.WORKSPACE_NOT_FOUND,
 			status: HTTPCode.NOT_FOUND,
+		});
+	}
+
+	public static ownerCannotBeRemoved(): WorkspaceError {
+		return new WorkspaceError({
+			code: WorkspacesErrorCode.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			message: WorkspacesErrorMessage.WORKSPACE_OWNER_CANNOT_BE_REMOVED,
+			status: HTTPCode.FORBIDDEN,
 		});
 	}
 }

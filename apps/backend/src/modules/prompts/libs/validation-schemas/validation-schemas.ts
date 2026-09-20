@@ -1,6 +1,8 @@
 export {
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
+	promptGetQueryValidationSchema,
+	promptIdParameterValidationSchema,
+	promptRouteParametersValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
-	searchPromptsValidationSchema,
 } from "@promptomat/shared";

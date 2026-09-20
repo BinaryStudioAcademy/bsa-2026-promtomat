@@ -9,17 +9,24 @@ export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
+	type PromptGetAllResponseDto,
+	type PromptGetQueryDto,
+	type PromptItemResponseDto,
+	type PromptRouteParametersDto,
+	type PromptUpdateIntentRequestDto,
+} from "./libs/types/types.js";
+export {
 	type PromptGetRecentResponseDto,
+	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
-	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
-	type PromptSearchResult,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 export {
 	promptCreateValidationSchema,
-	promptGetByQueryValidationSchema,
+	promptGetQueryValidationSchema,
+	promptIdParameterValidationSchema,
+	promptRouteParametersValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
-	searchPromptsValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
