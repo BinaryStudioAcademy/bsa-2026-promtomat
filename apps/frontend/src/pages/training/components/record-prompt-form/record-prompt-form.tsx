@@ -4,12 +4,11 @@ import { type Control } from "react-hook-form";
 import { Input } from "~/libs/components/input/input.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { ControlSize } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import { PromptBodyField } from "~/pages/training/components/prompt-body-field/prompt-body-field.js";
 
-import { PROMPT_BODY_ROWS } from "./libs/constants/constants.js";
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -67,15 +66,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 						placeholder={RecordPromptFormMessage.INTENT_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
-					<Textarea
-						autoComplete="off"
-						control={control}
-						isDisabled={isSubmitting}
-						label={RecordPromptFormMessage.BODY_LABEL}
-						name="promptBody"
-						placeholder={RecordPromptFormMessage.BODY_PLACEHOLDER}
-						rows={PROMPT_BODY_ROWS}
-					/>
+					<PromptBodyField control={control} isDisabled={isSubmitting} />
 					<ScoreGrid
 						isDisabled={isSubmitting}
 						label={RecordPromptFormMessage.SCORE_LABEL}

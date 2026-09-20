@@ -18,6 +18,7 @@ type Properties<T extends FieldValues> =
 		control: Control<T, null>;
 		descriptionId?: string;
 		isDisabled?: boolean;
+		isLabelHidden?: boolean;
 		label: string;
 		maxHeight?: number;
 		name: FieldPath<T>;
@@ -29,6 +30,7 @@ const Textarea = <T extends FieldValues>({
 	control,
 	descriptionId,
 	isDisabled = false,
+	isLabelHidden = false,
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
@@ -83,7 +85,13 @@ const Textarea = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			<label className={styles["label"]} htmlFor={textareaId}>
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isLabelHidden && "visually-hidden",
+				)}
+				htmlFor={textareaId}
+			>
 				{label}
 			</label>
 			<div className={styles["control"]}>
