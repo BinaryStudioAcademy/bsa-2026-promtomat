@@ -8,6 +8,7 @@ import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
+import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -40,12 +41,11 @@ const RecordPromptForm: React.FC<Properties> = ({
 
 	return (
 		<>
-			<div>
-				<h1 className={styles["heading"]}>Log This Prompt</h1>
-				<span className={styles["sub-heading"]}>
-					Every submission trains the retrieval index.
-				</span>
-			</div>
+			<header className={styles["header"]}>
+				<p className={styles["eyebrow"]}>{RecordPromptFormMessage.EYEBROW}</p>
+				<h1 className={styles["title"]}>{RecordPromptFormMessage.TITLE}</h1>
+				<p className={styles["subtitle"]}>{RecordPromptFormMessage.SUBTITLE}</p>
+			</header>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Select
