@@ -10,6 +10,7 @@ import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 import { PromptBodyField } from "~/pages/training/components/prompt-body-field/prompt-body-field.js";
+import { PromptLabels } from "~/pages/training/components/prompt-labels/prompt-labels.js";
 
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -19,6 +20,7 @@ type Properties = {
 	error: unknown;
 	isScoreInvalid: boolean;
 	isSubmitting: boolean;
+	loggedLabel: string | undefined;
 	onScoreSelect: (score: number) => () => void;
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
@@ -29,6 +31,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 	error,
 	isScoreInvalid,
 	isSubmitting,
+	loggedLabel,
 	onScoreSelect,
 	onSubmit,
 	score,
@@ -70,6 +73,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 						size={ControlSize.LG}
 					/>
 					<PromptBodyField control={control} isDisabled={isSubmitting} />
+					<PromptLabels label={loggedLabel} />
 					<div className={styles["score-field"]}>
 						<ScoreGrid
 							isDisabled={isSubmitting}

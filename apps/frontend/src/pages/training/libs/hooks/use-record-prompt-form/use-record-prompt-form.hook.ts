@@ -16,6 +16,7 @@ type ReturnValue = {
 	error: unknown;
 	isScoreInvalid: boolean;
 	isSubmitting: boolean;
+	loggedLabel: string | undefined;
 	onScoreSelect: (score: number) => () => void;
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
@@ -23,7 +24,8 @@ type ReturnValue = {
 };
 
 const useRecordPromptForm = (): ReturnValue => {
-	const [recordPrompt, { error, isLoading }] = useRecordPromptMutation();
+	const [recordPrompt, { data: loggedPrompt, error, isLoading }] =
+		useRecordPromptMutation();
 
 	const { control, errors, handleSubmit, reset, setValue } =
 		useAppForm<PromptCreateRequestDto>({
@@ -72,6 +74,7 @@ const useRecordPromptForm = (): ReturnValue => {
 		error,
 		isScoreInvalid: Boolean(errors.efficiencyScore),
 		isSubmitting: isLoading,
+		loggedLabel: loggedPrompt?.label,
 		onScoreSelect: handleScoreSelect,
 		onSubmit: handleSubmitPrompt,
 		score,
