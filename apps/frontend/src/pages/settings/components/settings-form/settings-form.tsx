@@ -1,11 +1,10 @@
 import { useCallback } from "react";
-import { Navigate } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
+import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -21,7 +20,10 @@ import {
 	EMPTY_AI_CODING_TOOL,
 } from "../../libs/constants.js";
 import { SettingsMessage } from "../../libs/enums/enums.js";
-import { getSettingsFormValues } from "../../libs/helpers/helpers.js";
+import {
+	checkHasSettingsChanged,
+	getSettingsFormValues,
+} from "../../libs/helpers/helpers.js";
 import { type SettingsFormValues } from "../../libs/types/types.js";
 import styles from "../../styles.module.css";
 
@@ -30,14 +32,14 @@ type Properties = {
 };
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
-	const [updateProfile, { error, isLoading, isSuccess }] =
-		useUpdateProfileMutation();
+	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
 	const {
 		control,
 		formState: { isDirty },
 		handleSubmit,
 		reset,
 		setError,
+		setValue,
 	} = useAppForm<SettingsFormValues>({
 		defaultValues: getSettingsFormValues(user),
 		validationSchema: updateProfileValidationSchema,
@@ -50,9 +52,24 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 
 	const isSaveDisabled = isLoading || !isDirty;
 
+	const handleNicknameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("nickname", event.target.value.trim(), { shouldDirty: true });
+		},
+		[setValue],
+	);
+
 	const handleSave = useCallback(
 		(payload: SettingsFormValues): void => {
-			if (!isDirty || payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL) {
+			const hasPayloadChanged = checkHasSettingsChanged({
+				current: getSettingsFormValues(user),
+				next: payload,
+			});
+
+			if (
+				!hasPayloadChanged ||
+				payload.primaryAiCodingTool === EMPTY_AI_CODING_TOOL
+			) {
 				return;
 			}
 
@@ -80,7 +97,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					}
 				});
 		},
-		[isDirty, reset, setError, updateProfile],
+		[reset, setError, updateProfile, user],
 	);
 
 	const handleFormSubmit = useCallback(
@@ -89,10 +106,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		},
 		[handleSave, handleSubmit],
 	);
-
-	if (isSuccess) {
-		return <Navigate replace to={AppRoute.PROFILE} />;
-	}
 
 	return (
 		<section className={styles["card"]}>
@@ -106,6 +119,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
+						onBlur={handleNicknameBlur}
 						placeholder={SettingsMessage.NICKNAME_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
