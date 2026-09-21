@@ -1,0 +1,3 @@
+const AUTHORIZATION_SCHEME = "Bearer";
+
+export { AUTHORIZATION_SCHEME };
