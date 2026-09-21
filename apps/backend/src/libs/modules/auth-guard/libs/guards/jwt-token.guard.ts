@@ -1,10 +1,10 @@
 import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
+import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserEntity } from "~/modules/users/user.entity.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { type TokenService } from "../../../token/libs/types/types.js";
 import { AuthErrorMesssage, AuthSuccessMessage } from "../enums/enums.js";
-import { createUnauthorizedError } from "../helpers/helpers.js";
 import { type AuthPayload, type TokenGuard } from "../types/types.js";
 
 class JwtTokenGuard implements TokenGuard {
@@ -26,13 +26,13 @@ class JwtTokenGuard implements TokenGuard {
 		}
 
 		if (!payload.iat) {
-			throw createUnauthorizedError(AuthErrorMesssage.INVALID_PAYLOAD);
+			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
 		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
 
 		if (Number.isNaN(changedAtMilliseconds)) {
-			throw createUnauthorizedError(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
+			throw AuthError.unauthorized(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
 		}
 
 		const changedAtSeconds = Math.floor(
@@ -40,7 +40,7 @@ class JwtTokenGuard implements TokenGuard {
 		);
 
 		if (payload.iat <= changedAtSeconds) {
-			throw createUnauthorizedError(AuthSuccessMessage.PASSWORD_CHANGED);
+			throw AuthError.unauthorized(AuthSuccessMessage.PASSWORD_CHANGED);
 		}
 	}
 
@@ -50,17 +50,17 @@ class JwtTokenGuard implements TokenGuard {
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
-			throw createUnauthorizedError(AuthErrorMesssage.INVALID_TOKEN);
+			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_TOKEN);
 		}
 
 		if (typeof payload.userId !== "number") {
-			throw createUnauthorizedError(AuthErrorMesssage.INVALID_PAYLOAD);
+			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
 		}
 
 		const hasPurpose = Boolean(payload.purpose);
 
 		if (hasPurpose) {
-			throw createUnauthorizedError(AuthErrorMesssage.WRONG_PURPOSE);
+			throw AuthError.unauthorized(AuthErrorMesssage.WRONG_PURPOSE);
 		}
 
 		return payload;
@@ -72,7 +72,7 @@ class JwtTokenGuard implements TokenGuard {
 		const userEntity = await this.userService.findEntityById(payload.userId);
 
 		if (!userEntity) {
-			throw createUnauthorizedError(AuthErrorMesssage.USER_NOT_FOUND);
+			throw AuthError.unauthorized(AuthErrorMesssage.USER_NOT_FOUND);
 		}
 
 		this.assertTokenPredatesNoPasswordChange(
