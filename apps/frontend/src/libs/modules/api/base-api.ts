@@ -6,6 +6,7 @@ const baseApi = createApi({
 	baseQuery,
 	endpoints: () => ({}),
 	reducerPath: "api",
+	refetchOnFocus: true,
 	refetchOnReconnect: true,
 });
 

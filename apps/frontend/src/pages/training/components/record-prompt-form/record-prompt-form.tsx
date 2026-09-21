@@ -8,7 +8,7 @@ import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 import { PromptBodyField } from "~/pages/training/components/prompt-body-field/prompt-body-field.js";
 import { PromptLabels } from "~/pages/training/components/prompt-labels/prompt-labels.js";
 

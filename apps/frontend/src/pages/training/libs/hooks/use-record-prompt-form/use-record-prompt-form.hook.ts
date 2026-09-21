@@ -2,12 +2,17 @@ import React, { useCallback } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
 import {
 	type PromptCreateRequestDto,
 	promptCreateValidationSchema,
 } from "~/modules/prompts/prompts.js";
+import {
+	useActiveWorkspace,
+	useGetWorkspacesQuery,
+} from "~/modules/workspaces/workspaces.js";
 import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "~/pages/training/libs/constants/constants.js";
 import { RecordPromptMessage } from "~/pages/training/libs/enums/enums.js";
 
@@ -33,12 +38,20 @@ const useRecordPromptForm = (): ReturnValue => {
 			validationSchema: promptCreateValidationSchema,
 		});
 
+	const { data: workspaces } = useGetWorkspacesQuery({});
+
 	const selectedScore = useWatch({ control, name: "efficiencyScore" });
 	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
 
 	const score = typeof selectedScore === "number" ? selectedScore : null;
-	const workspaceId =
+	const formWorkspaceId =
 		typeof selectedWorkspaceId === "number" ? selectedWorkspaceId : undefined;
+
+	const workspaceId = useActiveWorkspace({
+		formWorkspaceId,
+		workspaces: workspaces?.items,
+	});
+	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
 	const handleScoreSelect = useCallback(
 		(nextScore: number) => {
