@@ -6,7 +6,7 @@ import {
 	ApiTokenResponseDto,
 } from "~/modules/api-tokens/api-tokens.js";
 
-import { CREATE_TOKEN_ERROR_NOTIFICATION } from "../constants/constants.js";
+import { ApiTokensNotification } from "../enums/enums.js";
 import { invokeAction } from "../helpers/helpers.js";
 
 const useTokenCreate = (onCreated: () => void) => {
@@ -28,12 +28,13 @@ const useTokenCreate = (onCreated: () => void) => {
 	}, []);
 
 	const handleCreate = useCallback(
-		(payload: ApiTokenRequestDto): void =>
+		(payload: ApiTokenRequestDto): void => {
 			void invokeAction(
 				createApiToken(payload).unwrap(),
 				onTokenCreated,
-				CREATE_TOKEN_ERROR_NOTIFICATION,
-			),
+				ApiTokensNotification.CREATE_FAILED,
+			);
+		},
 		[createApiToken],
 	);
 

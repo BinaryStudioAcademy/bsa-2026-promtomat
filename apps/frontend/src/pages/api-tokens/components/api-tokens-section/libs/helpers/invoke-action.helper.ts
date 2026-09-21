@@ -3,15 +3,17 @@ import {
 	ShowNotificationPayload,
 } from "~/libs/modules/notification/notification.js";
 
-/* eslint-disable unicorn/prefer-await */
-const invokeAction = <T>(
+const invokeAction = async <T>(
 	action: Promise<T>,
 	success: (created: T) => void,
 	errorMessage: ShowNotificationPayload,
 ) => {
-	return action.then(success).catch(() => {
+	try {
+		const result = await action;
+		success(result);
+	} catch {
 		showNotification(errorMessage);
-	});
+	}
 };
 
 export { invokeAction };

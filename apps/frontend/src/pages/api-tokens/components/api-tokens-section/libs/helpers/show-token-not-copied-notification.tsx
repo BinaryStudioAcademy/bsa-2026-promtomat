@@ -1,9 +1,9 @@
 import { showNotification } from "~/libs/modules/notification/notification.js";
 
-import { UNCOPIED_TOKEN_NOTIFICATION } from "../constants/constants.js";
+import { ApiTokensNotification } from "../enums/enums.js";
 
 const showTokenNotCopiedNotification = () => {
-	showNotification(UNCOPIED_TOKEN_NOTIFICATION);
+	showNotification(ApiTokensNotification.CLOSED_WITHOUT_COPY);
 };
 
 export { showTokenNotCopiedNotification };

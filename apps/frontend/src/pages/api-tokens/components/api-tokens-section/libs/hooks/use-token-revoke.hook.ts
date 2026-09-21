@@ -2,8 +2,7 @@ import { useCallback, useState } from "react";
 
 import { useRevokeApiTokenMutation } from "~/modules/api-tokens/api-tokens-api.js";
 
-import { REVOKE_TOKEN_ERROR_NOTIFICATION } from "../constants/constants.js";
-import { REVOKE_TOKEN_SUCCESS_NOTIFICATION } from "../constants/revoke-token-success-notification.constant.js";
+import { ApiTokensNotification } from "../enums/enums.js";
 import { invokeActionWithToasts } from "../helpers/helpers.js";
 
 const useTokenRevoke = () => {
@@ -30,8 +29,8 @@ const useTokenRevoke = () => {
 
 		void invokeActionWithToasts(
 			revokeApiToken(pendingRevokeId).unwrap(),
-			REVOKE_TOKEN_SUCCESS_NOTIFICATION,
-			REVOKE_TOKEN_ERROR_NOTIFICATION,
+			ApiTokensNotification.REVOKE_SUCCEEDED,
+			ApiTokensNotification.REVOKE_FAILED,
 			onTokenRevoked,
 		);
 	}, [pendingRevokeId, revokeApiToken]);

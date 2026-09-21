@@ -3,22 +3,21 @@ import {
 	ShowNotificationPayload,
 } from "~/libs/modules/notification/notification.js";
 
-/* eslint-disable unicorn/prefer-await */
 /* eslint-disable max-params */
-const invokeActionWithToasts = <T>(
+const invokeActionWithToasts = async <T>(
 	action: Promise<T>,
 	successMessage: ShowNotificationPayload,
 	errorMessage: ShowNotificationPayload,
 	finalize: () => void,
 ) => {
-	return action
-		.then(() => {
-			showNotification(successMessage);
-		})
-		.catch(() => {
-			showNotification(errorMessage);
-		})
-		.finally(finalize);
+	try {
+		await action;
+		showNotification(successMessage);
+	} catch {
+		showNotification(errorMessage);
+	} finally {
+		finalize();
+	}
 };
 
 export { invokeActionWithToasts };

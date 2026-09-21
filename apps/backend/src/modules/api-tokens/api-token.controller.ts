@@ -255,7 +255,7 @@ class ApiTokenController extends BaseController {
 
 		return {
 			payload: null,
-			status: HTTPCode.OK,
+			status: HTTPCode.NO_CONTENT,
 		};
 	}
 }
