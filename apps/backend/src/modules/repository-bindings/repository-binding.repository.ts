@@ -71,6 +71,16 @@ class RepositoryBindingRepository {
 		);
 	}
 
+	public async findById(id: number): Promise<null | RepositoryBindingEntity> {
+		const repositoryBinding = await this.repositoryBindingModel
+			.query()
+			.findById(id);
+
+		return repositoryBinding
+			? RepositoryBindingEntity.initialize(repositoryBinding)
+			: null;
+	}
+
 	public async findWorkspaceIdsByIdentity(
 		identity: RepositoryIdentity,
 		workspaceIds: number[],

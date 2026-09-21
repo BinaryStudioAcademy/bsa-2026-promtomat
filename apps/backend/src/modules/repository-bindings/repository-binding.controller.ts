@@ -11,6 +11,7 @@ import { type UserDto } from "~/libs/types/types.js";
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { RepositoryBindingsApiPath } from "./libs/enums/enums.js";
+import { repositoryBindingAccessHook } from "./libs/hooks/repository-binding-access.hook.js";
 import {
 	type CreateRepositoryBindingRequestDto,
 	type ListRepositoryBindingsQueryDto,
@@ -116,6 +117,10 @@ class RepositoryBindingController extends BaseController {
 				),
 			method: HTTPMethod.DELETE,
 			path: RepositoryBindingsApiPath.$REPOSITORY_BINDING_ID,
+			preHandler: repositoryBindingAccessHook(
+				repositoryBindingService,
+				workspaceService,
+			),
 			validation: {
 				params: repositoryBindingRouteParameters,
 			},
@@ -130,6 +135,7 @@ class RepositoryBindingController extends BaseController {
 				),
 			method: HTTPMethod.GET,
 			path: RepositoryBindingsApiPath.ROOT,
+			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
 				query: listRepositoryBindingsQuery,
 			},
@@ -159,6 +165,10 @@ class RepositoryBindingController extends BaseController {
 				),
 			method: HTTPMethod.PATCH,
 			path: RepositoryBindingsApiPath.$REPOSITORY_BINDING_ID,
+			preHandler: repositoryBindingAccessHook(
+				repositoryBindingService,
+				workspaceService,
+			),
 			validation: {
 				body: repositoryBindingUpdate,
 				params: repositoryBindingRouteParameters,

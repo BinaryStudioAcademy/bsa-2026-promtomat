@@ -95,6 +95,14 @@ class RepositoryBindingService {
 		);
 	}
 
+	public async findById(id: number): Promise<null | RepositoryBindingDto> {
+		const repositoryBinding = await this.repositoryBindingRepository.findById(
+			id,
+		);
+
+		return repositoryBinding ? repositoryBinding.toObject() : null;
+	}
+
 	public async resolve(
 		payload: ResolveRepositoryBindingQueryDto,
 		callerUserId: number,
