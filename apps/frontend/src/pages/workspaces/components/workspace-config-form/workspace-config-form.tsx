@@ -13,11 +13,9 @@ import {
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
-import {
-	isServerError,
-	isToastedError,
-} from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	type WorkspaceDto,
 	type WorkspaceUpdateRequestDto,
@@ -70,7 +68,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const hasConflictError =
 		isServerError(error) && error.status === HTTPCode.CONFLICT;
 	const generalErrorMessage =
-		hasConflictError || hasFieldErrors || isToastedError(error)
+		hasConflictError || hasFieldErrors || checkIsToastedError(error)
 			? null
 			: errorMessage;
 

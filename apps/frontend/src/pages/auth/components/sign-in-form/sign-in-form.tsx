@@ -8,7 +8,7 @@ import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
-import { isToastedError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
@@ -34,7 +34,7 @@ const SignInForm: React.FC = () => {
 		setError,
 	});
 	const generalError =
-		hasFieldErrors || isToastedError(error) ? undefined : error;
+		hasFieldErrors || checkIsToastedError(error) ? undefined : error;
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {

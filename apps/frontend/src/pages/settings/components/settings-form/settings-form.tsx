@@ -7,10 +7,8 @@ import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
 import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import {
-	isServerError,
-	isToastedError,
-} from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
+import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
 import { useUpdateProfileMutation } from "~/modules/users/users-api.js";
@@ -50,7 +48,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		isServerError(error) &&
 		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
 	const generalError =
-		isNicknameConflict || isToastedError(error) ? undefined : error;
+		isNicknameConflict || checkIsToastedError(error) ? undefined : error;
 
 	const isSaveDisabled = isLoading || !isDirty;
 
