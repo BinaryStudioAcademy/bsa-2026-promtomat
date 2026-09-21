@@ -100,7 +100,7 @@ const RecordPromptForm: React.FC = () => {
 				<div className={styles["input-wrapper"]}>
 					<Select
 						control={control}
-						isDisabled={isLoading || workspaceId === undefined}
+						isDisabled={isLoading}
 						label="Context"
 						name="workspaceId"
 						options={options ?? []}
