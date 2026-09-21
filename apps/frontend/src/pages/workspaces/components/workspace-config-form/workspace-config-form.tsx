@@ -17,6 +17,10 @@ import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-ser
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
+	useDeleteRepositoryBindingMutation,
+	useGetRepositoryBindingsQuery,
+} from "~/modules/repository-bindings/repository-bindings.js";
+import {
 	type WorkspaceDto,
 	type WorkspaceUpdateRequestDto,
 } from "~/modules/workspaces/libs/types/types.js";
@@ -25,8 +29,12 @@ import {
 	workspaceUpdateValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
-import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import {
+	WorkspaceFormMessage,
+	WorkspaceRepositoryBindingsMessage,
+} from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
+import { RepositoryBindingList } from "./components/repository-binding-list/repository-binding-list.js";
 import { WORKSPACE_CONFIG_FIELDS } from "./libs/constants/constants.js";
 import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
 
@@ -68,6 +76,28 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		fields: WORKSPACE_CONFIG_FIELDS,
 		setError,
 	});
+
+	const {
+		data: bindings,
+		isError: isBindingsError,
+		isLoading: isBindingsLoading,
+		refetch: refetchBindings,
+	} = useGetRepositoryBindingsQuery(workspace.id);
+	const [removeRepositoryBinding, { isLoading: isRemovingBinding }] =
+		useDeleteRepositoryBindingMutation();
+
+	const handleRemoveBinding = useCallback(
+		(repositoryBindingId: number): void => {
+			void removeRepositoryBinding(repositoryBindingId);
+		},
+		[removeRepositoryBinding],
+	);
+
+	const handleRetryBindings = useCallback((): void => {
+		void refetchBindings();
+	}, [refetchBindings]);
+
+	const bindingList = bindings ?? [];
 
 	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
@@ -136,6 +166,23 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						placeholder="Enter tags"
 						size={ControlSize.MD}
 						valuesDictionary={Object.values(TechStackTechDictionary)}
+					/>
+				</div>
+				<div className={styles["section"]}>
+					<h3 className={styles["section-label"]}>Bound repositories</h3>
+					<RepositoryBindingList
+						bindings={bindingList}
+						emptyMessage={
+							WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS
+						}
+						errorMessage={
+							WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
+						}
+						isError={isBindingsError}
+						isLoading={isBindingsLoading}
+						isRemoving={isRemovingBinding}
+						onRemove={handleRemoveBinding}
+						onRetry={handleRetryBindings}
 					/>
 				</div>
 				<div className={styles["footer"]}>
