@@ -1,3 +1,0 @@
-const REQUEST_MAX_ATTEMPTS = 1;
-
-export { REQUEST_MAX_ATTEMPTS };

@@ -1,5 +1,5 @@
 import { getErrorDetails } from "~/libs/helpers/helpers.js";
-import { TextGenerationError } from "~/libs/modules/generator/generator.js";
+import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
 	type ScheduleOptions,
