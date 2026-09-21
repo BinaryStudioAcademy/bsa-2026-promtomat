@@ -6,33 +6,35 @@ type ErrorMetadata = {
 	requestId?: string;
 };
 
-const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
+const checkIsRecord = (
+	value: unknown,
+): value is Record<number | string | symbol, unknown> => {
 	return typeof value === "object" && value !== null;
 };
 
-const getErrorMetadata = (error: unknown): ErrorMetadata | undefined => {
+const getErrorMetadata = (error: unknown): ErrorMetadata | null => {
 	if (!checkIsRecord(error)) {
-		return undefined;
+		return null;
 	}
 
 	const metadata = error["$metadata"];
 
-	return checkIsRecord(metadata) ? metadata : undefined;
+	return checkIsRecord(metadata) ? metadata : null;
 };
 
 const getBedrockErrorDetails = (error: unknown): BedrockErrorDetails => {
 	const metadata = getErrorMetadata(error);
-	const cause = error instanceof Error ? error.cause : undefined;
+	const cause = error instanceof Error ? error.cause : null;
 
 	return {
-		attempts: metadata?.attempts,
-		causeMessage: cause instanceof Error ? cause.message : undefined,
-		causeName: cause instanceof Error ? cause.name : undefined,
-		httpStatusCode: metadata?.httpStatusCode,
+		attempts: metadata?.attempts ?? null,
+		causeMessage: cause instanceof Error ? cause.message : null,
+		causeName: cause instanceof Error ? cause.name : null,
+		httpStatusCode: metadata?.httpStatusCode ?? null,
 		message: error instanceof Error ? error.message : String(error),
-		name: error instanceof Error ? error.name : undefined,
-		requestId: metadata?.requestId,
-		stack: error instanceof Error ? error.stack : undefined,
+		name: error instanceof Error ? error.name : null,
+		requestId: metadata?.requestId ?? null,
+		stack: error instanceof Error ? (error.stack ?? null) : null,
 	};
 };
 

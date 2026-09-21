@@ -1,12 +1,12 @@
 type BedrockErrorDetails = {
-	attempts: number | undefined;
-	causeMessage: string | undefined;
-	causeName: string | undefined;
-	httpStatusCode: number | undefined;
+	attempts: null | number;
+	causeMessage: null | string;
+	causeName: null | string;
+	httpStatusCode: null | number;
 	message: string;
-	name: string | undefined;
-	requestId: string | undefined;
-	stack: string | undefined;
+	name: null | string;
+	requestId: null | string;
+	stack: null | string;
 };
 
 export { type BedrockErrorDetails };
