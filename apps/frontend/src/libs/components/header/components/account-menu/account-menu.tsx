@@ -42,12 +42,12 @@ const AccountMenu: React.FC<Properties> = ({
 	const initials = getNicknameInitials(user.nickname);
 	const isPanelRendered = isClosing || isOpen;
 
-	const beginClose = useCallback((): void => {
+	const handleBeginClose = useCallback((): void => {
 		setIsClosing(true);
 		setIsOpen(false);
 	}, []);
 
-	const finishClose = useCallback((): void => {
+	const handleFinishClose = useCallback((): void => {
 		setIsClosing(false);
 	}, []);
 
@@ -55,7 +55,7 @@ const AccountMenu: React.FC<Properties> = ({
 		setPreviousPathname(pathname);
 
 		if (isOpen) {
-			beginClose();
+			handleBeginClose();
 		}
 	}
 
@@ -65,21 +65,21 @@ const AccountMenu: React.FC<Properties> = ({
 
 	const handleToggle = useCallback((): void => {
 		if (isOpen) {
-			beginClose();
+			handleBeginClose();
 			return;
 		}
 
 		setIsClosing(false);
 		setIsOpen(true);
-	}, [beginClose, isOpen]);
+	}, [handleBeginClose, isOpen]);
 
 	const handleClose = useCallback((): void => {
 		if (!isOpen) {
 			return;
 		}
 
-		beginClose();
-	}, [beginClose, isOpen]);
+		handleBeginClose();
+	}, [handleBeginClose, isOpen]);
 
 	useEffect(() => {
 		if (!isClosing) {
@@ -89,16 +89,16 @@ const AccountMenu: React.FC<Properties> = ({
 		const panelElement = panelReference.current;
 
 		if (!panelElement || panelElement.getAnimations().length === EMPTY_LENGTH) {
-			finishClose();
+			handleFinishClose();
 			return;
 		}
 
-		const timeoutId = setTimeout(finishClose, PANEL_CLOSE_DURATION_MS);
+		const timeoutId = setTimeout(handleFinishClose, PANEL_CLOSE_DURATION_MS);
 
 		return () => {
 			clearTimeout(timeoutId);
 		};
-	}, [finishClose, isClosing]);
+	}, [handleFinishClose, isClosing]);
 
 	const handlePanelAnimationEnd = useCallback(
 		(event: React.AnimationEvent<HTMLDivElement>): void => {
@@ -106,9 +106,9 @@ const AccountMenu: React.FC<Properties> = ({
 				return;
 			}
 
-			finishClose();
+			handleFinishClose();
 		},
-		[finishClose, isClosing],
+		[handleFinishClose, isClosing],
 	);
 
 	const handleCloseAndFocusTrigger = useCallback((): void => {

@@ -10,7 +10,6 @@ import { Outlet, useLocation, useMatches } from "react-router-dom";
 import { GeneratePromptLink } from "~/libs/components/generate-prompt-link/generate-prompt-link.js";
 import { Header } from "~/libs/components/header/header.js";
 import { Link } from "~/libs/components/link/link.js";
-import { Loader } from "~/libs/components/loader/loader.js";
 import { Logo } from "~/libs/components/logo/logo.js";
 import {
 	AppRoute,
@@ -131,7 +130,9 @@ const AuthenticatedShell: React.FC = () => {
 	}, [handleDrawerClose, isDrawerOpen]);
 
 	if (!user) {
-		return <Loader />;
+		throw new Error(
+			"AuthenticatedShell rendered without an authenticated user.",
+		);
 	}
 
 	const pageCopy = resolveShellPageCopy(matches);
