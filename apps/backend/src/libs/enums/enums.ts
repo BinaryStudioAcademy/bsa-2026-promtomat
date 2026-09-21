@@ -3,6 +3,7 @@ export { QueryClearTarget } from "./query-clear-target.enum.js";
 export { SQLAlias } from "./sql-alias.enum.js";
 export {
 	APIPath,
+	ApiTokenExpiration,
 	AppEnvironment,
 	ErrorCode,
 	SortOrder,

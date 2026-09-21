@@ -46,7 +46,7 @@ async function up(knex: Knex): Promise<void> {
 			.notNullable()
 			.defaultTo(knex.fn.now());
 
-		table.timestamp(ColumnName.EXPIRES_AT, { useTz: true }).notNullable();
+		table.timestamp(ColumnName.EXPIRES_AT, { useTz: true }).nullable();
 		table.unique([ColumnName.USER_ID, ColumnName.NAME]);
 	});
 }

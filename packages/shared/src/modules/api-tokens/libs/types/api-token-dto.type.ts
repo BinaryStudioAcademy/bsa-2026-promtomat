@@ -1,5 +1,5 @@
 type ApiTokenDto = {
-	expiresAt: string;
+	expiresAt: null | string;
 	id: string;
 	lastUsedAt: null | string;
 	name: string;

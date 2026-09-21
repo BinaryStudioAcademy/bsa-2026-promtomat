@@ -1,17 +1,12 @@
+import { type SelectOption } from "~/libs/components/select/libs/types/types.js";
 import { ApiTokenExpiration } from "~/libs/enums/enums.js";
 
-const TOKEN_EXPIRATION_OPTIONS = [
-	ApiTokenExpiration.ONE_WEEK,
-	ApiTokenExpiration.ONE_MONTH,
-	ApiTokenExpiration.TWO_MONTHS,
-	ApiTokenExpiration.THREE_MONTHS,
-] as const;
-
-const API_TOKENS_EXPIRATION_SELECT_OPTIONS = TOKEN_EXPIRATION_OPTIONS.map(
-	(expiration) => ({
-		label: `${expiration.toString()} days`,
-		value: expiration,
-	}),
-);
+const API_TOKENS_EXPIRATION_SELECT_OPTIONS: SelectOption[] = [
+	{ label: "7 days", value: ApiTokenExpiration.ONE_WEEK },
+	{ label: "30 days", value: ApiTokenExpiration.ONE_MONTH },
+	{ label: "60 days", value: ApiTokenExpiration.TWO_MONTHS },
+	{ label: "90 days", value: ApiTokenExpiration.THREE_MONTHS },
+	{ label: "Never", value: ApiTokenExpiration.NEVER },
+];
 
 export { API_TOKENS_EXPIRATION_SELECT_OPTIONS };

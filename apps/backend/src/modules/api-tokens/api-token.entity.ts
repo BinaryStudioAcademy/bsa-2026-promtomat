@@ -1,7 +1,7 @@
 import { type ApiTokenDto, type Entity } from "~/libs/types/types.js";
 
 class ApiTokenEntity implements Entity {
-	private expiresAt: string;
+	private expiresAt: null | string;
 
 	private lastUsedAt: null | string;
 
@@ -21,7 +21,7 @@ class ApiTokenEntity implements Entity {
 		tokenHash,
 		userId,
 	}: {
-		expiresAt: string;
+		expiresAt: null | string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: null | string;
@@ -44,7 +44,7 @@ class ApiTokenEntity implements Entity {
 		tokenHash,
 		userId,
 	}: {
-		expiresAt: string;
+		expiresAt: null | string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: string;
@@ -68,7 +68,7 @@ class ApiTokenEntity implements Entity {
 		tokenHash,
 		userId,
 	}: {
-		expiresAt: string;
+		expiresAt: null | string;
 		name: string;
 		publicId: string;
 		tokenHash: string;
@@ -99,7 +99,7 @@ class ApiTokenEntity implements Entity {
 	}
 
 	public toNewObject(): {
-		expiresAt: string;
+		expiresAt: null | string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: string;

@@ -17,6 +17,7 @@ const ApiTokensMessage = {
 	CREATED_TITLE: "Your new token",
 	DIALOG_CLOSE_UNCOPIED: "Close without copying",
 	EMPTY: "You have no API tokens yet. Generate one to connect a coding agent.",
+	EXPIRES_NEVER: "Never expires",
 	LAST_USED_NEVER: "Never",
 	LOADING: "Loading tokens",
 	NAME_LABEL: "Token name",

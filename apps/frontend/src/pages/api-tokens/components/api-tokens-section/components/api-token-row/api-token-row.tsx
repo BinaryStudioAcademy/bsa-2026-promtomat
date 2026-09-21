@@ -39,6 +39,7 @@ const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 	}, [onRevoke, token.id]);
 
 	const status = getTokenStatus(token.expiresAt);
+	const { expiresAt } = token;
 
 	return (
 		<tr className={styles["row"]}>
@@ -56,12 +57,20 @@ const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 				</span>
 			</td>
 			<td className={getValidClasses(styles["cell"], styles["cell-expires"])}>
-				<span className={styles["row-expires"]}>
-					{formatExpirationDate(token.expiresAt)}
-				</span>
-				<span className={styles["row-meta"]}>
-					{getRelativeTimeLabel(token.expiresAt)}
-				</span>
+				{expiresAt === null ? (
+					<span className={styles["row-expires"]}>
+						{ApiTokensMessage.EXPIRES_NEVER}
+					</span>
+				) : (
+					<>
+						<span className={styles["row-expires"]}>
+							{formatExpirationDate(expiresAt)}
+						</span>
+						<span className={styles["row-meta"]}>
+							{getRelativeTimeLabel(expiresAt)}
+						</span>
+					</>
+				)}
 			</td>
 			<td className={getValidClasses(styles["cell"], styles["cell-status"])}>
 				<span

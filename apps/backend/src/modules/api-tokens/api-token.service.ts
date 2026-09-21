@@ -81,6 +81,11 @@ class ApiTokenService {
 
 	private isTokenExpired(token: ApiTokenEntity) {
 		const tokenObject = token.toObject();
+
+		if (tokenObject.expiresAt === null) {
+			return false;
+		}
+
 		const expiresAt = new Date(tokenObject.expiresAt).getTime();
 
 		return Date.now() >= expiresAt;

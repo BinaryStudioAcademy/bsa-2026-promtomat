@@ -28,9 +28,11 @@ import {
  *         expiresAt:
  *           type: string
  *           format: date-time
+ *           nullable: true
  *           description: >
- *             The moment the token stops authenticating. A token past this
- *             moment is still listed here until it is revoked.
+ *             The moment the token stops authenticating, or null when the
+ *             token never expires. A token past this moment is still listed
+ *             here until it is revoked.
  *         id:
  *           type: string
  *           format: uuid
@@ -124,10 +126,11 @@ class ApiTokenController extends BaseController {
 	 *             properties:
 	 *               expiration:
 	 *                 type: integer
-	 *                 enum: [7, 30, 60, 90]
+	 *                 enum: [0, 7, 30, 60, 90]
 	 *                 description: >
-	 *                   How long the token stays valid, in days. Only these
-	 *                   four periods are accepted; any other value is rejected.
+	 *                   How long the token stays valid, in days. 0 means the
+	 *                   token never expires and stays valid until revoked.
+	 *                   Any other value is rejected.
 	 *               name:
 	 *                 type: string
 	 *     responses:
