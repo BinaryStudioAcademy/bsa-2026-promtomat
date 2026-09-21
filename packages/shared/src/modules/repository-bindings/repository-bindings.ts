@@ -6,7 +6,10 @@ export {
 	RepositoryBindingValidationRule,
 	RepositoryIdentityRefusalReason,
 } from "./libs/enums/enums.js";
-export { normalizeRepositoryIdentity } from "./libs/helpers/helpers.js";
+export {
+	detectStackTagsFromPackageJson,
+	normalizeRepositoryIdentity,
+} from "./libs/helpers/helpers.js";
 export {
 	type CreateRepositoryBindingRequestDto,
 	type ListRepositoryBindingsQueryDto,

@@ -131,6 +131,7 @@ export {
 	type RepositoryIdentityOutcome,
 	type ResolveRepositoryBindingQueryDto,
 	type UpdateRepositoryBindingRequestDto,
+	detectStackTagsFromPackageJson,
 	listRepositoryBindingsQuery,
 	normalizeRepositoryIdentity,
 	repositoryBindingCreation,
