@@ -1,13 +1,12 @@
 import { useCallback } from "react";
 
+import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 import { SettingsMessage } from "~/pages/settings/libs/enums/enums.js";
 import styles from "~/pages/settings/styles.module.css";
-
-import { ApiTokensSection } from "../api-tokens-section/api-tokens-section.js";
 
 type Properties = {
 	email: string;
@@ -36,6 +35,12 @@ const SecurityCard: React.FC<Properties> = ({ email }: Properties) => {
 				type="button"
 				variant={ButtonVariant.SECONDARY}
 			/>
+			<ButtonLink
+				label={SettingsMessage.MANAGE_API_TOKENS}
+				size={ControlSize.LG}
+				to={AppRoute.API_TOKENS}
+				variant={ButtonVariant.SECONDARY}
+			/>
 			{isSuccess ? (
 				<FormAlert
 					message={SettingsMessage.RESET_PASSWORD_SENT}
@@ -44,7 +49,6 @@ const SecurityCard: React.FC<Properties> = ({ email }: Properties) => {
 			) : (
 				<FormAlert error={error} />
 			)}
-			<ApiTokensSection />
 		</section>
 	);
 };

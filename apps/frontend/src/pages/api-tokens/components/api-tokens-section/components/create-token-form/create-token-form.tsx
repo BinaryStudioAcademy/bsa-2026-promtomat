@@ -2,9 +2,11 @@ import { type Control } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { Select } from "~/libs/components/select/select.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
-import { ApiTokenRequestDto } from "~/modules/api-tokens/api-tokens.js";
+import { type ApiTokenRequestDto } from "~/modules/api-tokens/api-tokens.js";
 
+import { API_TOKENS_EXPIRATION_SELECT_OPTIONS } from "../../libs/constants/constants.js";
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
 
@@ -25,7 +27,16 @@ const CreateTokenForm = ({ control, isCreating, onSubmit }: Properties) => {
 					placeholder={ApiTokensMessage.NAME_PLACEHOLDER}
 				/>
 			</div>
+			<div>
+				<Select
+					control={control}
+					label="Expiration"
+					name="expiration"
+					options={API_TOKENS_EXPIRATION_SELECT_OPTIONS}
+				/>
+			</div>
 			<Button
+				className={styles["form-button"]}
 				isDisabled={isCreating}
 				label={ApiTokensMessage.CREATE}
 				size={ControlSize.MD}

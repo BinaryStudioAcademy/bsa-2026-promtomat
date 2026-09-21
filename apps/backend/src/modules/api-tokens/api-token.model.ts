@@ -8,6 +8,8 @@ import {
 import { UserModel } from "../users/user.model.js";
 
 class ApiTokenModel extends AbstractModel {
+	public expiresAt!: string;
+
 	public lastUsedAt!: null | string;
 
 	public name!: string;

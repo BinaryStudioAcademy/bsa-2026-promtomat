@@ -1,11 +1,15 @@
 import { z } from "zod";
 
 import {
+	ApiTokenExpiration,
 	ApiTokenValidationMessage,
 	ApiTokenValidationRule,
 } from "../enums/enums.js";
 
 const apiTokenCreateValidationSchema = z.object({
+	expiration: z.enum(ApiTokenExpiration, {
+		error: ApiTokenValidationMessage.EXPIRATION_INVALID,
+	}),
 	name: z
 		.string()
 		.trim()

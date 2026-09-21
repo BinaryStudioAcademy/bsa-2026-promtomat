@@ -10,6 +10,7 @@ import { ApiTokenError } from "~/libs/exceptions/exceptions.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
 	type ApiTokenDto,
+	type ApiTokenExpirationValue,
 	type ApiTokenResponseDto,
 } from "~/libs/types/types.js";
 
@@ -24,6 +25,7 @@ import {
 	TOKEN_PARTS_LIMIT,
 } from "./libs/constants/constants.js";
 import { ApiTokenLogMessage } from "./libs/enums/enums.js";
+import { createExpirationDate } from "./libs/helpers/helpers.js";
 
 class ApiTokenService {
 	private apiTokenRepository: ApiTokenRepository;
@@ -45,8 +47,64 @@ class ApiTokenService {
 		return elapsed >= LAST_USED_THROTTLE_MS;
 	}
 
+	private createToken(
+		name: string,
+		userId: number,
+		expiration: ApiTokenExpirationValue,
+	) {
+		const secret = randomBytes(SECRET_BYTE_LENGTH).toString(SECRET_ENCODING);
+		return {
+			expiresAt: createExpirationDate(expiration),
+			name,
+			publicId: randomUUID(),
+			secret,
+			tokenHash: this.hash(secret),
+			userId,
+		};
+	}
+
+	private createTokenResponseDto({
+		name,
+		publicId,
+		secret,
+	}: ReturnType<typeof this.createToken>) {
+		return {
+			id: publicId,
+			name,
+			value: `${API_TOKEN_PREFIX}${publicId}.${secret}`,
+		};
+	}
+
 	private hash(secret: string): string {
 		return createHash(DIGEST_ALGORITHM).update(secret).digest(SECRET_ENCODING);
+	}
+
+	private isTokenExpired(token: ApiTokenEntity) {
+		const tokenObject = token.toObject();
+		const expiresAt = new Date(tokenObject.expiresAt).getTime();
+
+		return Date.now() >= expiresAt;
+	}
+
+	private stripToken(token: string): [string, string] {
+		if (!token.startsWith(API_TOKEN_PREFIX)) {
+			throw ApiTokenError.failedToParse();
+		}
+
+		const stripped = token.slice(API_TOKEN_PREFIX.length);
+		const [id, value] = stripped.split(".", TOKEN_PARTS_LIMIT);
+		if (!id || !value) {
+			throw ApiTokenError.failedToParse();
+		}
+
+		return [id, value];
+	}
+
+	private async updateLastUsedAndGetUserId(token: ApiTokenEntity) {
+		const object = token.toAuthObject();
+		await this.updateLastUsedAt(object.publicId, object.lastUsedAt);
+
+		return object.userId;
 	}
 
 	private async updateLastUsedAt(
@@ -70,6 +128,17 @@ class ApiTokenService {
 		}
 	}
 
+	private verifyTokenHash(token: ApiTokenEntity, inputToken: string) {
+		const object = token.toAuthObject();
+		const inputTokenHash = Buffer.from(this.hash(inputToken), SECRET_ENCODING);
+		const storedHash = Buffer.from(object.tokenHash, SECRET_ENCODING);
+
+		return (
+			storedHash.length === inputTokenHash.length &&
+			timingSafeEqual(storedHash, inputTokenHash)
+		);
+	}
+
 	public async delete(publicId: string, userId: number): Promise<void> {
 		const deletedCount =
 			await this.apiTokenRepository.deleteByPublicIdAndUserId(publicId, userId);
@@ -88,57 +157,30 @@ class ApiTokenService {
 	public async issue(
 		name: string,
 		userId: number,
+		expiration: ApiTokenExpirationValue,
 	): Promise<ApiTokenResponseDto> {
-		const publicId = randomUUID();
-		const secret = randomBytes(SECRET_BYTE_LENGTH).toString(SECRET_ENCODING);
-		const tokenHash = this.hash(secret);
-
-		await this.apiTokenRepository.create(
-			ApiTokenEntity.initializeNew({
-				name,
-				publicId,
-				tokenHash,
-				userId,
-			}),
-		);
-
-		return {
-			id: publicId,
-			name,
-			value: `${API_TOKEN_PREFIX}${publicId}.${secret}`,
-		};
+		const token = this.createToken(name, userId, expiration);
+		await this.apiTokenRepository.create(ApiTokenEntity.initializeNew(token));
+		return this.createTokenResponseDto(token);
 	}
 
 	public async verify(token: string): Promise<null | number> {
-		if (!token.startsWith(API_TOKEN_PREFIX)) {
-			return null;
-		}
-
-		const stripped = token.slice(API_TOKEN_PREFIX.length);
-		const [id, value] = stripped.split(".", TOKEN_PARTS_LIMIT);
-		if (!id || !value) {
-			return null;
-		}
+		const [id, inputToken] = this.stripToken(token);
 
 		const foundToken = await this.apiTokenRepository.findByPublicId(id);
 		if (!foundToken) {
 			return null;
 		}
 
-		const object = foundToken.toAuthObject();
-		const inputTokenHash = Buffer.from(this.hash(value), SECRET_ENCODING);
-		const storedHash = Buffer.from(object.tokenHash, SECRET_ENCODING);
-
-		if (
-			storedHash.length === inputTokenHash.length &&
-			timingSafeEqual(storedHash, inputTokenHash)
-		) {
-			await this.updateLastUsedAt(object.publicId, object.lastUsedAt);
-
-			return object.userId;
+		if (this.isTokenExpired(foundToken)) {
+			return null;
 		}
 
-		return null;
+		if (!this.verifyTokenHash(foundToken, inputToken)) {
+			return null;
+		}
+
+		return await this.updateLastUsedAndGetUserId(foundToken);
 	}
 }
 

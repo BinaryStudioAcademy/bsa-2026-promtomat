@@ -24,6 +24,14 @@ class ApiTokenError extends HTTPError {
 		});
 	}
 
+	public static failedToParse(): ApiTokenError {
+		return new ApiTokenError({
+			code: ErrorCode.API_TOKEN_FAILED_TO_PARSE,
+			message: ApiTokenErrorMessage.API_TOKEN_FAILED_TO_PARSE,
+			status: HTTPCode.UNPROCESSED_ENTITY,
+		});
+	}
+
 	public static nameAlreadyExists(): ApiTokenError {
 		return new ApiTokenError({
 			code: ApiTokenErrorCode.API_TOKEN_ALREADY_EXISTS,

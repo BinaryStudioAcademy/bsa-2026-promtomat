@@ -8,6 +8,7 @@ export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
 export {
 	APIPath,
+	ApiTokenExpiration,
 	AppEnvironment,
 	ErrorCode,
 	HTTPCode,

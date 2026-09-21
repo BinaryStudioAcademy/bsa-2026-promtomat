@@ -50,6 +50,7 @@ class ApiTokenRepository {
 				ApiTokenColumnName.NAME,
 				ApiTokenColumnName.PUBLIC_ID,
 				ApiTokenColumnName.USER_ID,
+				ApiTokenColumnName.EXPIRES_AT,
 			)
 			.where({ userId })
 			.orderBy(ApiTokenColumnName.CREATED_AT, SortOrder.DESC)

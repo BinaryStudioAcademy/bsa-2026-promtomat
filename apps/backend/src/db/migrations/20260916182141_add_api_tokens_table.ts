@@ -9,6 +9,7 @@ const DELETE_STRATEGY = "CASCADE";
 
 const ColumnName = {
 	CREATED_AT: "created_at",
+	EXPIRES_AT: "expires_at",
 	ID: "id",
 	LAST_USED_AT: "last_used_at",
 	NAME: "name",
@@ -44,6 +45,8 @@ async function up(knex: Knex): Promise<void> {
 			.dateTime(ColumnName.UPDATED_AT)
 			.notNullable()
 			.defaultTo(knex.fn.now());
+
+		table.timestamp(ColumnName.EXPIRES_AT, { useTz: true }).notNullable();
 		table.unique([ColumnName.USER_ID, ColumnName.NAME]);
 	});
 }

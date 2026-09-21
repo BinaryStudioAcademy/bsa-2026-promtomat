@@ -1,5 +1,6 @@
 const ApiTokenErrorCode = {
 	API_TOKEN_ALREADY_EXISTS: "API_TOKEN_ALREADY_EXISTS",
+	API_TOKEN_FAILED_TO_PARSE: "API_TOKEN_FAILED_TO_PARSE",
 } as const;
 
 export { ApiTokenErrorCode };

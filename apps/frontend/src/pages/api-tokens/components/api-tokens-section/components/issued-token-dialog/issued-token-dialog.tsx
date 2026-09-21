@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Modal } from "~/libs/components/modal/modal.js";
@@ -23,14 +23,16 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 	token,
 }: Properties) => {
 	const { copyToClipboard } = useClipboard();
-	const [hasCopied, setHasCopied] = useState<boolean>(false);
 
 	const onTokenCopied = useCallback(
 		(isCopySuccessful: boolean) => {
-			setHasCopied(isCopySuccessful);
 			showTokenCopiedNotification(isCopySuccessful);
+
+			if (isCopySuccessful) {
+				onClose();
+			}
 		},
-		[setHasCopied],
+		[onClose],
 	);
 
 	const handleCopy = useCallback((): void => {
@@ -42,25 +44,18 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 	}, [copyToClipboard, token, onTokenCopied]);
 
 	const handleClose = useCallback((): void => {
-		if (!hasCopied) {
-			showTokenNotCopiedNotification();
-		}
-
+		showTokenNotCopiedNotification();
 		onClose();
-	}, [hasCopied, onClose]);
+	}, [onClose]);
 
 	return (
 		<Modal
 			footer={
 				<Button
-					label={
-						hasCopied
-							? ApiTokensMessage.DIALOG_CLOSE
-							: ApiTokensMessage.DIALOG_CLOSE_UNCOPIED
-					}
+					label={ApiTokensMessage.DIALOG_CLOSE_UNCOPIED}
 					onClick={handleClose}
 					type="button"
-					variant={ButtonVariant.PRIMARY}
+					variant={ButtonVariant.SECONDARY}
 				/>
 			}
 			isOpen={Boolean(token)}
@@ -76,7 +71,7 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 						onClick={handleCopy}
 						size={ControlSize.SM}
 						type="button"
-						variant={ButtonVariant.SECONDARY}
+						variant={ButtonVariant.PRIMARY}
 					/>
 				</div>
 				<p className={styles["hint"]}>{ApiTokensMessage.CONNECT_HINT}</p>

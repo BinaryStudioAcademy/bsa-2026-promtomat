@@ -1,6 +1,8 @@
 import { type ApiTokenDto, type Entity } from "~/libs/types/types.js";
 
 class ApiTokenEntity implements Entity {
+	private expiresAt: string;
+
 	private lastUsedAt: null | string;
 
 	private name: string;
@@ -12,12 +14,14 @@ class ApiTokenEntity implements Entity {
 	private userId: number;
 
 	private constructor({
+		expiresAt,
 		lastUsedAt,
 		name,
 		publicId,
 		tokenHash,
 		userId,
 	}: {
+		expiresAt: string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: null | string;
@@ -29,15 +33,18 @@ class ApiTokenEntity implements Entity {
 		this.name = name;
 		this.lastUsedAt = lastUsedAt;
 		this.tokenHash = tokenHash;
+		this.expiresAt = expiresAt;
 	}
 
 	public static initialize({
+		expiresAt,
 		lastUsedAt,
 		name,
 		publicId,
 		tokenHash,
 		userId,
 	}: {
+		expiresAt: string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: string;
@@ -45,6 +52,7 @@ class ApiTokenEntity implements Entity {
 		userId: number;
 	}): ApiTokenEntity {
 		return new ApiTokenEntity({
+			expiresAt,
 			lastUsedAt,
 			name,
 			publicId,
@@ -54,17 +62,20 @@ class ApiTokenEntity implements Entity {
 	}
 
 	public static initializeNew({
+		expiresAt,
 		name,
 		publicId,
 		tokenHash,
 		userId,
 	}: {
+		expiresAt: string;
 		name: string;
 		publicId: string;
 		tokenHash: string;
 		userId: number;
 	}): ApiTokenEntity {
 		return new ApiTokenEntity({
+			expiresAt,
 			lastUsedAt: null,
 			name,
 			publicId,
@@ -88,6 +99,7 @@ class ApiTokenEntity implements Entity {
 	}
 
 	public toNewObject(): {
+		expiresAt: string;
 		lastUsedAt: null | string;
 		name: string;
 		publicId: string;
@@ -95,6 +107,7 @@ class ApiTokenEntity implements Entity {
 		userId: number;
 	} {
 		return {
+			expiresAt: this.expiresAt,
 			lastUsedAt: this.lastUsedAt,
 			name: this.name,
 			publicId: this.publicId as string,
@@ -105,6 +118,7 @@ class ApiTokenEntity implements Entity {
 
 	public toObject(): ApiTokenDto {
 		return {
+			expiresAt: this.expiresAt,
 			id: this.publicId as string,
 			lastUsedAt: this.lastUsedAt,
 			name: this.name,

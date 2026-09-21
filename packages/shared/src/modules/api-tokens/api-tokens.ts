@@ -3,9 +3,11 @@ export {
 	ApiTokenApiPath,
 	ApiTokenErrorCode,
 	ApiTokenErrorMessage,
+	ApiTokenExpiration,
 } from "./libs/enums/enums.js";
 export {
 	type ApiTokenDto,
+	type ApiTokenExpirationValue,
 	type ApiTokenRequestDto,
 	type ApiTokenResponseDto,
 	type ApiTokenRouteParametersDto,

@@ -54,6 +54,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
+												await import("~/pages/api-tokens/api-tokens.js");
+
+											return { Component: pageModule.ApiTokensPage };
+										},
+										path: AppRoute.API_TOKENS,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
 												await import("~/pages/profile/profile.js");
 
 											return { Component: pageModule.Profile };

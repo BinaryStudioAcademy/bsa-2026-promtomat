@@ -25,6 +25,12 @@ import {
  *     ApiToken:
  *       type: object
  *       properties:
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *           description: >
+ *             The moment the token stops authenticating. A token past this
+ *             moment is still listed here until it is revoked.
  *         id:
  *           type: string
  *           format: uuid
@@ -35,17 +41,25 @@ import {
  *         name:
  *           type: string
  *     ApiTokenCreated:
- *       allOf:
- *         - $ref: "#/components/schemas/ApiToken"
- *         - type: object
- *           required:
- *             - value
- *           properties:
- *             value:
- *               type: string
- *               description: >
- *                 The token value. Returned by this endpoint only and never
- *                 recoverable afterwards, from the API or the database.
+ *       type: object
+ *       description: >
+ *         The newly issued token. Deliberately narrower than ApiToken: the
+ *         create response carries only what the caller needs to store.
+ *       required:
+ *         - id
+ *         - name
+ *         - value
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *         name:
+ *           type: string
+ *         value:
+ *           type: string
+ *           description: >
+ *             The token value. Returned by this endpoint only and never
+ *             recoverable afterwards, from the API or the database.
  */
 class ApiTokenController extends BaseController {
 	private apiTokenService: ApiTokenService;
@@ -98,13 +112,22 @@ class ApiTokenController extends BaseController {
 	 *     security:
 	 *       - bearerAuth: []
 	 *     requestBody:
-	 *       description: Token name
+	 *       description: Token name and the period it stays valid for
 	 *       required: true
 	 *       content:
 	 *         application/json:
 	 *           schema:
 	 *             type: object
+	 *             required:
+	 *               - expiration
+	 *               - name
 	 *             properties:
+	 *               expiration:
+	 *                 type: integer
+	 *                 enum: [7, 30, 60, 90]
+	 *                 description: >
+	 *                   How long the token stays valid, in days. Only these
+	 *                   four periods are accepted; any other value is rejected.
 	 *               name:
 	 *                 type: string
 	 *     responses:
@@ -140,6 +163,7 @@ class ApiTokenController extends BaseController {
 			payload: await this.apiTokenService.issue(
 				options.body.name,
 				options.user?.id as number,
+				options.body.expiration,
 			),
 			status: HTTPCode.CREATED,
 		};

@@ -1,5 +1,6 @@
 const AppRoute = {
 	ANY: "*",
+	API_TOKENS: "/api-tokens",
 	FORGOT_PASSWORD: "/forgot-password",
 	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",

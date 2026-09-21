@@ -1,12 +1,16 @@
 import { useCallback } from "react";
 
+import { ApiTokenExpiration } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import {
 	apiTokenCreateValidationSchema,
 	ApiTokenRequestDto,
 } from "~/modules/api-tokens/api-tokens.js";
 
-const DEFAULT_VALUES: ApiTokenRequestDto = { name: "" };
+const DEFAULT_VALUES: ApiTokenRequestDto = {
+	expiration: ApiTokenExpiration.ONE_WEEK,
+	name: "",
+};
 
 const useCreateTokenForm = () => {
 	const { control, handleSubmit, reset } = useAppForm<ApiTokenRequestDto>({

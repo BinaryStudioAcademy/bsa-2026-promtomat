@@ -46,6 +46,7 @@ export {
 } from "./libs/types/types.js";
 export {
 	type ApiTokenDto,
+	type ApiTokenExpirationValue,
 	type ApiTokenRequestDto,
 	type ApiTokenResponseDto,
 	type ApiTokenRouteParametersDto,
@@ -54,6 +55,7 @@ export {
 	apiTokenCreateValidationSchema,
 	ApiTokenErrorCode,
 	ApiTokenErrorMessage,
+	ApiTokenExpiration,
 	apiTokenRouteParametersValidationSchema,
 } from "./modules/api-tokens/api-tokens.js";
 export {

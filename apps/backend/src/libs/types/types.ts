@@ -2,6 +2,7 @@ export { type Entity } from "./entity.type.js";
 export { type ErrorDetails } from "./error-details.type.js";
 export {
 	type ApiTokenDto,
+	type ApiTokenExpirationValue,
 	type ApiTokenRequestDto,
 	type ApiTokenResponseDto,
 	type ApiTokenRouteParametersDto,
