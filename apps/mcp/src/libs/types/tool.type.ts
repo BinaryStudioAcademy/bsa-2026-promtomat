@@ -3,7 +3,7 @@ import { type CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 type Tool = {
 	description: string;
-	execute: () => Promise<CallToolResult>;
+	execute: (arguments_: Record<string, unknown>) => Promise<CallToolResult>;
 	inputSchema?: ZodRawShapeCompat;
 	name: string;
 };
