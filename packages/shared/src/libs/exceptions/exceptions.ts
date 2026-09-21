@@ -4,6 +4,7 @@ export { ComposedPromptError } from "./composed-prompt-error/composed-prompt-err
 export { ContributorError } from "./contributor-error/contributor-error.exception.js";
 export { HTTPError } from "./http-error/http-error.exception.js";
 export { LabelError } from "./label-error/label-error.exception.js";
+export { PromptDeliveryError } from "./prompt-delivery-error/prompt-delivery-error.exception.js";
 export { PromptError } from "./prompt-error/prompt-error.exception.js";
 export { PromptSearchError } from "./prompt-search-error/prompt-search-error.exception.js";
 export { RepositoryBindingError } from "./repository-binding-error/repository-binding-error.exception.js";

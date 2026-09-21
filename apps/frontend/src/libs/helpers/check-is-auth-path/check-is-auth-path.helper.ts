@@ -1,6 +1,8 @@
 import { AppRoute } from "~/libs/enums/enums.js";
 
 const AUTH_PATHS: ReadonlySet<string> = new Set([
+	AppRoute.FORGOT_PASSWORD,
+	AppRoute.RESET_PASSWORD,
 	AppRoute.SIGN_IN,
 	AppRoute.SIGN_UP,
 ]);

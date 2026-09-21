@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 
-import { SOURCE_HASH_ALGORITHM } from "../constants/constants.js";
+import { HASH_ALGORITHM, HASH_ENCODING } from "~/libs/constants/constants.js";
 
 const computeSourceHash = (text: string): string =>
-	createHash(SOURCE_HASH_ALGORITHM).update(text).digest("hex");
+	createHash(HASH_ALGORITHM).update(text).digest(HASH_ENCODING);
 
 export { computeSourceHash };

@@ -1,5 +1,4 @@
 export {
-	type ComposedPromptDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,

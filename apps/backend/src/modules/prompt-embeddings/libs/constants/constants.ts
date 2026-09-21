@@ -15,5 +15,4 @@ export { PROMPT_RELATION } from "./prompt-relation.constant.js";
 export { PROMPT_WORKSPACE_ALIAS } from "./prompt-workspace-alias.constant.js";
 export { PROMPT_WORKSPACE_RELATION } from "./prompt-workspace-relation.constant.js";
 export { SIMILARITY_THRESHOLD } from "./similarity-threshold.constant.js";
-export { SOURCE_HASH_ALGORITHM } from "./source-hash-algorithm.constant.js";
 export { VECTOR_TYPE_PATTERN } from "./vector-type-pattern.constant.js";

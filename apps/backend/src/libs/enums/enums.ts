@@ -6,4 +6,5 @@ export {
 	AppEnvironment,
 	ErrorCode,
 	SortOrder,
+	TokenErrorCode,
 } from "@promptomat/shared";

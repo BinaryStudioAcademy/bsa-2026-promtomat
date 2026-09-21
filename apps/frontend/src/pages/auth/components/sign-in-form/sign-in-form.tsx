@@ -75,6 +75,11 @@ const SignInForm: React.FC = () => {
 				/>
 			</form>
 			<p className={styles["footer"]}>
+				<Link className={styles["inline-link"]} to={AppRoute.FORGOT_PASSWORD}>
+					Forgot your password?
+				</Link>
+			</p>
+			<p className={styles["footer"]}>
 				Don&apos;t have an account?{" "}
 				<Link className={styles["inline-link"]} to={AppRoute.SIGN_UP}>
 					Sign up
