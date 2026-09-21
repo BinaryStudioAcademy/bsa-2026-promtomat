@@ -4,9 +4,10 @@ import { mapStreakDaysToCells } from "./components/logging-streak/libs/helpers/h
 import { LoggingStreak } from "./components/logging-streak/logging-streak.js";
 import { RecentPrompts } from "./components/recent-prompts/recent-prompts.js";
 import { RecordPromptForm } from "./components/record-prompt-form/record-prompt-form.js";
-import { STREAK_PREVIEW } from "./libs/constants/constants.js"; //--->  delete when feat: Add prompt logging streaks merge
 import { useRecordPromptForm } from "./libs/hooks/use-record-prompt-form/use-record-prompt-form.hook.js";
 import styles from "./styles.module.css";
+
+const STREAK_COUNT = 0; // TODO : delete when backend is ready -- should be derive from mapStreakDaysToCells data
 
 const Training: React.FC = () => {
 	const {
@@ -21,7 +22,7 @@ const Training: React.FC = () => {
 		workspaceId,
 	} = useRecordPromptForm();
 
-	const streakCells = mapStreakDaysToCells(STREAK_PREVIEW.days);
+	const streakCells = mapStreakDaysToCells([]); // TODO : fill with data from api
 
 	return (
 		<main className={styles["page"]}>
@@ -38,10 +39,7 @@ const Training: React.FC = () => {
 				/>
 			</section>
 			<aside className={styles["aside"]}>
-				<LoggingStreak
-					cells={streakCells}
-					currentStreak={STREAK_PREVIEW.currentStreak}
-				/>
+				<LoggingStreak cells={streakCells} currentStreak={STREAK_COUNT} />
 				<RecentPrompts workspaceId={workspaceId} />
 			</aside>
 		</main>

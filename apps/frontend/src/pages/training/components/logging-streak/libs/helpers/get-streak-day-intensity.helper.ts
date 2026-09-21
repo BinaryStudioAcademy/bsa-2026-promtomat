@@ -1,8 +1,9 @@
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+
 import {
 	MINIMUM_ACTIVE_INTENSITY,
 	NO_INTENSITY,
-} from "~/pages/training/components/logging-streak/libs/constants/constants.js";
+} from "../constants/constants.js";
 
 const getStreakDayIntensity = (
 	logCount: number,

@@ -1,9 +1,6 @@
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
-import {
-	type StreakCell,
-	type StreakDay,
-} from "~/pages/training/components/logging-streak/libs/types/types.js";
 
+import { type StreakCell, type StreakDay } from "../types/types.js";
 import { getStreakDayIntensity } from "./get-streak-day-intensity.helper.js";
 import { getStreakDayLabel } from "./get-streak-day-label.helper.js";
 import { getTooltipAlignment } from "./get-tooltip-alignment.helper.js";

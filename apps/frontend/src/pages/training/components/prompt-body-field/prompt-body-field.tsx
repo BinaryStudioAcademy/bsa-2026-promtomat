@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { type Control, useWatch } from "react-hook-form";
+import { type Control, useFormState, useWatch } from "react-hook-form";
 import Markdown from "react-markdown";
 
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
@@ -9,6 +9,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 
 import {
+	MARKDOWN_COMPONENTS,
 	PROMPT_BODY_MODE_OPTIONS,
 	PROMPT_BODY_ROWS,
 } from "./libs/constants/constants.js";
@@ -29,7 +30,10 @@ const PromptBodyField: React.FC<Properties> = ({
 	);
 
 	const promptBody = useWatch({ control, name: "promptBody" });
+	const { errors } = useFormState({ control, name: "promptBody" });
 	const characterCount = promptBody.length;
+	const previewErrorMessage =
+		mode === PromptBodyMode.PREVIEW ? errors.promptBody?.message : undefined;
 
 	let content: React.ReactNode;
 
@@ -57,7 +61,7 @@ const PromptBodyField: React.FC<Properties> = ({
 	} else {
 		content = (
 			<div className={styles["preview"]}>
-				<Markdown>{promptBody}</Markdown>
+				<Markdown components={MARKDOWN_COMPONENTS}>{promptBody}</Markdown>
 			</div>
 		);
 	}
@@ -82,6 +86,11 @@ const PromptBodyField: React.FC<Properties> = ({
 				</span>
 			</div>
 			{content}
+			{previewErrorMessage && (
+				<p className={styles["error"]} role="alert">
+					{previewErrorMessage}
+				</p>
+			)}
 		</div>
 	);
 };

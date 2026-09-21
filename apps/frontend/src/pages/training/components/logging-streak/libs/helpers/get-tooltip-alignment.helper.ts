@@ -1,6 +1,7 @@
 import { type ValueOf } from "~/libs/types/types.js";
-import { TOOLTIP_ALIGNMENT_SEGMENTS } from "~/pages/training/components/logging-streak/libs/constants/constants.js";
-import { TooltipAlignment } from "~/pages/training/components/logging-streak/libs/enums/enums.js";
+
+import { TOOLTIP_ALIGNMENT_SEGMENTS } from "../constants/constants.js";
+import { TooltipAlignment } from "../enums/enums.js";
 
 const getTooltipAlignment = (
 	index: number,

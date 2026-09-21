@@ -13,8 +13,9 @@ import {
 	useActiveWorkspace,
 	useGetWorkspacesQuery,
 } from "~/modules/workspaces/workspaces.js";
-import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "~/pages/training/libs/constants/constants.js";
-import { RecordPromptMessage } from "~/pages/training/libs/enums/enums.js";
+
+import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "../../constants/constants.js";
+import { RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
 	control: Control<PromptCreateRequestDto, null>;

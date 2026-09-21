@@ -52,6 +52,21 @@
 	border-radius: var(--radius-sm);
 }
 
+.trigger {
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	cursor: default;
+	background-color: transparent;
+	border: 0;
+	border-radius: inherit;
+}
+
+.trigger:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--space-2);
+}
+
 .fill {
 	position: absolute;
 	inset: 0;
@@ -73,7 +88,8 @@
 	border-radius: var(--radius-md);
 }
 
-.day:hover .tooltip {
+.trigger:hover + .tooltip,
+.trigger:focus-visible + .tooltip {
 	display: block;
 }
 

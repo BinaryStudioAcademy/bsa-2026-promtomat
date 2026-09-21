@@ -33,11 +33,17 @@ const LoggingStreak: React.FC<Properties> = ({
 
 							return (
 								<li className={styles["day"]} key={cell.id}>
-									<span
-										aria-hidden="true"
-										className={styles["fill"]}
-										style={fillStyle}
-									/>
+									<button
+										aria-label={cell.label}
+										className={styles["trigger"]}
+										type="button"
+									>
+										<span
+											aria-hidden="true"
+											className={styles["fill"]}
+											style={fillStyle}
+										/>
+									</button>
 									<span
 										aria-hidden="true"
 										className={getValidClasses(
@@ -47,7 +53,6 @@ const LoggingStreak: React.FC<Properties> = ({
 									>
 										{cell.label}
 									</span>
-									<span className="visually-hidden">{cell.label}</span>
 								</li>
 							);
 						})}

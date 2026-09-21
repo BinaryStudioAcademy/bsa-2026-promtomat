@@ -79,3 +79,9 @@
 	margin: 0;
 	color: var(--text-muted);
 }
+
+.error {
+	margin: 0;
+	font-size: var(--font-size-label-sm);
+	color: var(--fg-danger);
+}

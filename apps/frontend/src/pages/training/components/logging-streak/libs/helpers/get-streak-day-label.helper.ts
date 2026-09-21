@@ -1,8 +1,8 @@
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
-import { STREAK_LOCALE } from "~/pages/training/components/logging-streak/libs/constants/constants.js";
-import { LoggingStreakMessage } from "~/pages/training/components/logging-streak/libs/enums/enums.js";
-import { type StreakDay } from "~/pages/training/components/logging-streak/libs/types/types.js";
 
+import { STREAK_LOCALE } from "../constants/constants.js";
+import { LoggingStreakMessage } from "../enums/enums.js";
+import { type StreakDay } from "../types/types.js";
 import { formatStreakDate } from "./format-streak-date.helper.js";
 
 const cardinalRules = new Intl.PluralRules(STREAK_LOCALE);

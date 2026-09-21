@@ -9,9 +9,9 @@ import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
-import { PromptBodyField } from "~/pages/training/components/prompt-body-field/prompt-body-field.js";
-import { PromptLabels } from "~/pages/training/components/prompt-labels/prompt-labels.js";
 
+import { PromptBodyField } from "../prompt-body-field/prompt-body-field.js";
+import { PromptLabels } from "../prompt-labels/prompt-labels.js";
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
