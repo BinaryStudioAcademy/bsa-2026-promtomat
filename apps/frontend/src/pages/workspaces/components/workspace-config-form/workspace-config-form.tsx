@@ -10,8 +10,8 @@ import {
 	ErrorCode,
 	FormValidationMode,
 	HTTPCode,
-	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
+import { sortValuesByDictionary } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
@@ -27,7 +27,10 @@ import {
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
-import { WORKSPACE_CONFIG_FIELDS } from "./libs/constants/constants.js";
+import {
+	TECH_STACK_TAG_VALUES,
+	WORKSPACE_CONFIG_FIELDS,
+} from "./libs/constants/constants.js";
 import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
 
 type Properties = {
@@ -51,7 +54,10 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	} = useAppForm<WorkspaceEditableFields>({
 		defaultValues: {
 			name: workspace.name,
-			stackTags: [...workspace.stackTags],
+			stackTags: sortValuesByDictionary(
+				workspace.stackTags,
+				TECH_STACK_TAG_VALUES,
+			),
 		},
 		mode: FormValidationMode.ON_CHANGE,
 		validationSchema: workspaceUpdateValidationSchema,
@@ -135,7 +141,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						name="stackTags"
 						placeholder="Enter tags"
 						size={ControlSize.MD}
-						valuesDictionary={Object.values(TechStackTechDictionary)}
+						valuesDictionary={TECH_STACK_TAG_VALUES}
 					/>
 				</div>
 				<div className={styles["footer"]}>
