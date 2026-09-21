@@ -5,6 +5,8 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 import { AppRoute, ErrorCode, HTTPHeader } from "~/libs/enums/enums.js";
+import { checkIsAuthPath } from "~/libs/helpers/helpers.js";
+import { baseApi } from "~/libs/modules/api/base-api.js";
 import { config } from "~/libs/modules/config/config.js";
 import { setRedirect } from "~/libs/modules/navigation/navigation.slice.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -80,6 +82,11 @@ const baseQuery: BaseQueryFunctionInternal = async (
 					message: error.message,
 					type: "danger",
 				});
+			}
+
+			if (!checkIsAuthPath(location.pathname)) {
+				api.dispatch(baseApi.util.resetApiState());
+				api.dispatch(setRedirect({ replace: true, to: AppRoute.SIGN_IN }));
 			}
 
 			return { error };
