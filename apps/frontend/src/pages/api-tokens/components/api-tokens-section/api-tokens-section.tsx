@@ -2,12 +2,10 @@ import { useGetApiTokensQuery } from "~/modules/api-tokens/api-tokens-api.js";
 
 import { ApiTokensList } from "./components/api-tokens-list/api-tokens-list.js";
 import { CreateTokenForm } from "./components/create-token-form/create-token-form.js";
-import { EmptyMessage } from "./components/empty-message/empty-message.js";
 import { IssuedTokenDialog } from "./components/issued-token-dialog/issued-token-dialog.js";
 import { LoadingIndicator } from "./components/loading-indicator/loading-indicator.js";
 import { RevokeTokenConfirmation } from "./components/revoke-token-confirmation/revoke-token-confirmation.js";
 import { SectionDescription } from "./components/section-description/section-description.js";
-import { EMPTY_TOKEN_LEN } from "./libs/constants/constants.js";
 import {
 	useCreateTokenForm,
 	useTokenCreate,
@@ -43,11 +41,6 @@ const ApiTokensSection: React.FC = () => {
 			/>
 
 			<LoadingIndicator isLoading={isLoading} />
-
-			<EmptyMessage
-				hasTokens={Boolean(tokens && tokens.length > EMPTY_TOKEN_LEN)}
-				isLoading={isLoading}
-			/>
 
 			<ApiTokensList handleRevoke={handleRevokeRequest} tokens={tokens} />
 

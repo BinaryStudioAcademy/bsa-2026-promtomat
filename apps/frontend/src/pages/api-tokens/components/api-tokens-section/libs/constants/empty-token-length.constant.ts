@@ -1,3 +1,3 @@
-const EMPTY_TOKEN_LEN = 0;
+const EMPTY_TOKEN_LENGTH = 0;
 
-export { EMPTY_TOKEN_LEN };
+export { EMPTY_TOKEN_LENGTH };

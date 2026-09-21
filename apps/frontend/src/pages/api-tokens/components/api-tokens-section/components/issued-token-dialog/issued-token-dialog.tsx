@@ -24,7 +24,7 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 }: Properties) => {
 	const { copyToClipboard } = useClipboard();
 
-	const onTokenCopied = useCallback(
+	const handleTokenCopied = useCallback(
 		(isCopySuccessful: boolean) => {
 			showTokenCopiedNotification(isCopySuccessful);
 
@@ -40,8 +40,8 @@ const IssuedTokenDialog: React.FC<Properties> = ({
 			return;
 		}
 
-		void copyToClipboard(token.value).then(onTokenCopied);
-	}, [copyToClipboard, token, onTokenCopied]);
+		void copyToClipboard(token.value).then(handleTokenCopied);
+	}, [copyToClipboard, token, handleTokenCopied]);
 
 	const handleClose = useCallback((): void => {
 		showTokenNotCopiedNotification();
