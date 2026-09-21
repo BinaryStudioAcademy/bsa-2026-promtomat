@@ -82,6 +82,14 @@ const Input = <T extends FieldValues>({
 		setIsPasswordVisible((previous) => !previous);
 	}, []);
 
+	const handleBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			field.onBlur();
+			onBlur?.(event);
+		},
+		[field, onBlur],
+	);
+
 	return (
 		<div className={styles["field"]}>
 			<label
@@ -114,7 +122,7 @@ const Input = <T extends FieldValues>({
 					)}
 					id={inputId}
 					maxLength={maxLength}
-					onBlur={onBlur}
+					onBlur={handleBlur}
 					onClick={onClick}
 					onFocus={onFocus}
 					onKeyDown={onKeyDown}
