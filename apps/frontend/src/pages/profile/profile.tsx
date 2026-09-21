@@ -52,7 +52,7 @@ const Profile: React.FC = () => {
 	} = data;
 	const hasPrompts = totalPrompts > NO_PROMPTS_COUNT;
 	const memberSinceLabel = new Date(memberSince).toLocaleDateString(
-		undefined,
+		"en-US",
 		MEMBER_SINCE_DATE_FORMAT,
 	);
 	const primaryAiCodingToolLabel = primaryAiCodingTool
