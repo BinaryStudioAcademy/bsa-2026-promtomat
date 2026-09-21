@@ -1,1 +1,1 @@
-export { getStreakDayIntensity } from "./get-streak-day-intensity.helper.js";
+export { mapStreakDaysToCells } from "./map-streak-days-to-cells.helper.js";

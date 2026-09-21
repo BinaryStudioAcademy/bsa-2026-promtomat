@@ -48,7 +48,6 @@
 	position: relative;
 	flex: 1;
 	height: var(--size-control-h-sm);
-	overflow: hidden;
 	background-color: var(--surface-raised);
 	border-radius: var(--radius-sm);
 }
@@ -57,6 +56,38 @@
 	position: absolute;
 	inset: 0;
 	background-color: var(--text-accent);
+	border-radius: inherit;
+}
+
+.tooltip {
+	position: absolute;
+	bottom: calc(100% + var(--space-8));
+	z-index: 1;
+	display: none;
+	padding: var(--space-6) var(--space-10);
+	font-size: var(--font-size-label-sm);
+	color: var(--text-strong);
+	white-space: nowrap;
+	pointer-events: none;
+	background-color: var(--border-strong);
+	border-radius: var(--radius-md);
+}
+
+.day:hover .tooltip {
+	display: block;
+}
+
+.tooltip-start {
+	left: 0;
+}
+
+.tooltip-center {
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.tooltip-end {
+	right: 0;
 }
 
 .message {
