@@ -1,0 +1,66 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-14);
+	padding: var(--space-20);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.summary {
+	display: flex;
+	gap: var(--space-8);
+	align-items: baseline;
+	margin: 0;
+}
+
+.count {
+	font-size: var(--font-size-display-2);
+	font-weight: 600;
+	line-height: 1;
+	color: var(--text-accent);
+}
+
+.unit {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.days {
+	display: flex;
+	gap: var(--space-4);
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.day {
+	position: relative;
+	flex: 1;
+	height: var(--size-control-h-sm);
+	overflow: hidden;
+	background-color: var(--surface-raised);
+	border-radius: var(--radius-sm);
+}
+
+.fill {
+	position: absolute;
+	inset: 0;
+	background-color: var(--text-accent);
+}
+
+.message {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}

@@ -1,1 +1,2 @@
 export { DEFAULT_RECORD_PROMPT_PAYLOAD } from "./default-record-prompt-payload.constant.js";
+export { STREAK_PREVIEW_DAYS } from "./streak-preview-days.constant.js";

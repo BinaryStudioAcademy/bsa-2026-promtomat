@@ -1,3 +1,0 @@
-const PERCENTAGE_SCALE = 100;
-
-export { PERCENTAGE_SCALE };
