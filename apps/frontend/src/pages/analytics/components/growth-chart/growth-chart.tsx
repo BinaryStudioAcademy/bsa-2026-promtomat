@@ -7,10 +7,10 @@ import {
 } from "~/modules/analytics/libs/types/types.js";
 
 import {
-	GrowthChartConfig,
 	LAST_ELEMENT_INDEX,
 	SCORE_FRACTION_DIGITS,
 } from "../../libs/constants/constants.js";
+import { GrowthChartConfig } from "../../libs/enums/enums.js";
 import { buildAreaPath } from "../../libs/helpers/build-area-path.helper.js";
 import { buildLinePath } from "../../libs/helpers/build-line-path.helper.js";
 import { getGrowthDescription } from "../../libs/helpers/get-growth-description.helper.js";

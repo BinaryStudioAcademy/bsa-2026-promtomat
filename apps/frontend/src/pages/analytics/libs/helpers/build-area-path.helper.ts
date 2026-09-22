@@ -1,9 +1,7 @@
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 
-import {
-	GrowthChartConfig,
-	LAST_ELEMENT_INDEX,
-} from "../constants/constants.js";
+import { LAST_ELEMENT_INDEX } from "../constants/constants.js";
+import { GrowthChartConfig } from "../enums/enums.js";
 import { type ChartPoint } from "../types/types.js";
 import { buildLinePath } from "./build-line-path.helper.js";
 

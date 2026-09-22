@@ -1,7 +1,7 @@
+import { roundScore } from "~/libs/helpers/helpers.js";
 import { type AnalyticsWeeklyChange } from "~/libs/types/types.js";
 
 import { type PromptWeeklyChangeRow } from "../types/types.js";
-import { roundScore } from "./round-score.helper.js";
 
 const getWeeklyChange = ({
 	currentScore,

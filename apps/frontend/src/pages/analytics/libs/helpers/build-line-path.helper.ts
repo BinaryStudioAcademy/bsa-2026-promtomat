@@ -1,6 +1,6 @@
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 
-import { GrowthChartConfig } from "../constants/constants.js";
+import { GrowthChartConfig } from "../enums/enums.js";
 import { type ChartPoint } from "../types/types.js";
 
 const buildLinePath = (series: ChartPoint[]): string => {

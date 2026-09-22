@@ -1,6 +1,6 @@
 import { AnalyticsGrowthBucket } from "~/modules/analytics/libs/enums/enums.js";
 
-const GROWTH_UNITS = {
+const GrowthUnits = {
 	[AnalyticsGrowthBucket.DAY]: {
 		current: "today",
 		plural: "days",
@@ -18,4 +18,4 @@ const GROWTH_UNITS = {
 	},
 } as const;
 
-export { GROWTH_UNITS };
+export { GrowthUnits };

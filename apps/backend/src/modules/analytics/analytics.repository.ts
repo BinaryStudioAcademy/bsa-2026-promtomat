@@ -14,15 +14,12 @@ import { LabelColumnName } from "../labels/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import { PromptModel } from "../prompts/prompt.model.js";
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
+import { LABEL_RELATION, LOOKBACK_OFFSET } from "./libs/constants/constants.js";
 import {
-	GrowthBucketConfig,
-	LABEL_RELATION,
-	LOOKBACK_OFFSET,
-	WeeklyChangeWindow,
-} from "./libs/constants/constants.js";
-import {
-	AnalyticsDistributionAliases,
+	AnalyticsDistributionAlias,
 	AnalyticsRepositoryConfig,
+	GrowthBucketConfig,
+	WeeklyChangeWindow,
 } from "./libs/enums/enums.js";
 import {
 	type AnalyticsScopeQuery,
@@ -90,7 +87,7 @@ class AnalyticsRepository {
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.EFFICIENCY_SCORE,
 					ScoreTierMin.MID,
-					AnalyticsDistributionAliases.LOW,
+					AnalyticsDistributionAlias.LOW,
 				]),
 				raw(
 					"COALESCE(sum(case when ??.?? >= ? and ??.?? < ? then 1 else 0 end), 0) as ??",
@@ -101,14 +98,14 @@ class AnalyticsRepository {
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
 						ScoreTierMin.HIGH,
-						AnalyticsDistributionAliases.MID,
+						AnalyticsDistributionAlias.MID,
 					],
 				),
 				raw("COALESCE(sum(case when ??.?? >= ? then 1 else 0 end), 0) as ??", [
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.EFFICIENCY_SCORE,
 					ScoreTierMin.HIGH,
-					AnalyticsDistributionAliases.HIGH,
+					AnalyticsDistributionAlias.HIGH,
 				]),
 			)
 			.castTo<{ high: string; low: string; mid: string }[]>();

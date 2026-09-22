@@ -2,7 +2,7 @@ import { type RefObject, useEffect, useRef, useState } from "react";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 
-import { GrowthChartConfig } from "../../constants/constants.js";
+import { GrowthChartConfig } from "../../enums/enums.js";
 import { type ChartDimensions } from "../../types/types.js";
 
 const DEFAULT_DIMENSIONS: ChartDimensions = {

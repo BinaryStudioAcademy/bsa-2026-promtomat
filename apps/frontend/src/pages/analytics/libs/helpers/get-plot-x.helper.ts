@@ -1,6 +1,6 @@
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 
-import { GrowthChartConfig } from "../constants/constants.js";
+import { GrowthChartConfig } from "../enums/enums.js";
 import { type PlotBounds } from "../types/types.js";
 
 const getPlotX = (

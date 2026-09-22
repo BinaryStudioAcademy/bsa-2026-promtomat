@@ -1,6 +1,8 @@
-import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
-
-import { PERCENTAGE_MULTIPLIER } from "../constants/constants.js";
+import {
+	PERCENTAGE_MULTIPLIER,
+	ROUND_FACTOR,
+	ZERO_VALUE,
+} from "../../constants/constants.js";
 
 const countPercentage = (count: number, total: number): number => {
 	if (total === ZERO_VALUE) {

@@ -1,7 +1,8 @@
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
-import { AXIS_STEPS, GrowthChartConfig } from "../constants/constants.js";
+import { AXIS_STEPS } from "../constants/constants.js";
+import { GrowthChartConfig } from "../enums/enums.js";
 import { type YAxis } from "../types/types.js";
 
 const roundAxisValue = (value: number): number => {

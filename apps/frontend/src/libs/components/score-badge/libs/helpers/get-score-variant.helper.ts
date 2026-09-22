@@ -1,9 +1,9 @@
 import { ScoreTierMin } from "~/libs/enums/enums.js";
+import { type ValueOf } from "~/libs/types/types.js";
 
 import { BadgeVariant } from "../enums/badge-variant.enum.js";
-import { type ScoreVariant } from "../types/types.js";
 
-const getScoreVariant = (score: number): ScoreVariant => {
+const getScoreVariant = (score: number): ValueOf<typeof BadgeVariant> => {
 	if (score >= ScoreTierMin.HIGH) {
 		return BadgeVariant.SUCCESS;
 	}

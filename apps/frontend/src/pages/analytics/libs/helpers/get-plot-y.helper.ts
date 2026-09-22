@@ -1,4 +1,4 @@
-import { GrowthChartConfig } from "../constants/constants.js";
+import { GrowthChartConfig } from "../enums/enums.js";
 import { type PlotBounds, type YAxis } from "../types/types.js";
 
 const getPlotY = (

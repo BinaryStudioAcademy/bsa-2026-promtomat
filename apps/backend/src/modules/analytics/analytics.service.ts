@@ -1,4 +1,5 @@
 import { AnalyticsGrowthBucket } from "~/libs/enums/enums.js";
+import { countPercentage, roundScore } from "~/libs/helpers/helpers.js";
 import {
 	type AnalyticsDistributionResponseDto,
 	type AnalyticsGrowthResponseDto,
@@ -8,10 +9,8 @@ import {
 } from "~/libs/types/types.js";
 
 import { AnalyticsRepository } from "./analytics.repository.js";
-import { countPercentage } from "./libs/helpers/count-percentage.js";
 import { fillGrowthGaps } from "./libs/helpers/fill-growth-gaps.helper.js";
 import { getWeeklyChange } from "./libs/helpers/get-weekly-change.helper.js";
-import { roundScore } from "./libs/helpers/round-score.helper.js";
 import { type AnalyticsScopeQuery } from "./libs/types/types.js";
 
 class AnalyticsService {
