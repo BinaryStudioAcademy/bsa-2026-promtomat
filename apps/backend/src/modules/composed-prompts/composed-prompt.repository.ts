@@ -70,6 +70,20 @@ class ComposedPromptRepository {
 		return composedPrompt ? this.initializeEntity(composedPrompt) : null;
 	}
 
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | { id: number }> {
+		const model = await this.composedPromptModel
+			.query(trx)
+			.select("id")
+			.findById(id)
+			.forUpdate()
+			.execute();
+
+		return model ? { id: model.id } : null;
+	}
+
 	public async findByWorkspaceAndHash(
 		workspaceId: number,
 		descriptionHash: string,

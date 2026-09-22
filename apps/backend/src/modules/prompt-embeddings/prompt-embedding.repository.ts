@@ -1,6 +1,6 @@
 import { raw, type Transaction } from "objection";
 
-import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
+import { PromptQualityTier, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
@@ -41,6 +41,13 @@ import {
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
+
+const QUALITY_SCORE_THRESHOLD = {
+	MAX_NEEDS_IMPROVEMENT: 5,
+	MIN_NEEDS_IMPROVEMENT: 1,
+	PROVEN: 8,
+	USABLE: 6,
+} as const;
 
 class PromptEmbeddingRepository {
 	private promptEmbeddingModel: typeof PromptEmbeddingModel;
@@ -83,6 +90,7 @@ class PromptEmbeddingRepository {
 		embedding,
 		limit,
 		offset,
+		qualityTier,
 		score,
 		userId,
 		workspaceId,
@@ -116,12 +124,63 @@ class PromptEmbeddingRepository {
 			);
 		}
 
+		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
+			switch (qualityTier) {
+				case PromptQualityTier.NEEDS_IMPROVEMENT: {
+					baseQuery
+						.where(
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							">=",
+							QUALITY_SCORE_THRESHOLD.MIN_NEEDS_IMPROVEMENT,
+						)
+						.andWhere(
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							"<=",
+							QUALITY_SCORE_THRESHOLD.MAX_NEEDS_IMPROVEMENT,
+						);
+					break;
+				}
+				case PromptQualityTier.PROVEN: {
+					baseQuery.where(
+						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+						">=",
+						QUALITY_SCORE_THRESHOLD.PROVEN,
+					);
+					break;
+				}
+				case PromptQualityTier.UNRATED: {
+					baseQuery.whereNull(
+						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+					);
+					break;
+				}
+				case PromptQualityTier.USABLE: {
+					baseQuery
+						.where(
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							">=",
+							QUALITY_SCORE_THRESHOLD.USABLE,
+						)
+						.andWhere(
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							"<",
+							QUALITY_SCORE_THRESHOLD.PROVEN,
+						);
+					break;
+				}
+			}
+		}
+
 		const [aggregation] = await baseQuery
 			.clone()
 			.clearSelect()
 			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`)
-			.avg(
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			.select(
+				raw("AVG(COALESCE(??, ??)) as ??", [
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					SQLAlias.AVERAGE_SCORE,
+				]),
 			)
 			.castTo<PromptAggregateRow[]>()
 			.execute();
@@ -137,6 +196,7 @@ class PromptEmbeddingRepository {
 				`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`,
 				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
 				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 				raw("?? AS ??", [
 					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
 					SQLAlias.WORKSPACE_NAME,

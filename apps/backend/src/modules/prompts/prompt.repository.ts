@@ -6,6 +6,7 @@ import {
 	SortOrder,
 	SQLAlias,
 } from "~/libs/enums/enums.js";
+import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
@@ -55,7 +56,7 @@ class PromptRepository {
 
 	private applyFilters(
 		query: ReturnType<typeof this.promptModel.query>,
-		{ userId, workspaceId }: PromptFilterByQueryParameters,
+		{ search, userId, workspaceId }: PromptFilterByQueryParameters,
 	): ReturnType<typeof this.promptModel.query> {
 		query.where(
 			`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
@@ -67,6 +68,22 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				workspaceId,
 			);
+		}
+
+		if (search) {
+			const escapedSearch = escapeILikePattern(search);
+
+			query.where((subQuery) => {
+				subQuery
+					.whereILike(
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+						`%${escapedSearch}%`,
+					)
+					.orWhereILike(
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
+						`%${escapedSearch}%`,
+					);
+			});
 		}
 
 		return query;
@@ -82,8 +99,12 @@ class PromptRepository {
 			.clear(QueryClearTarget.LIMIT)
 			.clear(QueryClearTarget.OFFSET)
 			.count(`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as count`)
-			.avg(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE} as averageScore`,
+			.select(
+				raw("AVG(COALESCE(??, ??)) as ??", [
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					"averageScore",
+				]),
 			)
 			.castTo<{ averageScore: null | string; count: string }[]>()
 			.execute();
@@ -96,6 +117,21 @@ class PromptRepository {
 		};
 	}
 
+	private initializeEntity(model: PromptModel): PromptEntity {
+		return PromptEntity.initialize({
+			computedScore: model.computedScore,
+			createdAt: model.createdAt,
+			efficiencyScore: model.efficiencyScore,
+			id: model.id,
+			labelId: model.labelId as number,
+			promptBody: model.promptBody,
+			taskIntent: model.taskIntent,
+			updatedAt: model.updatedAt,
+			userId: model.userId,
+			workspaceId: model.workspaceId,
+		});
+	}
+
 	public async create(
 		entity: PromptEntity,
 		trx?: Transaction,
@@ -106,7 +142,7 @@ class PromptRepository {
 			.returning("*")
 			.execute();
 
-		return PromptEntity.initialize(prompt);
+		return this.initializeEntity(prompt);
 	}
 
 	public async findAll({
@@ -121,10 +157,11 @@ class PromptRepository {
 			workspaceId,
 		} = query;
 
-		const baseQuery = this.promptModel.query().modify("filterByQuery", {
-			search,
+		const baseQuery = this.promptModel.query();
+		this.applyFilters(baseQuery, {
+			search: search ?? undefined,
 			userId,
-			workspaceId,
+			workspaceId: workspaceId ?? undefined,
 		});
 
 		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
@@ -158,11 +195,17 @@ class PromptRepository {
 					break;
 				}
 				case PromptQualityTier.USABLE: {
-					baseQuery.where(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-						">=",
-						QUALITY_SCORE_THRESHOLD.USABLE,
-					);
+					baseQuery
+						.where(
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
+							">=",
+							QUALITY_SCORE_THRESHOLD.USABLE,
+						)
+						.andWhere(
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
+							"<",
+							QUALITY_SCORE_THRESHOLD.PROVEN,
+						);
 					break;
 				}
 			}
@@ -265,7 +308,20 @@ class PromptRepository {
 	): Promise<null | PromptEntity> {
 		const prompt = await this.promptModel.query().findOne({ id, userId });
 
-		return prompt ? PromptEntity.initialize(prompt) : null;
+		return prompt ? this.initializeEntity(prompt) : null;
+	}
+
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel
+			.query(trx)
+			.findById(id)
+			.forUpdate()
+			.execute();
+
+		return prompt ? this.initializeEntity(prompt) : null;
 	}
 
 	public async findByWorkspace({
@@ -316,7 +372,7 @@ class PromptRepository {
 			.where(PromptColumnName.ID, ">", afterId)
 			.execute();
 
-		return prompts.map((prompt) => PromptEntity.initialize(prompt));
+		return prompts.map((prompt) => this.initializeEntity(prompt));
 	}
 
 	public async findRecentByWorkspaceId(
@@ -357,7 +413,7 @@ class PromptRepository {
 			.patchAndFetchById(id, payload)
 			.castTo<PromptModel | undefined>();
 
-		return prompt ? PromptEntity.initialize(prompt) : null;
+		return prompt ? this.initializeEntity(prompt) : null;
 	}
 
 	public async updateComputedScore(

@@ -148,6 +148,7 @@ class PromptService {
 		const {
 			limit = PaginationValue.DEFAULT_LIMIT,
 			page = PaginationValue.DEFAULT_PAGE,
+			qualityTier,
 			search,
 			workspaceId,
 		} = query;
@@ -157,6 +158,7 @@ class PromptService {
 			? await this.promptEmbeddingService.findAllByQuery({
 					limit,
 					offset,
+					qualityTier,
 					search,
 					userId,
 					workspaceId,

@@ -41,17 +41,26 @@ class EvaluationService {
 		payload: EvaluationUpsertPayload,
 	): Promise<EvaluationResponseDto> {
 		return await this.database.transaction(async (trx) => {
-			await this.evaluationRepository.createOrUpdate(payload, trx);
-
 			if (payload.promptId) {
+				const prompt = await this.promptRepository.findByIdForUpdate(
+					payload.promptId,
+					trx,
+				);
+
+				await this.evaluationRepository.createOrUpdate(payload, trx);
+
 				const scores = await this.evaluationRepository.findScoresByPromptId(
 					payload.promptId,
 					trx,
 				);
-				const prompt = await this.promptRepository.findById(payload.promptId);
+
+				const promptDto = await this.promptRepository.findById(
+					payload.promptId,
+				);
 				const computedScore = computeDampedMean({
 					evaluationScores: scores,
-					priorScore: prompt?.score ?? null,
+					priorScore:
+						prompt?.toObject().efficiencyScore ?? promptDto?.score ?? null,
 				});
 
 				await this.promptRepository.updateComputedScore(
@@ -69,11 +78,16 @@ class EvaluationService {
 			}
 
 			const targetId = payload.composedPromptId as number;
+
+			await this.composedPromptRepository.findByIdForUpdate(targetId, trx);
+			await this.evaluationRepository.createOrUpdate(payload, trx);
+
 			const scores =
 				await this.evaluationRepository.findScoresByComposedPromptId(
 					targetId,
 					trx,
 				);
+
 			const computedScore = computeDampedMean({
 				evaluationScores: scores,
 				priorScore: null,

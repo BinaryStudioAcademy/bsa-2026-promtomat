@@ -1,5 +1,5 @@
 type PromptFilterByQueryParameters = {
-	search?: string;
+	search?: string | undefined;
 	userId: number;
 	workspaceId?: number | undefined;
 };
