@@ -4,6 +4,7 @@ export {
 	EXPIRING_SOON_MS,
 	NO_TIME_REMAINING,
 } from "./expiring-soon-threshold.constant.js";
+export { API_TOKENS_TABLE_COLUMNS } from "./table-columns.constant.js";
 export { API_TOKENS_EXPIRATION_SELECT_OPTIONS } from "./token-expiration-options.constant.js";
 export {
 	TOKEN_ID_PREFIX_LENGTH,

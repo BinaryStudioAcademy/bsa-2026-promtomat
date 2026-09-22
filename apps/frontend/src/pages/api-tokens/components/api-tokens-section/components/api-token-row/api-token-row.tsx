@@ -8,7 +8,11 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { type ApiTokenDto } from "~/modules/api-tokens/api-tokens.js";
 
-import { ApiTokensMessage, ApiTokenStatus } from "../../libs/enums/enums.js";
+import {
+	ApiTokensMessage,
+	ApiTokenStatusClass,
+	ApiTokenStatusLabel,
+} from "../../libs/enums/enums.js";
 import {
 	formatExpirationDate,
 	formatTokenIdPrefix,
@@ -20,18 +24,6 @@ type Properties = {
 	onRevoke: (id: string) => void;
 	token: ApiTokenDto;
 };
-
-const STATUS_LABEL = {
-	[ApiTokenStatus.ACTIVE]: ApiTokensMessage.STATUS_ACTIVE,
-	[ApiTokenStatus.EXPIRED]: ApiTokensMessage.STATUS_EXPIRED,
-	[ApiTokenStatus.EXPIRING]: ApiTokensMessage.STATUS_EXPIRING,
-} as const;
-
-const STATUS_CLASS = {
-	[ApiTokenStatus.ACTIVE]: "pill-active",
-	[ApiTokenStatus.EXPIRED]: "pill-expired",
-	[ApiTokenStatus.EXPIRING]: "pill-expiring",
-} as const;
 
 const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 	const handleRevoke = useCallback((): void => {
@@ -76,10 +68,10 @@ const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 				<span
 					className={getValidClasses(
 						styles["pill"],
-						styles[STATUS_CLASS[status]],
+						styles[ApiTokenStatusClass[status]],
 					)}
 				>
-					{STATUS_LABEL[status]}
+					{ApiTokenStatusLabel[status]}
 				</span>
 			</td>
 			<td className={getValidClasses(styles["cell"], styles["cell-action"])}>
