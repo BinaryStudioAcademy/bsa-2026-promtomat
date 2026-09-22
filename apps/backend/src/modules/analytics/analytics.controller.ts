@@ -30,6 +30,23 @@ import { analyticsQueryValidationSchema } from "./libs/validation-schemas/valida
  *           type: object
  *         keywords:
  *           type: object
+ *         summary:
+ *           type: object
+ *           properties:
+ *             averageScore:
+ *               type: number
+ *               nullable: true
+ *             keywordCount:
+ *               type: integer
+ *             weeklyChange:
+ *               type: object
+ *               properties:
+ *                 change:
+ *                   type: number
+ *                   nullable: true
+ *                 previousScore:
+ *                   type: number
+ *                   nullable: true
  */
 class AnalyticsController extends BaseController {
 	private analyticsService: AnalyticsService;
@@ -68,7 +85,7 @@ class AnalyticsController extends BaseController {
 	 * @swagger
 	 * /analytics:
 	 *   get:
-	 *     description: Returns the distribution, growth, and keyword-weight charts for the dashboard
+	 *     description: Returns the distribution, growth, keyword-weight, and summary (KPI) data for the dashboard
 	 *     security:
 	 *       - bearerAuth: []
 	 *     parameters:
@@ -98,16 +115,18 @@ class AnalyticsController extends BaseController {
 		const { granularity, workspaceId } = options.query;
 		const userId = options.user?.id as number;
 
-		const [distribution, growth, keywords] = await Promise.all([
+		const [distribution, growth, keywords, summary] = await Promise.all([
 			this.analyticsService.findDistribution({ userId, workspaceId }),
 			this.analyticsService.findGrowth({ granularity, userId, workspaceId }),
 			this.analyticsService.findKeywordWeights({ userId, workspaceId }),
+			this.analyticsService.findSummary({ userId, workspaceId }),
 		]);
 
 		const payload: AnalyticsDashboardResponseDto = {
 			distribution,
 			growth,
 			keywords,
+			summary,
 		};
 
 		return {

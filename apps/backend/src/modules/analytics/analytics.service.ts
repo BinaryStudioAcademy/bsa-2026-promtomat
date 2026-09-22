@@ -3,12 +3,15 @@ import {
 	type AnalyticsDistributionResponseDto,
 	type AnalyticsGrowthResponseDto,
 	type AnalyticsKeywordResponseDto,
+	type AnalyticsSummaryResponseDto,
 	ValueOf,
 } from "~/libs/types/types.js";
 
 import { AnalyticsRepository } from "./analytics.repository.js";
 import { countPercentage } from "./libs/helpers/count-percentage.js";
 import { fillGrowthGaps } from "./libs/helpers/fill-growth-gaps.helper.js";
+import { getWeeklyChange } from "./libs/helpers/get-weekly-change.helper.js";
+import { roundScore } from "./libs/helpers/round-score.helper.js";
 import { type AnalyticsScopeQuery } from "./libs/types/types.js";
 
 class AnalyticsService {
@@ -57,19 +60,46 @@ class AnalyticsService {
 			workspaceId,
 		});
 
-		return { points: fillGrowthGaps(rows, granularity) };
+		const points = fillGrowthGaps(rows, granularity);
+
+		return {
+			points: points.map((point) => ({
+				averageScore:
+					point.averageScore === null ? null : roundScore(point.averageScore),
+				date: point.date,
+			})),
+		};
 	}
 
 	public async findKeywordWeights({
 		userId,
 		workspaceId,
 	}: AnalyticsScopeQuery): Promise<AnalyticsKeywordResponseDto> {
-		const items = await this.analyticsRepository.findKeywordWeights({
+		const rows = await this.analyticsRepository.findKeywordWeights({
 			userId,
 			workspaceId,
 		});
 
-		return { items };
+		return {
+			items: rows.map((row) => ({
+				...row,
+				averageScore: roundScore(row.averageScore),
+			})),
+		};
+	}
+
+	public async findSummary({
+		userId,
+		workspaceId,
+	}: AnalyticsScopeQuery): Promise<AnalyticsSummaryResponseDto> {
+		const { averageScore, currentScore, keywordCount, previousScore } =
+			await this.analyticsRepository.findSummary({ userId, workspaceId });
+
+		return {
+			averageScore: averageScore === null ? null : roundScore(averageScore),
+			keywordCount,
+			weeklyChange: getWeeklyChange({ currentScore, previousScore }),
+		};
 	}
 }
 

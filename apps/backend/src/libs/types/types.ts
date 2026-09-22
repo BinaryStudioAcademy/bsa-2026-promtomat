@@ -5,6 +5,8 @@ export {
 	type AnalyticsGrowthPoint,
 	type AnalyticsGrowthResponseDto,
 	type AnalyticsKeywordResponseDto,
+	type AnalyticsSummaryResponseDto,
+	type AnalyticsWeeklyChange,
 	type ServerCommonErrorResponse,
 	type ServerValidationErrorResponse,
 	type UserDto,

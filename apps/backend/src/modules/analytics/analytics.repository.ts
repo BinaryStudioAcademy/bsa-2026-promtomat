@@ -2,7 +2,7 @@ import { type QueryBuilder, raw } from "objection";
 
 import {
 	AnalyticsGrowthBucket,
-	ScoreThreshold,
+	ScoreTierMin,
 	SortOrder,
 	SQLAlias,
 } from "~/libs/enums/enums.js";
@@ -18,6 +18,7 @@ import {
 	GrowthBucketConfig,
 	LABEL_RELATION,
 	LOOKBACK_OFFSET,
+	WeeklyChangeWindow,
 } from "./libs/constants/constants.js";
 import {
 	AnalyticsDistributionAliases,
@@ -28,6 +29,7 @@ import {
 	type PromptDistributionCountRow,
 	type PromptGrowthRow,
 	type PromptKeywordRow,
+	type PromptSummaryRow,
 } from "./libs/types/types.js";
 
 class AnalyticsRepository {
@@ -84,28 +86,28 @@ class AnalyticsRepository {
 		const query = this.promptModel
 			.query()
 			.select(
-				raw("COALESCE(sum(case when ??.?? <= ? then 1 else 0 end), 0) as ??", [
+				raw("COALESCE(sum(case when ??.?? < ? then 1 else 0 end), 0) as ??", [
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.EFFICIENCY_SCORE,
-					ScoreThreshold.DANGER_MAX,
+					ScoreTierMin.MID,
 					AnalyticsDistributionAliases.LOW,
 				]),
 				raw(
-					"COALESCE(sum(case when ??.?? > ? and ??.?? <= ? then 1 else 0 end), 0) as ??",
+					"COALESCE(sum(case when ??.?? >= ? and ??.?? < ? then 1 else 0 end), 0) as ??",
 					[
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
-						ScoreThreshold.DANGER_MAX,
+						ScoreTierMin.MID,
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
-						ScoreThreshold.WARNING_MAX,
+						ScoreTierMin.HIGH,
 						AnalyticsDistributionAliases.MID,
 					],
 				),
-				raw("COALESCE(sum(case when ??.?? > ? then 1 else 0 end), 0) as ??", [
+				raw("COALESCE(sum(case when ??.?? >= ? then 1 else 0 end), 0) as ??", [
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.EFFICIENCY_SCORE,
-					ScoreThreshold.WARNING_MAX,
+					ScoreTierMin.HIGH,
 					AnalyticsDistributionAliases.HIGH,
 				]),
 			)
@@ -139,10 +141,11 @@ class AnalyticsRepository {
 		const query = this.promptModel
 			.query()
 			.select(
-				raw("date_trunc(?, ??.??)::date as ??", [
+				raw("to_char(date_trunc(?, ??.??), ?) as ??", [
 					unit,
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.CREATED_AT,
+					AnalyticsRepositoryConfig.BUCKET_DATE_FORMAT,
 					SQLAlias.BUCKET,
 				]),
 				raw("avg(??.??) as ??", [
@@ -161,11 +164,16 @@ class AnalyticsRepository {
 			)
 			.groupBy(SQLAlias.BUCKET)
 			.orderBy(SQLAlias.BUCKET)
-			.castTo<PromptGrowthRow[]>();
+			.castTo<{ averageScore: null | string; bucket: string }[]>();
 
 		this.findScope(query, userId, workspaceId);
 
-		return await query.execute();
+		const rows = await query.execute();
+
+		return rows.map((row) => ({
+			averageScore: row.averageScore === null ? null : Number(row.averageScore),
+			bucket: row.bucket,
+		}));
 	}
 
 	public async findKeywordWeights({
@@ -187,12 +195,89 @@ class AnalyticsRepository {
 				`${LABEL_RELATION}.${LabelColumnName.NAME}`,
 			)
 			.orderBy(SQLAlias.AVERAGE_SCORE, SortOrder.DESC)
+			.orderBy(SQLAlias.LABEL, SortOrder.ASC)
 			.limit(AnalyticsRepositoryConfig.KEYWORD_LIMIT)
-			.castTo<PromptKeywordRow[]>();
+			.castTo<{ averageScore: string; count: string; label: string }[]>();
 
 		this.findScope(query, userId, workspaceId);
 
-		return await query.execute();
+		const rows = await query.execute();
+
+		return rows.map((row) => ({
+			averageScore: Number(row.averageScore),
+			count: Number(row.count),
+			label: row.label,
+		}));
+	}
+
+	public async findSummary({
+		userId,
+		workspaceId,
+	}: AnalyticsScopeQuery): Promise<PromptSummaryRow> {
+		const query = this.promptModel
+			.query()
+			.avg(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			)
+			.countDistinct(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID} as ${SQLAlias.KEYWORD_COUNT}`,
+			)
+			.select(
+				raw(
+					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval then ??.?? end) as ??",
+					[
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.CREATED_AT,
+						`${String(WeeklyChangeWindow.CURRENT_LOOKBACK_DAYS)} day`,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.EFFICIENCY_SCORE,
+						SQLAlias.CURRENT_SCORE,
+					],
+				),
+				raw(
+					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval and ??.?? < date_trunc('day', now()) - (?)::interval then ??.?? end) as ??",
+					[
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.CREATED_AT,
+						`${String(WeeklyChangeWindow.PREVIOUS_LOOKBACK_DAYS)} day`,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.CREATED_AT,
+						`${String(WeeklyChangeWindow.CURRENT_LOOKBACK_DAYS)} day`,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.EFFICIENCY_SCORE,
+						SQLAlias.PREVIOUS_SCORE,
+					],
+				),
+			)
+			.castTo<
+				{
+					averageScore: null | string;
+					currentScore: null | string;
+					keywordCount: string;
+					previousScore: null | string;
+				}[]
+			>();
+
+		this.findScope(query, userId, workspaceId);
+
+		const [row] = await query.execute();
+
+		if (!row) {
+			return {
+				averageScore: null,
+				currentScore: null,
+				keywordCount: 0,
+				previousScore: null,
+			};
+		}
+
+		return {
+			averageScore: row.averageScore === null ? null : Number(row.averageScore),
+			currentScore: row.currentScore === null ? null : Number(row.currentScore),
+			keywordCount: Number(row.keywordCount),
+			previousScore:
+				row.previousScore === null ? null : Number(row.previousScore),
+		};
 	}
 }
 

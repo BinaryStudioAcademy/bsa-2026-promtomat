@@ -6,6 +6,6 @@ export {
 	APIPath,
 	AppEnvironment,
 	ErrorCode,
-	ScoreThreshold,
+	ScoreTierMin,
 	SortOrder,
 } from "@promptomat/shared";
