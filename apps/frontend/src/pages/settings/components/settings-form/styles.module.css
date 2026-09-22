@@ -10,11 +10,16 @@
 	}
 }
 
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
 .fields {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-	gap: var(--space-10);
-	margin-bottom: var(--space-10);
+	gap: var(--space-4);
 }
 
 .profile-save-row {
@@ -27,7 +32,7 @@
 @media (width >=600px) {
 	.profile-save-row {
 		flex-direction: row;
-		gap: var(--space-14);
+		gap: var(--space-16);
 		align-items: center;
 	}
 }

@@ -1,8 +1,14 @@
 .info {
 	display: flex;
-	gap: var(--space-16);
+	gap: var(--space-12);
 	align-items: center;
-	margin-bottom: var(--space-24);
+	margin-bottom: var(--space-16);
+}
+
+@media (width >=600px) {
+	.info {
+		gap: var(--space-16);
+	}
 }
 
 .avatar-wrapper {
@@ -10,15 +16,22 @@
 	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
-	width: 52px;
-	height: 52px;
+	width: 48px;
+	height: 48px;
 	background-color: var(--border-accent);
 	border-radius: 50%;
 }
 
+@media (width >=600px) {
+	.avatar-wrapper {
+		width: 56px;
+		height: 56px;
+	}
+}
+
 .nickname {
 	margin: 0;
-	font-size: var(--font-size-body-xl);
+	font-size: var(--font-size-title-3);
 	font-weight: 600;
 }
 

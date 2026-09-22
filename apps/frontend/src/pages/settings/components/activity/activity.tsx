@@ -46,6 +46,7 @@ const Activity: React.FC<Properties> = ({ summary }: Properties) => {
 				</div>
 			</div>
 			<Button
+				className={styles["activity-button"]}
 				label="View prompt log history"
 				onClick={handleClick}
 				size={ControlSize.MD}

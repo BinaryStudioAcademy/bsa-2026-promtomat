@@ -1,7 +1,13 @@
 .security-row {
 	display: flex;
 	flex-wrap: wrap;
-	gap: var(--space-10);
+	gap: var(--space-8);
+}
+
+@media (width >=600px) {
+	.security-row {
+		gap: var(--space-10);
+	}
 }
 
 .security-row > button {
