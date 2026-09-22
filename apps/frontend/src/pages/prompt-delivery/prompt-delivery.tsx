@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { useEvaluateMutation } from "~/modules/evaluations/evaluations.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
@@ -15,6 +16,19 @@ const PromptDelivery: React.FC = () => {
 	const parsedPromptId = Number(promptId);
 
 	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
+	const [evaluate] = useEvaluateMutation();
+
+	const handleScoreSelect = useCallback(
+		(score: number) => {
+			return (): void => {
+				void evaluate({
+					promptId: parsedPromptId,
+					score,
+				});
+			};
+		},
+		[evaluate, parsedPromptId],
+	);
 
 	if (isLoading) {
 		return <Loader variant={LoaderVariant.SECTION} />;
@@ -29,6 +43,7 @@ const PromptDelivery: React.FC = () => {
 			<PromptDeliveryView
 				body={data.body}
 				efficiencyScore={data.score}
+				onScoreSelect={handleScoreSelect}
 				workspaceName={data.workspaceName}
 			/>
 		</div>

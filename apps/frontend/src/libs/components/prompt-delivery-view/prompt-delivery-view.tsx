@@ -18,6 +18,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
 	efficiencyScore,
 	explanation = "",
+	onScoreSelect,
 	sources = [],
 	workspaceName,
 }: PromptDeliveryViewProperties) => {
@@ -59,7 +60,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
 				<ScoreGrid
 					label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
-					onScoreSelect={handleScoreSelect}
+					onScoreSelect={onScoreSelect ?? handleScoreSelect}
 				/>
 			</PromptDeliveryCard>
 		</div>
