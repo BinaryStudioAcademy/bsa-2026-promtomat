@@ -333,6 +333,14 @@ class PromptRepository {
 		return await this.findAggregate(baseQuery);
 	}
 
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptModel.query(trx).findById(id).patch({ computedScore });
+	}
+
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {
 		await this.promptModel.query().findById(promptId).patch({ labelId });
 	}

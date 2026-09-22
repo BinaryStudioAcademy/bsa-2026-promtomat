@@ -213,20 +213,6 @@ class PromptController extends BaseController {
 				params: promptIdParameterValidationSchema,
 			},
 		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.findById(
-					options as APIHandlerOptions<{
-						params: PromptIdParameterDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.$ID,
-			validation: {
-				params: promptIdParameterValidationSchema,
-			},
-		});
 	}
 
 	/**
