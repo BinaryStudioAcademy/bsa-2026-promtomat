@@ -117,7 +117,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				<div className={styles["fields"]}>
 					<Input
 						control={control}
-						isRequired
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
@@ -127,7 +126,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					/>
 					<Select
 						control={control}
-						isRequired
 						label="Primary AI coding tool"
 						name="primaryAiCodingTool"
 						options={AI_CODING_TOOL_OPTIONS}

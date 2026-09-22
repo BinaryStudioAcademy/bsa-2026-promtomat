@@ -20,7 +20,7 @@
 	text-align: center;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: 12px;
+	border-radius: var(--radius-xl);
 }
 
 @media (width >=600px) {
@@ -30,13 +30,13 @@
 }
 
 .stat-value {
-	font-size: 22px;
+	font-size: var(--font-size-title-2);
 	font-weight: 600;
 }
 
 @media (width >=600px) {
 	.stat-value {
-		font-size: 28px;
+		font-size: var(--font-size-title-1);
 	}
 }
 
@@ -57,13 +57,13 @@
 }
 
 .stat-label {
-	font-size: 10px;
+	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
 }
 
 @media (width >=600px) {
 	.stat-label {
-		font-size: 12.5px;
+		font-size: var(--font-size-body-base);
 		line-height: 1.25;
 	}
 }

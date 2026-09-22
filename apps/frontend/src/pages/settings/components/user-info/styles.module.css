@@ -24,6 +24,12 @@
 
 .details {
 	margin: 0;
-	font-size: var(--font-size-label-sm);
+	font-size: var(--font-size-body-sm);
 	color: var(--text-muted);
+}
+
+@media (width >=600px) {
+	.details {
+		font-size: var(--font-size-body-base);
+	}
 }
