@@ -1,6 +1,7 @@
 const APIPath = {
 	AUTH: "/auth",
 	COMPOSED_PROMPTS: "/composed-prompts",
+	EVALUATIONS: "/evaluations",
 	HEALTH: "/health",
 	LABELS: "/labels",
 	PROMPTS: "/prompts",

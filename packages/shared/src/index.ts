@@ -74,6 +74,12 @@ export {
 	composeValidationSchema,
 	FallbackReason,
 } from "./modules/composed-prompts/composed-prompts.js";
+export {
+	type EvaluationCreateRequestDto,
+	type EvaluationResponseDto,
+	evaluationCreate,
+	EvaluationsApiPath,
+} from "./modules/evaluations/evaluations.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type GetLabelsRequestDto,

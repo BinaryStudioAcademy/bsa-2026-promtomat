@@ -2,6 +2,7 @@ import { type ComposedPromptSourceDto } from "./composed-prompt-source-dto.type.
 
 type ComposedPromptDto = {
 	body: string;
+	computedScore: null | number;
 	createdAt: string;
 	description: string;
 	explanation: string;
