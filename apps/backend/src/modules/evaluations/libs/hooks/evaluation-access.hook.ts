@@ -43,12 +43,12 @@ const evaluationAccessHook = ({
 			throw ComposedPromptError.notFound();
 		}
 
-		const workspace = await workspaceService.findByIdAndOwner(
-			workspaceId,
-			request.user.id,
-		);
+		const [ownerWorkspace, contributorWorkspace] = await Promise.all([
+			workspaceService.findByIdAndOwner(workspaceId, request.user.id),
+			workspaceService.findByIdAndContributor(workspaceId, request.user.id),
+		]);
 
-		if (!workspace) {
+		if (!ownerWorkspace && !contributorWorkspace) {
 			throw ComposedPromptError.notFound();
 		}
 	};

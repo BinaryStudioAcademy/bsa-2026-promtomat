@@ -29,8 +29,4 @@ const composedPromptController = new ComposedPromptController(
 	workspaceService,
 );
 
-export {
-	composedPromptController,
-	composedPromptRepository,
-	composedPromptService,
-};
+export { composedPromptController, composedPromptService };

@@ -1,6 +1,6 @@
 import { type Database } from "~/libs/modules/database/database.js";
-import { type ComposedPromptRepository } from "~/modules/composed-prompts/composed-prompt.repository.js";
-import { type PromptRepository } from "~/modules/prompts/prompt.repository.js";
+import { type ComposedPromptService } from "~/modules/composed-prompts/composed-prompt.service.js";
+import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
 import { type EvaluationRepository } from "./evaluation.repository.js";
 import { computeDampedMean } from "./libs/helpers/helpers.js";
@@ -10,31 +10,31 @@ import {
 } from "./libs/types/types.js";
 
 type Constructor = {
-	composedPromptRepository: ComposedPromptRepository;
+	composedPromptService: ComposedPromptService;
 	database: Database;
 	evaluationRepository: EvaluationRepository;
-	promptRepository: PromptRepository;
+	promptService: PromptService;
 };
 
 class EvaluationService {
-	private composedPromptRepository: ComposedPromptRepository;
+	private composedPromptService: ComposedPromptService;
 
 	private database: Database;
 
 	private evaluationRepository: EvaluationRepository;
 
-	private promptRepository: PromptRepository;
+	private promptService: PromptService;
 
 	public constructor({
-		composedPromptRepository,
+		composedPromptService,
 		database,
 		evaluationRepository,
-		promptRepository,
+		promptService,
 	}: Constructor) {
-		this.composedPromptRepository = composedPromptRepository;
+		this.composedPromptService = composedPromptService;
 		this.database = database;
 		this.evaluationRepository = evaluationRepository;
-		this.promptRepository = promptRepository;
+		this.promptService = promptService;
 	}
 
 	public async create(
@@ -42,7 +42,7 @@ class EvaluationService {
 	): Promise<EvaluationResponseDto> {
 		return await this.database.transaction(async (trx) => {
 			if (payload.promptId) {
-				const prompt = await this.promptRepository.findByIdForUpdate(
+				const prompt = await this.promptService.findByIdForUpdate(
 					payload.promptId,
 					trx,
 				);
@@ -54,16 +54,12 @@ class EvaluationService {
 					trx,
 				);
 
-				const promptDto = await this.promptRepository.findById(
-					payload.promptId,
-				);
 				const computedScore = computeDampedMean({
 					evaluationScores: scores,
-					priorScore:
-						prompt?.toObject().efficiencyScore ?? promptDto?.score ?? null,
+					priorScore: prompt ? prompt.toObject().efficiencyScore : null,
 				});
 
-				await this.promptRepository.updateComputedScore(
+				await this.promptService.updateComputedScore(
 					payload.promptId,
 					computedScore,
 					trx,
@@ -79,7 +75,7 @@ class EvaluationService {
 
 			const targetId = payload.composedPromptId as number;
 
-			await this.composedPromptRepository.findByIdForUpdate(targetId, trx);
+			await this.composedPromptService.findByIdForUpdate(targetId, trx);
 			await this.evaluationRepository.createOrUpdate(payload, trx);
 
 			const scores =
@@ -93,7 +89,7 @@ class EvaluationService {
 				priorScore: null,
 			});
 
-			await this.composedPromptRepository.updateComputedScore(
+			await this.composedPromptService.updateComputedScore(
 				targetId,
 				computedScore,
 				trx,

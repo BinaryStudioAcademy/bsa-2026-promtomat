@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const SCORE_MIN = 1;
-const SCORE_MAX = 10;
+import { EvaluationValidationRule } from "../enums/enums.js";
 
 type ValidationSchema = {
 	composedPromptId: z.ZodOptional<z.ZodNumber>;
@@ -13,12 +12,16 @@ const evaluationCreate = z
 	.object<ValidationSchema>({
 		composedPromptId: z.number().int().positive().optional(),
 		promptId: z.number().int().positive().optional(),
-		score: z.number().int().min(SCORE_MIN).max(SCORE_MAX),
+		score: z
+			.number()
+			.int()
+			.min(EvaluationValidationRule.SCORE_MIN)
+			.max(EvaluationValidationRule.SCORE_MAX),
 	})
 	.refine(
 		(data) =>
-			(data.promptId !== undefined && data.composedPromptId === undefined) ||
-			(data.promptId === undefined && data.composedPromptId !== undefined),
+			(Boolean(data.promptId) && !data.composedPromptId) ||
+			(!data.promptId && Boolean(data.composedPromptId)),
 		{
 			message: "Exactly one of promptId or composedPromptId must be provided",
 		},

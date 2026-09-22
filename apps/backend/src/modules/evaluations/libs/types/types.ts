@@ -1,4 +1,4 @@
-import { type EvaluationCreateRequestDto } from "@promptomat/shared";
+import { type EvaluationCreateRequestDto } from "~/libs/types/types.js";
 
 type EvaluationUpsertPayload = EvaluationCreateRequestDto & {
 	userId: number;
@@ -7,5 +7,5 @@ type EvaluationUpsertPayload = EvaluationCreateRequestDto & {
 export {
 	type EvaluationCreateRequestDto,
 	type EvaluationResponseDto,
-} from "@promptomat/shared";
+} from "~/libs/types/types.js";
 export { type EvaluationUpsertPayload };

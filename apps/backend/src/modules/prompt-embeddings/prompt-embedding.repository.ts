@@ -1,5 +1,6 @@
 import { raw, type Transaction } from "objection";
 
+import { QUALITY_SCORE_THRESHOLD } from "~/libs/constants/constants.js";
 import { PromptQualityTier, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
@@ -41,13 +42,6 @@ import {
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
-
-const QUALITY_SCORE_THRESHOLD = {
-	MAX_NEEDS_IMPROVEMENT: 5,
-	MIN_NEEDS_IMPROVEMENT: 1,
-	PROVEN: 8,
-	USABLE: 6,
-} as const;
 
 class PromptEmbeddingRepository {
 	private promptEmbeddingModel: typeof PromptEmbeddingModel;

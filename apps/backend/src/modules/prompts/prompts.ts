@@ -34,9 +34,4 @@ const promptController = new PromptController(
 	workspaceService,
 );
 
-export {
-	backFillPromptLabelsJob,
-	promptController,
-	promptRepository,
-	promptService,
-};
+export { backFillPromptLabelsJob, promptController, promptService };

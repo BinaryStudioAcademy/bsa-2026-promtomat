@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import {
 	PromptDeliveryError,
 	PromptError,
@@ -218,6 +220,13 @@ class PromptService {
 		return prompt ? prompt.toObject() : null;
 	}
 
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | PromptEntity> {
+		return await this.promptRepository.findByIdForUpdate(id, trx);
+	}
+
 	public async findByWorkspace(
 		payload: PromptFindByWorkspacePayload,
 	): Promise<PromptDto[]> {
@@ -299,6 +308,14 @@ class PromptService {
 		});
 
 		await this.promptRepository.updateLabel(prompt.id, label.id);
+	}
+
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptRepository.updateComputedScore(id, computedScore, trx);
 	}
 
 	public async updateIntent(

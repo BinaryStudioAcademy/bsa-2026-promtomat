@@ -1,5 +1,6 @@
 import { raw, type Transaction } from "objection";
 
+import { QUALITY_SCORE_THRESHOLD } from "~/libs/constants/constants.js";
 import {
 	PromptQualityTier,
 	QueryClearTarget,
@@ -39,13 +40,6 @@ import {
 	type PromptRepositoryItem,
 	type PromptUpdatePayload,
 } from "./libs/types/types.js";
-
-const QUALITY_SCORE_THRESHOLD = {
-	MAX_NEEDS_IMPROVEMENT: 5,
-	MIN_NEEDS_IMPROVEMENT: 1,
-	PROVEN: 8,
-	USABLE: 6,
-} as const;
 
 class PromptRepository {
 	private promptModel: typeof PromptModel;

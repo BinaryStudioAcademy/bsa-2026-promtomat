@@ -1,4 +1,7 @@
-export { EvaluationsApiPath } from "./libs/enums/enums.js";
+export {
+	EvaluationsApiPath,
+	EvaluationValidationRule,
+} from "./libs/enums/enums.js";
 export {
 	type EvaluationCreateRequestDto,
 	type EvaluationResponseDto,

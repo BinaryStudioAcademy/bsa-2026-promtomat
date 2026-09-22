@@ -79,9 +79,9 @@ class ComposedPromptRepository {
 			.select("id")
 			.findById(id)
 			.forUpdate()
-			.execute();
+			.castTo<undefined | { id: number }>();
 
-		return model ? { id: model.id } : null;
+		return model ?? null;
 	}
 
 	public async findByWorkspaceAndHash(
