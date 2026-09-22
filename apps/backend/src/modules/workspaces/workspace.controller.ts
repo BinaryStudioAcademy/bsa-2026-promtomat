@@ -8,6 +8,7 @@ import { HTTPCode, HTTPMethod } from "~/libs/modules/http/http.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { WorkspacesApiPath } from "./libs/enums/enums.js";
+import { workspaceAccessHook } from "./libs/hooks/workspace-access.hook.js";
 import { workspaceOwnerAccessHook } from "./libs/hooks/workspace-owner-access.hook.js";
 import {
 	type WorkspaceCreateRequestDto,
@@ -77,6 +78,21 @@ class WorkspaceController extends BaseController {
 			path: WorkspacesApiPath.ROOT,
 			validation: {
 				query: workspaceGetByQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findById(
+					options as APIHandlerOptions<{
+						params: WorkspaceRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: WorkspacesApiPath.$WORKSPACE_ID,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				params: workspaceRouteParametersValidationSchema,
 			},
 		});
 
@@ -247,6 +263,58 @@ class WorkspaceController extends BaseController {
 				options.user?.id as number,
 				options.query,
 			),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /workspaces/{workspaceId}:
+	 *   get:
+	 *     description: Returns one workspace the user owns or contributes to
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: workspaceId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     responses:
+	 *       200:
+	 *         description: Workspace returned successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/WorkspaceListItem"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       404:
+	 *         description: Workspace not found or the user does not have access
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Invalid workspace id
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
+	 */
+
+	private async findById(
+		options: APIHandlerOptions<{
+			params: WorkspaceRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.workspaceService.findById(options.params.workspaceId),
 			status: HTTPCode.OK,
 		};
 	}

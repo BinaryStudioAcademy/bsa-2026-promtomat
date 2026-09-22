@@ -10,6 +10,7 @@ import {
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
@@ -72,6 +73,16 @@ class WorkspaceService {
 		return {
 			items: workspaces,
 		};
+	}
+
+	public async findById(id: number): Promise<WorkspaceListItemDto> {
+		const workspace = await this.workspaceRepository.findByIdWithCounts(id);
+
+		if (!workspace) {
+			throw WorkspaceError.notFound();
+		}
+
+		return workspace;
 	}
 
 	public async findByIdAndContributor(

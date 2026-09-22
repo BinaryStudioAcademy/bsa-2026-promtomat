@@ -22,7 +22,7 @@ import {
 import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
 
-type WorkspaceListRow = WorkspaceModel & {
+type WorkspaceWithCountsRow = WorkspaceModel & {
 	contributorCount: string;
 	promptCount: string;
 };
@@ -32,6 +32,28 @@ class WorkspaceRepository {
 
 	public constructor(workspaceModel: typeof WorkspaceModel) {
 		this.workspaceModel = workspaceModel;
+	}
+
+	private buildWorkspaceWithCountsQuery(): QueryBuilder<
+		WorkspaceModel,
+		WorkspaceModel[]
+	> {
+		return this.workspaceModel
+			.query()
+			.select(`${DatabaseTableName.WORKSPACES}.*`)
+			.countDistinct(
+				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID} as contributorCount`,
+			)
+			.countDistinct(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as promptCount`,
+			)
+			.leftJoin(
+				DatabaseTableName.CONTRIBUTORS,
+				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+			)
+			.leftJoinRelated("prompts")
+			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`);
 	}
 
 	private filterByListScope(
@@ -101,6 +123,21 @@ class WorkspaceRepository {
 		});
 	}
 
+	private toWorkspaceWithCounts(
+		row: WorkspaceWithCountsRow,
+	): WorkspaceListItemDto {
+		const contributorCount = Number(row.contributorCount);
+		const memberCount = contributorCount + WORKSPACE_OWNER_COUNT;
+		const promptCount = Number(row.promptCount);
+		const workspaceDto = WorkspaceEntity.initialize(row).toObject();
+
+		return {
+			...workspaceDto,
+			memberCount,
+			promptCount,
+		};
+	}
+
 	public async create(
 		entity: WorkspaceEntity,
 		trx?: Transaction,
@@ -129,44 +166,17 @@ class WorkspaceRepository {
 		scope: ValueOf<typeof WorkspaceListScope>,
 		workspaceName?: string,
 	): Promise<WorkspaceListItemDto[]> {
-		const query = this.workspaceModel
-			.query()
-			.select(`${DatabaseTableName.WORKSPACES}.*`)
-			.countDistinct(
-				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID} as contributorCount`,
-			)
-			.countDistinct(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as promptCount`,
-			)
-			.leftJoin(
-				DatabaseTableName.CONTRIBUTORS,
-				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-			)
-			.leftJoinRelated("prompts")
-			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
-			.orderBy(
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
-				SortOrder.DESC,
-			);
+		const query = this.buildWorkspaceWithCountsQuery().orderBy(
+			`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
+			SortOrder.DESC,
+		);
 
 		this.filterByListScope(query, userId, scope);
 		this.filterByNameOrTag(query, workspaceName);
 
-		const workspaces = await query.castTo<WorkspaceListRow[]>().execute();
+		const workspaces = await query.castTo<WorkspaceWithCountsRow[]>().execute();
 
-		return workspaces.map((workspace) => {
-			const contributorCount = Number(workspace.contributorCount);
-			const memberCount = contributorCount + WORKSPACE_OWNER_COUNT;
-			const promptCount = Number(workspace.promptCount);
-			const workspaceDto = WorkspaceEntity.initialize(workspace).toObject();
-
-			return {
-				...workspaceDto,
-				memberCount,
-				promptCount,
-			};
-		});
+		return workspaces.map((workspace) => this.toWorkspaceWithCounts(workspace));
 	}
 
 	public async findByIdAndContributorUserId(
@@ -198,6 +208,17 @@ class WorkspaceRepository {
 		const workspace = await this.workspaceModel.query().findOne({ id, userId });
 
 		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+	}
+
+	public async findByIdWithCounts(
+		id: number,
+	): Promise<null | WorkspaceListItemDto> {
+		const [workspace] = await this.buildWorkspaceWithCountsQuery()
+			.where(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`, id)
+			.castTo<WorkspaceWithCountsRow[]>()
+			.execute();
+
+		return workspace ? this.toWorkspaceWithCounts(workspace) : null;
 	}
 
 	public async findCountByUserIdWithLock(
