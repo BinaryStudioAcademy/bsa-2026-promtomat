@@ -1,5 +1,7 @@
+import { Locale } from "~/libs/enums/locale.enum.js";
+
 const formatDate = (date: string, options?: Intl.DateTimeFormatOptions) => {
-	return new Date(date).toLocaleDateString(undefined, {
+	return new Date(date).toLocaleDateString(Locale.EN_US, {
 		day: "numeric",
 		month: "short",
 		year: "numeric",
