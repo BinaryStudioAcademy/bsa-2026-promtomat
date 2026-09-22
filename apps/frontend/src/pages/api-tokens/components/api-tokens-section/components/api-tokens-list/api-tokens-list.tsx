@@ -9,14 +9,14 @@ import { EmptyTokenListPlaceholder } from "../empty-toknes-list-placeholder/empt
 
 type Properties = {
 	handleRevoke: (id: string) => void;
-	tokens: ApiTokenDto[] | undefined;
+	tokens: ApiTokenDto[];
 };
 
 const ApiTokensList: React.FC<Properties> = ({
 	handleRevoke,
 	tokens,
 }: Properties) => {
-	if (!(tokens && tokens.length > EMPTY_LENGTH)) {
+	if (tokens.length === EMPTY_LENGTH) {
 		return <EmptyTokenListPlaceholder />;
 	}
 

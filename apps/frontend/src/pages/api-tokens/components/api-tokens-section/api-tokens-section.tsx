@@ -42,7 +42,7 @@ const ApiTokensSection: React.FC = () => {
 
 			<LoadingIndicator isLoading={isLoading} />
 
-			<ApiTokensList handleRevoke={handleRevokeRequest} tokens={tokens} />
+			<ApiTokensList handleRevoke={handleRevokeRequest} tokens={tokens ?? []} />
 
 			<IssuedTokenDialog
 				key={issuedToken?.id}
