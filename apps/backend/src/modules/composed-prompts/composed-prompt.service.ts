@@ -257,6 +257,7 @@ class ComposedPromptService {
 	private toDto(entity: ComposedPromptEntity): ComposedPromptDto {
 		const {
 			body,
+			computedScore,
 			createdAt,
 			description,
 			explanation,
@@ -268,6 +269,7 @@ class ComposedPromptService {
 
 		return {
 			body,
+			computedScore,
 			createdAt,
 			description,
 			explanation,

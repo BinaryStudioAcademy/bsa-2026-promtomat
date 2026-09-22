@@ -15,6 +15,8 @@ import {
 class ComposedPromptModel extends AbstractModel {
 	public body!: string;
 
+	public computedScore!: null | number;
+
 	public description!: string;
 
 	public descriptionHash!: string;

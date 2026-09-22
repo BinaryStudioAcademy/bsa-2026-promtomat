@@ -1,4 +1,4 @@
-import { UniqueViolationError } from "objection";
+import { type Transaction, UniqueViolationError } from "objection";
 
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
@@ -18,6 +18,7 @@ class ComposedPromptRepository {
 	): ComposedPromptEntity {
 		return ComposedPromptEntity.initialize({
 			body: composedPrompt.body,
+			computedScore: composedPrompt.computedScore,
 			createdAt: composedPrompt.createdAt,
 			description: composedPrompt.description,
 			descriptionHash: composedPrompt.descriptionHash,
@@ -90,6 +91,17 @@ class ComposedPromptRepository {
 			.execute();
 
 		return composedPrompt?.workspaceId ?? null;
+	}
+
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.composedPromptModel
+			.query(trx)
+			.findById(id)
+			.patch({ computedScore });
 	}
 }
 
