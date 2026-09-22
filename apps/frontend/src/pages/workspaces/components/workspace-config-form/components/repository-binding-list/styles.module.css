@@ -5,17 +5,15 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-8);
+	width: 100%;
 	height: calc(var(--visible-items) * var(--item-height));
-	padding: var(--space-8);
+	padding: var(--space-8) 0;
 	margin: 0;
 	overflow-y: auto;
-	scrollbar-gutter: stable;
 	overscroll-behavior: contain;
 	list-style: none;
 	scrollbar-color: var(--border-subtle) transparent;
 	scrollbar-width: thin;
-	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: var(--radius-lg);
 }
 
 .state {

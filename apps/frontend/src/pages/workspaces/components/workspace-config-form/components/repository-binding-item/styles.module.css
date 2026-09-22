@@ -1,7 +1,8 @@
 .item {
 	display: flex;
-	gap: var(--space-12);
+	gap: var(--space-8);
 	align-items: center;
+	width: 100%;
 	height: var(--item-height);
 	padding: var(--space-10) var(--space-12);
 	border: var(--border-width-hairline) solid var(--border-subtle);
