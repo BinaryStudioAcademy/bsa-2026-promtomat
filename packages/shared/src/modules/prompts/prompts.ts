@@ -1,5 +1,6 @@
 export {
 	PromptProgress,
+	PromptQualityTier,
 	PromptsApiPath,
 	PromptsErrorCode,
 	PromptsErrorMessage,

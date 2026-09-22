@@ -1,6 +1,8 @@
-import { Entity } from "~/libs/types/entity.type.js";
+import { type Entity } from "~/libs/types/entity.type.js";
 
 class PromptEntity implements Entity {
+	private computedScore: null | number;
+
 	private createdAt: string;
 
 	private efficiencyScore: number;
@@ -20,6 +22,7 @@ class PromptEntity implements Entity {
 	private workspaceId: number;
 
 	private constructor({
+		computedScore,
 		createdAt,
 		efficiencyScore,
 		id,
@@ -30,6 +33,7 @@ class PromptEntity implements Entity {
 		userId,
 		workspaceId,
 	}: {
+		computedScore: null | number;
 		createdAt: string;
 		efficiencyScore: number;
 		id: null | number;
@@ -41,6 +45,7 @@ class PromptEntity implements Entity {
 		workspaceId: number;
 	}) {
 		this.id = id;
+		this.computedScore = computedScore;
 		this.efficiencyScore = efficiencyScore;
 		this.promptBody = promptBody;
 		this.taskIntent = taskIntent;
@@ -52,6 +57,7 @@ class PromptEntity implements Entity {
 	}
 
 	public static initialize({
+		computedScore,
 		createdAt,
 		efficiencyScore,
 		id,
@@ -62,6 +68,7 @@ class PromptEntity implements Entity {
 		userId,
 		workspaceId,
 	}: {
+		computedScore: null | number;
 		createdAt: string;
 		efficiencyScore: number;
 		id: number;
@@ -73,6 +80,7 @@ class PromptEntity implements Entity {
 		workspaceId: number;
 	}): PromptEntity {
 		return new PromptEntity({
+			computedScore,
 			createdAt,
 			efficiencyScore,
 			id,
@@ -101,6 +109,7 @@ class PromptEntity implements Entity {
 		workspaceId: number;
 	}): PromptEntity {
 		return new PromptEntity({
+			computedScore: null,
 			createdAt: new Date().toISOString(),
 			efficiencyScore,
 			id: null,
@@ -125,7 +134,7 @@ class PromptEntity implements Entity {
 	} {
 		return {
 			body: this.promptBody,
-			computedScore: null,
+			computedScore: this.computedScore,
 			createdAt: this.createdAt,
 			id: this.id as number,
 			intent: this.taskIntent,
@@ -166,7 +175,7 @@ class PromptEntity implements Entity {
 		workspaceId: number;
 	} {
 		return {
-			computedScore: null,
+			computedScore: this.computedScore,
 			createdAt: this.createdAt,
 			efficiencyScore: this.efficiencyScore,
 			id: this.id as number,

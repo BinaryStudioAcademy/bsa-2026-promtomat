@@ -3,22 +3,28 @@ import { type Control, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import {
 	DEFAULT_PROMPT_FILTERS_VALUES,
 	SEARCH_DELAY_MS,
 } from "~/modules/prompts/libs/constants/constants.js";
-import { PaginationValue } from "~/modules/prompts/libs/enums/enums.js";
+import {
+	PaginationValue,
+	PromptQualityTier,
+} from "~/modules/prompts/libs/enums/enums.js";
 import { type PromptGetQueryDto } from "~/modules/prompts/libs/types/types.js";
 
 type PromptFiltersFormValues = {
-	score: number | string;
+	qualityTier: ValueOf<typeof PromptQualityTier>;
 	search: string;
 	workspaceId: null | number;
 };
 
 type UsePromptFiltersReturn = {
 	control: Control<PromptFiltersFormValues, null>;
-	handleScoreChange: (score: number | string) => () => void;
+	handleQualityTierChange: (
+		tier: ValueOf<typeof PromptQualityTier>,
+	) => () => void;
 	queryPayload: Omit<PromptGetQueryDto, "page">;
 };
 
@@ -34,7 +40,10 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 
 	const queryPayload: Omit<PromptGetQueryDto, "page"> = {
 		limit: PaginationValue.DEFAULT_LIMIT,
-		score: typeof formValues.score === "number" ? formValues.score : undefined,
+		qualityTier:
+			formValues.qualityTier && formValues.qualityTier !== PromptQualityTier.ALL
+				? formValues.qualityTier
+				: undefined,
 		search: debouncedSearch || undefined,
 		workspaceId:
 			typeof formValues.workspaceId === "number"
@@ -42,18 +51,18 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 				: undefined,
 	};
 
-	const handleScoreChange = useCallback(
-		(score: number | string) => {
+	const handleQualityTierChange = useCallback(
+		(tier: ValueOf<typeof PromptQualityTier>) => {
 			return (): void => {
-				setValue("score", formValues.score === score ? "" : score);
+				setValue("qualityTier", tier);
 			};
 		},
-		[formValues.score, setValue],
+		[setValue],
 	);
 
 	return {
 		control,
-		handleScoreChange,
+		handleQualityTierChange,
 		queryPayload,
 	};
 };

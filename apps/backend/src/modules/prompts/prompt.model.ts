@@ -1,13 +1,13 @@
 import {
-    type Modifiers,
-    type QueryBuilder,
-    type RelationMappings,
+	type Modifiers,
+	type QueryBuilder,
+	type RelationMappings,
 } from "objection";
 
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import {
-    AbstractModel,
-    DatabaseTableName,
+	AbstractModel,
+	DatabaseTableName,
 } from "~/libs/modules/database/database.js";
 
 import { LabelModel } from "../labels/label.model.js";
@@ -20,92 +20,92 @@ import { PromptColumnName } from "./libs/enums/enums.js";
 import { type PromptFilterByQueryParameters } from "./libs/types/types.js";
 
 class PromptModel extends AbstractModel {
-    public computedScore!: null | number;
+	public computedScore!: null | number;
 
-    public efficiencyScore!: number;
+	public efficiencyScore!: number;
 
-    public labelId!: number;
+	public labelId!: number;
 
-    public promptBody!: string;
+	public promptBody!: string;
 
-    public taskIntent!: string;
+	public taskIntent!: string;
 
-    public userId!: number;
+	public userId!: number;
 
-    public workspace!: WorkspaceModel;
+	public workspace!: WorkspaceModel;
 
-    public workspaceId!: number;
+	public workspaceId!: number;
 
-    public static override get modifiers(): Modifiers<
-        QueryBuilder<PromptModel, PromptModel[]>
-    > {
-        return {
-            filterByQuery(
-                builder: QueryBuilder<PromptModel, PromptModel[]>,
-                { search, userId, workspaceId }: PromptFilterByQueryParameters,
-            ) {
-                builder.where(
-                    `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-                    userId,
-                );
+	public static override get modifiers(): Modifiers<
+		QueryBuilder<PromptModel, PromptModel[]>
+	> {
+		return {
+			filterByQuery(
+				builder: QueryBuilder<PromptModel, PromptModel[]>,
+				{ search, userId, workspaceId }: PromptFilterByQueryParameters,
+			) {
+				builder.where(
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+					userId,
+				);
 
-                if (workspaceId) {
-                    builder.where(
-                        `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-                        workspaceId,
-                    );
-                }
+				if (workspaceId) {
+					builder.where(
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						workspaceId,
+					);
+				}
 
-                if (search) {
-                    const escapedSearch = escapeILikePattern(search);
-                    builder.where((subQuery) => {
-                        subQuery
-                            .whereILike(
-                                `${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-                                `%${escapedSearch}%`,
-                            )
-                            .orWhereILike(
-                                `${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
-                                `%${escapedSearch}%`,
-                            );
-                    });
-                }
-            },
-        };
-    }
+				if (search) {
+					const escapedSearch = escapeILikePattern(search);
+					builder.where((subQuery) => {
+						subQuery
+							.whereILike(
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+								`%${escapedSearch}%`,
+							)
+							.orWhereILike(
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
+								`%${escapedSearch}%`,
+							);
+					});
+				}
+			},
+		};
+	}
 
-    public static override get relationMappings(): RelationMappings {
-        return {
-            label: {
-                join: {
-                    from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`,
-                    to: `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`,
-                },
-                modelClass: LabelModel,
-                relation: this.BelongsToOneRelation,
-            },
-            user: {
-                join: {
-                    from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-                    to: `${DatabaseTableName.USERS}.${UserColumnName.ID}`,
-                },
-                modelClass: UserModel,
-                relation: this.BelongsToOneRelation,
-            },
-            workspace: {
-                join: {
-                    from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-                    to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-                },
-                modelClass: WorkspaceModel,
-                relation: this.BelongsToOneRelation,
-            },
-        };
-    }
+	public static override get relationMappings(): RelationMappings {
+		return {
+			label: {
+				join: {
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID}`,
+					to: `${DatabaseTableName.LABELS}.${LabelColumnName.ID}`,
+				},
+				modelClass: LabelModel,
+				relation: this.BelongsToOneRelation,
+			},
+			user: {
+				join: {
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+					to: `${DatabaseTableName.USERS}.${UserColumnName.ID}`,
+				},
+				modelClass: UserModel,
+				relation: this.BelongsToOneRelation,
+			},
+			workspace: {
+				join: {
+					from: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+					to: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+				},
+				modelClass: WorkspaceModel,
+				relation: this.BelongsToOneRelation,
+			},
+		};
+	}
 
-    public static override get tableName(): string {
-        return DatabaseTableName.PROMPTS;
-    }
+	public static override get tableName(): string {
+		return DatabaseTableName.PROMPTS;
+	}
 }
 
 export { PromptModel };

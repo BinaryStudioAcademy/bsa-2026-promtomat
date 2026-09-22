@@ -5,5 +5,6 @@ export {
 	APIPath,
 	AppEnvironment,
 	ErrorCode,
+	PromptQualityTier,
 	SortOrder,
 } from "@promptomat/shared";

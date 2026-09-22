@@ -97,6 +97,7 @@ export {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	PromptProgress,
+	PromptQualityTier,
 	PromptsApiPath,
 	PromptsErrorMessage,
 	PromptValidationRule,

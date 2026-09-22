@@ -1,5 +1,5 @@
 type PromptFilterByQueryParameters = {
-	score?: number | undefined;
+	search?: string;
 	userId: number;
 	workspaceId?: number | undefined;
 };

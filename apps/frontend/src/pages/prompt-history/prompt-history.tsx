@@ -4,7 +4,6 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
@@ -17,7 +16,7 @@ import styles from "./styles.module.css";
 const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
-	const { control, handleScoreChange, queryPayload } = usePromptFilters();
+	const { control, queryPayload } = usePromptFilters();
 
 	const { data, fetchNextPage, hasNextPage, isError, isFetching, isLoading } =
 		useGetPromptsInfiniteQuery(queryPayload);
@@ -97,14 +96,6 @@ const PromptHistory: React.FC = () => {
 						label="Search Logs"
 						name="search"
 						placeholder="Search logs"
-					/>
-					<ScoreGrid
-						isRadio
-						label="Efficiency score:"
-						onScoreSelect={handleScoreChange}
-						selectedScore={
-							typeof queryPayload.score === "number" ? queryPayload.score : null
-						}
 					/>
 					<div className={styles["workspace-filter"]}>
 						<Select
