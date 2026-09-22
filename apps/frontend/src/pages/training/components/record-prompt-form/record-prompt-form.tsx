@@ -47,7 +47,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 	);
 	const workspaceChip = selectedWorkspace ? (
 		<WorkspaceChip name={selectedWorkspace.name} />
-	) : undefined;
+	) : null;
 
 	const options =
 		data?.items.map(({ id, name }) => {
