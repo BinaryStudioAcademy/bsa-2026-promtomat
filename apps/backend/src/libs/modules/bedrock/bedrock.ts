@@ -1,9 +1,11 @@
 import { config } from "~/libs/modules/config/config.js";
+import { logger } from "~/libs/modules/logger/logger.js";
 
 import { Bedrock } from "./bedrock.module.js";
 
 const bedrock = new Bedrock({
 	connectionTimeoutMs: config.ENV.BEDROCK.CONNECTION_TIMEOUT_MS,
+	logger,
 	maxAttempts: config.ENV.BEDROCK.MAX_ATTEMPTS,
 	modelId: config.ENV.BEDROCK.MODEL.ID,
 	region: config.ENV.AWS.REGION,
