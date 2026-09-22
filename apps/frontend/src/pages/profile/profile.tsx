@@ -3,7 +3,7 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { AppRoute, IconName } from "~/libs/enums/enums.js";
+import { AppRoute, IconName, Locale } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
 import { aiCodingToolToLabel } from "~/modules/users/users.js";
@@ -52,7 +52,7 @@ const Profile: React.FC = () => {
 	} = data;
 	const hasPrompts = totalPrompts > NO_PROMPTS_COUNT;
 	const memberSinceLabel = new Date(memberSince).toLocaleDateString(
-		undefined,
+		Locale.EN_US,
 		MEMBER_SINCE_DATE_FORMAT,
 	);
 	const primaryAiCodingToolLabel = primaryAiCodingTool

@@ -66,6 +66,11 @@
     .config-actions { display:grid !important; grid-template-columns:1fr 1fr; gap:10px !important; }
     .config-actions button { width:100%; min-height:44px; padding:10px !important; }
     .mobile-action-row > button { flex:1 1 100%; justify-content:center; }
+    .intel-cols { flex-direction:column !important; gap:12px !important; }
+    .intel-cols > section { flex:1 1 100% !important; min-width:0 !important; }
+    .intel-ranges { margin-left:0 !important; width:100%; }
+    .intel-ranges button { flex:1; min-height:40px; }
+    .intel-foot { gap:16px !important; }
   }
 </style>
 </helmet>
@@ -823,6 +828,189 @@
     </main>
   </sc-if>
 
+  <!-- INTELLIGENCE -->
+  <sc-if value="{{ onIntel }}" hint-placeholder-val="{{ false }}">
+    <main class="page-mobile" style="max-width:1180px;margin:0 auto;padding:{{ pagePad }};">
+      <div class="page-intro" style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px;">
+        <div style="flex:1 1 320px;min-width:0;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;color:#E9A84C;margin-bottom:8px;">INTELLIGENCE</div>
+          <h1 style="margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;letter-spacing:-0.02em;">Data intelligence</h1>
+          <p style="margin:0;color:#8A91A3;max-width:56ch;text-wrap:pretty;">Every scored prompt re-weights the index. This is what those weights look like right now &mdash; which tiers your prompts land in, which keywords carry weight, and how fast the system is getting better.</p>
+        </div>
+        <div style="position:relative;flex:0 1 268px;min-width:240px;z-index:60;">
+          <label id="intel-scope-label" style="display:block;font-size:12.5px;font-weight:600;color:#B9C0CF;margin-bottom:7px;">Scope</label>
+          <button aria-haspopup="listbox" aria-expanded="{{ intelMenuOpen }}" aria-labelledby="intel-scope-label" onClick="{{ toggleIntelMenu }}" style="display:flex;align-items:center;gap:9px;width:100%;min-height:44px;padding:10px 12px;border-radius:11px;border:1px solid {{ intelMenuBorder }};background:#161A23;color:#E8EAF0;cursor:pointer;text-align:left;" style-hover="background:#1A1F29;">
+            <span style="width:24px;height:24px;flex:none;border-radius:7px;background:#1E2430;border:1px solid #2A313F;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#E9A84C;">{{ intelInitials }}</span>
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ intelScopeName }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;">{{ intelScopeCount }}</span>
+            <span style="font-size:10px;color:#7C8498;">▾</span>
+          </button>
+          <sc-if value="{{ intelMenuOpen }}" hint-placeholder-val="{{ false }}">
+            <div role="listbox" style="position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:95;max-height:320px;overflow:auto;padding:6px;border-radius:12px;border:1px solid #262C38;background:#12151D;box-shadow:0 18px 44px rgba(0,0,0,0.55);animation:riseIn 0.16s ease both;">
+              <div style="padding:8px 10px 6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#5C6478;">Shared index</div>
+              <button role="option" aria-selected="{{ intelAllSelected }}" onClick="{{ pickIntelAll }}" style="display:flex;align-items:center;gap:9px;width:100%;min-height:44px;padding:9px 10px;border:0;border-radius:8px;background:{{ intelAllBg }};color:{{ intelAllColor }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                <span style="flex:none;font-size:13px;">🌐</span>
+                <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Global base (all workspaces)</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;">{{ intelAllCount }}</span>
+              </button>
+              <div style="height:1px;background:#1B202A;margin:6px 0;"></div>
+              <div style="padding:2px 10px 6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#5C6478;">Workspaces</div>
+              <sc-for list="{{ intelWsOptions }}" as="w" hint-placeholder-count="5">
+                <button role="option" aria-selected="{{ w.selected }}" onClick="{{ w.pick }}" style="display:flex;align-items:center;gap:9px;width:100%;min-height:44px;padding:9px 10px;border:0;border-radius:8px;background:{{ w.bg }};color:{{ w.color }};font-size:12.5px;font-weight:600;text-align:left;cursor:pointer;" style-hover="background:#1A1F29;">
+                  <span style="width:20px;height:20px;flex:none;border-radius:6px;background:#1E2430;border:1px solid #2A313F;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:{{ w.chipColor }};">{{ w.initials }}</span>
+                  <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ w.label }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:{{ w.scoreColor }};">{{ w.score }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6B7285;width:40px;text-align:right;">{{ w.count }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div class="mobile-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:24px;">
+        <sc-for list="{{ intelStats }}" as="s" hint-placeholder-count="4">
+          <div style="padding:16px 18px;border:1px solid #1B202A;border-radius:14px;background:#11141B;">
+            <div style="font-size:11.5px;letter-spacing:0.08em;color:#7C8498;text-transform:uppercase;margin-bottom:10px;">{{ s.label }}</div>
+            <div style="display:flex;align-items:baseline;gap:6px;">
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-0.02em;color:{{ s.tone }};">{{ s.value }}</span>
+              <span style="font-size:12px;color:#5C6478;">{{ s.unit }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ intelEmpty }}" hint-placeholder-val="{{ false }}">
+        <section class="surface-panel" style="padding:48px 24px;border:1px dashed #262C38;border-radius:16px;background:#11141B;text-align:center;">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;margin-bottom:6px;">Nothing scored here yet</div>
+          <p style="margin:0 0 16px;font-size:13.5px;color:#7C8498;">Log a prompt and rate it — the weights on this page are computed from scored prompts only.</p>
+          <button onClick="{{ goTraining }}" style="padding:11px 18px;border-radius:10px;border:0;background:#E9A84C;color:#17120A;font-size:13.5px;font-weight:700;cursor:pointer;">Go to Training</button>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ intelHasData }}" hint-placeholder-val="{{ true }}">
+      <section class="surface-panel" style="padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;margin-bottom:14px;">
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">Efficiency distribution</div>
+          <div style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#5C6478;">{{ intelDistNote }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <sc-for list="{{ intelDist }}" as="d" hint-placeholder-count="3">
+            <div class="intel-dist-row" style="padding-bottom:{{ d.padBottom }};border-bottom:1px solid {{ d.rule }};">
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:{{ d.tone }};">{{ d.band }}</span>
+                <span style="font-size:13px;font-weight:600;color:#E8EAF0;">{{ d.tier }}</span>
+                <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:14px;color:{{ d.tone }};">{{ d.pctLabel }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6B7285;width:44px;text-align:right;">{{ d.count }}</span>
+              </div>
+              <div style="font-size:12px;line-height:1.4;color:#6B7285;margin-bottom:9px;">{{ d.blurb }}</div>
+              <div style="height:9px;border-radius:999px;background:#161A23;overflow:hidden;">
+                <div style="height:100%;width:{{ d.pct }}%;border-radius:999px;background:{{ d.bar }};"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <div class="intel-cols" style="display:flex;gap:14px;align-items:stretch;flex-wrap:wrap;">
+        <section class="surface-panel" style="flex:1 1 520px;min-width:0;padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+            <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;">System intelligence growth</div>
+            <div class="intel-ranges" style="margin-left:auto;display:flex;gap:2px;padding:3px;border-radius:10px;border:1px solid #232833;background:#0E1117;">
+              <sc-for list="{{ intelRanges }}" as="r" hint-placeholder-count="3">
+                <button aria-pressed="{{ r.on }}" title="{{ r.title }}" onClick="{{ r.pick }}" style="padding:7px 14px;border:0;border-radius:7px;background:{{ r.bg }};color:{{ r.color }};font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;font-weight:500;cursor:pointer;opacity:{{ r.opacity }};">{{ r.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <sc-if value="{{ intelChart.thin }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:44px 20px;text-align:center;border:1px dashed #262C38;border-radius:12px;">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px;">Not enough history for this range</div>
+              <p style="margin:0;font-size:13px;color:#7C8498;">{{ intelChart.thinNote }}</p>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ intelChart.ok }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;align-items:flex-start;">
+              <div aria-hidden="true" style="position:relative;flex:none;width:32px;height:{{ intelChart.hpx }};">
+                <sc-for list="{{ intelChart.yTicks }}" as="t" hint-placeholder-count="4">
+                  <div style="position:absolute;top:{{ t.top }};right:0;font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1;color:#5C6478;">{{ t.label }}</div>
+                </sc-for>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <svg width="{{ intelChart.w }}" height="{{ intelChart.h }}" viewBox="{{ intelChart.viewBox }}" role="img" aria-label="{{ intelChart.alt }}" style="display:block;max-width:100%;">
+                  <defs>
+                    <linearGradient id="intelFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#E9A84C" stop-opacity="0.20"></stop>
+                      <stop offset="100%" stop-color="#E9A84C" stop-opacity="0"></stop>
+                    </linearGradient>
+                  </defs>
+                  <path d="{{ intelChart.gridPath }}" fill="none" stroke="#1B202A" stroke-width="1"></path>
+                  <path d="{{ intelChart.basePath }}" fill="none" stroke="#232833" stroke-width="1"></path>
+                  <path d="{{ intelChart.areaPath }}" fill="url(#intelFill)" stroke="none"></path>
+                  <path d="{{ intelChart.gapPath }}" fill="none" stroke="#3A4150" stroke-width="1.5" stroke-dasharray="3 4" stroke-linecap="round"></path>
+                  <path d="{{ intelChart.linePath }}" fill="none" stroke="#E9A84C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="{{ intelChart.markPath }}" fill="#11141B" stroke="#3A4150" stroke-width="1.5"></path>
+                  <circle cx="{{ intelChart.lastX }}" cy="{{ intelChart.lastY }}" r="4.5" fill="#E9A84C" stroke="#11141B" stroke-width="2.5"></circle>
+                </svg>
+                <div style="position:relative;height:14px;margin-top:6px;">
+                  <sc-for list="{{ intelChart.xTicks }}" as="x" hint-placeholder-count="4">
+                    <span style="position:absolute;top:0;left:{{ x.left }};transform:{{ x.tx }};font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1;color:#5C6478;white-space:nowrap;">{{ x.label }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div class="intel-foot" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid #1B202A;">
+              <div>
+                <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#5C6478;margin-bottom:4px;">First</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#B9C0CF;">{{ intelChart.first }}</div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#5C6478;margin-bottom:4px;">Latest</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:#E8EAF0;">{{ intelChart.latest }}</div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#5C6478;margin-bottom:4px;">Change</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:{{ intelChart.changeTone }};">{{ intelChart.change }}</div>
+              </div>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <sc-if value="{{ intelChart.hasGaps }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px solid #2A313F;background:#161A23;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8A91A3;">
+                    <svg width="18" height="6" viewBox="0 0 18 6" aria-hidden="true" style="flex:none;"><line x1="1" y1="3" x2="17" y2="3" stroke="#3A4150" stroke-width="1.5" stroke-dasharray="3 4" stroke-linecap="round"></line></svg>
+                    no prompts logged
+                  </span>
+                </sc-if>
+                <span style="font-size:12.5px;color:#6B7285;">{{ intelChart.rangeNote }}</span>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+
+        <section class="surface-panel" style="flex:0 1 340px;min-width:260px;padding:24px;border:1px solid #1B202A;border-radius:16px;background:#11141B;">
+          <div style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:#7C8498;margin-bottom:6px;">Keyword performance weights</div>
+          <p style="margin:0 0 18px;font-size:12px;line-height:1.45;color:#6B7285;">Average score of every scored prompt carrying the tag, and how many carry it.</p>
+          <div style="display:flex;flex-direction:column;gap:13px;">
+            <sc-for list="{{ intelKeywords }}" as="k" hint-placeholder-count="8">
+              <div>
+                <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#E8EAF0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ k.tag }}</span>
+                  <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;color:{{ k.tone }};">{{ k.weight }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5C6478;width:46px;text-align:right;">{{ k.n }}</span>
+                </div>
+                <div style="height:6px;border-radius:999px;background:#161A23;overflow:hidden;"><div style="height:100%;width:{{ k.pct }}%;border-radius:999px;background:{{ k.tone }};"></div></div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ intelNoKeywords }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;font-size:12.5px;color:#5C6478;">No labelled prompts in this scope yet.</p>
+          </sc-if>
+        </section>
+      </div>
+      </sc-if>
+    </main>
+  </sc-if>
+
   <!-- SETTINGS -->
   <sc-if value="{{ onSettings }}" hint-placeholder-val="{{ false }}">
     <main class="page-mobile" style="max-width:760px;margin:0 auto;padding:{{ pagePad }};">
@@ -1074,6 +1262,8 @@ const LABEL_RULES = {
 class Component extends DCLogic {
   state = {
     page: "workspaces",
+    intelScope: "__all__",
+    intelRange: "day",
     activeWs: "auth-service",
     wsMenu: "",
     gWorkspace: "parser-utils",
@@ -1142,6 +1332,7 @@ class Component extends DCLogic {
     { key: "search", label: "Smart search", icon: "M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13z", icon2: "M15.5 15.5L21 21" },
     { key: "workspaces", label: "Workspaces", icon: "M3 7.5A1.5 1.5 0 0 1 4.5 6h5l1.6 2H19.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z", icon2: "M3 11h18" },
     { key: "training", label: "Training", icon: "M5 4.5h11.5L20 8v11.5A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5v-14A1 1 0 0 1 5 4.5z", icon2: "M8 12h8M8 16h5" },
+    { key: "intel", label: "Intelligence", icon: "M5 19V11M12 19V5M19 19v-6", icon2: "" },
     { key: "settings", label: "Profile", icon: "M12 4a3.75 3.75 0 1 1 0 7.5A3.75 3.75 0 0 1 12 4z", icon2: "M4.5 20c0-3.6 3.4-5.5 7.5-5.5s7.5 1.9 7.5 5.5" }
   ];
 
@@ -1152,6 +1343,7 @@ class Component extends DCLogic {
     generate: ["Generate", "Compose a new prompt from what already worked"],
     config: ["Workspace config", "Name, tech stack and dataset target"],
     prompt: ["Prompt", "Full prompt, labels and rating"],
+    intel: ["Intelligence", "What the index has learned so far"],
     settings: ["Profile", "Account, activity and security"]
   };
 
@@ -1341,6 +1533,256 @@ class Component extends DCLogic {
     return { kind: "composed", body, why, sources, confidence: Math.min(96, 58 + sources.length * 12 + best.score * 2) };
   }
 
+  intelAgeDays(when) {
+    const w = String(when || "").toLowerCase();
+    if (w.indexOf("just now") >= 0 || w.indexOf("now") >= 0) return 0;
+    if (w.indexOf("yesterday") >= 0) return 1;
+    const m = /(\d+)\s*([hdwm])/.exec(w);
+    if (!m) return 0;
+    const n = parseInt(m[1], 10);
+    if (m[2] === "h") return 0;
+    if (m[2] === "d") return n;
+    if (m[2] === "w") return n * 7;
+    return n * 30;
+  }
+
+  intelTone(v, ACCENT) {
+    if (v >= 8) return "#6FCF97";
+    if (v >= 6) return ACCENT;
+    return "#C9564B";
+  }
+
+  intelBuildChart(scored, range, isMobile) {
+    const RANGES = {
+      day: { buckets: 7, size: 1, note: "Last 7 days", need: "Needs prompts logged on at least two different days." },
+      week: { buckets: 8, size: 7, note: "Last 8 weeks", need: "Weekly trend needs about two months of logging." },
+      month: { buckets: 6, size: 30, note: "Last 6 months", need: "Monthly trend needs about six months of logging." }
+    };
+    const R = RANGES[range] || RANGES.day;
+    const W = isMobile ? 258 : 666;
+    const H = isMobile ? 176 : 204;
+    const Y0 = 8;
+    const Y1 = H - 4;
+    const NLAB = isMobile ? 3 : 5;
+
+    const sums = [];
+    const counts = [];
+    for (let i = 0; i < R.buckets; i++) { sums.push(0); counts.push(0); }
+    for (const p of scored) {
+      const age = this.intelAgeDays(p.when);
+      const b = R.buckets - 1 - Math.floor(age / R.size);
+      if (b >= 0 && b < R.buckets) { sums[b] += p.score; counts[b]++; }
+    }
+    const vals = sums.map((s, i) => counts[i] ? Math.round((s / counts[i]) * 10) / 10 : null);
+    const labels = [];
+    for (let i = 0; i < R.buckets; i++) {
+      const back = (R.buckets - 1 - i) * R.size;
+      if (R.size === 1) labels.push(back === 0 ? "today" : back === 1 ? "1d" : back + "d");
+      else if (R.size === 7) labels.push(back === 0 ? "this wk" : (back / 7) + "w");
+      else labels.push(back === 0 ? "this mo" : (back / 30) + "mo");
+    }
+
+    const present = vals.filter((v) => v !== null);
+    if (present.length < 2) {
+      return { ok: false, thin: true, thinNote: R.need, rangeNote: R.note };
+    }
+
+    const min = Math.min.apply(null, present);
+    const max = Math.max.apply(null, present);
+    const lo = Math.floor((min - 0.4) * 2) / 2;
+    const hi = Math.ceil((max + 0.4) * 2) / 2;
+    const span = hi - lo || 1;
+    const step = span > 2.5 ? 1 : 0.5;
+    const xAt = (i) => (i * W) / (vals.length - 1);
+    const yAt = (v) => Y1 - ((v - lo) / span) * (Y1 - Y0);
+    const r1 = (n) => Math.round(n * 10) / 10;
+
+    let gridPath = "";
+    const yTicks = [];
+    for (let t = lo; t <= hi + 0.001; t += step) {
+      const y = r1(yAt(t));
+      if (y > Y0 - 1 && y < Y1 - 3) {
+        gridPath += "M0," + y + " H" + W + " ";
+        yTicks.push({ top: (y - 5) + "px", label: t.toFixed(1) });
+      }
+    }
+
+    const pts = vals.map((v, i) => v === null ? null : { x: r1(xAt(i)), y: r1(yAt(v)) });
+    let linePath = "";
+    let areaPath = "";
+    let run = [];
+    const flush = () => {
+      if (!run.length) return;
+      const chain = run.map((p) => p.x + "," + p.y).join(" L");
+      linePath += "M" + chain + " ";
+      if (run.length > 1) areaPath += "M" + chain + " L" + run[run.length - 1].x + "," + Y1 + " L" + run[0].x + "," + Y1 + " Z ";
+      run = [];
+    };
+    for (const p of pts) { if (p) run.push(p); else flush(); }
+    flush();
+
+    let gapPath = "";
+    let markPath = "";
+    let gapCount = 0;
+    const dot = (p) => "M" + (p.x - 3) + "," + p.y + " a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 ";
+    let seen = null;
+    let sawGap = false;
+    for (let i = 0; i < pts.length; i++) {
+      if (pts[i]) {
+        if (sawGap && seen) {
+          gapPath += "M" + seen.x + "," + seen.y + " L" + pts[i].x + "," + pts[i].y + " ";
+          markPath += dot(seen) + dot(pts[i]);
+          gapCount++;
+        }
+        seen = pts[i];
+        sawGap = false;
+      } else { sawGap = true; }
+    }
+
+    const nLab = Math.min(NLAB, vals.length);
+    const xTicks = [];
+    for (let k = 0; k < nLab; k++) {
+      const i = Math.round((k * (vals.length - 1)) / (nLab - 1));
+      xTicks.push({
+        left: r1(xAt(i)) + "px",
+        tx: k === 0 ? "none" : k === nLab - 1 ? "translateX(-100%)" : "translateX(-50%)",
+        label: labels[i]
+      });
+    }
+
+    const first = present[0];
+    const latest = present[present.length - 1];
+    const delta = r1(latest - first);
+    const last = pts.filter(Boolean).pop();
+
+    return {
+      ok: true, thin: false, thinNote: "",
+      w: String(W), h: String(H), hpx: H + "px", viewBox: "0 0 " + W + " " + H,
+      gridPath, basePath: "M0," + Y1 + " H" + W, yTicks, xTicks,
+      linePath, areaPath, gapPath, markPath,
+      lastX: last.x, lastY: last.y,
+      first: first.toFixed(1), latest: latest.toFixed(1),
+      change: (delta >= 0 ? "+" : "") + delta.toFixed(1),
+      changeTone: delta > 0 ? "#6FCF97" : delta < 0 ? "#E77A6E" : "#8A91A3",
+      hasGaps: gapCount > 0,
+      rangeNote: R.note,
+      alt: "Average efficiency score from " + first.toFixed(1) + " to " + latest.toFixed(1) + " over the " + R.note.toLowerCase()
+    };
+  }
+
+  intelVals(st, isMobile, ACCENT, MUTED) {
+    const scope = st.intelScope || "__all__";
+    const inScope = (p) => scope === "__all__" || p.workspace === scope;
+    const scored = st.prompts.filter((p) => inScope(p) && p.score > 0);
+    const total = scored.length;
+    const ws = st.workspaces.find((w) => w.name === scope);
+    const avg = total ? Math.round((scored.reduce((a, p) => a + p.score, 0) / total) * 10) / 10 : 0;
+
+    const high = scored.filter((p) => p.score >= 8).length;
+    const mid = scored.filter((p) => p.score >= 4 && p.score <= 7).length;
+    const low = scored.filter((p) => p.score <= 3).length;
+    const pct = (n) => total ? Math.round((n / total) * 100) : 0;
+
+    const tiers = [
+      { band: "8–10", tier: "High", blurb: "Flawless code out of the box, zero edits needed", count: high, tone: "#6FCF97", bar: "#6FCF97" },
+      { band: "4–7", tier: "Mid", blurb: "Required heavy manual refactoring", count: mid, tone: ACCENT, bar: ACCENT },
+      { band: "1–3", tier: "Low", blurb: "Code was completely broken / failed to run", count: low, tone: "#E77A6E", bar: "#C9564B" }
+    ];
+
+    const agg = {};
+    for (const p of scored) {
+      for (const t of (p.tags || [])) {
+        if (!agg[t]) agg[t] = { sum: 0, n: 0 };
+        agg[t].sum += p.score;
+        agg[t].n++;
+      }
+    }
+    const keywords = Object.keys(agg)
+      .map((t) => ({ tag: "#" + t, w: Math.round((agg[t].sum / agg[t].n) * 10) / 10, n: agg[t].n }))
+      .sort((a, b) => b.w - a.w || b.n - a.n)
+      .slice(0, 10);
+
+    const chart = this.intelBuildChart(scored, st.intelRange || "day", isMobile);
+
+    const rangeMeta = { day: ["DAY", "Last 7 days"], week: ["WEEK", "Last 8 weeks"], month: ["MONTH", "Last 6 months"] };
+
+    return {
+      onIntel: st.page === "intel",
+      intelHasData: total > 0,
+      intelEmpty: total === 0,
+      intelScopeName: scope === "__all__" ? "Global base (all workspaces)" : scope,
+      intelInitials: scope === "__all__" ? "gb" : scope.slice(0, 2).toLowerCase(),
+      intelScopeCount: total.toLocaleString(),
+      intelDistNote: total.toLocaleString() + (total === 1 ? " scored prompt in scope" : " scored prompts in scope"),
+
+      intelMenuOpen: st.wsMenu === "intel",
+      intelMenuBorder: st.wsMenu === "intel" ? "rgba(233,168,76,0.45)" : "#232833",
+      toggleIntelMenu: () => this.setState((s) => ({ wsMenu: s.wsMenu === "intel" ? "" : "intel" })),
+
+      intelAllSelected: scope === "__all__",
+      intelAllBg: scope === "__all__" ? "#1A1F29" : "transparent",
+      intelAllColor: scope === "__all__" ? ACCENT : "#D6DAE4",
+      intelAllCount: st.prompts.filter((p) => p.score > 0).length.toLocaleString(),
+      pickIntelAll: () => this.setState({ intelScope: "__all__", wsMenu: "" }),
+
+      intelWsOptions: st.workspaces.map((w) => {
+        const n = st.prompts.filter((p) => p.workspace === w.name && p.score > 0).length;
+        const sel = scope === w.name;
+        return {
+          label: w.name,
+          initials: w.name.slice(0, 2).toLowerCase(),
+          count: n.toLocaleString(),
+          score: (w.score || 0).toFixed(1),
+          scoreColor: w.score ? this.intelTone(w.score, ACCENT) : MUTED,
+          selected: sel,
+          bg: sel ? "#1A1F29" : "transparent",
+          color: sel ? ACCENT : "#D6DAE4",
+          chipColor: sel ? ACCENT : "#8A91A3",
+          pick: () => this.setState({ intelScope: w.name, wsMenu: "" })
+        };
+      }),
+
+      intelStats: [
+        { label: "Scored prompts", value: total.toLocaleString(), unit: "in scope", tone: ACCENT },
+        { label: "Avg efficiency", value: total ? avg.toFixed(1) : "—", unit: "/ 10", tone: total ? this.intelTone(avg, ACCENT) : MUTED },
+        { label: (chart.rangeNote || "Trend") + " change", value: chart.ok ? chart.change : "—", unit: chart.ok ? "from " + chart.first : "not enough data", tone: chart.ok ? chart.changeTone : MUTED },
+        { label: "Keywords weighted", value: String(Object.keys(agg).length), unit: "parsed tags", tone: "#E8EAF0" }
+      ],
+
+      intelDist: tiers.map((t, i) => ({
+        band: t.band, tier: t.tier, blurb: t.blurb,
+        count: t.count.toLocaleString(),
+        pct: pct(t.count), pctLabel: pct(t.count) + "%",
+        tone: t.tone, bar: t.bar,
+        rule: i < 2 ? "#1B202A" : "transparent",
+        padBottom: i < 2 ? "14px" : "0px"
+      })),
+
+      intelRanges: ["day", "week", "month"].map((r) => {
+        const on = (st.intelRange || "day") === r;
+        return {
+          label: rangeMeta[r][0],
+          title: rangeMeta[r][1],
+          on,
+          opacity: "1",
+          bg: on ? "#17120A" : "transparent",
+          color: on ? ACCENT : "#7C8498",
+          pick: () => this.setState({ intelRange: r })
+        };
+      }),
+
+      intelChart: chart,
+      intelNoKeywords: keywords.length === 0,
+      intelKeywords: keywords.map((k) => ({
+        tag: k.tag,
+        weight: k.w.toFixed(1),
+        n: "n=" + k.n,
+        pct: Math.round((k.w / 10) * 100),
+        tone: this.intelTone(k.w, ACCENT)
+      }))
+    };
+  }
+
   renderVals() {
     const st = this.state;
     const go = (key) => () => {
@@ -1421,7 +1863,10 @@ class Component extends DCLogic {
     const splitAt = isMobile && selIdx >= 0 ? selIdx + 1 : results.length;
     const gSaved = st.gResult && st.gResult.savedId ? st.prompts.find((p) => p.id === st.gResult.savedId) : null;
 
+    const intel = this.intelVals(st, isMobile, ACCENT, MUTED);
+
     return {
+      ...intel,
       navItems: this.nav.map((n) => {
         const active = st.page === n.key || (n.key === "workspaces" && st.page === "config");
         return {
