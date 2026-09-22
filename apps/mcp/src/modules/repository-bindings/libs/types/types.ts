@@ -1,4 +1,1 @@
-export {
-	type Resolution,
-	type ResolutionWorkspace,
-} from "./resolution.type.js";
+export { type Resolution } from "./resolution.type.js";

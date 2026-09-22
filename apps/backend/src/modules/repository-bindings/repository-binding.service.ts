@@ -86,9 +86,7 @@ class RepositoryBindingService {
 		workspaceId: number,
 	): Promise<RepositoryBindingDto[]> {
 		const repositoryBindings =
-			await this.repositoryBindingRepository.findAllByWorkspaceId(
-				workspaceId,
-			);
+			await this.repositoryBindingRepository.findAllByWorkspaceId(workspaceId);
 
 		return repositoryBindings.map((repositoryBinding) =>
 			repositoryBinding.toObject(),
@@ -96,9 +94,8 @@ class RepositoryBindingService {
 	}
 
 	public async findById(id: number): Promise<null | RepositoryBindingDto> {
-		const repositoryBinding = await this.repositoryBindingRepository.findById(
-			id,
-		);
+		const repositoryBinding =
+			await this.repositoryBindingRepository.findById(id);
 
 		return repositoryBinding ? repositoryBinding.toObject() : null;
 	}

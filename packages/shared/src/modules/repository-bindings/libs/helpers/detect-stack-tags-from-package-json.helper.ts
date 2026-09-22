@@ -5,7 +5,9 @@ type PackageJsonManifest = {
 	devDependencies?: Record<string, string>;
 };
 
-const parsePackageJson = (packageJsonContent: string): null | PackageJsonManifest => {
+const parsePackageJson = (
+	packageJsonContent: string,
+): null | PackageJsonManifest => {
 	try {
 		const manifest: unknown = JSON.parse(packageJsonContent);
 
@@ -15,7 +17,9 @@ const parsePackageJson = (packageJsonContent: string): null | PackageJsonManifes
 	}
 };
 
-const detectStackTagsFromPackageJson = (packageJsonContent: string): string[] => {
+const detectStackTagsFromPackageJson = (
+	packageJsonContent: string,
+): string[] => {
 	const manifest = parsePackageJson(packageJsonContent);
 
 	if (!manifest) {

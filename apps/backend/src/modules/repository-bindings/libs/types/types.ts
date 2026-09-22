@@ -2,12 +2,10 @@ export { type RepositoryBindingCreatePayload } from "./repository-binding-create
 export {
 	type CreateRepositoryBindingRequestDto,
 	type ListRepositoryBindingsQueryDto,
-	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryBindingRouteParametersDto,
 	type RepositoryIdentity,
-	type RepositoryIdentityOutcome,
 	type ResolveRepositoryBindingQueryDto,
 	type UpdateRepositoryBindingRequestDto,
 } from "@promptomat/shared";

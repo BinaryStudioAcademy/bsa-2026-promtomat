@@ -8,4 +8,4 @@ type ResolutionWorkspace = {
 	name: string;
 };
 
-export { type Resolution, type ResolutionWorkspace };
+export { type Resolution };
