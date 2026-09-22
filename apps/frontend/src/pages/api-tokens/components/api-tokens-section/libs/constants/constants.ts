@@ -1,4 +1,3 @@
-export { EMPTY_TOKEN_LENGTH } from "./empty-token-length.constant.js";
 export { EXPIRATION_DATE_FORMAT } from "./expiration-date-format.constant.js";
 export {
 	EXPIRING_SOON_MS,

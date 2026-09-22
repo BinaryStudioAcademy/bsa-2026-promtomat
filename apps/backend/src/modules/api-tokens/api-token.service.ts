@@ -5,7 +5,7 @@ import {
 	timingSafeEqual,
 } from "node:crypto";
 
-import { API_TOKEN_PREFIX } from "~/libs/constants/constants.js";
+import { API_TOKEN_PREFIX, EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ApiTokenError } from "~/libs/exceptions/exceptions.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import {
@@ -19,7 +19,6 @@ import { type ApiTokenRepository } from "./api-token.repository.js";
 import {
 	DIGEST_ALGORITHM,
 	LAST_USED_THROTTLE_MS,
-	NO_ROWS_COUNT,
 	SECRET_BYTE_LENGTH,
 	SECRET_ENCODING,
 	TOKEN_PARTS_LIMIT,
@@ -148,7 +147,7 @@ class ApiTokenService {
 		const deletedCount =
 			await this.apiTokenRepository.deleteByPublicIdAndUserId(publicId, userId);
 
-		if (deletedCount === NO_ROWS_COUNT) {
+		if (deletedCount === EMPTY_LENGTH) {
 			throw ApiTokenError.notFound();
 		}
 	}

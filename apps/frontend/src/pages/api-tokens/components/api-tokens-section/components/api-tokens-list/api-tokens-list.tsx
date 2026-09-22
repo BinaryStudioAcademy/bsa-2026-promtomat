@@ -1,9 +1,7 @@
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type ApiTokenDto } from "~/modules/api-tokens/api-tokens.js";
 
-import {
-	API_TOKENS_TABLE_COLUMNS,
-	EMPTY_TOKEN_LENGTH,
-} from "../../libs/constants/constants.js";
+import { API_TOKENS_TABLE_COLUMNS } from "../../libs/constants/constants.js";
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
 import { ApiTokenRow } from "../api-token-row/api-token-row.js";
@@ -15,7 +13,7 @@ type Properties = {
 };
 
 const ApiTokensList = ({ handleRevoke, tokens }: Properties) => {
-	if (!(tokens && tokens.length > EMPTY_TOKEN_LENGTH)) {
+	if (!(tokens && tokens.length > EMPTY_LENGTH)) {
 		return <EmptyTokenListPlaceholder />;
 	}
 
