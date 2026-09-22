@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
@@ -8,6 +8,7 @@ import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
+import { ValueOf } from "~/libs/types/types.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
 import { useUpdateProfileMutation } from "~/modules/users/users-api.js";
 import {
@@ -19,7 +20,10 @@ import {
 	AI_CODING_TOOL_OPTIONS,
 	EMPTY_AI_CODING_TOOL,
 } from "../../libs/constants.js";
-import { SettingsMessage } from "../../libs/enums/enums.js";
+import {
+	SettingsDescriptionMessage,
+	SettingsMessage,
+} from "../../libs/enums/enums.js";
 import {
 	checkHasSettingsChanged,
 	getSettingsFormValues,
@@ -46,6 +50,9 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		defaultValues: getSettingsFormValues(user),
 		validationSchema: updateProfileValidationSchema,
 	});
+	const [message, setMessage] = useState<
+		ValueOf<typeof SettingsDescriptionMessage>
+	>(SettingsDescriptionMessage.DEFAULT);
 
 	const isNicknameConflict =
 		isServerError(error) &&
@@ -86,6 +93,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						message: SettingsMessage.SUCCESS,
 						type: "success",
 					});
+					setMessage(SettingsDescriptionMessage.SAVED);
 				})
 				.catch((caughtError: unknown) => {
 					if (
@@ -141,9 +149,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						size={ControlSize.LG}
 						type="submit"
 					/>
-					<span className={styles["small"]}>
-						Applies to every prompt you log next.
-					</span>
+					<span className={styles["small"]}>{message}</span>
 				</div>
 			</form>
 		</Section>
