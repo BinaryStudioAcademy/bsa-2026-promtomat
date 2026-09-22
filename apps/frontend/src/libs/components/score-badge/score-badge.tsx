@@ -8,11 +8,13 @@ import styles from "./styles.module.css";
 type Properties = {
 	efficiencyScore: number;
 	isFill?: boolean;
+	label?: string;
 };
 
 const ScoreBadge: React.FC<Properties> = ({
 	efficiencyScore,
 	isFill = true,
+	label,
 }) => {
 	return (
 		<span
@@ -22,7 +24,7 @@ const ScoreBadge: React.FC<Properties> = ({
 				isFill && styles["filled"],
 			)}
 		>
-			{efficiencyScore}
+			{label ?? efficiencyScore}
 		</span>
 	);
 };

@@ -1,16 +1,16 @@
-import { ScoreThreshold } from "~/libs/enums/enums.js";
+import { ScoreTierMin } from "~/libs/enums/enums.js";
 
 import { BadgeVariant } from "../enums/badge-variant.enum.js";
 import { type ScoreVariant } from "../types/types.js";
 
 const getScoreVariant = (score: number): ScoreVariant => {
-	if (score <= ScoreThreshold.DANGER_MAX) {
-		return BadgeVariant.DANGER;
+	if (score >= ScoreTierMin.HIGH) {
+		return BadgeVariant.SUCCESS;
 	}
-	if (score <= ScoreThreshold.WARNING_MAX) {
+	if (score >= ScoreTierMin.MID) {
 		return BadgeVariant.WARNING;
 	}
-	return BadgeVariant.SUCCESS;
+	return BadgeVariant.DANGER;
 };
 
 export { getScoreVariant };
