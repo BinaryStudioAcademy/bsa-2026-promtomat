@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
@@ -10,7 +9,6 @@ import {
 	EMPTY_LENGTH,
 	WORKSPACE_ID_SEARCH_PARAMETER,
 } from "~/libs/constants/constants.js";
-import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -26,6 +24,7 @@ import { WorkspaceConfigModal } from "./components/workspace-config-modal/worksp
 import { WorkspaceContributorsModal } from "./components/workspace-contributors-modal/workspace-contributors-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
+import { WorkspaceHeader } from "./components/workspace-header/workspace-header.js";
 import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { WorkspaceListMessage } from "./libs/enums/enums.js";
@@ -115,15 +114,7 @@ const Workspaces: React.FC = () => {
 
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
-			<header className={styles["header"]}>
-				<h2 className={styles["title"]}>Workspaces</h2>
-				<Button
-					iconName={IconName.PLUS}
-					label="Create Workspace"
-					onClick={handleCreateOpen}
-					type="button"
-				/>
-			</header>
+			<WorkspaceHeader onCreate={handleCreateOpen} />
 
 			<div className={styles["filter-container"]}>
 				<SegmentedControl

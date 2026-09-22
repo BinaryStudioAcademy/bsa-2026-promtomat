@@ -1,0 +1,36 @@
+.intro {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+	min-width: 0;
+}
+
+.label {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 500;
+	color: var(--text-accent);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-display-1);
+	font-weight: 700;
+	line-height: 1.15;
+	color: var(--text-strong);
+}
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	line-height: 1.5;
+	color: var(--text-muted);
+}
+
+@media (width <= 600px) {
+	.title {
+		font-size: var(--font-size-title-2);
+	}
+}

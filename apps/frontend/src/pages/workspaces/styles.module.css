@@ -3,24 +3,6 @@
 	padding-bottom: var(--space-40);
 }
 
-.header {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-12);
-	align-items: center;
-	justify-content: space-between;
-	padding-bottom: var(--space-20);
-	margin-bottom: var(--space-20);
-	border-bottom: 1px dashed var(--border-subtle);
-}
-
-.title {
-	margin: 0;
-	font-size: var(--font-size-title-3);
-	font-weight: 600;
-	color: var(--text-strong);
-}
-
 .filter-container {
 	margin-bottom: var(--space-20);
 }
