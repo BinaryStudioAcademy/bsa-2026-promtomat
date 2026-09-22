@@ -8,5 +8,7 @@ export {
 	type AnalyticsKeywordItem,
 	type AnalyticsKeywordResponseDto,
 	type AnalyticsQueryDto,
+	type AnalyticsSummaryResponseDto,
+	type AnalyticsWeeklyChange,
 } from "./libs/types/types.js";
 export { analyticsQueryValidationSchema } from "./libs/validation-schemas/validation-schemas.js";

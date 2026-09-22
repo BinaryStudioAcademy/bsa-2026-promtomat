@@ -10,6 +10,7 @@ export {
 	ErrorCode,
 	PaginationValue,
 	ScoreThreshold,
+	ScoreTierMin,
 	SortOrder,
 } from "./libs/enums/enums.js";
 export {
@@ -56,6 +57,8 @@ export {
 	type AnalyticsKeywordItem,
 	type AnalyticsKeywordResponseDto,
 	type AnalyticsQueryDto,
+	type AnalyticsSummaryResponseDto,
+	type AnalyticsWeeklyChange,
 	AnalyticsApiPath,
 	AnalyticsGrowthBucket,
 	analyticsQueryValidationSchema,

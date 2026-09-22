@@ -6,3 +6,5 @@ export { type AnalyticsGrowthResponseDto } from "./analytics-growth-response-dto
 export { type AnalyticsKeywordItem } from "./analytics-keyword-item.type.js";
 export { type AnalyticsKeywordResponseDto } from "./analytics-keyword-response-dto.type.js";
 export { type AnalyticsQueryDto } from "./analytics-query-dto.type.js";
+export { type AnalyticsSummaryResponseDto } from "./analytics-summary-response-dto.type.js";
+export { type AnalyticsWeeklyChange } from "./analytics-weekly-change.type.js";
