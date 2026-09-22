@@ -11,7 +11,6 @@ import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import {
 	MARKDOWN_COMPONENTS,
 	PROMPT_BODY_MODE_OPTIONS,
-	PROMPT_BODY_ROWS,
 } from "./libs/constants/constants.js";
 import { PromptBodyFieldMessage, PromptBodyMode } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -47,7 +46,6 @@ const PromptBodyField: React.FC<Properties> = ({
 				label={PromptBodyFieldMessage.LABEL}
 				name="promptBody"
 				placeholder={PromptBodyFieldMessage.PLACEHOLDER}
-				rows={PROMPT_BODY_ROWS}
 			/>
 		);
 	} else if (characterCount === EMPTY_LENGTH) {

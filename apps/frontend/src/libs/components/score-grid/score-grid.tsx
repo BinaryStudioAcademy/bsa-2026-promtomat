@@ -9,6 +9,7 @@ import { getScoreColor } from "./libs/helpers/get-score-color.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	isDescriptionHidden?: boolean;
 	isDisabled?: boolean;
 	isRadio?: boolean;
 	label: string;
@@ -17,6 +18,7 @@ type Properties = {
 };
 
 const ScoreGrid: React.FC<Properties> = ({
+	isDescriptionHidden = false,
 	isDisabled = false,
 	isRadio = false,
 	label,
@@ -100,12 +102,14 @@ const ScoreGrid: React.FC<Properties> = ({
 					);
 				})}
 			</div>
-			<div
-				aria-live="polite"
-				className={getValidClasses(styles["message"], messageColorClass)}
-			>
-				{activeDescription}
-			</div>
+			{!isDescriptionHidden && (
+				<div
+					aria-live="polite"
+					className={getValidClasses(styles["message"], messageColorClass)}
+				>
+					{activeDescription}
+				</div>
+			)}
 		</div>
 	);
 };

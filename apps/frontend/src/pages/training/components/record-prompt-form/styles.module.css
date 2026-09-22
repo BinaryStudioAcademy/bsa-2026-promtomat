@@ -1,22 +1,23 @@
 .header {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-6);
 }
 
 .eyebrow {
-	margin: 0;
+	margin: 0 0 var(--space-8);
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-meta);
+	line-height: 1.3;
 	color: var(--text-accent);
 	text-transform: uppercase;
 	letter-spacing: 2px;
 }
 
 .title {
-	margin: 0;
+	margin: 0 0 var(--space-6);
 	font-size: var(--font-size-title-2);
 	font-weight: 700;
+	line-height: 1.3;
 	color: var(--text-strong);
 	letter-spacing: -0.5px;
 }
@@ -24,31 +25,26 @@
 .subtitle {
 	margin: 0;
 	font-size: var(--font-size-body-base);
+	line-height: 1.3;
 	color: var(--text-muted);
 }
 
 .form {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-32);
+	gap: var(--space-20);
 }
 
 .fields {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-18);
 }
 
 .score-field {
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-10);
-}
-
-.score-error {
-	margin: 0;
-	font-size: var(--font-size-label-sm);
-	color: var(--fg-danger);
+	margin-top: var(--space-20);
 }
 
 .note {
@@ -67,6 +63,18 @@
 	color: var(--text-accent);
 	text-transform: uppercase;
 	letter-spacing: 1px;
+}
+
+.danger-outline {
+	color: var(--fg-danger);
+}
+
+.warning-outline {
+	color: var(--fg-warning);
+}
+
+.success-outline {
+	color: var(--fg-success);
 }
 
 .actions {

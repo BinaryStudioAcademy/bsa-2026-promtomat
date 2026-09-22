@@ -1,9 +1,11 @@
 const IconName = {
 	ALERT_CIRCLE: "alert-circle",
+	BOLT: "bolt",
 	CHECK: "check",
 	CHECK_CIRCLE: "check-circle",
 	CHEVRON: "chevron",
 	CIRCLE_X: "circle-x",
+	CLIPBOARD_CHECK: "clipboard-check",
 	CLOSE: "close",
 	EDIT: "edit",
 	EYE: "eye",

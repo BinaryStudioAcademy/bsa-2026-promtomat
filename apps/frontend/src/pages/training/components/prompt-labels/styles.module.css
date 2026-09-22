@@ -12,8 +12,13 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--space-8);
-	align-items: baseline;
-	justify-content: space-between;
+	align-items: center;
+}
+
+.icon {
+	width: var(--size-icon-sm);
+	height: var(--size-icon-sm);
+	color: var(--text-muted);
 }
 
 .title {
@@ -26,6 +31,7 @@
 }
 
 .hint {
+	margin-left: auto;
 	font-size: var(--font-size-meta);
 	color: var(--text-faint);
 }

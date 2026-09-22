@@ -1,3 +1,4 @@
+import { Bolt, ClipboardCheck } from "lucide-react";
 import { type FunctionComponent, type SVGProps } from "react";
 
 import AlertCircleIcon from "~/assets/img/alert-circle.svg?react";
@@ -23,10 +24,12 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 const iconNameToIcon = {
 	[IconName.ALERT_CIRCLE]: AlertCircleIcon,
+	[IconName.BOLT]: Bolt,
 	[IconName.CHECK]: CheckIcon,
 	[IconName.CHECK_CIRCLE]: CheckCircleIcon,
 	[IconName.CHEVRON]: ChevronIcon,
 	[IconName.CIRCLE_X]: CircleXIcon,
+	[IconName.CLIPBOARD_CHECK]: ClipboardCheck,
 	[IconName.CLOSE]: CloseIcon,
 	[IconName.EDIT]: EditIcon,
 	[IconName.EYE]: EyeIcon,

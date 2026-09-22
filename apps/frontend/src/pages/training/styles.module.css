@@ -4,7 +4,7 @@
 	gap: var(--space-20);
 	align-items: start;
 	width: 100%;
-	max-width: 1180px;
+	max-width: 1192px;
 	padding: var(--space-24) var(--space-16) var(--space-64);
 	margin-inline: auto;
 }
@@ -39,6 +39,6 @@
 
 @media (width >= 1024px) {
 	.page {
-		grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+		grid-template-columns: minmax(0, 804fr) minmax(0, 320fr);
 	}
 }

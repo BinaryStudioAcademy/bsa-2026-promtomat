@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
+import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
@@ -18,9 +19,9 @@ import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "../../constants/constants.js";
 import { RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
+	canSubmit: boolean;
 	control: Control<PromptCreateRequestDto, null>;
 	error: unknown;
-	isScoreInvalid: boolean;
 	isSubmitting: boolean;
 	loggedLabel: string | undefined;
 	onScoreSelect: (score: number) => () => void;
@@ -33,9 +34,10 @@ const useRecordPromptForm = (): ReturnValue => {
 	const [recordPrompt, { data: loggedPrompt, error, isLoading }] =
 		useRecordPromptMutation();
 
-	const { control, errors, handleSubmit, reset, setValue } =
+	const { control, formState, handleSubmit, reset, setValue } =
 		useAppForm<PromptCreateRequestDto>({
 			defaultValues: DEFAULT_RECORD_PROMPT_PAYLOAD,
+			mode: FormValidationMode.ON_TOUCHED,
 			validationSchema: promptCreateValidationSchema,
 		});
 
@@ -84,9 +86,9 @@ const useRecordPromptForm = (): ReturnValue => {
 	);
 
 	return {
+		canSubmit: formState.isValid,
 		control,
 		error,
-		isScoreInvalid: Boolean(errors.efficiencyScore),
 		isSubmitting: isLoading,
 		loggedLabel: loggedPrompt?.label,
 		onScoreSelect: handleScoreSelect,

@@ -6,9 +6,9 @@ const RecordPromptFormMessage = {
 	SCORE_NOTE:
 		"A score from 1 to 10 is part of the log request, so a prompt cannot be logged without one.",
 	SCORE_NOTE_TAG: "Required",
-	SCORE_REQUIRED: "Select a score from 1 to 10.",
 	SUBMIT: "Log prompt",
-	SUBMIT_HINT: "All four fields are required.",
+	SUBMIT_HINT_INCOMPLETE: "All four fields are required.",
+	SUBMIT_HINT_READY: "Indexed and available to generation.",
 	SUBTITLE:
 		"Every submission trains the retrieval index. Four fields, fifteen seconds.",
 	TITLE: "Log this prompt",

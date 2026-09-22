@@ -11,9 +11,9 @@ const STREAK_COUNT = 0; // TODO : delete when backend is ready -- should be deri
 
 const Training: React.FC = () => {
 	const {
+		canSubmit,
 		control,
 		error,
-		isScoreInvalid,
 		isSubmitting,
 		loggedLabel,
 		onScoreSelect,
@@ -28,9 +28,9 @@ const Training: React.FC = () => {
 		<main className={styles["page"]}>
 			<section className={styles["panel"]}>
 				<RecordPromptForm
+					canSubmit={canSubmit}
 					control={control}
 					error={error}
-					isScoreInvalid={isScoreInvalid}
 					isSubmitting={isSubmitting}
 					loggedLabel={loggedLabel}
 					onScoreSelect={onScoreSelect}

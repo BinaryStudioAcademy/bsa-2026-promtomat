@@ -1,24 +1,27 @@
 import React from "react";
-import { type Control } from "react-hook-form";
+import { type Control, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { ScoreDescriptions } from "~/libs/components/score-grid/libs/enums/enums.js";
+import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize, IconName } from "~/libs/enums/enums.js";
+import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
 import { PromptBodyField } from "../prompt-body-field/prompt-body-field.js";
 import { PromptLabels } from "../prompt-labels/prompt-labels.js";
+import { WorkspaceChip } from "../workspace-chip/workspace-chip.js";
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	canSubmit: boolean;
 	control: Control<PromptCreateRequestDto, null>;
 	error: unknown;
-	isScoreInvalid: boolean;
 	isSubmitting: boolean;
 	loggedLabel: string | undefined;
 	onScoreSelect: (score: number) => () => void;
@@ -27,9 +30,9 @@ type Properties = {
 };
 
 const RecordPromptForm: React.FC<Properties> = ({
+	canSubmit,
 	control,
 	error,
-	isScoreInvalid,
 	isSubmitting,
 	loggedLabel,
 	onScoreSelect,
@@ -37,6 +40,14 @@ const RecordPromptForm: React.FC<Properties> = ({
 	score,
 }: Properties) => {
 	const { data } = useGetWorkspacesQuery({});
+	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
+
+	const selectedWorkspace = data?.items.find(
+		({ id }) => id === selectedWorkspaceId,
+	);
+	const workspaceChip = selectedWorkspace ? (
+		<WorkspaceChip name={selectedWorkspace.name} />
+	) : undefined;
 
 	const options =
 		data?.items.map(({ id, name }) => {
@@ -56,6 +67,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 			<form className={styles["form"]} noValidate onSubmit={onSubmit}>
 				<div className={styles["fields"]}>
 					<Select
+						adornment={workspaceChip}
 						control={control}
 						isDisabled={isSubmitting}
 						label={RecordPromptFormMessage.WORKSPACE_LABEL}
@@ -76,35 +88,44 @@ const RecordPromptForm: React.FC<Properties> = ({
 					<PromptLabels label={loggedLabel} />
 					<div className={styles["score-field"]}>
 						<ScoreGrid
+							isDescriptionHidden={true}
 							isDisabled={isSubmitting}
 							isRadio={true}
 							label={RecordPromptFormMessage.SCORE_LABEL}
 							onScoreSelect={onScoreSelect}
 							selectedScore={score}
 						/>
-						{isScoreInvalid && (
-							<p className={styles["score-error"]} role="alert">
-								{RecordPromptFormMessage.SCORE_REQUIRED}
-							</p>
-						)}
-						<p className={styles["note"]}>
-							<span className={styles["note-tag"]}>
-								{RecordPromptFormMessage.SCORE_NOTE_TAG}
-							</span>{" "}
-							{RecordPromptFormMessage.SCORE_NOTE}
+						<p aria-live="polite" className={styles["note"]}>
+							{score === null ? (
+								<>
+									<span className={styles["note-tag"]}>
+										{RecordPromptFormMessage.SCORE_NOTE_TAG}
+									</span>{" "}
+									{RecordPromptFormMessage.SCORE_NOTE}
+								</>
+							) : (
+								<span className={styles[getScoreColor(score)]}>
+									{ScoreDescriptions[score]}
+								</span>
+							)}
 						</p>
 					</div>
 				</div>
 				<FormAlert error={error} />
 				<div className={styles["actions"]}>
 					<Button
-						iconName={IconName.CHECK}
+						iconName={IconName.CLIPBOARD_CHECK}
+						isDisabled={!canSubmit}
 						isLoading={isSubmitting}
 						label={RecordPromptFormMessage.SUBMIT}
+						size={ControlSize.LG}
 						type="submit"
+						variant={ButtonVariant.ACCENT}
 					/>
 					<span className={styles["hint"]}>
-						{RecordPromptFormMessage.SUBMIT_HINT}
+						{canSubmit
+							? RecordPromptFormMessage.SUBMIT_HINT_READY
+							: RecordPromptFormMessage.SUBMIT_HINT_INCOMPLETE}
 					</span>
 				</div>
 			</form>

@@ -1,5 +1,8 @@
 import React from "react";
 
+import { Icon } from "~/libs/components/icon/icon.js";
+import { IconName } from "~/libs/enums/enums.js";
+
 import { PromptLabelsMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -11,6 +14,7 @@ const PromptLabels: React.FC<Properties> = ({ label }: Properties) => {
 	return (
 		<section aria-live="polite" className={styles["panel"]}>
 			<div className={styles["header"]}>
+				<Icon className={styles["icon"]} iconName={IconName.BOLT} />
 				<h2 className={styles["title"]}>{PromptLabelsMessage.TITLE}</h2>
 				<span className={styles["hint"]}>{PromptLabelsMessage.HINT}</span>
 			</div>
