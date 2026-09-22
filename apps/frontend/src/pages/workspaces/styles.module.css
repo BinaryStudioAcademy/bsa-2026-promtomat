@@ -98,11 +98,12 @@
 .empty-state {
 	display: flex;
 	flex-direction: column;
+	grid-column: 1 / -1;
 	gap: var(--space-16);
 	align-items: center;
 	padding: var(--space-32);
 	text-align: center;
-	border: var(--border-width-hairline) dashed var(--border-subtle);
+	border: var(--border-width-hairline) solid var(--border-default);
 	border-radius: var(--radius-md);
 }
 

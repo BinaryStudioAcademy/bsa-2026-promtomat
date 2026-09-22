@@ -5,7 +5,10 @@ type Properties = {
 	value: number | string;
 };
 
-const Metric: React.FC<Properties> = ({ label, value }: Properties) => {
+const WorkspaceMetric: React.FC<Properties> = ({
+	label,
+	value,
+}: Properties) => {
 	return (
 		<div className={styles["metric"]}>
 			<span className={styles["label"]}>{label}</span>
@@ -14,4 +17,4 @@ const Metric: React.FC<Properties> = ({ label, value }: Properties) => {
 	);
 };
 
-export { Metric };
+export { WorkspaceMetric };

@@ -1,0 +1,11 @@
+.metrics {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: var(--space-8);
+}
+
+@media (width <= 600px) {
+	.metrics {
+		gap: var(--space-24);
+	}
+}
