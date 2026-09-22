@@ -35,6 +35,15 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 									{
 										lazy: async () => {
 											const pageModule =
+												await import("~/pages/analytics/analytics.js");
+
+											return { Component: pageModule.Analytics };
+										},
+										path: AppRoute.ANALYTICS,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
 												await import("~/pages/no-access/no-access.js");
 
 											return { Component: pageModule.NoAccessPage };

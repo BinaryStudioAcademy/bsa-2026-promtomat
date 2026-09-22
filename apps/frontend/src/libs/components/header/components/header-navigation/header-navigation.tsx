@@ -44,6 +44,9 @@ const HeaderNavigation: React.FC<Properties> = ({
 						<Link to={AppRoute.GENERATE}>Generate</Link>
 					</li>
 					<li>
+						<Link to={AppRoute.ANALYTICS}>Analytics</Link>
+					</li>
+					<li>
 						<Link to={AppRoute.SETTINGS}>Settings</Link>
 					</li>
 					<li>

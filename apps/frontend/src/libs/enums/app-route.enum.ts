@@ -1,4 +1,5 @@
 const AppRoute = {
+	ANALYTICS: "/analytics",
 	ANY: "*",
 	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
