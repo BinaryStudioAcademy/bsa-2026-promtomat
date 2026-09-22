@@ -1,9 +1,9 @@
 const sortValuesByDictionary = (
 	values: string[],
-	valuesDictionary: string[],
+	dictionaryValues: string[],
 ): string[] => {
 	const selectedValues = new Set(values);
-	return valuesDictionary.filter((entry) => selectedValues.has(entry));
+	return dictionaryValues.filter((entry) => selectedValues.has(entry));
 };
 
 export { sortValuesByDictionary };
