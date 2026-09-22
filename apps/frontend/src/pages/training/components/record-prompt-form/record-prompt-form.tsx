@@ -8,6 +8,7 @@ import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
@@ -41,6 +42,13 @@ const RecordPromptForm: React.FC = () => {
 			defaultValues: DEFAULT_RECORD_PROMT_PAYLOAD,
 			validationSchema: promptCreateValidationSchema,
 		});
+
+	useWorkspaceSearchParameter({
+		selectWorkspace: (workspaceId): void => {
+			setValue("workspaceId", workspaceId);
+		},
+		workspaces,
+	});
 
 	const workspaceId = useWatch({ control, name: "workspaceId" });
 	const workspaceQuery =

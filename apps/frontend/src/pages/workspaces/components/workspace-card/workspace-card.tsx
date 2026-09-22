@@ -18,6 +18,7 @@ type Properties = {
 	onDelete: (workspace: WorkspaceListItemDto) => void;
 	onLeave: (workspace: WorkspaceListItemDto) => void;
 	onManageAccess: (workspace: WorkspaceListItemDto) => void;
+	onOpen: (workspace: WorkspaceListItemDto) => void;
 	workspace: WorkspaceListItemDto;
 };
 
@@ -27,6 +28,7 @@ const WorkspaceCard: React.FC<Properties> = ({
 	onDelete,
 	onLeave,
 	onManageAccess,
+	onOpen,
 	workspace,
 }: Properties) => {
 	const visibility = capitalizeFirstLetter(workspace.visibility);
@@ -47,6 +49,10 @@ const WorkspaceCard: React.FC<Properties> = ({
 	const handleManageAccessClick = useCallback((): void => {
 		onManageAccess(workspace);
 	}, [onManageAccess, workspace]);
+
+	const handleOpenClick = useCallback((): void => {
+		onOpen(workspace);
+	}, [onOpen, workspace]);
 
 	return (
 		<div className={styles["card"]}>
@@ -87,8 +93,8 @@ const WorkspaceCard: React.FC<Properties> = ({
 					<>
 						<Button
 							className={styles["primary-action"]}
-							label="Manage Access"
-							onClick={handleManageAccessClick}
+							label="Open"
+							onClick={handleOpenClick}
 							size={ControlSize.MD}
 							type="button"
 							variant={ButtonVariant.SECONDARY}
@@ -113,6 +119,13 @@ const WorkspaceCard: React.FC<Properties> = ({
 					<>
 						<Button
 							className={styles["primary-action"]}
+							label="Open"
+							onClick={handleOpenClick}
+							size={ControlSize.MD}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+						<Button
 							label="Members"
 							onClick={handleManageAccessClick}
 							size={ControlSize.MD}

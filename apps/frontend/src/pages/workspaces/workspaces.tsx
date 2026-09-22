@@ -1,11 +1,15 @@
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
-import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+import {
+	EMPTY_LENGTH,
+	WORKSPACE_ID_SEARCH_PARAMETER,
+} from "~/libs/constants/constants.js";
 import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
@@ -25,12 +29,14 @@ import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/worksp
 import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { WorkspaceListMessage } from "./libs/enums/enums.js";
+import { getWorkspaceOpenDestination } from "./libs/helpers/helpers.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 const SEARCH_DELAY_MS = 300;
 
 const Workspaces: React.FC = () => {
+	const navigate = useNavigate();
 	const { control, debouncedSearch } = useSearch(SEARCH_DELAY_MS);
 	const [scope, setScope] = useState<ValueOf<typeof WorkspaceListScope>>(
 		WorkspaceListScope.ALL,
@@ -75,6 +81,21 @@ const Workspaces: React.FC = () => {
 			setActiveModal({ type: "leave", workspace });
 		},
 		[],
+	);
+
+	const handleOpen = useCallback(
+		(workspace: WorkspaceListItemDto): void => {
+			const destination = getWorkspaceOpenDestination(workspace.promptCount);
+			const searchParameters = new URLSearchParams({
+				[WORKSPACE_ID_SEARCH_PARAMETER]: String(workspace.id),
+			});
+
+			void navigate({
+				pathname: destination,
+				search: searchParameters.toString(),
+			});
+		},
+		[navigate],
 	);
 
 	const handleManageAccessOpen = useCallback(
@@ -142,6 +163,7 @@ const Workspaces: React.FC = () => {
 								onDelete={handleDeleteOpen}
 								onLeave={handleLeaveOpen}
 								onManageAccess={handleManageAccessOpen}
+								onOpen={handleOpen}
 								workspace={workspace}
 							/>
 						);
