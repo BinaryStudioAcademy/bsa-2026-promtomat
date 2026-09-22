@@ -8,6 +8,7 @@ import {
 	WorkspacesErrorCode,
 } from "../../modules/workspaces/workspaces.js";
 import { ServerErrorCode } from "./server-error-code.enum.js";
+import { TokenErrorCode } from "./token-error-code.enum.js";
 
 const ErrorCode = {
 	...ServerErrorCode,
@@ -17,6 +18,7 @@ const ErrorCode = {
 	...LabelsErrorCode,
 	...ComposedPromptsErrorCode,
 	...WorkspacesErrorCode,
+	...TokenErrorCode,
 	...PromptsErrorCode,
 } as const;
 

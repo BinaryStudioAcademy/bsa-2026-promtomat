@@ -124,7 +124,7 @@ variable "embedding_dimensions" {
 }
 
 variable "bedrock_model_id" {
-  type = string
+  type    = string
   default = "qwen.qwen3-32b-v1:0"
 }
 
@@ -156,4 +156,24 @@ variable "generation_max_tokens" {
 variable "generation_source_body_max_length" {
   type    = number
   default = 8000
+}
+
+variable "aws_secret_mail_arn" {
+  type      = string
+  sensitive = true
+}
+
+variable "password_reset_request_limit" {
+  type    = number
+  default = 3
+}
+
+variable "password_reset_window_minutes" {
+  type    = number
+  default = 15
+}
+
+variable "password_reset_token_ttl_minutes" {
+  type    = number
+  default = 10
 }

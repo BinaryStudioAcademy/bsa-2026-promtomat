@@ -10,16 +10,21 @@ import { type Logger } from "~/libs/modules/logger/logger.js";
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { PromptsApiPath } from "./libs/enums/enums.js";
+import { promptAccessHook } from "./libs/hooks/prompt-access.hook.js";
 import {
 	type PromptCreateRequestDto,
 	type PromptGetQueryDto,
 	type PromptIdParameterDto,
+	type PromptRouteParametersDto,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
+	promptRouteParametersValidationSchema,
+	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
@@ -211,6 +216,23 @@ class PromptController extends BaseController {
 			path: PromptsApiPath.$ID,
 			validation: {
 				params: promptIdParameterValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.updateIntent(
+					options as APIHandlerOptions<{
+						body: PromptUpdateIntentRequestDto;
+						params: PromptRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: PromptsApiPath.$PROMPT_ID_INTENT,
+			preHandler: promptAccessHook(this.promptService),
+			validation: {
+				body: promptUpdateIntentValidationSchema,
+				params: promptRouteParametersValidationSchema,
 			},
 		});
 	}
@@ -500,6 +522,101 @@ class PromptController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.promptService.findRecent(options.query.workspaceId),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/{promptId}/intent:
+	 *   patch:
+	 *     description: Updates the intent of a prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: promptId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       description: New prompt intent
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               taskIntent:
+	 *                 type: string
+	 *                 minLength: 5
+	 *                 maxLength: 255
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 details:
+	 *                   type: array
+	 *                   items:
+	 *                     type: object
+	 *                     properties:
+	 *                       message:
+	 *                         type: string
+	 *                       path:
+	 *                         type: array
+	 *                         items:
+	 *                           type: string
+	 *                 errorType:
+	 *                   type: string
+	 *                 message:
+	 *                   type: string
+	 */
+	private async updateIntent(
+		options: APIHandlerOptions<{
+			body: PromptUpdateIntentRequestDto;
+			params: PromptRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			id: options.params.promptId,
+		};
+
+		return {
+			payload: await this.promptService.updateIntent(payload),
 			status: HTTPCode.OK,
 		};
 	}

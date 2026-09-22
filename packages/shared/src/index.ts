@@ -6,6 +6,7 @@ export {
 	ErrorCode,
 	PaginationValue,
 	SortOrder,
+	TokenErrorCode,
 } from "./libs/enums/enums.js";
 export {
 	ApplicationError,
@@ -43,6 +44,9 @@ export {
 	type ValueOf,
 } from "./libs/types/types.js";
 export {
+	type ForgotPasswordRequestDto,
+	type NewPasswordFormValues,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -52,9 +56,12 @@ export {
 	AuthValidationMessage,
 	AuthValidationRule,
 	emailFieldValidationSchema,
+	forgotPasswordValidationSchema,
+	newPasswordValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
+	resetPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
@@ -98,14 +105,18 @@ export {
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptRouteParametersDto,
+	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 	promptCreateValidationSchema,
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	PromptProgress,
 	PromptQualityTier,
+	promptRouteParametersValidationSchema,
 	PromptsApiPath,
 	PromptsErrorMessage,
+	promptUpdateIntentValidationSchema,
 	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
 } from "./modules/prompts/prompts.js";

@@ -7,4 +7,5 @@ export {
 	ErrorCode,
 	PromptQualityTier,
 	SortOrder,
+	TokenErrorCode,
 } from "@promptomat/shared";
