@@ -84,7 +84,7 @@
 .list {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-	gap: var(--space-14);
+	gap: var(--space-16);
 	min-width: 0;
 }
 

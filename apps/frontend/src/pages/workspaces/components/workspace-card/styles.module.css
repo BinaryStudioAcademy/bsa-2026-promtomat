@@ -1,12 +1,12 @@
 .card {
 	display: flex;
 	flex-direction: column;
-	gap: var(--space-16);
+	gap: var(--space-12);
 	min-width: 0;
 	padding: var(--space-20);
 	background-color: var(--surface-card);
 	border: var(--border-width-hairline) solid var(--border-default);
-	border-radius: var(--radius-xl);
+	border-radius: var(--radius-2xl);
 }
 
 .header {
@@ -14,14 +14,16 @@
 	gap: var(--space-12);
 	align-items: flex-start;
 	justify-content: space-between;
+	margin-bottom: var(--space-12);
 }
 
 .title {
 	flex: 1;
 	min-width: 0;
 	margin: 0;
-	font-size: var(--font-size-title-3);
-	font-weight: 600;
+	font-size: var(--font-size-body-xl);
+	font-weight: 700;
+	line-height: 1;
 	color: var(--text-strong);
 	overflow-wrap: anywhere;
 }
@@ -33,6 +35,7 @@
 	align-items: center;
 	font-size: var(--font-size-label-sm);
 	font-weight: 500;
+	line-height: 1;
 	color: var(--text-muted);
 }
 
@@ -46,24 +49,18 @@
 	min-width: 0;
 	padding-top: var(--space-16);
 	padding-bottom: var(--space-16);
+	margin-top: var(--space-4);
+	margin-bottom: var(--space-4);
 	border-top: var(--border-width-hairline) solid var(--border-default);
 	border-bottom: var(--border-width-hairline) solid var(--border-default);
 }
 
+.header + .readiness {
+	margin-top: 0;
+}
+
 @media (width <= 600px) {
 	.card {
-		gap: var(--space-12);
 		padding: var(--space-16);
-		border-radius: var(--radius-2xl);
-	}
-
-	.title {
-		font-size: var(--font-size-body-xl);
-		font-weight: 700;
-	}
-
-	.readiness {
-		padding-top: var(--space-12);
-		padding-bottom: var(--space-12);
 	}
 }

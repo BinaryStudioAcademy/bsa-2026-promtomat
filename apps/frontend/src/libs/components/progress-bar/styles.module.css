@@ -9,12 +9,13 @@
 .heading {
 	display: flex;
 	gap: var(--space-12);
-	align-items: baseline;
+	align-items: flex-start;
 	justify-content: space-between;
 }
 
 .label {
 	font-size: var(--font-size-meta);
+	line-height: 1;
 	color: var(--text-muted);
 	text-transform: uppercase;
 	letter-spacing: 1px;
@@ -23,6 +24,7 @@
 .count {
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-label-sm);
+	line-height: 1;
 	color: var(--text-body);
 	white-space: nowrap;
 }

@@ -1,7 +1,7 @@
 .stack-tags {
 	display: flex;
 	flex-wrap: wrap;
-	gap: var(--space-8);
+	gap: var(--space-6);
 	padding: 0;
 	margin: 0;
 	list-style: none;
@@ -9,25 +9,12 @@
 
 .stack-tag {
 	min-width: 0;
-	padding: var(--space-4) var(--space-10);
+	padding: var(--space-4) var(--space-8);
 	font-family: var(--font-family-mono);
-	font-size: var(--font-size-meta);
+	font-size: var(--font-size-label-sm);
 	color: var(--text-muted);
 	overflow-wrap: anywhere;
-	background-color: var(--surface-inset);
+	background-color: transparent;
 	border: var(--border-width-hairline) solid var(--border-strong);
 	border-radius: var(--radius-md);
-}
-
-@media (width <= 600px) {
-	.stack-tags {
-		gap: var(--space-6);
-	}
-
-	.stack-tag {
-		padding: var(--space-4) var(--space-8);
-		font-size: var(--font-size-label-sm);
-		color: var(--text-muted);
-		background-color: transparent;
-	}
 }

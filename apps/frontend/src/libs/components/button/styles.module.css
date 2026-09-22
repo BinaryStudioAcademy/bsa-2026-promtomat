@@ -58,8 +58,8 @@
 
 .secondary {
 	color: var(--text-strong);
-	background-color: var(--surface-card);
-	border-color: var(--border-default);
+	background-color: var(--surface-raised);
+	border-color: var(--border-strong);
 }
 
 .secondary:hover:not(:disabled) {
