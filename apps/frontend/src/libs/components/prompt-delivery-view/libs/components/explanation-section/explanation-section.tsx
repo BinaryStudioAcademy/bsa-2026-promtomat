@@ -25,24 +25,28 @@ const ExplanationSection: React.FC<Properties> = ({
 
 	return (
 		<PromptDeliveryCard>
-			<h2 className={styles["heading"]}>
+			<PromptDeliveryCard.Title>
 				{PromptDeliveryViewLabel.EXPLANATION_HEADING}
-			</h2>
-			{hasExplanation && <p className={styles["explanation"]}>{explanation}</p>}
-			{hasSources && (
-				<>
-					<h3 className={styles["sources-heading"]}>
-						{PromptDeliveryViewLabel.SOURCES_HEADING}
-					</h3>
-					<ol className={styles["sources"]}>
-						{sources.map((source) => (
-							<li key={source.promptId} value={source.rank}>
-								{source.taskIntent}
-							</li>
-						))}
-					</ol>
-				</>
-			)}
+			</PromptDeliveryCard.Title>
+			<PromptDeliveryCard.Body>
+				{hasExplanation && (
+					<p className={styles["explanation"]}>{explanation}</p>
+				)}
+				{hasSources && (
+					<>
+						<h3 className={styles["sources-heading"]}>
+							{PromptDeliveryViewLabel.SOURCES_HEADING}
+						</h3>
+						<ol className={styles["sources"]}>
+							{sources.map((source) => (
+								<li key={source.promptId} value={source.rank}>
+									{source.taskIntent}
+								</li>
+							))}
+						</ol>
+					</>
+				)}
+			</PromptDeliveryCard.Body>
 		</PromptDeliveryCard>
 	);
 };

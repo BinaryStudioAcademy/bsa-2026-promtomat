@@ -13,7 +13,7 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import { LabelService } from "../labels/labels.js";
 import { ROUND_FACTOR } from "./libs/constants/constants.js";
-import { PromptProgress } from "./libs/enums/enums.js";
+import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
 	type PromptCandidateQuery,
@@ -24,6 +24,7 @@ import {
 	type PromptGenerateLabelPayload,
 	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
 } from "./libs/types/types.js";
@@ -136,7 +137,7 @@ class PromptService {
 			};
 		});
 
-		await this.promptEmbeddingService.embedForPrompt(prompt);
+		void this.promptEmbeddingService.embedForPrompt(prompt);
 
 		return prompt;
 	}
@@ -144,8 +145,24 @@ class PromptService {
 	public async findAll(
 		options: PromptFindAllOptions,
 	): Promise<PromptGetAllResponseDto> {
-		const { averageScore, items, page, pageSize, totalCount } =
-			await this.promptRepository.findAll(options);
+		const { query, userId } = options;
+		const {
+			limit = PaginationValue.DEFAULT_LIMIT,
+			page = PaginationValue.DEFAULT_PAGE,
+			search,
+			workspaceId,
+		} = query;
+		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
+
+		const { averageScore, items, totalCount } = search
+			? await this.promptEmbeddingService.findAllByQuery({
+					limit,
+					offset,
+					search,
+					userId,
+					workspaceId,
+				})
+			: await this.promptRepository.findAll(options);
 
 		const formattedAverageScore =
 			averageScore === null
@@ -158,24 +175,33 @@ class PromptService {
 				PromptEntity.initialize(item).toDto(item.workspaceName),
 			),
 			page,
-			pageSize,
+			pageSize: limit,
 			totalCount,
 		};
 	}
 
-	public async findById(id: number, userId: number): Promise<PromptDto> {
+	public async findById(
+		id: number,
+		userId: number,
+	): Promise<PromptItemResponseDto> {
 		const prompt = await this.promptRepository.findById(id);
 
 		if (!prompt) {
 			throw PromptDeliveryError.notFound();
 		}
 
-		const workspace = await this.workspaceService.findByIdAndOwner(
+		const ownedWorkspace = await this.workspaceService.findByIdAndOwner(
 			prompt.workspaceId,
 			userId,
 		);
+		const contributedWorkspace = ownedWorkspace
+			? null
+			: await this.workspaceService.findByIdAndContributor(
+					prompt.workspaceId,
+					userId,
+				);
 
-		if (!workspace) {
+		if (!ownedWorkspace && !contributedWorkspace) {
 			throw PromptDeliveryError.notFound();
 		}
 
@@ -232,6 +258,13 @@ class PromptService {
 		);
 
 		return { items };
+	}
+
+	public async findUserPromptSummary(userId: number): Promise<{
+		averageScore: null | number;
+		totalCount: number;
+	}> {
+		return await this.promptRepository.findUserPromptSummary(userId);
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {

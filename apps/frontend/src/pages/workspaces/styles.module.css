@@ -15,9 +15,12 @@
 .title {
 	margin: 0;
 	font-size: var(--font-size-title-3);
-	font-weight: bold;
+	font-weight: 600;
 	color: var(--text-strong);
-	text-transform: uppercase;
+}
+
+.filter-container {
+	margin-bottom: var(--space-20);
 }
 
 .search-container {

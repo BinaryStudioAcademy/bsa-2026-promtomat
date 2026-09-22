@@ -1,19 +1,4 @@
-.card-header {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-12);
-	align-items: center;
-	justify-content: space-between;
-}
-
-.heading {
-	margin: 0;
-	font-size: var(--font-size-title-3);
-	font-weight: 600;
-	color: var(--text-strong);
-}
-
-.body {
+.prompt-body {
 	padding: var(--space-16);
 	margin: 0;
 	overflow-x: auto;

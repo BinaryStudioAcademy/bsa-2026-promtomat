@@ -1,8 +1,7 @@
 type PromptFilterByQueryParameters = {
-	score?: number;
-	search?: string;
+	score?: number | undefined;
 	userId: number;
-	workspaceId?: number;
+	workspaceId?: number | undefined;
 };
 
 export { type PromptFilterByQueryParameters };

@@ -14,9 +14,8 @@ import {
 	type PromptGetAllResponseDto,
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
+	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
-	type PromptSearchRequestDto,
-	type PromptSearchResponseDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
@@ -26,7 +25,7 @@ const promptApi = baseApi
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
-			getPromptById: builder.query<PromptDto, number>({
+			getPromptById: builder.query<PromptItemResponseDto, number>({
 				extraOptions: { shouldSuppressToast: true },
 				query: (id) => ({
 					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
@@ -85,15 +84,6 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
-			searchPrompts: builder.query<
-				PromptSearchResponseDto,
-				PromptSearchRequestDto
-			>({
-				query: (queryPayload) => ({
-					params: queryPayload,
-					url: `${APIPath.PROMPTS}${PromptsApiPath.SEARCH}`,
-				}),
-			}),
 		}),
 	});
 
@@ -103,7 +93,6 @@ const {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
-	useSearchPromptsQuery,
 } = promptApi;
 
 export {
@@ -112,5 +101,4 @@ export {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
-	useSearchPromptsQuery,
 };
