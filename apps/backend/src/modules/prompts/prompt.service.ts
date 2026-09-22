@@ -272,7 +272,16 @@ class PromptService {
 		averageScore: null | number;
 		totalCount: number;
 	}> {
-		return await this.promptRepository.findUserPromptSummary(userId);
+		const { averageScore, totalCount } =
+			await this.promptRepository.findUserPromptSummary(userId);
+
+		return {
+			averageScore:
+				averageScore === null
+					? null
+					: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR,
+			totalCount,
+		};
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
