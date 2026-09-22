@@ -106,10 +106,10 @@
 }
 
 .stat-value {
-	overflow-wrap: anywhere;
 	font-size: var(--font-size-display-2);
 	font-weight: bold;
 	color: var(--text-accent);
+	overflow-wrap: anywhere;
 }
 
 .stat-label {
