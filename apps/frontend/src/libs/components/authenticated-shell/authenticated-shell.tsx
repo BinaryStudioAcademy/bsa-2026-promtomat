@@ -130,9 +130,7 @@ const AuthenticatedShell: React.FC = () => {
 	}, [handleDrawerClose, isDrawerOpen]);
 
 	if (!user) {
-		throw new Error(
-			"AuthenticatedShell rendered without an authenticated user.",
-		);
+		return null;
 	}
 
 	const pageCopy = resolveShellPageCopy(matches);
