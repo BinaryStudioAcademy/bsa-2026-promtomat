@@ -5,6 +5,7 @@ import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
@@ -23,6 +24,7 @@ import { WorkspaceCreateModal } from "./components/workspace-create-modal/worksp
 import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
 import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
+import { WorkspaceListMessage } from "./libs/enums/enums.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
@@ -35,11 +37,18 @@ const Workspaces: React.FC = () => {
 	);
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const currentUserId = user?.id;
-	const { data, isLoading } = useGetWorkspacesQuery({
+	const { data, isError, isFetching, isLoading } = useGetWorkspacesQuery({
 		scope,
 		workspaceName: debouncedSearch,
 	});
 	const workspaces = data?.items ?? [];
+	const isListLoading = isLoading || isFetching;
+	const isListEmpty = workspaces.length === EMPTY_LENGTH;
+	const hasActiveFilter =
+		Boolean(debouncedSearch) || scope !== WorkspaceListScope.ALL;
+	const hasNoMatches =
+		!isListLoading && !isError && isListEmpty && hasActiveFilter;
+	const hasWorkspaces = !isListLoading && !isListEmpty;
 
 	const [activeModal, setActiveModal] = useState<ActiveModal>(null);
 
@@ -114,21 +123,29 @@ const Workspaces: React.FC = () => {
 			</div>
 
 			<div className={styles["list"]}>
-				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
-				{workspaces.map((workspace) => {
-					const isOwner = workspace.userId === currentUserId;
-					return (
-						<WorkspaceCard
-							isOwner={isOwner}
-							key={workspace.id}
-							onConfig={handleConfigOpen}
-							onDelete={handleDeleteOpen}
-							onLeave={handleLeaveOpen}
-							onManageAccess={handleManageAccessOpen}
-							workspace={workspace}
-						/>
-					);
-				})}
+				{isListLoading && <Loader variant={LoaderVariant.SECTION} />}
+				{hasNoMatches && (
+					<div className={styles["empty-state"]}>
+						<p className={styles["empty-state-text"]}>
+							{WorkspaceListMessage.NO_MATCHES}
+						</p>
+					</div>
+				)}
+				{hasWorkspaces &&
+					workspaces.map((workspace) => {
+						const isOwner = workspace.userId === currentUserId;
+						return (
+							<WorkspaceCard
+								isOwner={isOwner}
+								key={workspace.id}
+								onConfig={handleConfigOpen}
+								onDelete={handleDeleteOpen}
+								onLeave={handleLeaveOpen}
+								onManageAccess={handleManageAccessOpen}
+								workspace={workspace}
+							/>
+						);
+					})}
 			</div>
 
 			{activeModal?.type === "create" && (

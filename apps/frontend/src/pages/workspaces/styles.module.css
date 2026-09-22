@@ -87,6 +87,23 @@
 	gap: var(--space-16);
 }
 
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+	align-items: center;
+	padding: var(--space-32);
+	text-align: center;
+	border: var(--border-width-hairline) dashed var(--border-subtle);
+	border-radius: var(--radius-md);
+}
+
+.empty-state-text {
+	margin: 0;
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
 .form {
 	--form-inset: var(--space-40);
 
