@@ -140,7 +140,7 @@ variable "bedrock_connection_timeout_ms" {
 
 variable "bedrock_max_attempts" {
   type    = number
-  default = 3
+  default = 1
 }
 
 variable "generation_candidate_limit" {
