@@ -169,7 +169,7 @@ class PromptRepository {
 						)
 						.andWhere(
 							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-							"<=",
+							"<",
 							QUALITY_SCORE_THRESHOLD.MAX_NEEDS_IMPROVEMENT,
 						);
 					break;
