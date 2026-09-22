@@ -2,14 +2,18 @@ import { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
+import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import {
 	capitalizeFirstLetter,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
+import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
+import { Metric } from "./components/metric/metric.js";
+import { WORKSPACE_CARD_EMPTY_METRIC } from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -79,13 +83,18 @@ const WorkspaceCard: React.FC<Properties> = ({
 				</ul>
 			)}
 
+			<div className={styles["readiness"]}>
+				<ProgressBar
+					count={workspace.promptCount}
+					label="Dataset readiness"
+					target={PromptProgress.TARGET_COUNT}
+				/>
+			</div>
+
 			<div className={styles["metrics"]}>
-				<div className={styles["members"]}>
-					<span className={styles["members-label"]}>Members</span>
-					<span className={styles["members-value"]}>
-						{workspace.memberCount}
-					</span>
-				</div>
+				<Metric label="Avg score" value={WORKSPACE_CARD_EMPTY_METRIC} />
+				<Metric label="7-day" value={WORKSPACE_CARD_EMPTY_METRIC} />
+				<Metric label="Members" value={workspace.memberCount} />
 			</div>
 
 			<div className={styles["actions"]}>

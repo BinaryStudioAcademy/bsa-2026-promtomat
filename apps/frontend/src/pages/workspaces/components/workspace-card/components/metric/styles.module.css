@@ -1,0 +1,25 @@
+.metric {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	min-width: 0;
+}
+
+.label {
+	font-size: var(--font-size-meta);
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.value {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-base);
+	color: var(--text-strong);
+}
+
+@media (width <= 600px) {
+	.value {
+		font-weight: 500;
+	}
+}

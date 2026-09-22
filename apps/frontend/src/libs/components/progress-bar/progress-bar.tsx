@@ -1,31 +1,40 @@
 import React from "react";
 
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { PERCENTAGE_SCALE } from "./libs/constants/constants.js";
-import { getProgressPercentage } from "./libs/helpers/helpers.js";
+import {
+	getProgressFillTone,
+	getProgressPercentage,
+} from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	count: number;
 	label: string;
 	target: number;
-	unit: string;
 };
 
 const ProgressBar: React.FC<Properties> = ({
 	count,
 	label,
 	target,
-	unit,
 }: Properties) => {
-	const percentage = Math.round(getProgressPercentage(count, target));
+	const percentage = getProgressPercentage(count, target);
 	const countLabel = count.toLocaleString("en-US");
 	const targetLabel = target.toLocaleString("en-US");
 	const fillStyle = { width: `${String(percentage)}%` };
+	const fillTone = getProgressFillTone(percentage);
 
 	return (
-		<div className={styles["row"]}>
+		<div className={styles["progress"]}>
+			<div className={styles["heading"]}>
+				<span className={styles["label"]}>{label}</span>
+				<span className={styles["count"]}>
+					{countLabel} / {targetLabel}
+				</span>
+			</div>
 			<div
 				aria-label={label}
 				aria-valuemax={PERCENTAGE_SCALE}
@@ -34,12 +43,11 @@ const ProgressBar: React.FC<Properties> = ({
 				className={styles["track"]}
 				role="progressbar"
 			>
-				<div className={styles["fill"]} style={fillStyle} />
+				<div
+					className={getValidClasses(styles["fill"], styles[fillTone])}
+					style={fillStyle}
+				/>
 			</div>
-			<span className={styles["percent"]}>{percentage}%</span>
-			<span className={styles["count"]}>
-				{countLabel} / {targetLabel} {unit}
-			</span>
 		</div>
 	);
 };

@@ -88,7 +88,6 @@ const RecordPromptForm: React.FC = () => {
 					count={progress.count}
 					label="Training progress"
 					target={progress.target}
-					unit="Prompts"
 				/>
 			)}
 			<div>
