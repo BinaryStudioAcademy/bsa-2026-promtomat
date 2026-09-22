@@ -1,5 +1,5 @@
 import { ServerIdentity, ToolName } from "~/libs/enums/enums.js";
-import { createTextResult } from "~/libs/helpers/helpers.js";
+import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import { type AuthApi } from "./auth-api.js";
@@ -12,7 +12,7 @@ const createWhoAmITool = (authApi: AuthApi): Tool => ({
 	execute: async () => {
 		const user = await authApi.getAuthenticatedUser();
 
-		return createTextResult(
+		return createMCPTextResult(
 			`${ServerIdentity.COMMAND} ${ServerIdentity.VERSION}: authenticated as ${user.nickname} (${user.email}), user id ${String(user.id)}`,
 		);
 	},

@@ -3,7 +3,10 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { type CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 import { ServerIdentity, ToolName } from "~/libs/enums/enums.js";
-import { createTextResult, getErrorDetails } from "~/libs/helpers/helpers.js";
+import {
+	createMCPTextResult,
+	getErrorDetails,
+} from "~/libs/helpers/helpers.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type Tool } from "~/libs/types/types.js";
 
@@ -61,7 +64,7 @@ class StdioServer implements Server {
 
 			this.logToolCall({ error, outcome, startedAt, toolName: tool.name });
 
-			return { ...createTextResult(text), isError: true };
+			return { ...createMCPTextResult(text), isError: true };
 		}
 	}
 
@@ -90,13 +93,9 @@ class StdioServer implements Server {
 	}
 
 	private registerTool(tool: Tool): void {
-		const { description, inputSchema, name } = tool;
-
 		this.mcpServer.registerTool(
-			name,
-			inputSchema === undefined
-				? { description }
-				: { description, inputSchema },
+			tool.name,
+			{ description: tool.description },
 			async () => await this.callTool(tool),
 		);
 	}
