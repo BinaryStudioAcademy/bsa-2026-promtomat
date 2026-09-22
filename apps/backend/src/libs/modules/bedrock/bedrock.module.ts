@@ -4,15 +4,17 @@ import {
 	type ConverseCommandInput,
 } from "@aws-sdk/client-bedrock-runtime";
 
+import { type Logger } from "~/libs/modules/logger/logger.js";
+
 import {
 	DEFAULT_CONVERSATION_ROLE,
 	FIRST_CONTENT_INDEX,
-	REQUEST_MAX_ATTEMPTS,
 	SCHEMA_FORMAT_TYPE,
 } from "./libs/constants/constants.js";
 import {
 	checkIsTextTruncated,
 	convertBedrockErrorToTextGenerationError,
+	getBedrockErrorDetails,
 } from "./libs/helpers/helpers.js";
 import {
 	type CommandOptions,
@@ -22,6 +24,7 @@ import {
 
 type Constructor = {
 	connectionTimeoutMs: number;
+	logger: Logger;
 	maxAttempts: number;
 	modelId: string;
 	region: string;
@@ -31,17 +34,28 @@ type Constructor = {
 class Bedrock {
 	private client: BedrockRuntimeClient;
 
+	private logger: Logger;
+
 	private modelId: string;
 
-	public constructor({ modelId, region, requestTimeoutMs }: Constructor) {
+	public constructor({
+		connectionTimeoutMs,
+		logger,
+		maxAttempts,
+		modelId,
+		region,
+		requestTimeoutMs,
+	}: Constructor) {
 		this.client = new BedrockRuntimeClient({
-			maxAttempts: REQUEST_MAX_ATTEMPTS,
+			maxAttempts,
 			region,
 			requestHandler: {
+				connectionTimeout: connectionTimeoutMs,
 				requestTimeout: requestTimeoutMs,
 				throwOnRequestTimeout: true,
 			},
 		});
+		this.logger = logger;
 		this.modelId = modelId;
 	}
 
@@ -107,7 +121,15 @@ class Bedrock {
 				text,
 			};
 		} catch (error) {
-			throw convertBedrockErrorToTextGenerationError(error);
+			const textGenerationError =
+				convertBedrockErrorToTextGenerationError(error);
+
+			this.logger.error(
+				`Bedrock request failed for model "${this.modelId}" — classified as ${textGenerationError.code}.`,
+				getBedrockErrorDetails(error),
+			);
+
+			throw textGenerationError;
 		}
 	}
 }
