@@ -1,4 +1,8 @@
-export { EMPTY_LENGTH } from "./libs/constants/constants.js";
+export {
+	BEARER,
+	EMPTY_LENGTH,
+	MAX_EFFICIENCY_SCORE,
+} from "./libs/constants/constants.js";
 export {
 	APIPath,
 	AppEnvironment,
@@ -146,7 +150,7 @@ export {
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	TechStackTagSchema,
+	techStackTag,
 	TechStackTechDictionary,
 	workspaceAddContributorValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,

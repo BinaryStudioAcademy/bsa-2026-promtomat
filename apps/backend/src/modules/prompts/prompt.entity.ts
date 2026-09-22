@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { Entity } from "~/libs/types/entity.type.js";
 
 class PromptEntity implements Entity {
@@ -126,7 +128,7 @@ class PromptEntity implements Entity {
 		return {
 			body: this.promptBody,
 			createdAt: this.createdAt,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.PROMPT),
 			intent: this.taskIntent,
 			score: this.efficiencyScore,
 			userId: this.userId,
@@ -167,7 +169,7 @@ class PromptEntity implements Entity {
 		return {
 			createdAt: this.createdAt,
 			efficiencyScore: this.efficiencyScore,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.PROMPT),
 			labelId: this.labelId,
 			promptBody: this.promptBody,
 			taskIntent: this.taskIntent,

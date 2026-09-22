@@ -4,12 +4,16 @@ import { useLocation } from "react-router-dom";
 import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Link } from "~/libs/components/link/link.js";
 import { Logo } from "~/libs/components/logo/logo.js";
-import { AppRoute, ControlSize, IconName } from "~/libs/enums/enums.js";
+import {
+	AppRoute,
+	ControlSize,
+	IconName,
+	KeyboardKey,
+} from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
 import { HeaderNavigation } from "./components/header-navigation/header-navigation.js";
-import { KeyboardKey } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {

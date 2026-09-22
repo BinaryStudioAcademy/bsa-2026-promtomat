@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
 
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 
@@ -29,14 +30,14 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			.then(() => {
 				showNotification({
 					message: PromptDeliveryViewMessage.COPY_SUCCESS,
-					type: "success",
+					type: NotificationType.SUCCESS,
 				});
 				feedbackReference.current?.focus();
 			})
 			.catch(() => {
 				showNotification({
 					message: PromptDeliveryViewMessage.COPY_FAILURE,
-					type: "danger",
+					type: NotificationType.DANGER,
 				});
 			});
 	}, [body]);

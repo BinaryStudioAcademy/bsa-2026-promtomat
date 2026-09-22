@@ -122,16 +122,16 @@ class PromptService {
 				trx,
 			);
 
-			const object = entity.toObject();
+			const promptObject = entity.toObject();
 
 			return {
-				efficiencyScore: object.efficiencyScore,
-				id: object.id,
+				efficiencyScore: promptObject.efficiencyScore,
+				id: promptObject.id,
 				label: label.name,
-				promptBody: object.promptBody,
-				taskIntent: object.taskIntent,
-				userId: object.userId,
-				workspaceId: object.workspaceId,
+				promptBody: promptObject.promptBody,
+				taskIntent: promptObject.taskIntent,
+				userId: promptObject.userId,
+				workspaceId: promptObject.workspaceId,
 			};
 		});
 
