@@ -2,11 +2,9 @@ import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
+import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
-import {
-	GeneratorInterface,
-	TextGenerationError,
-} from "~/libs/modules/generator/generator.js";
+import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
