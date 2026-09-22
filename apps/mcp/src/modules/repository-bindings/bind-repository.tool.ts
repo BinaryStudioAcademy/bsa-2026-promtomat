@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { ToolName } from "~/libs/enums/enums.js";
-import { createTextResult } from "~/libs/helpers/helpers.js";
+import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import {
@@ -35,7 +35,7 @@ const createBindRepositoryTool = (
 		const remoteUrl = await getRepositoryRemoteUrl(projectDirectory);
 
 		if (!remoteUrl) {
-			return createTextResult(
+			return createMCPTextResult(
 				"This directory has no git remote named 'origin', so it cannot be identified as a repository. Binding is not possible without one.",
 			);
 		}
@@ -47,7 +47,7 @@ const createBindRepositoryTool = (
 
 		await repositoryBindingApi.create({ remoteUrl, stackTags, workspaceId });
 
-		return createTextResult(
+		return createMCPTextResult(
 			`Bound this repository to workspace id ${String(workspaceId)}.`,
 		);
 	},

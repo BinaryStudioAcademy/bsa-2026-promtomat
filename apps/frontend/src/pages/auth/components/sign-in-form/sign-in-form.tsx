@@ -8,6 +8,7 @@ import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { useSignInMutation } from "~/modules/auth/auth-api.js";
 import {
 	type SignInRequestDto,
@@ -32,6 +33,8 @@ const SignInForm: React.FC = () => {
 		fields: SIGN_IN_FIELDS,
 		setError,
 	});
+	const generalError =
+		hasFieldErrors || checkIsToastedError(error) ? undefined : error;
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -49,7 +52,7 @@ const SignInForm: React.FC = () => {
 	return (
 		<>
 			<h1 className={styles["heading"]}>Sign In</h1>
-			{hasFieldErrors ? null : <FormAlert error={error} />}
+			<FormAlert error={generalError} />
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["input-wrapper"]}>
 					<Input

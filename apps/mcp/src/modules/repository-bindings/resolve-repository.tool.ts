@@ -1,5 +1,5 @@
 import { ToolName } from "~/libs/enums/enums.js";
-import { createTextResult } from "~/libs/helpers/helpers.js";
+import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import { getRepositoryRemoteUrl } from "./libs/helpers/helpers.js";
@@ -16,7 +16,7 @@ const createResolveRepositoryTool = (
 		const remoteUrl = await getRepositoryRemoteUrl(process.cwd());
 
 		if (!remoteUrl) {
-			return createTextResult(
+			return createMCPTextResult(
 				"This directory has no git remote named 'origin', so it cannot be identified as a repository.",
 			);
 		}
@@ -24,7 +24,7 @@ const createResolveRepositoryTool = (
 		const resolution = await repositoryBindingApi.resolve(remoteUrl);
 
 		if (resolution.status === "resolved") {
-			return createTextResult(
+			return createMCPTextResult(
 				`Resolved to workspace id ${String(resolution.workspaceId)}.`,
 			);
 		}
@@ -34,12 +34,12 @@ const createResolveRepositoryTool = (
 				.map((workspace) => `${String(workspace.id)}: ${workspace.name}`)
 				.join(", ");
 
-			return createTextResult(
+			return createMCPTextResult(
 				`This repository is bound to more than one workspace you can use: ${workspaceList}. Call bind-repository with the workspaceId you want.`,
 			);
 		}
 
-		return createTextResult(
+		return createMCPTextResult(
 			"This repository is not bound to any workspace yet. Call bind-repository with the workspaceId it belongs to.",
 		);
 	},

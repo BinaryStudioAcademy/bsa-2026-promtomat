@@ -2,17 +2,21 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { type CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
-import { ServerIdentity, ToolName } from "~/libs/enums/enums.js";
-import { createTextResult, getErrorDetails } from "~/libs/helpers/helpers.js";
+import { ServerIdentity } from "~/libs/enums/enums.js";
+import {
+	createMCPTextResult,
+	getErrorDetails,
+} from "~/libs/helpers/helpers.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type Tool } from "~/libs/types/types.js";
 
-import { TOOL_CALL_LOG_MESSAGE } from "./libs/constants/constants.js";
+import {
+	SERVER_INSTRUCTIONS,
+	TOOL_CALL_LOG_MESSAGE,
+} from "./libs/constants/constants.js";
 import { ToolOutcome } from "./libs/enums/enums.js";
 import { getToolFailure } from "./libs/helpers/helpers.js";
 import { type Server, type ToolCallLog } from "./libs/types/types.js";
-
-const INSTRUCTIONS = `Promptomat keeps a corpus of prompts organised in workspaces. Every tool of this server acts as the Promptomat user who issued the API token the server was started with. Call ${ToolName.WHO_AM_I} to verify the connection and the token before relying on the other tools.`;
 
 type Constructor = {
 	apiUrl: string;
@@ -35,7 +39,7 @@ class StdioServer implements Server {
 		this.tools = tools;
 		this.mcpServer = new McpServer(
 			{ name: ServerIdentity.NAME, version: ServerIdentity.VERSION },
-			{ instructions: INSTRUCTIONS },
+			{ instructions: SERVER_INSTRUCTIONS },
 		);
 	}
 
@@ -64,7 +68,7 @@ class StdioServer implements Server {
 
 			this.logToolCall({ error, outcome, startedAt, toolName: tool.name });
 
-			return { ...createTextResult(text), isError: true };
+			return { ...createMCPTextResult(text), isError: true };
 		}
 	}
 

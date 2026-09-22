@@ -24,6 +24,8 @@
 	},
 	"devDependencies": {
 		"@promptomat/shared": "workspace:*",
+		"@types/convict": "6.1.6",
+		"convict": "6.2.5",
 		"esbuild": "0.28.2",
 		"pino": "10.3.1"
 	}
