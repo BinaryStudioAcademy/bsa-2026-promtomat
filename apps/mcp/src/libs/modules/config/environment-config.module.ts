@@ -1,7 +1,6 @@
 import convict from "convict";
 
 import { MCPEnvironmentVariable } from "~/libs/enums/enums.js";
-import { type Logger } from "~/libs/modules/logger/logger.js";
 
 import { ConfigFormat } from "./libs/enums/enums.js";
 import { apiUrlFormat } from "./libs/formats/formats.js";
@@ -11,7 +10,7 @@ import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
 class EnvironmentConfig implements Config {
 	public ENV: EnvironmentSchema;
 
-	public constructor(logger: Logger) {
+	public constructor() {
 		convict.addFormat(apiUrlFormat);
 
 		const schema = convict<EnvironmentSchema>({
@@ -32,12 +31,7 @@ class EnvironmentConfig implements Config {
 			},
 		});
 
-		schema.validate({
-			allowed: "strict",
-			output: (message) => {
-				logger.warn(message);
-			},
-		});
+		schema.validate({ allowed: "strict" });
 
 		this.ENV = schema.getProperties();
 	}
