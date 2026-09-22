@@ -65,18 +65,21 @@
 }
 
 .detail-label {
+	flex-shrink: 0;
 	color: var(--text-muted);
 }
 
 .detail-value {
 	font-weight: bold;
 	color: var(--text-strong);
+	overflow-wrap: anywhere;
 }
 
 .detail-value-group {
 	display: inline-flex;
 	gap: var(--space-8);
 	align-items: center;
+	min-width: 0;
 	text-decoration: none;
 }
 
@@ -95,6 +98,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-4);
+	min-width: 0;
 	padding: var(--space-16);
 	text-align: center;
 	background-color: var(--surface-raised);
@@ -102,6 +106,7 @@
 }
 
 .stat-value {
+	overflow-wrap: anywhere;
 	font-size: var(--font-size-display-2);
 	font-weight: bold;
 	color: var(--text-accent);
