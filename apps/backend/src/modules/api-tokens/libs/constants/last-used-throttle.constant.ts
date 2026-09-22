@@ -1,4 +1,4 @@
-const MILLISECONDS_PER_MINUTE = 60_000;
+import { MILLISECONDS_PER_MINUTE } from "~/libs/constants/constants.js";
 
 const LAST_USED_THROTTLE_MINUTES = 5;
 

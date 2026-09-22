@@ -3,13 +3,19 @@ import {
 	ShowNotificationPayload,
 } from "~/libs/modules/notification/notification.js";
 
-/* eslint-disable max-params */
-const invokeActionWithToasts = async <T>(
-	action: Promise<T>,
-	successMessage: ShowNotificationPayload,
-	errorMessage: ShowNotificationPayload,
-	finalize: () => void,
-) => {
+type Parameters<T> = {
+	action: Promise<T>;
+	errorMessage: ShowNotificationPayload;
+	finalize: () => void;
+	successMessage: ShowNotificationPayload;
+};
+
+const invokeActionWithToasts = async <T>({
+	action,
+	errorMessage,
+	finalize,
+	successMessage,
+}: Parameters<T>) => {
 	try {
 		await action;
 		showNotification(successMessage);

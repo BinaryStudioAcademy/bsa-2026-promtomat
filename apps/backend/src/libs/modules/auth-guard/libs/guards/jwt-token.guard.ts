@@ -1,4 +1,4 @@
-import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
+import { TimeUnit } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserEntity } from "~/modules/users/user.entity.js";
 import { type UserService } from "~/modules/users/user.service.js";
@@ -36,7 +36,7 @@ class JwtTokenGuard implements TokenGuard {
 		}
 
 		const changedAtSeconds = Math.floor(
-			changedAtMilliseconds / MILLISECONDS_IN_SECOND,
+			changedAtMilliseconds / TimeUnit.MILLISECONDS_PER_SECOND,
 		);
 
 		if (payload.iat <= changedAtSeconds) {

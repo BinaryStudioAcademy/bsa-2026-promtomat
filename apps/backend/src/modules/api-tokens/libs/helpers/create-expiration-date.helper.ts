@@ -1,7 +1,6 @@
+import { MILLISECONDS_PER_DAY } from "~/libs/constants/constants.js";
 import { ApiTokenExpiration } from "~/libs/enums/enums.js";
 import { type ApiTokenExpirationValue } from "~/libs/types/types.js";
-
-import { MILLISECONDS_PER_DAY } from "../constants/constants.js";
 
 const createExpirationDate = (
 	expiration: ApiTokenExpirationValue,

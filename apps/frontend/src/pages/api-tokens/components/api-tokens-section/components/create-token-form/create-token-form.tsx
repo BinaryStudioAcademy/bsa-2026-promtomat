@@ -16,7 +16,11 @@ type Properties = {
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 };
 
-const CreateTokenForm = ({ control, isCreating, onSubmit }: Properties) => {
+const CreateTokenForm: React.FC<Properties> = ({
+	control,
+	isCreating,
+	onSubmit,
+}: Properties) => {
 	return (
 		<form className={styles["form"]} onSubmit={onSubmit}>
 			<div className={styles["form-field"]}>

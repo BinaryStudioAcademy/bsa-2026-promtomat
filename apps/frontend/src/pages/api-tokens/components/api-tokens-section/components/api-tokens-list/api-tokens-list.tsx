@@ -12,7 +12,10 @@ type Properties = {
 	tokens: ApiTokenDto[] | undefined;
 };
 
-const ApiTokensList = ({ handleRevoke, tokens }: Properties) => {
+const ApiTokensList: React.FC<Properties> = ({
+	handleRevoke,
+	tokens,
+}: Properties) => {
 	if (!(tokens && tokens.length > EMPTY_LENGTH)) {
 		return <EmptyTokenListPlaceholder />;
 	}

@@ -7,7 +7,7 @@ type Properties = {
 	isLoading: boolean;
 };
 
-const LoadingIndicator = ({ isLoading }: Properties) => {
+const LoadingIndicator: React.FC<Properties> = ({ isLoading }: Properties) => {
 	if (!isLoading) {
 		return null;
 	}

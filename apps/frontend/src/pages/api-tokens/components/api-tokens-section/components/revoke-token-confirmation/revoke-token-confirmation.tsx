@@ -4,16 +4,16 @@ import { ButtonVariant } from "~/libs/enums/enums.js";
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
 
 type Properties = {
-	confirmRevoke: () => void;
-	handleRevokeCancel: () => void;
 	isRevoking: boolean;
+	onConfirmRevoke: () => void;
+	onRevokeCancel: () => void;
 	pendingRevokeId: null | string;
 };
 
-const RevokeTokenConfirmation = ({
-	confirmRevoke,
-	handleRevokeCancel,
+const RevokeTokenConfirmation: React.FC<Properties> = ({
 	isRevoking,
+	onConfirmRevoke,
+	onRevokeCancel,
 	pendingRevokeId,
 }: Properties) => {
 	return (
@@ -22,8 +22,8 @@ const RevokeTokenConfirmation = ({
 			confirmVariant={ButtonVariant.PRIMARY}
 			isLoading={isRevoking}
 			isOpen={Boolean(pendingRevokeId)}
-			onCancel={handleRevokeCancel}
-			onConfirm={confirmRevoke}
+			onCancel={onRevokeCancel}
+			onConfirm={onConfirmRevoke}
 			title={ApiTokensMessage.REVOKE_TITLE}
 			tone="danger"
 		>

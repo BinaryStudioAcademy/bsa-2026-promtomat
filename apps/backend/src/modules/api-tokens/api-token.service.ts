@@ -46,6 +46,18 @@ class ApiTokenService {
 		return elapsed >= LAST_USED_THROTTLE_MS;
 	}
 
+	private checkIsTokenExpired(token: ApiTokenEntity) {
+		const tokenObject = token.toObject();
+
+		if (tokenObject.expiresAt === null) {
+			return false;
+		}
+
+		const expiresAt = new Date(tokenObject.expiresAt).getTime();
+
+		return Date.now() >= expiresAt;
+	}
+
 	private createToken(
 		name: string,
 		userId: number,
@@ -76,18 +88,6 @@ class ApiTokenService {
 
 	private hash(secret: string): string {
 		return createHash(DIGEST_ALGORITHM).update(secret).digest(SECRET_ENCODING);
-	}
-
-	private isTokenExpired(token: ApiTokenEntity) {
-		const tokenObject = token.toObject();
-
-		if (tokenObject.expiresAt === null) {
-			return false;
-		}
-
-		const expiresAt = new Date(tokenObject.expiresAt).getTime();
-
-		return Date.now() >= expiresAt;
 	}
 
 	private stripToken(token: string): [string, string] {
@@ -176,7 +176,7 @@ class ApiTokenService {
 			return null;
 		}
 
-		if (this.isTokenExpired(foundToken)) {
+		if (this.checkIsTokenExpired(foundToken)) {
 			return null;
 		}
 

@@ -1,14 +1,9 @@
 import { TimeUnit } from "~/libs/enums/enums.js";
 
-const EXPIRING_SOON_DAYS = 7;
-
-const NO_TIME_REMAINING = 0;
-
-const EXPIRING_SOON_MS =
-	EXPIRING_SOON_DAYS *
+const MILLISECONDS_PER_DAY =
 	TimeUnit.HOURS_PER_DAY *
 	TimeUnit.MINUTES_PER_HOUR *
 	TimeUnit.SECONDS_PER_MINUTE *
 	TimeUnit.MILLISECONDS_PER_SECOND;
 
-export { EXPIRING_SOON_MS, NO_TIME_REMAINING };
+export { MILLISECONDS_PER_DAY };
