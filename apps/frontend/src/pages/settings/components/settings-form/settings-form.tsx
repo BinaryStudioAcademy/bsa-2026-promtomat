@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
-import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
@@ -38,7 +37,7 @@ type Properties = {
 };
 
 const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
-	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
+	const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 	const {
 		control,
 		formState: { isDirty },
@@ -53,11 +52,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	const [message, setMessage] = useState<
 		ValueOf<typeof SettingsDescriptionMessage>
 	>(SettingsDescriptionMessage.DEFAULT);
-
-	const isNicknameConflict =
-		isServerError(error) &&
-		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
-	const generalError = isNicknameConflict ? undefined : error;
 
 	const isSaveDisabled = isLoading || !isDirty;
 
@@ -120,7 +114,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	return (
 		<Section title="PROFILE">
 			<UserInfo user={user} />
-			<FormAlert error={generalError} />
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
 					<Input
