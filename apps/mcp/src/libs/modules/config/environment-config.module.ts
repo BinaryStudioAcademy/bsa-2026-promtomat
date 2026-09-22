@@ -1,21 +1,45 @@
-import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
-import { environmentValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import convict from "convict";
 
-const ISSUE_SEPARATOR = "; ";
+import { MCPEnvironmentVariable } from "~/libs/enums/enums.js";
+import { type Logger } from "~/libs/modules/logger/logger.js";
+
+import { ConfigFormat } from "./libs/enums/enums.js";
+import { apiUrlFormat } from "./libs/formats/formats.js";
+import { validateApiToken } from "./libs/helpers/helpers.js";
+import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
 
 class EnvironmentConfig implements Config {
 	public ENV: EnvironmentSchema;
 
-	public constructor(environment: Record<string, string | undefined>) {
-		const result = environmentValidationSchema.safeParse(environment);
+	public constructor(logger: Logger) {
+		convict.addFormat(apiUrlFormat);
 
-		if (!result.success) {
-			throw new Error(
-				result.error.issues.map((issue) => issue.message).join(ISSUE_SEPARATOR),
-			);
-		}
+		const schema = convict<EnvironmentSchema>({
+			API: {
+				TOKEN: {
+					default: null,
+					doc: "API token the server acts as",
+					env: MCPEnvironmentVariable.API_TOKEN,
+					format: validateApiToken,
+					sensitive: true,
+				},
+				URL: {
+					default: null,
+					doc: "API base URL including the version prefix",
+					env: MCPEnvironmentVariable.API_URL,
+					format: ConfigFormat.API_URL,
+				},
+			},
+		});
 
-		this.ENV = result.data;
+		schema.validate({
+			allowed: "strict",
+			output: (message) => {
+				logger.warn(message);
+			},
+		});
+
+		this.ENV = schema.getProperties();
 	}
 }
 

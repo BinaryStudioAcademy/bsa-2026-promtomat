@@ -242,6 +242,12 @@ importers:
       '@promptomat/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@types/convict':
+        specifier: 6.1.6
+        version: 6.1.6
+      convict:
+        specifier: 6.2.5
+        version: 6.2.5
       esbuild:
         specifier: 0.28.2
         version: 0.28.2

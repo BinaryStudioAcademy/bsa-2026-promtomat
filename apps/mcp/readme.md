@@ -59,17 +59,17 @@ PROMPTOMAT_API_URL='https://<your-promptomat-host>/api/v1' PROMPTOMAT_API_TOKEN=
 
 ### A variable is missing or malformed
 
-The server stops at once with exit code 1, before it connects to the client, and writes one JSON line to stderr. Its `msg` names the variable, `PROMPTOMAT_API_TOKEN` or `PROMPTOMAT_API_URL`; when both are wrong, both messages share the line, separated by `; `:
+The server stops at once with exit code 1, before it connects to the client, and writes one JSON line to stderr. Its `msg` names the variable, `PROMPTOMAT_API_TOKEN` or `PROMPTOMAT_API_URL`; when both are wrong, the message lists both, one per line:
 
 ```text
-Missing required environment variable PROMPTOMAT_API_TOKEN
+API.TOKEN: Missing required environment variable PROMPTOMAT_API_TOKEN
 ```
 
-A value that is present but malformed is reported the same way:
+A value that is present but malformed is reported the same way. A rejected URL is echoed after `value was`, for example a URL typed without its scheme; a rejected token never is:
 
 ```text
-PROMPTOMAT_API_URL must be an absolute http(s) URL
-PROMPTOMAT_API_TOKEN must contain only printable ASCII characters without spaces
+API.URL: PROMPTOMAT_API_URL must be an absolute http(s) URL: value was "localhost:3001/api/v1"
+API.TOKEN: PROMPTOMAT_API_TOKEN must contain only printable ASCII characters without spaces
 ```
 
 ### The backend is unreachable
