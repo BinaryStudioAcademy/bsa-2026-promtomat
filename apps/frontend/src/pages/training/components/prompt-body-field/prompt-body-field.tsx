@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { type Control, useFormState, useWatch } from "react-hook-form";
-import Markdown from "react-markdown";
 
+import { Markdown } from "~/libs/components/markdown/markdown.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 
-import {
-	MARKDOWN_COMPONENTS,
-	PROMPT_BODY_MODE_OPTIONS,
-} from "./libs/constants/constants.js";
+import { PROMPT_BODY_MODE_OPTIONS } from "./libs/constants/constants.js";
 import { PromptBodyFieldMessage, PromptBodyMode } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -40,6 +37,7 @@ const PromptBodyField: React.FC<Properties> = ({
 		content = (
 			<Textarea
 				autoComplete="off"
+				className={styles["textarea"]}
 				control={control}
 				isDisabled={isDisabled}
 				isLabelHidden={true}
@@ -59,7 +57,7 @@ const PromptBodyField: React.FC<Properties> = ({
 	} else {
 		content = (
 			<div className={styles["preview"]}>
-				<Markdown components={MARKDOWN_COMPONENTS}>{promptBody}</Markdown>
+				<Markdown content={promptBody} />
 			</div>
 		);
 	}

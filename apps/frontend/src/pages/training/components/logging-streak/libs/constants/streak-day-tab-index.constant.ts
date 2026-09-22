@@ -1,0 +1,3 @@
+const STREAK_DAY_TAB_INDEX = 0;
+
+export { STREAK_DAY_TAB_INDEX };

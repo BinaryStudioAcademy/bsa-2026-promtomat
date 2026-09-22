@@ -35,7 +35,7 @@
 	color: var(--text-muted);
 }
 
-.field textarea {
+.textarea {
 	min-height: var(--prompt-body-min-height);
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-body-sm);
@@ -51,31 +51,6 @@
 	background-color: var(--surface-sunken);
 	border: var(--border-width-hairline) solid var(--border-subtle);
 	border-radius: var(--radius-md);
-}
-
-.preview :first-child {
-	margin-top: 0;
-}
-
-.preview :last-child {
-	margin-bottom: 0;
-}
-
-.preview pre {
-	padding: var(--space-12);
-	overflow-x: auto;
-	font-family: var(--font-family-mono);
-	background-color: var(--surface-inset);
-	border-radius: var(--radius-sm);
-}
-
-.preview code {
-	font-family: var(--font-family-mono);
-	font-size: var(--font-size-meta);
-}
-
-.preview a {
-	color: var(--text-accent);
 }
 
 .empty {
