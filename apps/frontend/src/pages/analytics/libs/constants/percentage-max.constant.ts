@@ -1,0 +1,3 @@
+const PERCENTAGE_MAX = 100;
+
+export { PERCENTAGE_MAX };
