@@ -1,10 +1,9 @@
 const sortValuesByDictionary = (
 	values: string[],
 	valuesDictionary: string[],
-): string[] =>
-	values.toSorted(
-		(value, otherValue) =>
-			valuesDictionary.indexOf(value) - valuesDictionary.indexOf(otherValue),
-	);
+): string[] => {
+	const selectedValues = new Set(values);
+	return valuesDictionary.filter((entry) => selectedValues.has(entry));
+};
 
 export { sortValuesByDictionary };
