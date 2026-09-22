@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
+import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useGetAnalyticsQuery } from "~/modules/analytics/analytics-api.js";
 import { useAnalyticsScope } from "~/modules/analytics/libs/hooks/use-analytics-scope/use-analytics-scope.hook.js";
 import { type AnalyticsDashboardResponseDto } from "~/modules/analytics/libs/types/types.js";
@@ -19,7 +21,7 @@ import styles from "./styles.module.css";
 const Analytics: React.FC = () => {
 	const { control, granularity, handleGranularityChange, queryPayload } =
 		useAnalyticsScope();
-	const { data, isError, isFetching, isLoading } =
+	const { data, isError, isFetching, isLoading, refetch } =
 		useGetAnalyticsQuery(queryPayload);
 
 	const [displayedData, setDisplayedData] = useState<
@@ -33,12 +35,29 @@ const Analytics: React.FC = () => {
 	const isScopeEmpty =
 		displayedData !== undefined &&
 		getScoredCount(displayedData.distribution) === ZERO_VALUE;
+	const hasRefreshError = isError && !isFetching;
+
+	const handleRetry = useCallback((): void => {
+		void refetch();
+	}, [refetch]);
 
 	let content: React.ReactNode;
 
 	if (displayedData) {
 		content = (
 			<>
+				{hasRefreshError && (
+					<div className={styles["refresh-error"]} role="alert">
+						<span>{AnalyticLabel.REFRESH_ERROR}</span>
+						<Button
+							label={AnalyticLabel.RETRY}
+							onClick={handleRetry}
+							size={ControlSize.SM}
+							type="button"
+							variant={ButtonVariant.SECONDARY}
+						/>
+					</div>
+				)}
 				{isScopeEmpty && (
 					<p className={styles["notice"]} role="status">
 						{AnalyticLabel.EMPTY_SCOPE}

@@ -37,6 +37,8 @@ const AnalyticLabel = {
 	KPI_SCORED_LABEL: "Scored prompts",
 	KPI_SECTION: "Summary metrics",
 	LOAD_ERROR: "Failed to load analytics. Please try again.",
+	REFRESH_ERROR: "Couldn't refresh. Showing data for the previous selection.",
+	RETRY: "Retry",
 	SCOPE_FIELD: "Scope",
 	TITLE: "Data intelligence",
 } as const;
