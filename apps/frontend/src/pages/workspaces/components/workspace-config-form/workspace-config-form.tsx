@@ -7,13 +7,13 @@ import { SearchableSelect } from "~/libs/components/searchable-select/searchable
 import {
 	ButtonVariant,
 	ControlSize,
-	ErrorCode,
 	FormValidationMode,
 	HTTPCode,
 	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
@@ -72,10 +72,10 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
 		isServerError(error) && error.status === HTTPCode.CONFLICT;
-	const isToastedError =
-		isServerError(error) && error.code === ErrorCode.INTERNAL_SERVER_ERROR;
 	const generalErrorMessage =
-		hasConflictError || hasFieldErrors || isToastedError ? null : errorMessage;
+		hasConflictError || hasFieldErrors || checkIsToastedError(error)
+			? null
+			: errorMessage;
 
 	useEffect(() => {
 		if (hasConflictError && errorMessage) {

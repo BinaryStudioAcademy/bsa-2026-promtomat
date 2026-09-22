@@ -1,11 +1,13 @@
 const AppRoute = {
 	ANALYTICS: "/analytics",
 	ANY: "*",
+	FORGOT_PASSWORD: "/forgot-password",
 	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
 	PROFILE: "/profile",
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	PROMPTS_HISTORY: "/prompts/history",
+	RESET_PASSWORD: "/reset-password",
 	ROOT: "/",
 	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",

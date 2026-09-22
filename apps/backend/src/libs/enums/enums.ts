@@ -8,4 +8,5 @@ export {
 	ErrorCode,
 	ScoreTierMin,
 	SortOrder,
+	TokenErrorCode,
 } from "@promptomat/shared";

@@ -58,7 +58,7 @@ const PromptHistory: React.FC = () => {
 		);
 	} else {
 		listContent = items.map((item) => (
-			<PromptListItem key={item.id} prompt={item} />
+			<PromptListItem key={item.id} prompt={item} queryPayload={queryPayload} />
 		));
 	}
 

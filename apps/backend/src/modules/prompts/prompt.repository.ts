@@ -31,6 +31,7 @@ import {
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
+	type PromptUpdatePayload,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -171,6 +172,7 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
 				PROMPT_WORKSPACE_ID,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
 			)
 			.from(DatabaseTableName.PROMPTS)
@@ -187,6 +189,7 @@ class PromptRepository {
 			id: number;
 			promptBody: string;
 			taskIntent: string;
+			userId: number;
 			workspaceId: number;
 			workspaceName: string;
 		}>;
@@ -201,9 +204,19 @@ class PromptRepository {
 			id: row.id,
 			intent: row.taskIntent,
 			score: row.efficiencyScore,
+			userId: row.userId,
 			workspaceId: row.workspaceId,
 			workspaceName: row.workspaceName,
 		};
+	}
+
+	public async findByIdAndUserId(
+		id: number,
+		userId: number,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel.query().findOne({ id, userId });
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
 	}
 
 	public async findByWorkspace({
@@ -279,6 +292,19 @@ class PromptRepository {
 		const baseQuery = this.applyFilters(this.promptModel.query(), { userId });
 
 		return await this.findAggregate(baseQuery);
+	}
+
+	public async update(
+		id: number,
+		payload: PromptUpdatePayload,
+		trx?: Transaction,
+	): Promise<null | PromptEntity> {
+		const prompt = await this.promptModel
+			.query(trx)
+			.patchAndFetchById(id, payload)
+			.castTo<PromptModel | undefined>();
+
+		return prompt ? PromptEntity.initialize(prompt) : null;
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {
