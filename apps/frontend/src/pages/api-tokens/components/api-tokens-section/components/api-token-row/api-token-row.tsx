@@ -3,18 +3,19 @@ import { useCallback } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import {
+	formatDate,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { type ApiTokenDto } from "~/modules/api-tokens/api-tokens.js";
 
 import {
+	ApiTokenDateFormat,
 	ApiTokensMessage,
 	ApiTokenStatusClass,
 	ApiTokenStatusLabel,
 } from "../../libs/enums/enums.js";
 import {
-	formatExpirationDate,
 	formatTokenIdPrefix,
 	getTokenStatus,
 } from "../../libs/helpers/helpers.js";
@@ -56,7 +57,7 @@ const ApiTokenRow: React.FC<Properties> = ({ onRevoke, token }: Properties) => {
 				) : (
 					<>
 						<span className={styles["row-expires"]}>
-							{formatExpirationDate(expiresAt)}
+							{formatDate(expiresAt, ApiTokenDateFormat.EXPIRATION)}
 						</span>
 						<span className={styles["row-meta"]}>
 							{getRelativeTimeLabel(expiresAt)}

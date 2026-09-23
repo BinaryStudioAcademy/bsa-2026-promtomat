@@ -1,4 +1,3 @@
-export { formatExpirationDate } from "./format-expiration-date.helper.js";
 export { formatTokenIdPrefix } from "./format-token-id-prefix.helper.js";
 export { getTokenStatus } from "./get-token-status.helper.js";
 export { invokeActionWithToasts } from "./invoke-action-with-toasts.helper.js";
