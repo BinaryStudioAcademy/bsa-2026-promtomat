@@ -22,11 +22,8 @@ import {
 
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
 import { WorkspaceConfigModal } from "./components/workspace-config-modal/workspace-config-modal.js";
-import { WorkspaceContributorsModal } from "./components/workspace-contributors-modal/workspace-contributors-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
-import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
 import { WorkspaceHeader } from "./components/workspace-header/workspace-header.js";
-import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { WorkspaceListMessage } from "./libs/enums/enums.js";
 import { getWorkspaceOpenDestination } from "./libs/helpers/helpers.js";
@@ -64,23 +61,13 @@ const Workspaces: React.FC = () => {
 
 	const handleConfigOpen = useCallback(
 		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "config", workspace });
+			setActiveModal({
+				isOwner: workspace.userId === currentUserId,
+				type: "config",
+				workspace,
+			});
 		},
-		[],
-	);
-
-	const handleDeleteOpen = useCallback(
-		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "delete", workspace });
-		},
-		[],
-	);
-
-	const handleLeaveOpen = useCallback(
-		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "leave", workspace });
-		},
-		[],
+		[currentUserId],
 	);
 
 	const handleOpen = useCallback(
@@ -98,20 +85,9 @@ const Workspaces: React.FC = () => {
 		[navigate],
 	);
 
-	const handleManageAccessOpen = useCallback(
-		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "manage-access", workspace });
-		},
-		[],
-	);
-
 	const handleModalClose = useCallback((): void => {
 		setActiveModal(null);
 	}, []);
-
-	const isActiveWorkspaceOwner =
-		activeModal?.type === "manage-access" &&
-		activeModal.workspace.userId === currentUserId;
 
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
@@ -150,15 +126,10 @@ const Workspaces: React.FC = () => {
 				)}
 				{hasWorkspaces &&
 					workspaces.map((workspace) => {
-						const isOwner = workspace.userId === currentUserId;
 						return (
 							<WorkspaceCard
-								isOwner={isOwner}
 								key={workspace.id}
 								onConfig={handleConfigOpen}
-								onDelete={handleDeleteOpen}
-								onLeave={handleLeaveOpen}
-								onManageAccess={handleManageAccessOpen}
 								onOpen={handleOpen}
 								workspace={workspace}
 							/>
@@ -170,31 +141,8 @@ const Workspaces: React.FC = () => {
 				<WorkspaceCreateModal onClose={handleModalClose} />
 			)}
 
-			{activeModal?.type === "config" && (
+			{activeModal?.type === "config" && activeModal.isOwner && (
 				<WorkspaceConfigModal
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "delete" && (
-				<WorkspaceDeleteModal
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "leave" && user && (
-				<WorkspaceLeaveModal
-					currentUserId={user.id}
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "manage-access" && (
-				<WorkspaceContributorsModal
-					isOwner={isActiveWorkspaceOwner}
 					onClose={handleModalClose}
 					workspace={activeModal.workspace}
 				/>

@@ -1,12 +1,49 @@
 .card {
+	position: relative;
 	display: flex;
-	flex-direction: column;
-	gap: var(--space-12);
 	min-width: 0;
 	padding: var(--space-20);
 	background-color: var(--surface-card);
 	border: var(--border-width-hairline) solid var(--border-default);
 	border-radius: var(--radius-2xl);
+	transition: background-color var(--motion-duration-fast)
+		var(--motion-ease-standard);
+}
+
+.card:hover {
+	background-color: var(--surface-raised);
+}
+
+.open-target {
+	position: absolute;
+	inset: 0;
+	padding: 0;
+	cursor: pointer;
+	background-color: transparent;
+	border: 0;
+	border-radius: inherit;
+}
+
+.open-target:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: calc(-1 * var(--border-width-focus));
+}
+
+.body {
+	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--space-12);
+	width: 100%;
+	min-width: 0;
+	pointer-events: none;
+}
+
+.config {
+	align-self: flex-end;
+	margin-top: auto;
+	pointer-events: auto;
 }
 
 .header {
