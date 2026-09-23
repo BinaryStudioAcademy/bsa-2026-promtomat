@@ -2,11 +2,9 @@ import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
+import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
-import {
-	GeneratorInterface,
-	TextGenerationError,
-} from "~/libs/modules/generator/generator.js";
+import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
@@ -27,6 +25,7 @@ import {
 	type PromptItemResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
+	type PromptUpdateIntentPayload,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
 import { type PromptRepository } from "./prompt.repository.js";
@@ -209,6 +208,15 @@ class PromptService {
 		return prompt;
 	}
 
+	public async findByIdAndOwner(
+		id: number,
+		userId: number,
+	): Promise<null | Omit<PromptDto, "label">> {
+		const prompt = await this.promptRepository.findByIdAndUserId(id, userId);
+
+		return prompt ? prompt.toObject() : null;
+	}
+
 	public async findByWorkspace(
 		payload: PromptFindByWorkspacePayload,
 	): Promise<PromptDto[]> {
@@ -265,7 +273,16 @@ class PromptService {
 		averageScore: null | number;
 		totalCount: number;
 	}> {
-		return await this.promptRepository.findUserPromptSummary(userId);
+		const { averageScore, totalCount } =
+			await this.promptRepository.findUserPromptSummary(userId);
+
+		return {
+			averageScore:
+				averageScore === null
+					? null
+					: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR,
+			totalCount,
+		};
 	}
 
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
@@ -281,6 +298,54 @@ class PromptService {
 		});
 
 		await this.promptRepository.updateLabel(prompt.id, label.id);
+	}
+
+	public async updateIntent(
+		payload: PromptUpdateIntentPayload,
+	): Promise<PromptDto> {
+		const { id, taskIntent } = payload;
+
+		const existingPrompt = await this.promptRepository.findById(id);
+
+		if (!existingPrompt) {
+			throw PromptError.notFound();
+		}
+
+		const generatedLabel = await this.generateLabel({
+			promptBody: existingPrompt.body,
+			taskIntent,
+			workspaceId: existingPrompt.workspaceId,
+		});
+
+		const updatedPrompt = await this.database.transaction(async (trx) => {
+			const label = await this.labelService.getOrCreate(
+				{
+					name: generatedLabel,
+					workspaceId: existingPrompt.workspaceId,
+				},
+				trx,
+			);
+
+			const prompt = await this.promptRepository.update(
+				id,
+				{ labelId: label.id, taskIntent },
+				trx,
+			);
+
+			if (!prompt) {
+				throw PromptError.notFound();
+			}
+
+			await this.promptEmbeddingService.deleteForPrompt(id, trx);
+
+			return prompt;
+		});
+
+		const promptObject = updatedPrompt.toObject();
+
+		void this.promptEmbeddingService.embedForPrompt(promptObject);
+
+		return { ...promptObject, label: generatedLabel };
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {

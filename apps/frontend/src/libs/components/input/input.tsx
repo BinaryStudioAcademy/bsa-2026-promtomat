@@ -17,7 +17,7 @@ type Properties<T extends FieldValues> = {
 	autoComplete?: React.HTMLInputAutoCompleteAttribute;
 	className?: string | undefined;
 	control: Control<T, null>;
-	descriptionId?: string;
+	descriptionId?: string | undefined;
 	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
@@ -26,15 +26,19 @@ type Properties<T extends FieldValues> = {
 	label: string;
 	maxLength?: number;
 	name: FieldPath<T>;
+	onBlur?: React.FocusEventHandler<HTMLInputElement>;
+	onClick?: React.MouseEventHandler<HTMLInputElement>;
 	onFocus?: React.FocusEventHandler<HTMLInputElement>;
+	onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 	placeholder?: string;
+	ref?: React.Ref<HTMLInputElement>;
 	size?: ValueOf<typeof ControlSize>;
 	type?: ValueOf<typeof InputType>;
 };
 
 const Input = <T extends FieldValues>({
 	autoComplete,
-	className,
+	className = "",
 	control,
 	descriptionId,
 	iconName,
@@ -45,8 +49,12 @@ const Input = <T extends FieldValues>({
 	label,
 	maxLength,
 	name,
+	onBlur,
+	onClick,
 	onFocus,
+	onKeyDown,
 	placeholder = "",
+	ref,
 	size = ControlSize.MD,
 	type = InputType.TEXT,
 }: Properties<T>): React.JSX.Element => {
@@ -79,6 +87,14 @@ const Input = <T extends FieldValues>({
 	const handleVisibilityToggle = useCallback((): void => {
 		setIsPasswordVisible((previous) => !previous);
 	}, []);
+
+	const handleBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			field.onBlur();
+			onBlur?.(event);
+		},
+		[field, onBlur],
+	);
 
 	return (
 		<div className={styles["field"]}>
@@ -113,8 +129,12 @@ const Input = <T extends FieldValues>({
 					)}
 					id={inputId}
 					maxLength={maxLength}
+					onBlur={handleBlur}
+					onClick={onClick}
 					onFocus={onFocus}
+					onKeyDown={onKeyDown}
 					placeholder={placeholder}
+					ref={ref}
 					type={inputType}
 				/>
 				{iconName && (

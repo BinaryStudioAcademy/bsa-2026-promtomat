@@ -6,6 +6,9 @@ export {
 	AuthValidationRule,
 } from "./libs/enums/enums.js";
 export {
+	type ForgotPasswordRequestDto,
+	type NewPasswordFormValues,
+	type ResetPasswordRequestDto,
 	type SignInRequestDto,
 	type SignInResponseDto,
 	type SignUpRequestDto,
@@ -13,10 +16,13 @@ export {
 } from "./libs/types/types.js";
 export {
 	emailFieldValidationSchema,
+	forgotPasswordValidationSchema,
+	newPasswordValidationSchema,
 	nicknameFieldValidationSchema,
 	passwordBoundarySpacesValidationSchema,
 	passwordFieldValidationSchema,
 	passwordLengthValidationSchema,
+	resetPasswordValidationSchema,
 	signInValidationSchema,
 	signUpValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

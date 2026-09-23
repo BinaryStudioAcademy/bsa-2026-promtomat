@@ -1,3 +1,4 @@
+export { type StoredWorkspaceState } from "./stored-workspace-state.type.js";
 export {
 	type ContributorDto,
 	type WorkspaceAddContributorRequestDto,

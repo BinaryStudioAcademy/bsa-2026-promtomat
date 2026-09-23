@@ -8,6 +8,7 @@ import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import {
 	useGetPromptProgressQuery,
@@ -18,7 +19,10 @@ import {
 	type PromptCreateRequestDto,
 	promptCreateValidationSchema,
 } from "~/modules/prompts/prompts.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import {
+	useActiveWorkspace,
+	useGetWorkspacesQuery,
+} from "~/modules/workspaces/workspaces.js";
 
 import styles from "../../styles.module.css";
 import { RecentInjections } from "../recent-injections/recent-injections.js";
@@ -43,14 +47,16 @@ const RecordPromptForm: React.FC = () => {
 			validationSchema: promptCreateValidationSchema,
 		});
 
+	const formWorkspaceId = useWatch({ control, name: "workspaceId" });
+	const workspaceId = useActiveWorkspace({ formWorkspaceId, workspaces });
+	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 	useWorkspaceSearchParameter({
-		selectWorkspace: (workspaceId): void => {
-			setValue("workspaceId", workspaceId);
+		selectWorkspace: (selectedWorkspaceId): void => {
+			setValue("workspaceId", selectedWorkspaceId);
 		},
 		workspaces,
 	});
 
-	const workspaceId = useWatch({ control, name: "workspaceId" });
 	const workspaceQuery =
 		typeof workspaceId === "number" ? { workspaceId } : skipToken;
 	const { data: progress } = useGetPromptProgressQuery(workspaceQuery);

@@ -21,7 +21,11 @@ const usersApi = baseApi
 			}),
 			updateProfile: builder.mutation<UserDto, UserUpdateRequestDto>({
 				extraOptions: { shouldSuppressToast: true },
-				invalidatesTags: [UsersApiTag.USER],
+				invalidatesTags: (_result, error) => {
+					const hasError = Boolean(error);
+
+					return hasError ? [] : [UsersApiTag.USER];
+				},
 				query: (payload) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
