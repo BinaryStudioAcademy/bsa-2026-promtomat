@@ -14,11 +14,14 @@ import {
 import { type PromptDeliveryViewProperties } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
+const NOOP = (): void => {};
+
 const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
+	computedScore,
 	efficiencyScore,
 	explanation = "",
-	onScoreSelect,
+	onScoreSelect = NOOP,
 	sources = [],
 	workspaceName,
 }: PromptDeliveryViewProperties) => {
@@ -42,13 +45,19 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			});
 	}, [body]);
 
-	const handleScoreSelect = useCallback(() => {
-		return (): void => {};
-	}, []);
+	const handleScoreSelect = useCallback(
+		(score: number) => {
+			return (): void => {
+				onScoreSelect(score);
+			};
+		},
+		[onScoreSelect],
+	);
 
 	return (
 		<div className={styles["view"]}>
 			<PromptMetaSection
+				computedScore={computedScore}
 				efficiencyScore={efficiencyScore}
 				workspaceName={workspaceName}
 			/>
@@ -60,7 +69,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
 				<ScoreGrid
 					label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
-					onScoreSelect={onScoreSelect ?? handleScoreSelect}
+					onScoreSelect={handleScoreSelect}
 				/>
 			</PromptDeliveryCard>
 		</div>
