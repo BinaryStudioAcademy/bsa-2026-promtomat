@@ -22,6 +22,12 @@
 	gap: var(--space-4);
 }
 
+@media (width > 810px) {
+	.fields {
+		gap: var(--space-16);
+	}
+}
+
 .profile-save-row {
 	display: flex;
 	flex-direction: column;
