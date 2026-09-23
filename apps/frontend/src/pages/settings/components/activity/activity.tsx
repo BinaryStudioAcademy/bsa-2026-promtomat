@@ -44,6 +44,10 @@ const Activity: React.FC<Properties> = ({ summary }: Properties) => {
 					</span>
 					<span className={styles["stat-label"]}>Average score</span>
 				</div>
+				<div className={styles["stat-tile"]}>
+					<span className={styles["stat-value"]}>TODO</span>
+					<span className={styles["stat-label"]}>Day streak</span>
+				</div>
 			</div>
 			<Button
 				className={styles["activity-button"]}
