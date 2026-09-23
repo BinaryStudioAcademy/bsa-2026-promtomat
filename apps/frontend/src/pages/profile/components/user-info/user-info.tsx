@@ -14,7 +14,7 @@ const UserInfo: React.FC<Properties> = ({ user }: Properties) => {
 	const userDetails = `Member since ${formattedCreatedAt} · ${String(user.totalPrompts)} prompts contributed`;
 	return (
 		<div className={styles["info"]}>
-			<div className={styles["avatar-wrapper"]}></div>
+			<div className={styles["avatar-wrapper"]}>So</div>
 			<div>
 				<p className={styles["nickname"]}>{user.nickname}</p>
 				<span className={styles["details"]}>{userDetails}</span>

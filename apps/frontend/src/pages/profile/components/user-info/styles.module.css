@@ -18,8 +18,11 @@
 	justify-content: center;
 	width: 48px;
 	height: 48px;
+	font-size: var(--font-size-body-xl);
+	font-weight: 700;
+	color: var(--text-on-accent);
 	background-color: var(--border-accent);
-	border-radius: 50%;
+	border-radius: var(--radius-pill);
 }
 
 @media (width >=600px) {
