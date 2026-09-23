@@ -158,6 +158,7 @@ const workspacesApi = baseApi
 
 const {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceMutation,
 	useGetWorkspaceByIdQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
@@ -165,6 +166,7 @@ const {
 
 export {
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceMutation,
 	useGetWorkspaceByIdQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

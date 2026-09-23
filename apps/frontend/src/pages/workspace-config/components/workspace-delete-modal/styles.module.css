@@ -1,0 +1,22 @@
+.content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-20);
+}
+
+.consequence {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.text {
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	color: var(--text-body);
+}
+
+.impact {
+	font-weight: 600;
+	color: var(--text-strong);
+}

@@ -85,6 +85,26 @@
 	letter-spacing: 1px;
 }
 
+.danger {
+	gap: var(--space-12);
+	background-color: var(--bg-danger);
+	border-color: var(--border-danger);
+}
+
+.danger-title {
+	color: var(--fg-danger);
+}
+
+.danger-text {
+	margin: 0;
+	font-size: var(--font-size-body-base);
+	color: var(--text-muted);
+}
+
+.danger-button {
+	align-self: flex-start;
+}
+
 .form {
 	display: flex;
 	flex-direction: column;

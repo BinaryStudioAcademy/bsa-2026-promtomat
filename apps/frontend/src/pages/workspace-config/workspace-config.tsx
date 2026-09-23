@@ -15,6 +15,7 @@ import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
+import { DangerZone } from "./components/danger-zone/danger-zone.js";
 import { WorkspaceConfigForm } from "./components/workspace-config-form/workspace-config-form.js";
 import { WorkspaceConfigMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -85,6 +86,7 @@ const WorkspaceConfig: React.FC = () => {
 						target={PromptProgress.TARGET_COUNT}
 					/>
 				</section>
+				{isOwner && <DangerZone workspace={data} />}
 			</div>
 		</div>
 	);
