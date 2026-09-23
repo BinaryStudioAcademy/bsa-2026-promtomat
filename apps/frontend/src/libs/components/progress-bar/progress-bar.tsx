@@ -1,20 +1,25 @@
 import React from "react";
 
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { PERCENTAGE_SCALE } from "./libs/constants/constants.js";
 import { getProgressPercentage } from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	className?: string | undefined;
 	count: number;
+	isSummaryHidden?: boolean;
 	label: string;
 	target: number;
 	unit: string;
 };
 
 const ProgressBar: React.FC<Properties> = ({
+	className,
 	count,
+	isSummaryHidden = false,
 	label,
 	target,
 	unit,
@@ -25,7 +30,7 @@ const ProgressBar: React.FC<Properties> = ({
 	const fillStyle = { width: `${String(percentage)}%` };
 
 	return (
-		<div className={styles["row"]}>
+		<div className={getValidClasses(styles["row"], className)}>
 			<div
 				aria-label={label}
 				aria-valuemax={PERCENTAGE_SCALE}
@@ -36,10 +41,14 @@ const ProgressBar: React.FC<Properties> = ({
 			>
 				<div className={styles["fill"]} style={fillStyle} />
 			</div>
-			<span className={styles["percent"]}>{percentage}%</span>
-			<span className={styles["count"]}>
-				{countLabel} / {targetLabel} {unit}
-			</span>
+			{!isSummaryHidden && (
+				<>
+					<span className={styles["percent"]}>{percentage}%</span>
+					<span className={styles["count"]}>
+						{countLabel} / {targetLabel} {unit}
+					</span>
+				</>
+			)}
 		</div>
 	);
 };

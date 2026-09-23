@@ -2,5 +2,5 @@ export {
 	BEARER,
 	EMPTY_LENGTH,
 	FIRST_ELEMENT_INDEX,
-	MAX_EFFICIENCY_SCORE,
+	ZERO_VALUE,
 } from "@promptomat/shared";

@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
+import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
 
 import { WorkspacesApiPath, WorkspacesApiTag } from "./libs/enums/enums.js";
 import {
@@ -15,7 +16,9 @@ import {
 } from "./libs/types/types.js";
 
 const workspacesApi = baseApi
-	.enhanceEndpoints({ addTagTypes: [WorkspacesApiTag.WORKSPACE] })
+	.enhanceEndpoints({
+		addTagTypes: [AnalyticsApiTag.ANALYTIC, WorkspacesApiTag.WORKSPACE],
+	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
 			addWorkspaceContributor: builder.mutation<
@@ -58,7 +61,9 @@ const workspacesApi = baseApi
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
 
-					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+					return hasError
+						? []
+						: [AnalyticsApiTag.ANALYTIC, WorkspacesApiTag.WORKSPACE];
 				},
 				query: (id) => ({
 					method: HTTPMethod.DELETE,
@@ -78,7 +83,9 @@ const workspacesApi = baseApi
 			>({
 				invalidatesTags: (_result, error) => {
 					const hasError = Boolean(error);
-					return hasError ? [] : [WorkspacesApiTag.WORKSPACE];
+					return hasError
+						? []
+						: [AnalyticsApiTag.ANALYTIC, WorkspacesApiTag.WORKSPACE];
 				},
 				query: ({ userId, workspaceId }) => ({
 					method: HTTPMethod.DELETE,

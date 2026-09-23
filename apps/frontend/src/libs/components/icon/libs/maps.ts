@@ -19,6 +19,7 @@ import PlusIcon from "~/assets/img/plus.svg?react";
 import SearchIcon from "~/assets/img/search.svg?react";
 import SettingsIcon from "~/assets/img/settings.svg?react";
 import SparklesIcon from "~/assets/img/sparkles.svg?react";
+import StatsBars from "~/assets/img/stats-bars.svg?react";
 import Trash2Icon from "~/assets/img/trash-2.svg?react";
 import UserCogIcon from "~/assets/img/user-cog.svg?react";
 import UserIcon from "~/assets/img/user.svg?react";
@@ -46,6 +47,7 @@ const iconNameToIcon = {
 	[IconName.SEARCH]: SearchIcon,
 	[IconName.SETTINGS]: SettingsIcon,
 	[IconName.SPARKLES]: SparklesIcon,
+	[IconName.STATS_BAR]: StatsBars,
 	[IconName.TRASH_2]: Trash2Icon,
 	[IconName.USER]: UserIcon,
 	[IconName.USER_COG]: UserCogIcon,
