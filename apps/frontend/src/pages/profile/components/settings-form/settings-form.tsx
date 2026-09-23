@@ -144,7 +144,9 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						size={ControlSize.LG}
 						type="submit"
 					/>
-					<span className={styles["small"]}>{message}</span>
+					<span className={styles["small"]}>
+						{isDirty ? SettingsDescriptionMessage.DEFAULT : message}
+					</span>
 				</div>
 			</form>
 		</Section>
