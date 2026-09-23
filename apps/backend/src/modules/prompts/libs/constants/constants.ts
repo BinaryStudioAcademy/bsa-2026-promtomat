@@ -1,7 +1,3 @@
-const ROUND_FACTOR = 10;
-const ZERO_VALUE = 0;
-
-export { ROUND_FACTOR, ZERO_VALUE };
 export { BACKFILL_CRON_EXPRESSION } from "./backfill-cron-expression.constant.js";
 export { BACKFILL_TIMEZONE } from "./backfill-cron-timezone.constant.js";
 export { BACKFILL_LABELS_LIMIT } from "./backfill-labels-limit.constant.js";

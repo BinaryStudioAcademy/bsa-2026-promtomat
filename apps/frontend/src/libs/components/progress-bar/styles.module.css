@@ -31,25 +31,26 @@
 
 .track {
 	width: 100%;
-	height: var(--space-6);
+	height: var(--progress-track-height, var(--space-6));
 	overflow: hidden;
 	background-color: var(--border-default);
-	border-radius: var(--radius-pill);
+	border-radius: var(--progress-radius, var(--radius-pill));
 }
 
 .fill {
 	height: 100%;
-	border-radius: var(--radius-pill);
+	background-color: var(--progress-fill-color, var(--progress-tone-color));
+	border-radius: var(--progress-radius, var(--radius-pill));
 }
 
 .low {
-	background-color: var(--fg-danger);
+	--progress-tone-color: var(--fg-danger);
 }
 
 .medium {
-	background-color: var(--fg-warning);
+	--progress-tone-color: var(--fg-warning);
 }
 
 .high {
-	background-color: var(--fg-success);
+	--progress-tone-color: var(--fg-success);
 }

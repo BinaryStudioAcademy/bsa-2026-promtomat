@@ -1,4 +1,8 @@
 const ShellPageCopy = {
+	ANALYTICS: {
+		subtitle: "See which tiers, keywords, and trends are moving the index",
+		title: "Data intelligence",
+	},
 	GENERATE: {
 		subtitle: "Compose a new prompt from what already worked",
 		title: "Generate",

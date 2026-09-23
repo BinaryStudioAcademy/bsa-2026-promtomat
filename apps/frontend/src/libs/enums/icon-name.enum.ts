@@ -18,6 +18,7 @@ const IconName = {
 	SEARCH: "search",
 	SETTINGS: "settings",
 	SPARKLES: "sparkles",
+	STATS_BAR: "stats-bars",
 	TRASH_2: "trash-2",
 	USER: "user",
 	USER_COG: "user-cog",
