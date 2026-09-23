@@ -1,8 +1,8 @@
 import { TechStackTechDictionary } from "./tech-stack-dictionary.enum.js";
-import { TechStackVariants } from "./tech-stack-variants.enum.js";
+import { TechStackVariant } from "./tech-stack-variants.enum.js";
 
 const variantEntries: [string, string][] = Object.entries(
-	TechStackVariants,
+	TechStackVariant,
 ).flatMap(([canonical, variants]) =>
 	variants.map((variant): [string, string] => [
 		variant.toLowerCase(),
