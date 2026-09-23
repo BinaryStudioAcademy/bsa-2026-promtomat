@@ -26,6 +26,7 @@
 	padding: 0 var(--space-40) 0 var(--space-12);
 	font-family: inherit;
 	font-size: var(--font-size-body-base);
+	font-weight: 500;
 	color: var(--text-strong);
 	appearance: none;
 	cursor: pointer;
@@ -59,6 +60,7 @@
 
 .lg {
 	height: var(--size-control-h-lg);
+	font-size: var(--font-size-body-xl);
 }
 
 .iconed {
