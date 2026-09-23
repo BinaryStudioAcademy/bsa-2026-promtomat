@@ -1,5 +1,6 @@
 import { raw, type Transaction } from "objection";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { QueryClearTarget, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
@@ -11,7 +12,6 @@ import {
 	PROMPT_LABEL_ID,
 	PROMPT_WORKSPACE_ID,
 	WORKSPACE_RELATION,
-	ZERO_VALUE,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
 	PaginationValue,

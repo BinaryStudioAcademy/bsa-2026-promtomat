@@ -19,6 +19,11 @@ const SHELL_NAVIGATION_ITEMS: readonly ShellNavigationItem[] = [
 		label: ShellNavigationLabel.TRAINING,
 		to: AppRoute.TRAINING,
 	},
+	{
+		iconName: IconName.STATS_BAR,
+		label: ShellNavigationLabel.ANALYTICS,
+		to: AppRoute.ANALYTICS,
+	},
 ];
 
 export { SHELL_NAVIGATION_ITEMS };

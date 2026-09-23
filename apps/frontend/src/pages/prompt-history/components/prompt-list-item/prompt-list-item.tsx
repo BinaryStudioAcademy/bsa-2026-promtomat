@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useId, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
-import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import {
 	configureString,
@@ -50,7 +50,6 @@ const PromptListItem: React.FC<Properties> = ({
 		lastValidIntentReference.current = prompt.intent;
 	}, [prompt.intent]);
 
-	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
 		promptId: String(prompt.id),
@@ -89,11 +88,7 @@ const PromptListItem: React.FC<Properties> = ({
 	return (
 		<Link className={styles["item"]} to={deliveryPath}>
 			<div className={styles["row"]}>
-				<div
-					className={getValidClasses(styles["score-badge"], scoreColorClass)}
-				>
-					{prompt.score}
-				</div>
+				<ScoreBadge efficiencyScore={prompt.score} />
 				<div className={styles["info"]}>
 					<InlineEdit
 						className={styles["intent"]}
