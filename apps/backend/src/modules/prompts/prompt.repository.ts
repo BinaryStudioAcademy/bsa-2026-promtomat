@@ -361,7 +361,12 @@ class PromptRepository {
 	public async findUserPromptSummary(
 		userId: number,
 	): Promise<PromptAggregateResult> {
-		const baseQuery = this.applyFilters(this.promptModel.query(), { userId });
+		const baseQuery = this.promptModel
+			.query()
+			.where(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+				userId,
+			);
 
 		return await this.findAggregate(baseQuery);
 	}
