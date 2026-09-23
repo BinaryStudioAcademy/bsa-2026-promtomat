@@ -61,6 +61,18 @@
 	height: var(--size-control-h-lg);
 }
 
+.iconed {
+	padding-left: var(--space-32);
+}
+
+.icon {
+	position: absolute;
+	left: var(--space-12);
+	display: flex;
+	color: var(--text-accent);
+	pointer-events: none;
+}
+
 .error {
 	border-color: var(--surface-danger);
 }
@@ -71,7 +83,7 @@
 	color: var(--fg-danger);
 }
 
-.icon {
+.chevron {
 	position: absolute;
 	right: var(--space-12);
 	display: flex;

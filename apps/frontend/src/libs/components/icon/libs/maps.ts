@@ -6,6 +6,7 @@ import CheckIcon from "~/assets/img/check.svg?react";
 import ChevronIcon from "~/assets/img/chevron.svg?react";
 import CircleXIcon from "~/assets/img/circle-x.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
+import CodeIcon from "~/assets/img/code.svg?react";
 import EditIcon from "~/assets/img/edit.svg?react";
 import EyeFilledIcon from "~/assets/img/eye-filled.svg?react";
 import EyeIcon from "~/assets/img/eye.svg?react";
@@ -28,6 +29,7 @@ const iconNameToIcon = {
 	[IconName.CHEVRON]: ChevronIcon,
 	[IconName.CIRCLE_X]: CircleXIcon,
 	[IconName.CLOSE]: CloseIcon,
+	[IconName.CODE]: CodeIcon,
 	[IconName.EDIT]: EditIcon,
 	[IconName.EYE]: EyeIcon,
 	[IconName.EYE_FILLED]: EyeFilledIcon,

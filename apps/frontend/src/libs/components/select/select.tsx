@@ -17,6 +17,7 @@ import styles from "./styles.module.css";
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
+	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
@@ -30,6 +31,7 @@ type Properties<T extends FieldValues> = {
 const Select = <T extends FieldValues>({
 	control,
 	descriptionId,
+	iconName,
 	isDisabled = false,
 	isLabelHidden = false,
 	isRequired = false,
@@ -85,6 +87,7 @@ const Select = <T extends FieldValues>({
 				) : null}
 			</label>
 			<div className={styles["control"]}>
+				{iconName && <Icon className={styles["icon"]} iconName={iconName} />}
 				<select
 					{...restField}
 					aria-describedby={describedById}
@@ -94,6 +97,7 @@ const Select = <T extends FieldValues>({
 						styles["select"],
 						styles[size],
 						hasError && styles["error"],
+						iconName && styles["iconed"],
 					)}
 					id={selectId}
 					onChange={handleChange}
@@ -110,7 +114,7 @@ const Select = <T extends FieldValues>({
 						</option>
 					))}
 				</select>
-				<Icon className={styles["icon"]} iconName={IconName.CHEVRON} />
+				<Icon className={styles["chevron"]} iconName={IconName.CHEVRON} />
 			</div>
 			{!descriptionId && (
 				<span className={styles["message"]} id={errorMessageId}>
