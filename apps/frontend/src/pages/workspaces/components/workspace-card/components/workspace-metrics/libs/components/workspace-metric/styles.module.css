@@ -19,7 +19,7 @@
 	color: var(--text-strong);
 }
 
-@media (width <= 600px) {
+@container (width <= 480px) {
 	.value {
 		font-weight: 500;
 	}

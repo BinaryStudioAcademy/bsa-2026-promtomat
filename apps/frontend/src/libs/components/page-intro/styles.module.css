@@ -29,7 +29,7 @@
 	color: var(--text-muted);
 }
 
-@media (width <= 600px) {
+@container (width <= 480px) {
 	.title {
 		font-size: var(--font-size-title-2);
 	}

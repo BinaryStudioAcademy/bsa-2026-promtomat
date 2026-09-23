@@ -4,7 +4,7 @@
 	gap: var(--space-8);
 }
 
-@media (width <= 600px) {
+@container (width <= 480px) {
 	.metrics {
 		gap: var(--space-24);
 	}

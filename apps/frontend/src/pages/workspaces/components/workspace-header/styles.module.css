@@ -14,11 +14,12 @@
 	flex-shrink: 0;
 }
 
-@media (width <= 600px) {
+@container (width <= 640px) {
 	.header {
 		flex-direction: column;
 		gap: var(--space-16);
 		align-items: stretch;
+		margin-bottom: var(--space-16);
 	}
 
 	.create-button {

@@ -9,6 +9,7 @@ import {
 	EMPTY_LENGTH,
 	WORKSPACE_ID_SEARCH_PARAMETER,
 } from "~/libs/constants/constants.js";
+import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -116,21 +117,25 @@ const Workspaces: React.FC = () => {
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<WorkspaceHeader onCreate={handleCreateOpen} />
 
-			<div className={styles["filter-container"]}>
+			<div className={styles["filters"]}>
+				<div className={styles["search"]}>
+					<Input
+						className={styles["search-input"]}
+						control={control}
+						iconName={IconName.SEARCH}
+						isLabelHidden
+						isMessageHidden
+						label="Search"
+						name="search"
+						placeholder="Search workspaces"
+					/>
+				</div>
 				<SegmentedControl
+					className={styles["scope"]}
 					label="Filter workspaces by ownership"
 					onChange={setScope}
 					options={WORKSPACE_LIST_SCOPE_OPTIONS}
 					value={scope}
-				/>
-			</div>
-
-			<div className={styles["search-container"]}>
-				<Input
-					control={control}
-					label="Search"
-					name="search"
-					placeholder="Search workspace"
 				/>
 			</div>
 
