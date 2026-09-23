@@ -1,0 +1,209 @@
+.menu {
+	--account-menu-width: 248px;
+
+	position: relative;
+}
+
+.trigger {
+	display: flex;
+	gap: var(--space-8);
+	align-items: center;
+	padding: var(--space-4) var(--space-10) var(--space-4) var(--space-4);
+	color: var(--text-strong);
+	cursor: pointer;
+	background-color: var(--surface-inset);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-pill);
+	transition: background-color var(--motion-duration-fast)
+		var(--motion-ease-standard);
+}
+
+.trigger:hover {
+	background-color: var(--surface-raised);
+}
+
+.trigger:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.avatar {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: var(--size-control-h-md);
+	height: var(--size-control-h-md);
+	font-size: var(--font-size-label-sm);
+	font-weight: 700;
+	color: var(--text-on-accent);
+	background-color: var(--text-accent);
+	border-radius: var(--radius-pill);
+}
+
+.nickname {
+	--nickname-max-width: 128px;
+
+	display: none;
+	max-width: var(--nickname-max-width);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.chevron {
+	color: var(--text-muted);
+	transition: transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.chevron-open {
+	transform: rotate(180deg);
+}
+
+.panel {
+	position: absolute;
+	top: calc(100% + var(--space-10));
+	right: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	width: var(--account-menu-width);
+	padding: var(--space-8);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-xl);
+	transform-origin: top right;
+	animation: panel-in var(--motion-duration-med) var(--motion-ease-out);
+}
+
+.panel-out {
+	pointer-events: none;
+	animation: panel-out var(--motion-duration-med) var(--motion-ease-in) forwards;
+}
+
+@keyframes panel-in {
+	from {
+		opacity: 0;
+		transform: translateY(calc(-1 * var(--space-6)));
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes panel-out {
+	from {
+		opacity: 1;
+		transform: none;
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(calc(-1 * var(--space-6)));
+	}
+}
+
+.identity {
+	display: flex;
+	gap: var(--space-10);
+	align-items: center;
+	padding: var(--space-10);
+	margin-bottom: var(--space-6);
+	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+}
+
+.identity-copy {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.identity-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.identity-email {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--font-size-meta);
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+}
+
+.item {
+	display: flex;
+	gap: var(--space-8);
+	align-items: center;
+	width: 100%;
+	padding: var(--space-8) var(--space-10);
+	font-size: var(--font-size-body-sm);
+	color: var(--text-body);
+	text-align: left;
+	text-decoration: none;
+	cursor: pointer;
+	background-color: transparent;
+	border: 0;
+	border-radius: var(--radius-md);
+	transition:
+		background-color var(--motion-duration-fast) var(--motion-ease-standard),
+		color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.item:hover,
+.item:focus-visible {
+	color: var(--text-strong);
+	background-color: var(--state-hover-tint);
+}
+
+.item:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: calc(-1 * var(--border-width-focus));
+}
+
+.active {
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.sign-out {
+	font-weight: 600;
+	color: var(--fg-danger);
+}
+
+.sign-out:hover,
+.sign-out:focus-visible {
+	color: var(--fg-danger);
+	background-color: var(--bg-danger);
+}
+
+@media (width >= 768px) {
+	.nickname {
+		display: inline;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.trigger,
+	.chevron,
+	.item,
+	.panel,
+	.panel-out {
+		transition: none;
+		animation: none;
+	}
+}

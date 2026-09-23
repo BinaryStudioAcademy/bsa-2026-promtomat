@@ -1,1 +1,1 @@
-export { KeyboardKey } from "./keyboard-key.enum.js";
+export { HeaderLabel } from "./header-label.enum.js";

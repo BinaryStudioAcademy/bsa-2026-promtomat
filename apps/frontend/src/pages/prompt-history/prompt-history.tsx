@@ -75,7 +75,7 @@ const PromptHistory: React.FC = () => {
 		<main className={styles["container"]}>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["header"]}>
-					<h1 className={styles["title"]}>Prompt Log History</h1>
+					<h2 className={styles["title"]}>Prompt Log History</h2>
 				</header>
 
 				<div className={styles["metrics"]}>
