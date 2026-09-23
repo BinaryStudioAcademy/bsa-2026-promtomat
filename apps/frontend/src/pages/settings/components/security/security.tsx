@@ -32,7 +32,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 							: SettingsMessage.RESET_PASSWORD
 					}
 					onClick={handleResetClick}
-					size={ControlSize.MD}
+					size={ControlSize.LG}
 					type="button"
 					variant={ButtonVariant.SECONDARY}
 				/>
