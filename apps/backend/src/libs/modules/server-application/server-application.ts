@@ -1,6 +1,7 @@
 import { config } from "~/libs/modules/config/config.js";
 import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { analyticsController } from "~/modules/analytics/analytics.js";
 import { authController } from "~/modules/auth/auth.js";
 import { composedPromptController } from "~/modules/composed-prompts/composed-prompts.js";
 import { contributorController } from "~/modules/contributors/contributors.js";
@@ -20,6 +21,7 @@ const authGuard = new AuthGuard(token, userService);
 const apiV1 = new BaseServerApplicationApi(
 	"v1",
 	config,
+	...analyticsController.routes,
 	...authController.routes,
 	...contributorController.routes,
 	...composedPromptController.routes,

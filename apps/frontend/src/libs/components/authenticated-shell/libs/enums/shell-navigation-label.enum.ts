@@ -1,4 +1,5 @@
 const ShellNavigationLabel = {
+	ANALYTICS: "Analytics",
 	SMART_SEARCH: "Smart search",
 	TRAINING: "Training",
 	WORKSPACES: "Workspaces",
