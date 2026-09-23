@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
-import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 
 import { SettingsMessage } from "../../libs/enums/enums.js";
@@ -14,11 +14,16 @@ type Properties = {
 };
 
 const Security: React.FC<Properties> = ({ email }: Properties) => {
-	const [forgotPassword, { error, isLoading, isSuccess }] =
+	const [forgotPassword, { isLoading, isSuccess }] =
 		useForgotPasswordMutation();
 
 	const handleResetClick = useCallback((): void => {
-		void forgotPassword({ email });
+		void forgotPassword({ email }).then(() => {
+			showNotification({
+				message: SettingsMessage.RESET_PASSWORD_SENT,
+				type: "success",
+			});
+		});
 	}, [email, forgotPassword]);
 
 	return (
@@ -36,14 +41,6 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 					type="button"
 					variant={ButtonVariant.SECONDARY}
 				/>
-				{isSuccess ? (
-					<FormAlert
-						message={SettingsMessage.RESET_PASSWORD_SENT}
-						variant="success"
-					/>
-				) : (
-					<FormAlert error={error} />
-				)}
 			</div>
 		</Section>
 	);
