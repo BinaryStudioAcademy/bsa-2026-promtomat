@@ -15,6 +15,8 @@ export {
 	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,
+	ScoreThreshold,
+	ScoreTierMin,
 	TechStackTechDictionary,
 	TimeUnit,
 } from "@promptomat/shared";

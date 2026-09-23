@@ -1,6 +1,7 @@
 import { config } from "~/libs/modules/config/config.js";
 import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
+import { analyticsController } from "~/modules/analytics/analytics.js";
 import {
 	apiTokenController,
 	apiTokenService,
@@ -31,6 +32,7 @@ const apiV1 = new BaseServerApplicationApi(
 	"v1",
 	config,
 	...apiTokenController.routes,
+	...analyticsController.routes,
 	...authController.routes,
 	...contributorController.routes,
 	...composedPromptController.routes,

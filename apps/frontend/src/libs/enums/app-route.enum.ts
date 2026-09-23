@@ -1,4 +1,5 @@
 const AppRoute = {
+	ANALYTICS: "/analytics",
 	ANY: "*",
 	API_TOKENS: "/api-tokens",
 	FORGOT_PASSWORD: "/forgot-password",

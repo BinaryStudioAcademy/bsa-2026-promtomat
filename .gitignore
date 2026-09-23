@@ -12,6 +12,9 @@ node_modules
 # production
 build
 
+# mcp release tarball (apps/mcp/readme.md, "Releasing")
+apps/mcp/*.tgz
+
 # misc
 .DS_Store
 .env

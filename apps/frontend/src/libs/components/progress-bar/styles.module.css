@@ -8,16 +8,16 @@
 .track {
 	flex: 1 0 0;
 	min-width: 0;
-	height: var(--space-8);
+	height: var(--progress-track-height, var(--space-8));
 	overflow: hidden;
 	background-color: var(--surface-inset);
-	border-radius: var(--radius-sm);
+	border-radius: var(--progress-radius, var(--radius-sm));
 }
 
 .fill {
 	height: 100%;
-	background-color: var(--surface-accent);
-	border-radius: var(--radius-sm);
+	background-color: var(--progress-fill-color, var(--surface-accent));
+	border-radius: var(--progress-radius, var(--radius-sm));
 }
 
 .percent {

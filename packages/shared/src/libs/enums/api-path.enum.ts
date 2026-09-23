@@ -1,4 +1,5 @@
 const APIPath = {
+	ANALYTICS: "/analytics",
 	API_TOKENS: "/api-tokens",
 	AUTH: "/auth",
 	COMPOSED_PROMPTS: "/composed-prompts",
