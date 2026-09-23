@@ -7,7 +7,7 @@ import {
 import { TOKENS_THRESHOLD } from "./libs/constants/constants.js";
 import { checkIsOutputValid, getOutputSchema } from "./libs/helpers/helpers.js";
 import {
-	type GeneratorInterface,
+	type Generator,
 	type SchemaResultMap,
 	type StructuredGenerationOptions,
 	type TextGenerationOptions,
@@ -17,7 +17,7 @@ type Constructor = {
 	bedrockService: BedrockInterface;
 };
 
-class Generator implements GeneratorInterface {
+class BedrockGenerator implements Generator {
 	private bedrockService: BedrockInterface;
 
 	public constructor({ bedrockService }: Constructor) {
@@ -98,4 +98,4 @@ class Generator implements GeneratorInterface {
 	}
 }
 
-export { Generator };
+export { BedrockGenerator };

@@ -1,5 +1,7 @@
 export {
+	BEARER,
 	EMPTY_LENGTH,
+	MAX_EFFICIENCY_SCORE,
 	PERCENTAGE_MULTIPLIER,
 	ROUND_FACTOR,
 	ZERO_VALUE,
@@ -176,7 +178,7 @@ export {
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	TechStackTagSchema,
+	techStackTag,
 	TechStackTechDictionary,
 	workspaceAddContributorValidationSchema,
 	workspaceContributorRouteParametersValidationSchema,

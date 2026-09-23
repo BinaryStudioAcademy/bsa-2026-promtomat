@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useId, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import {
@@ -69,7 +70,7 @@ const PromptListItem: React.FC<Properties> = ({
 					}).unwrap();
 					showNotification({
 						message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
-						type: "success",
+						type: NotificationType.SUCCESS,
 					});
 				} catch {
 					lastValidIntentReference.current = previousIntent;

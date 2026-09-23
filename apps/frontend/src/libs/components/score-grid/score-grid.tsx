@@ -4,7 +4,7 @@ import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { Button } from "../button/button.js";
 import { SCORE_RANGE } from "./libs/constants/constants.js";
-import { ScoreDescriptions } from "./libs/enums/enums.js";
+import { ScoreDescription } from "./libs/enums/enums.js";
 import { getScoreColor } from "./libs/helpers/get-score-color.helper.js";
 import styles from "./styles.module.css";
 
@@ -57,7 +57,7 @@ const ScoreGrid: React.FC<Properties> = ({
 		: hoveredScore;
 
 	const activeDescription = displayedScore
-		? ScoreDescriptions[displayedScore]
+		? ScoreDescription[displayedScore]
 		: "Hover or focus a score to see its evaluation criteria";
 
 	const messageColorClass = displayedScore

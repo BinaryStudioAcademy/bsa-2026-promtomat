@@ -67,7 +67,7 @@ const Input = <T extends FieldValues>({
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const hasError = Boolean(error) || undefined;
+	const hasError = Boolean(error);
 	const errorMessage = error?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
