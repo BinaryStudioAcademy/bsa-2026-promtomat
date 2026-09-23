@@ -1,4 +1,4 @@
-const AuthErrorMessages = {
+const AuthErrorMessage = {
 	INVALID_PAYLOAD: "TokenService payload is invalid.",
 	INVALID_TOKEN: "Token is invalid or expired.",
 	MISSING_TOKEN: "Missing bearer token.",
@@ -8,4 +8,4 @@ const AuthErrorMessages = {
 	WRONG_PURPOSE: "This token cannot be used to authenticate.",
 } as const;
 
-export { AuthErrorMessages };
+export { AuthErrorMessage };

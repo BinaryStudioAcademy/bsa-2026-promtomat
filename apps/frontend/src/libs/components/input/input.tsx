@@ -67,7 +67,7 @@ const Input = <T extends FieldValues>({
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const ariaInvalid = Boolean(error) || undefined;
+	const hasError = Boolean(error);
 	const errorMessage = error?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
@@ -110,13 +110,13 @@ const Input = <T extends FieldValues>({
 				<input
 					{...field}
 					aria-describedby={describedById}
-					aria-invalid={ariaInvalid}
+					aria-invalid={hasError}
 					aria-required={isRequired || undefined}
 					autoComplete={autoComplete}
 					className={getValidClasses(
 						styles["input"],
 						styles[size],
-						ariaInvalid && styles["error"],
+						hasError && styles["error"],
 						isPasswordField && styles["with-toggle"],
 						className,
 					)}

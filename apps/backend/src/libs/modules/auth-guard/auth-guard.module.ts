@@ -6,7 +6,7 @@ import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
-import { AuthErrorMessages, AuthSuccessMessage } from "./libs/enums/enums.js";
+import { AuthErrorMessage, AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
 class AuthGuard {
@@ -28,13 +28,13 @@ class AuthGuard {
 		}
 
 		if (!payload.iat) {
-			this.throwUnauthorized(AuthErrorMessages.INVALID_PAYLOAD);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
 
 		if (Number.isNaN(changedAtMilliseconds)) {
-			this.throwUnauthorized(AuthErrorMessages.SESSION_NOT_VERIFIABLE);
+			this.throwUnauthorized(AuthErrorMessage.SESSION_NOT_VERIFIABLE);
 		}
 
 		const changedAtSeconds = Math.floor(
@@ -66,17 +66,17 @@ class AuthGuard {
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
-			this.throwUnauthorized(AuthErrorMessages.INVALID_TOKEN);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_TOKEN);
 		}
 
 		if (typeof payload.userId !== "number") {
-			this.throwUnauthorized(AuthErrorMessages.INVALID_PAYLOAD);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const hasPurpose = Boolean(payload.purpose);
 
 		if (hasPurpose) {
-			this.throwUnauthorized(AuthErrorMessages.WRONG_PURPOSE);
+			this.throwUnauthorized(AuthErrorMessage.WRONG_PURPOSE);
 		}
 
 		return payload;
@@ -86,7 +86,7 @@ class AuthGuard {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
-			this.throwUnauthorized(AuthErrorMessages.MISSING_TOKEN);
+			this.throwUnauthorized(AuthErrorMessage.MISSING_TOKEN);
 		}
 
 		const payload = await this.verifyToken(token);
@@ -94,7 +94,7 @@ class AuthGuard {
 		const userEntity = await this.userService.findEntityById(payload.userId);
 
 		if (!userEntity) {
-			this.throwUnauthorized(AuthErrorMessages.USER_NOT_FOUND);
+			this.throwUnauthorized(AuthErrorMessage.USER_NOT_FOUND);
 		}
 
 		this.assertTokenPredatesNoPasswordChange(
