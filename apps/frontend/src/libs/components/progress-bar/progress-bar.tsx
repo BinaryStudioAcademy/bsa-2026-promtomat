@@ -11,15 +11,21 @@ import {
 import styles from "./styles.module.css";
 
 type Properties = {
+	className?: string | undefined;
 	count: number;
+	isSummaryHidden?: boolean;
 	label: string;
 	target: number;
+	unit?: string;
 };
 
 const ProgressBar: React.FC<Properties> = ({
+	className,
 	count,
+	isSummaryHidden = false,
 	label,
 	target,
+	unit,
 }: Properties) => {
 	const percentage = getProgressPercentage(count, target);
 	const countLabel = count.toLocaleString("en-US");
@@ -28,13 +34,16 @@ const ProgressBar: React.FC<Properties> = ({
 	const fillTone = getProgressFillTone(percentage);
 
 	return (
-		<div className={styles["progress"]}>
-			<div className={styles["heading"]}>
-				<span className={styles["label"]}>{label}</span>
-				<span className={styles["count"]}>
-					{countLabel} / {targetLabel}
-				</span>
-			</div>
+		<div className={getValidClasses(styles["progress"], className)}>
+			{!isSummaryHidden && (
+				<div className={styles["heading"]}>
+					<span className={styles["label"]}>{label}</span>
+					<span className={styles["count"]}>
+						{countLabel} / {targetLabel}
+						{unit ? ` ${unit}` : null}
+					</span>
+				</div>
+			)}
 			<div
 				aria-label={label}
 				aria-valuemax={PERCENTAGE_SCALE}

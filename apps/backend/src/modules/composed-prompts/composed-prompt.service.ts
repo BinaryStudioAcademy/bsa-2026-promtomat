@@ -6,7 +6,7 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import {
-	type GeneratorInterface,
+	type Generator,
 	SchemaKey,
 } from "~/libs/modules/generator/generator.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
@@ -43,7 +43,7 @@ import {
 type Constructor = {
 	candidateLimit: number;
 	composedPromptRepository: ComposedPromptRepository;
-	generator: GeneratorInterface;
+	generator: Generator;
 	logger: Logger;
 	maxTokens: number;
 	modelId: string;
@@ -63,7 +63,7 @@ class ComposedPromptService {
 
 	private composedPromptRepository: ComposedPromptRepository;
 
-	private generator: GeneratorInterface;
+	private generator: Generator;
 
 	private logger: Logger;
 

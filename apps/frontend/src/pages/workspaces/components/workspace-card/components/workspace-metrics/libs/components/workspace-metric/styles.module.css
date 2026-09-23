@@ -16,6 +16,7 @@
 .value {
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-body-base);
+	line-height: 1;
 	color: var(--text-strong);
 }
 

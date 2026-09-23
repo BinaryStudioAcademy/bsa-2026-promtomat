@@ -16,7 +16,7 @@ const useSignOut = (): (() => Promise<void>) => {
 
 		dispatch(
 			setRedirect({
-				replace: true,
+				shouldReplace: true,
 				to: AppRoute.SIGN_IN,
 			}),
 		);

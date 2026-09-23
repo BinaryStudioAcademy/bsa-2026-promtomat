@@ -29,6 +29,10 @@ const config: KnipConfig = {
 		// validation details onto form fields lands in a follow-up change.
 		"apps/frontend/src/libs/modules/api/libs/helpers/is-server-error.helper.ts":
 			["exports"],
+		// Delete workspace and contributor add, list, and remove are exported
+		// ahead of the workspace config screen, which does not call them yet.
+		"apps/frontend/src/modules/workspaces/workspaces-api.ts": ["exports"],
+		"apps/frontend/src/modules/workspaces/workspaces.ts": ["exports"],
 		// Public contracts of the shared package. These predate the RTK Query
 		// migration and are published for consumers that do not exist yet.
 		"packages/shared/src/**": ["exports", "types"],
@@ -46,6 +50,7 @@ const config: KnipConfig = {
 		"apps/frontend": {
 			entry: ["src/libs/hooks/**/*.hook.ts"],
 		},
+		"apps/mcp": {},
 		"packages/shared": {
 			includeEntryExports: true,
 		},

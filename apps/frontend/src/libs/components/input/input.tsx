@@ -71,7 +71,7 @@ const Input = <T extends FieldValues>({
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const hasError = Boolean(error) || undefined;
+	const hasError = Boolean(error);
 	const errorMessage = error?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
@@ -160,7 +160,7 @@ const Input = <T extends FieldValues>({
 				<span
 					className={getValidClasses(
 						styles["message"],
-						isMessageHidden && "visually-hidden",
+						isMessageHidden && errorMessage === undefined && "visually-hidden",
 					)}
 					id={errorMessageId}
 				>

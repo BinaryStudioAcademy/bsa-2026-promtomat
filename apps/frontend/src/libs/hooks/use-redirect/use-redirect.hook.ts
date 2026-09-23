@@ -17,11 +17,11 @@ const useRedirect = (): void => {
 			return;
 		}
 
-		const { replace, to } = redirect;
+		const { shouldReplace, to } = redirect;
 
 		if (to !== pathname) {
 			void navigate(to, {
-				replace,
+				replace: shouldReplace,
 			});
 		}
 

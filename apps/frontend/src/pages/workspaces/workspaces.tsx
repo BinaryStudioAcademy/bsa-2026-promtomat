@@ -36,7 +36,6 @@ const Workspaces: React.FC = () => {
 	const [scope, setScope] = useState<ValueOf<typeof WorkspaceListScope>>(
 		WorkspaceListScope.ALL,
 	);
-
 	const { data, isError, isFetching, isLoading } = useGetWorkspacesQuery({
 		scope,
 		workspaceName: debouncedSearch,
@@ -46,8 +45,8 @@ const Workspaces: React.FC = () => {
 	const isListEmpty = workspaces.length === EMPTY_LENGTH;
 	const hasActiveFilter =
 		Boolean(debouncedSearch) || scope !== WorkspaceListScope.ALL;
-	const hasNoMatches =
-		!isListLoading && !isError && isListEmpty && hasActiveFilter;
+	const hasMatches =
+		isListLoading || isError || !isListEmpty || !hasActiveFilter;
 	const hasWorkspaces = !isListLoading && !isListEmpty;
 
 	const [activeModal, setActiveModal] = useState<ActiveModal>(null);
@@ -114,7 +113,7 @@ const Workspaces: React.FC = () => {
 
 			<div className={styles["list"]}>
 				{isListLoading && <Loader variant={LoaderVariant.SECTION} />}
-				{hasNoMatches && (
+				{!hasMatches && (
 					<div className={styles["empty-state"]}>
 						<p className={styles["empty-state-text"]}>
 							{WorkspaceListMessage.NO_MATCHES}

@@ -6,15 +6,15 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-varian
 import { Loader } from "~/libs/components/loader/loader.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
 import styles from "./styles.module.css";
-
-const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
 	const { control, handleScoreChange, queryPayload } = usePromptFilters();
@@ -86,7 +86,9 @@ const PromptHistory: React.FC = () => {
 					<div className={styles["metric-card"]}>
 						<span className={styles["metric-label"]}>Average Score</span>
 						<span className={styles["metric-value"]}>
-							{averageScore === null ? "—" : `${String(averageScore)} / 10`}
+							{averageScore === null
+								? "—"
+								: `${String(averageScore)} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`}
 						</span>
 					</div>
 				</div>
