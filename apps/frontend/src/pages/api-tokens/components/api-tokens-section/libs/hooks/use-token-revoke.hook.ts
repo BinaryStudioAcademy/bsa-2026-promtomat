@@ -10,7 +10,7 @@ const useTokenRevoke = () => {
 
 	const [pendingRevokeId, setPendingRevokeId] = useState<null | string>(null);
 
-	const onTokenRevoked = useCallback(() => {
+	const handleTokenRevoked = useCallback(() => {
 		setPendingRevokeId(null);
 	}, []);
 
@@ -18,11 +18,11 @@ const useTokenRevoke = () => {
 		setPendingRevokeId(id);
 	}, []);
 
-	const onRevokeCancel = useCallback((): void => {
+	const handleRevokeCancel = useCallback((): void => {
 		setPendingRevokeId(null);
 	}, []);
 
-	const onConfirmRevoke = useCallback((): void => {
+	const handleConfirmRevoke = useCallback((): void => {
 		if (!pendingRevokeId) {
 			return;
 		}
@@ -30,16 +30,16 @@ const useTokenRevoke = () => {
 		void invokeActionWithToasts({
 			action: revokeApiToken(pendingRevokeId).unwrap(),
 			errorMessage: ApiTokensNotification.REVOKE_FAILED,
-			finalize: onTokenRevoked,
+			finalize: handleTokenRevoked,
 			successMessage: ApiTokensNotification.REVOKE_SUCCEEDED,
 		});
 	}, [pendingRevokeId, revokeApiToken]);
 
 	return {
+		handleConfirmRevoke,
+		handleRevokeCancel,
 		handleRevokeRequest,
 		isRevoking: isLoading,
-		onConfirmRevoke,
-		onRevokeCancel,
 		pendingRevokeId,
 	};
 };

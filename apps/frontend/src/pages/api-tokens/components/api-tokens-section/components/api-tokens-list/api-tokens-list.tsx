@@ -8,12 +8,12 @@ import { ApiTokenRow } from "../api-token-row/api-token-row.js";
 import { EmptyTokenListPlaceholder } from "../empty-toknes-list-placeholder/empty-toknes-list-placeholder.js";
 
 type Properties = {
-	handleRevoke: (id: string) => void;
+	onRevoke: (id: string) => void;
 	tokens: ApiTokenDto[];
 };
 
 const ApiTokensList: React.FC<Properties> = ({
-	handleRevoke,
+	onRevoke,
 	tokens,
 }: Properties) => {
 	if (tokens.length === EMPTY_LENGTH) {
@@ -38,7 +38,7 @@ const ApiTokensList: React.FC<Properties> = ({
 			</thead>
 			<tbody className={styles["tbody"]}>
 				{tokens.map((token) => (
-					<ApiTokenRow key={token.id} onRevoke={handleRevoke} token={token} />
+					<ApiTokenRow key={token.id} onRevoke={onRevoke} token={token} />
 				))}
 			</tbody>
 		</table>

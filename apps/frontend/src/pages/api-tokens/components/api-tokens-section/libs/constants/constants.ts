@@ -1,4 +1,3 @@
-export { EXPIRATION_DATE_FORMAT } from "./expiration-date-format.constant.js";
 export {
 	EXPIRING_SOON_MS,
 	NO_TIME_REMAINING,

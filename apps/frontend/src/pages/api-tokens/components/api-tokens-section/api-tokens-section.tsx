@@ -17,10 +17,10 @@ const ApiTokensSection: React.FC = () => {
 	const { data: tokens, isLoading } = useGetApiTokensQuery(undefined);
 
 	const {
+		handleConfirmRevoke,
+		handleRevokeCancel,
 		handleRevokeRequest,
 		isRevoking,
-		onConfirmRevoke,
-		onRevokeCancel,
 		pendingRevokeId,
 	} = useTokenRevoke();
 
@@ -42,7 +42,7 @@ const ApiTokensSection: React.FC = () => {
 
 			<LoadingIndicator isLoading={isLoading} />
 
-			<ApiTokensList handleRevoke={handleRevokeRequest} tokens={tokens ?? []} />
+			<ApiTokensList onRevoke={handleRevokeRequest} tokens={tokens ?? []} />
 
 			<IssuedTokenDialog
 				key={issuedToken?.id}
@@ -52,8 +52,8 @@ const ApiTokensSection: React.FC = () => {
 
 			<RevokeTokenConfirmation
 				isRevoking={isRevoking}
-				onConfirmRevoke={onConfirmRevoke}
-				onRevokeCancel={onRevokeCancel}
+				onConfirmRevoke={handleConfirmRevoke}
+				onRevokeCancel={handleRevokeCancel}
 				pendingRevokeId={pendingRevokeId}
 			/>
 		</div>

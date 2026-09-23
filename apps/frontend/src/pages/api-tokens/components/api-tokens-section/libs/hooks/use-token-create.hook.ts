@@ -15,7 +15,7 @@ const useTokenCreate = (onCreated: () => void) => {
 		null,
 	);
 
-	const onTokenCreated = useCallback(
+	const handleTokenCreated = useCallback(
 		(created: ApiTokenResponseDto) => {
 			setIssuedToken(created);
 			onCreated();
@@ -31,7 +31,7 @@ const useTokenCreate = (onCreated: () => void) => {
 		(payload: ApiTokenRequestDto): void => {
 			void invokeAction(
 				createApiToken(payload).unwrap(),
-				onTokenCreated,
+				handleTokenCreated,
 				ApiTokensNotification.CREATE_FAILED,
 			);
 		},

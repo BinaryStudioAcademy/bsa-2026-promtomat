@@ -2,7 +2,7 @@ import { showNotification } from "~/libs/modules/notification/notification.js";
 
 import { ApiTokensNotification } from "../enums/enums.js";
 
-const showTokenCopiedNotification = (isCopySuccessful: boolean) => {
+const showTokenCopiedNotification = (isCopySuccessful: boolean): void => {
 	showNotification(
 		isCopySuccessful
 			? ApiTokensNotification.COPY_SUCCEEDED
