@@ -42,6 +42,14 @@
 	pointer-events: none;
 }
 
+.details {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-12);
+	min-width: 0;
+	margin-top: auto;
+}
+
 .config {
 	flex-shrink: 0;
 	pointer-events: auto;
@@ -107,7 +115,6 @@
 	min-width: 0;
 	padding-top: var(--space-16);
 	padding-bottom: var(--space-16);
-	margin-top: auto;
 	margin-bottom: var(--space-4);
 	border-top: var(--border-width-hairline) solid var(--border-default);
 	border-bottom: var(--border-width-hairline) solid var(--border-default);

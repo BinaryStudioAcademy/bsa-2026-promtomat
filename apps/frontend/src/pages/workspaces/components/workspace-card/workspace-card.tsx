@@ -53,6 +53,9 @@ const WorkspaceCard: React.FC<Properties> = ({
 							/>
 							{visibility}
 						</span>
+						{hasDescription && (
+							<p className={styles["description"]}>{workspace.description}</p>
+						)}
 					</div>
 					<IconButton
 						ariaLabel={`Config ${workspace.name}`}
@@ -62,20 +65,19 @@ const WorkspaceCard: React.FC<Properties> = ({
 						size={ControlSize.SM}
 					/>
 				</header>
-				{hasDescription && (
-					<p className={styles["description"]}>{workspace.description}</p>
-				)}
-				<WorkspaceTags stackTags={workspace.stackTags} />
+				<div className={styles["details"]}>
+					<WorkspaceTags stackTags={workspace.stackTags} />
 
-				<div className={styles["readiness"]}>
-					<ProgressBar
-						count={workspace.promptCount}
-						label="Dataset readiness"
-						target={PromptProgress.TARGET_COUNT}
-					/>
+					<div className={styles["readiness"]}>
+						<ProgressBar
+							count={workspace.promptCount}
+							label="Dataset readiness"
+							target={PromptProgress.TARGET_COUNT}
+						/>
+					</div>
+
+					<WorkspaceMetrics memberCount={workspace.memberCount} />
 				</div>
-
-				<WorkspaceMetrics memberCount={workspace.memberCount} />
 			</div>
 		</div>
 	);

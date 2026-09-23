@@ -1,6 +1,7 @@
 import { AuthValidationRule } from "../../../auth/auth.js";
 
 const WorkspaceValidationRule = {
+	DESCRIPTION_LINE_BREAK_REGEX: /[\n\r]/u,
 	DESCRIPTION_MAXIMUM_LENGTH: 200,
 	EMAIL_OR_NICKNAME_EMPTY_STATE_LENGTH: 1,
 	EMAIL_OR_NICKNAME_MAXIMUM_LENGTH: AuthValidationRule.EMAIL_MAXIMUM_LENGTH,

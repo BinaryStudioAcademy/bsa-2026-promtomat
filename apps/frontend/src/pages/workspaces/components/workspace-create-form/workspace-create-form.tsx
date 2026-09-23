@@ -4,6 +4,7 @@ import { useController } from "react-hook-form";
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
+import { Textarea } from "~/libs/components/textarea/textarea.js";
 import {
 	ButtonVariant,
 	ControlSize,
@@ -11,6 +12,7 @@ import {
 	FormValidationMode,
 	TechStackTechDictionary,
 } from "~/libs/enums/enums.js";
+import { preventLineBreak } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
@@ -73,12 +75,14 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						name="name"
 						placeholder="Enter name"
 					/>
-					<Input
+					<Textarea
 						control={control}
 						label="Description"
 						maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
 						name="description"
+						onKeyDown={preventLineBreak}
 						placeholder="Enter description"
+						rows={2}
 					/>
 
 					<SearchableSelect

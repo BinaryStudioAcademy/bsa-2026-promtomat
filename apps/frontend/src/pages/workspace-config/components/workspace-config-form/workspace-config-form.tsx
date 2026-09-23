@@ -4,12 +4,16 @@ import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
+import { Textarea } from "~/libs/components/textarea/textarea.js";
 import {
 	ControlSize,
 	FormValidationMode,
 	HTTPCode,
 } from "~/libs/enums/enums.js";
-import { sortValuesByDictionary } from "~/libs/helpers/helpers.js";
+import {
+	preventLineBreak,
+	sortValuesByDictionary,
+} from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
@@ -158,13 +162,15 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					name="name"
 					placeholder="Enter name"
 				/>
-				<Input
+				<Textarea
 					control={control}
 					isDisabled={isEditingDisabled}
 					label="Description"
 					maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
 					name="description"
+					onKeyDown={preventLineBreak}
 					placeholder="Enter description"
+					rows={2}
 				/>
 				<SearchableSelect
 					control={control}
