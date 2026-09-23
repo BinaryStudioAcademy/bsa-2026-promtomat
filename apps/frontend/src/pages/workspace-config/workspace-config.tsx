@@ -6,10 +6,12 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
+import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
@@ -74,6 +76,14 @@ const WorkspaceConfig: React.FC = () => {
 				<section className={styles["card"]}>
 					<h3 className={styles["section-title"]}>General</h3>
 					<WorkspaceConfigForm isOwner={isOwner} workspace={data} />
+				</section>
+				<section className={styles["card"]}>
+					<h3 className={styles["section-title"]}>Dataset target</h3>
+					<ProgressBar
+						count={data.promptCount}
+						label="Dataset readiness"
+						target={PromptProgress.TARGET_COUNT}
+					/>
 				</section>
 			</div>
 		</div>
