@@ -23,6 +23,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-4);
+	min-width: 0;
 	padding: var(--space-14) var(--space-12);
 	text-align: center;
 	background-color: var(--surface-inset);
@@ -40,6 +41,7 @@
 .stat-value {
 	font-size: var(--font-size-title-2);
 	font-weight: 600;
+	overflow-wrap: anywhere;
 }
 
 @media (width >=600px) {
