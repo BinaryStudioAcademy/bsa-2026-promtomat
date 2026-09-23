@@ -1,5 +1,4 @@
-import { MILLISECONDS_PER_DAY } from "~/libs/constants/constants.js";
-import { ApiTokenExpiration } from "~/libs/enums/enums.js";
+import { ApiTokenExpiration, TimeUnit } from "~/libs/enums/enums.js";
 import { type ApiTokenExpirationValue } from "~/libs/types/types.js";
 
 const createExpirationDate = (
@@ -9,7 +8,9 @@ const createExpirationDate = (
 		return null;
 	}
 
-	return new Date(Date.now() + expiration * MILLISECONDS_PER_DAY).toISOString();
+	return new Date(
+		Date.now() + expiration * TimeUnit.MILLISECONDS_PER_DAY,
+	).toISOString();
 };
 
 export { createExpirationDate };

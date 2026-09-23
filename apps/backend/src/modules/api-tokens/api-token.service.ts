@@ -90,15 +90,15 @@ class ApiTokenService {
 		return createHash(DIGEST_ALGORITHM).update(secret).digest(SECRET_ENCODING);
 	}
 
-	private stripToken(token: string): [string, string] {
+	private stripToken(token: string): [null, null] | [string, string] {
 		if (!token.startsWith(API_TOKEN_PREFIX)) {
-			throw ApiTokenError.failedToParse();
+			return [null, null];
 		}
 
 		const stripped = token.slice(API_TOKEN_PREFIX.length);
 		const [id, value] = stripped.split(".", TOKEN_PARTS_LIMIT);
 		if (!id || !value) {
-			throw ApiTokenError.failedToParse();
+			return [null, null];
 		}
 
 		return [id, value];
@@ -170,6 +170,9 @@ class ApiTokenService {
 
 	public async verify(token: string): Promise<null | number> {
 		const [id, inputToken] = this.stripToken(token);
+		if (!id || !inputToken) {
+			return null;
+		}
 
 		const foundToken = await this.apiTokenRepository.findByPublicId(id);
 		if (!foundToken) {
