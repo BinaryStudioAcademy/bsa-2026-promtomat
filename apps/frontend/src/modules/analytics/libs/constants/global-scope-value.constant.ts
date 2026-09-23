@@ -1,0 +1,3 @@
+const GLOBAL_SCOPE_VALUE = "";
+
+export { GLOBAL_SCOPE_VALUE };

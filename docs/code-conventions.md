@@ -10,6 +10,7 @@ This is a pnpm workspace using Node.js 24 and pnpm 11.
 
 - `apps/backend` — Fastify backend
 - `apps/frontend` — React frontend
+- `apps/mcp` — MCP server, a stdio process installed on the user's machine (`apps/mcp/readme.md`)
 - `packages/shared` — shared contracts and validation
 
 Within an app, `src/libs` holds reusable infrastructure and `src/modules` holds features; the frontend adds `src/pages`.
@@ -23,6 +24,11 @@ Layers do not borrow each other's work. A controller maps a request to one servi
 data assembly, and any check beyond the route's validation schema belong in the service, and queries belong in the
 repository. A guard or plugin that has already resolved something puts it on the request; the controller reads it
 rather than resolving it again.
+
+In `apps/mcp` a tool is the counterpart of a controller and lives in a `*.tool.ts`. It maps a tool call to one API
+module call and a result, and receives its dependencies through a factory, as in `createWhoAmITool(authApi)`. A tool
+does not catch, log, or measure: the server module wraps every tool's `execute`, logs the outcome, and turns a thrown
+error into a readable result.
 
 ## Linting
 
@@ -58,7 +64,11 @@ a neighboring file before writing a new one.
 ## Naming
 
 - Files and directories are kebab-case with a role suffix: `*.type.ts`, `*.enum.ts`, `*.helper.ts`, `*.hook.ts`,
-  `*.module.ts`, `*.model.ts`, `*.controller.ts`, `*.service.ts`, `*.repository.ts`. Backend migrations are snake_case.
+  `*.module.ts`, `*.model.ts`, `*.controller.ts`, `*.service.ts`, `*.repository.ts`, `*.tool.ts`. Backend migrations
+  are snake_case.
+- The name an MCP tool is registered under is snake_case: a verb plus its object for an action, as `generate_prompt`
+  or `resolve_workspace` would be, and a short noun or the established name for a state query, as `whoami` is. No
+  server prefix, since clients namespace tools by server.
 - Abbreviations are rejected: `properties` not `props`, `request` and `response` not `req` and `res`, `error` not `err`.
   React component prop types are named `Properties`.
 

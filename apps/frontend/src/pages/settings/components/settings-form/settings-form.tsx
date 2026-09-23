@@ -142,7 +142,6 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
 						size={ControlSize.LG}
 						type="submit"
-						variant="accent"
 					/>
 					<span className={styles["small"]}>{message}</span>
 				</div>
