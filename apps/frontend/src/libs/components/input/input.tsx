@@ -160,7 +160,7 @@ const Input = <T extends FieldValues>({
 				<span
 					className={getValidClasses(
 						styles["message"],
-						isMessageHidden && "visually-hidden",
+						isMessageHidden && errorMessage === undefined && "visually-hidden",
 					)}
 					id={errorMessageId}
 				>
