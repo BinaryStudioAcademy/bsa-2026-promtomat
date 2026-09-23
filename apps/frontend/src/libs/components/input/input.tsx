@@ -18,8 +18,10 @@ type Properties<T extends FieldValues> = {
 	className?: string | undefined;
 	control: Control<T, null>;
 	descriptionId?: string | undefined;
+	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
+	isMessageHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
 	maxLength?: number;
@@ -39,8 +41,10 @@ const Input = <T extends FieldValues>({
 	className = "",
 	control,
 	descriptionId,
+	iconName,
 	isDisabled = false,
 	isLabelHidden = false,
+	isMessageHidden = false,
 	isRequired = false,
 	label,
 	maxLength,
@@ -75,7 +79,9 @@ const Input = <T extends FieldValues>({
 	const isPasswordField = type === InputType.PASSWORD;
 	const inputType =
 		isPasswordField && isPasswordVisible ? InputType.TEXT : type;
-	const iconName = isPasswordVisible ? IconName.EYE_FILLED : IconName.EYE;
+	const visibilityIconName = isPasswordVisible
+		? IconName.EYE_FILLED
+		: IconName.EYE;
 	const buttonAriaLabel = isPasswordVisible ? "Hide password" : "Show password";
 
 	const handleVisibilityToggle = useCallback((): void => {
@@ -117,6 +123,7 @@ const Input = <T extends FieldValues>({
 						styles["input"],
 						styles[size],
 						hasError && styles["error"],
+						iconName && styles["with-icon"],
 						isPasswordField && styles["with-toggle"],
 						className,
 					)}
@@ -130,6 +137,9 @@ const Input = <T extends FieldValues>({
 					ref={ref}
 					type={inputType}
 				/>
+				{iconName && (
+					<Icon className={styles["leading-icon"]} iconName={iconName} />
+				)}
 				{isPasswordField && (
 					<button
 						aria-label={buttonAriaLabel}
@@ -139,12 +149,21 @@ const Input = <T extends FieldValues>({
 						onClick={handleVisibilityToggle}
 						type="button"
 					>
-						<Icon className={styles["toggle-icon"]} iconName={iconName} />
+						<Icon
+							className={styles["toggle-icon"]}
+							iconName={visibilityIconName}
+						/>
 					</button>
 				)}
 			</div>
-			{!descriptionId && (
-				<span className={styles["message"]} id={errorMessageId}>
+			{!descriptionId && (!isMessageHidden || errorMessage !== undefined) && (
+				<span
+					className={getValidClasses(
+						styles["message"],
+						isMessageHidden && "visually-hidden",
+					)}
+					id={errorMessageId}
+				>
 					{errorMessage}
 				</span>
 			)}

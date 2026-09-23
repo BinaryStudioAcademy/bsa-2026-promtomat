@@ -9,6 +9,7 @@ import { Select } from "~/libs/components/select/select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
+import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
@@ -49,6 +50,12 @@ const RecordPromptForm: React.FC = () => {
 	const formWorkspaceId = useWatch({ control, name: "workspaceId" });
 	const workspaceId = useActiveWorkspace({ formWorkspaceId, workspaces });
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
+	useWorkspaceSearchParameter({
+		selectWorkspace: (selectedWorkspaceId): void => {
+			setValue("workspaceId", selectedWorkspaceId);
+		},
+		workspaces,
+	});
 
 	const workspaceQuery =
 		typeof workspaceId === "number" ? { workspaceId } : skipToken;
@@ -87,7 +94,6 @@ const RecordPromptForm: React.FC = () => {
 					count={progress.count}
 					label="Training progress"
 					target={progress.target}
-					unit="Prompts"
 				/>
 			)}
 			<div>
