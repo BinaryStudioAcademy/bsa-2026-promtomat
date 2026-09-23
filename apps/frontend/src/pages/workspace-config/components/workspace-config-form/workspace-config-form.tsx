@@ -23,6 +23,7 @@ import {
 import {
 	useUpdateWorkspaceMutation,
 	workspaceUpdateValidationSchema,
+	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceConfigMessage } from "../../libs/enums/enums.js";
@@ -38,7 +39,10 @@ type Properties = {
 	workspace: WorkspaceDto;
 };
 
-type WorkspaceEditableFields = Pick<WorkspaceDto, "name" | "stackTags">;
+type WorkspaceEditableFields = Pick<
+	WorkspaceDto,
+	"description" | "name" | "stackTags"
+>;
 
 const WorkspaceConfigForm: React.FC<Properties> = ({
 	isOwner,
@@ -54,6 +58,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		trigger,
 	} = useAppForm<WorkspaceEditableFields>({
 		defaultValues: {
+			description: workspace.description,
 			name: workspace.name,
 			stackTags: sortValuesByDictionary(
 				workspace.stackTags,
@@ -95,17 +100,23 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (values: WorkspaceEditableFields) => {
+				const hasDescriptionChanged =
+					values.description !== workspace.description;
 				const hasNameChanged = values.name !== workspace.name;
 				const hasStackTagsChanged = !checkIsStackTagsEqual(
 					values.stackTags,
 					workspace.stackTags,
 				);
 
-				if (!hasNameChanged && !hasStackTagsChanged) {
+				if (!hasDescriptionChanged && !hasNameChanged && !hasStackTagsChanged) {
 					return;
 				}
 
 				const payload: WorkspaceUpdateRequestDto = {};
+
+				if (hasDescriptionChanged) {
+					payload.description = values.description;
+				}
 
 				if (hasNameChanged) {
 					payload.name = values.name;
@@ -119,6 +130,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 
 				if (data) {
 					reset({
+						description: data.description,
 						name: data.name,
 						stackTags: sortValuesByDictionary(
 							data.stackTags,
@@ -145,6 +157,14 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					label="Workspace name"
 					name="name"
 					placeholder="Enter name"
+				/>
+				<Input
+					control={control}
+					isDisabled={isEditingDisabled}
+					label="Description"
+					maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
+					name="description"
+					placeholder="Enter description"
 				/>
 				<SearchableSelect
 					control={control}

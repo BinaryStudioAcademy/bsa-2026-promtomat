@@ -7,9 +7,12 @@ import {
 
 const workspaceDescriptionField = z
 	.string()
-	.trim()
 	.max(WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH, {
 		error: WorkspaceValidationMessage.DESCRIPTION_TOO_LONG,
+	})
+	.refine((value) => value === value.trim(), {
+		error:
+			WorkspaceValidationMessage.DESCRIPTION_HAS_LEADING_OR_TRAILING_SPACES,
 	});
 
 export { workspaceDescriptionField };

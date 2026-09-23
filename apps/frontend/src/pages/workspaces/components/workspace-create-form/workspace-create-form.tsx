@@ -17,6 +17,7 @@ import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/
 import {
 	useCreateWorkspaceMutation,
 	workspaceCreationValidationSchema,
+	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
@@ -72,6 +73,14 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						name="name"
 						placeholder="Enter name"
 					/>
+					<Input
+						control={control}
+						label="Description"
+						maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
+						name="description"
+						placeholder="Enter description"
+					/>
+
 					<SearchableSelect
 						control={control}
 						isDisabled={isLoading}

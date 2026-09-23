@@ -23,6 +23,7 @@ const WorkspaceCard: React.FC<Properties> = ({
 	onOpen,
 	workspace,
 }: Properties) => {
+	const hasDescription = Boolean(workspace.description);
 	const visibility = capitalizeFirstLetter(workspace.visibility);
 
 	const handleConfigClick = useCallback((): void => {
@@ -61,7 +62,9 @@ const WorkspaceCard: React.FC<Properties> = ({
 						size={ControlSize.SM}
 					/>
 				</header>
-
+				{hasDescription && (
+					<p className={styles["description"]}>{workspace.description}</p>
+				)}
 				<WorkspaceTags stackTags={workspace.stackTags} />
 
 				<div className={styles["readiness"]}>
