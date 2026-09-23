@@ -67,6 +67,7 @@ const SearchableSelect = <T extends FieldValues>({
 	const { addValue, removeLastValue, removeValue } = useSelectedValues({
 		onChange,
 		selectedValues,
+		valuesDictionary,
 	});
 
 	const {

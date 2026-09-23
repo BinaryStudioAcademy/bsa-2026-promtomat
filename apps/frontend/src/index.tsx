@@ -5,6 +5,8 @@ import { Navigate } from "react-router-dom";
 
 import "~/assets/css/styles.css";
 import { App } from "~/libs/components/app/app.js";
+import { AuthenticatedShell } from "~/libs/components/authenticated-shell/authenticated-shell.js";
+import { ShellPageCopy } from "~/libs/components/authenticated-shell/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { PrivateRoute } from "~/libs/components/private-route/private-route.js";
 import { RouterProvider } from "~/libs/components/router-provider/router-provider.js";
@@ -30,8 +32,73 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 							{
 								children: [
 									{
-										element: <Navigate replace to={AppRoute.WORKSPACES} />,
-										index: true,
+										children: [
+											{
+												element: <Navigate replace to={AppRoute.WORKSPACES} />,
+												index: true,
+											},
+											{
+												handle: ShellPageCopy.PROFILE,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/profile/profile.js");
+
+													return { Component: pageModule.Profile };
+												},
+												path: AppRoute.PROFILE,
+											},
+											{
+												handle: ShellPageCopy.SETTINGS,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/settings/settings.js");
+
+													return { Component: pageModule.SettingsPage };
+												},
+												path: AppRoute.SETTINGS,
+											},
+											{
+												handle: ShellPageCopy.TRAINING,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/training/training.js");
+
+													return { Component: pageModule.Training };
+												},
+												path: AppRoute.TRAINING,
+											},
+											{
+												handle: ShellPageCopy.GENERATE,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/generate/generate.js");
+
+													return { Component: pageModule.Generate };
+												},
+												path: AppRoute.GENERATE,
+											},
+											{
+												handle: ShellPageCopy.WORKSPACES,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/workspaces/workspaces.js");
+
+													return { Component: pageModule.Workspaces };
+												},
+												path: AppRoute.WORKSPACES,
+											},
+											{
+												handle: ShellPageCopy.SMART_SEARCH,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/prompt-history/prompt-history.js");
+
+													return { Component: pageModule.PromptHistory };
+												},
+												path: AppRoute.PROMPTS_HISTORY,
+											},
+										],
+										element: <AuthenticatedShell />,
 									},
 									{
 										lazy: async () => {
@@ -50,60 +117,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 											return { Component: pageModule.NoAccessPage };
 										},
 										path: AppRoute.NO_ACCESS,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/settings/settings.js");
-
-											return { Component: pageModule.SettingsPage };
-										},
-										path: AppRoute.SETTINGS,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/profile/profile.js");
-
-											return { Component: pageModule.Profile };
-										},
-										path: AppRoute.PROFILE,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/training/training.js");
-
-											return { Component: pageModule.Training };
-										},
-										path: AppRoute.TRAINING,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/generate/generate.js");
-
-											return { Component: pageModule.Generate };
-										},
-										path: AppRoute.GENERATE,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/workspaces/workspaces.js");
-
-											return { Component: pageModule.Workspaces };
-										},
-										path: AppRoute.WORKSPACES,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/prompt-history/prompt-history.js");
-
-											return { Component: pageModule.PromptHistory };
-										},
-										path: AppRoute.PROMPTS_HISTORY,
 									},
 									{
 										lazy: async () => {
