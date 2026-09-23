@@ -41,9 +41,13 @@
 }
 
 .config {
-	align-self: flex-end;
-	margin-top: auto;
+	flex-shrink: 0;
 	pointer-events: auto;
+	transition: color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.config:hover:not(:disabled) {
+	color: var(--text-accent);
 }
 
 .header {
@@ -54,8 +58,15 @@
 	margin-bottom: var(--space-12);
 }
 
-.title {
+.identity {
+	display: flex;
 	flex: 1;
+	flex-direction: column;
+	gap: var(--space-12);
+	min-width: 0;
+}
+
+.title {
 	min-width: 0;
 	margin: 0;
 	font-size: var(--font-size-body-xl);
@@ -86,14 +97,10 @@
 	min-width: 0;
 	padding-top: var(--space-16);
 	padding-bottom: var(--space-16);
-	margin-top: var(--space-4);
+	margin-top: auto;
 	margin-bottom: var(--space-4);
 	border-top: var(--border-width-hairline) solid var(--border-default);
 	border-bottom: var(--border-width-hairline) solid var(--border-default);
-}
-
-.header + .readiness {
-	margin-top: 0;
 }
 
 @container (width <= 480px) {

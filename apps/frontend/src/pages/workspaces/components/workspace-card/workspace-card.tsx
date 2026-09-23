@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 
-import { Button } from "~/libs/components/button/button.js";
+import { IconButton } from "~/libs/components/icon-button/icon-button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
-import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { capitalizeFirstLetter } from "~/libs/helpers/helpers.js";
 import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
@@ -43,14 +43,23 @@ const WorkspaceCard: React.FC<Properties> = ({
 			/>
 			<div className={styles["body"]}>
 				<header className={styles["header"]}>
-					<h3 className={styles["title"]}>{workspace.name}</h3>
-					<span className={styles["visibility-badge"]}>
-						<Icon
-							className={styles["visibility-icon"]}
-							iconName={IconName.LOCK}
-						/>
-						{visibility}
-					</span>
+					<div className={styles["identity"]}>
+						<h3 className={styles["title"]}>{workspace.name}</h3>
+						<span className={styles["visibility-badge"]}>
+							<Icon
+								className={styles["visibility-icon"]}
+								iconName={IconName.LOCK}
+							/>
+							{visibility}
+						</span>
+					</div>
+					<IconButton
+						ariaLabel={`Config ${workspace.name}`}
+						className={styles["config"]}
+						iconName={IconName.SETTINGS}
+						onClick={handleConfigClick}
+						size={ControlSize.SM}
+					/>
 				</header>
 
 				<WorkspaceTags stackTags={workspace.stackTags} />
@@ -64,15 +73,6 @@ const WorkspaceCard: React.FC<Properties> = ({
 				</div>
 
 				<WorkspaceMetrics memberCount={workspace.memberCount} />
-				<Button
-					className={styles["config"]}
-					iconName={IconName.SETTINGS}
-					label="Config"
-					onClick={handleConfigClick}
-					size={ControlSize.MD}
-					type="button"
-					variant={ButtonVariant.SECONDARY}
-				/>
 			</div>
 		</div>
 	);
