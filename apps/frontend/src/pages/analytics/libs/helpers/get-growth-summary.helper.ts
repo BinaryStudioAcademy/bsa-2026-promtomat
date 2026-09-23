@@ -5,7 +5,7 @@ import { LAST_ELEMENT_INDEX } from "../constants/constants.js";
 import { GrowthChartConfig } from "../enums/enums.js";
 import { type GrowthSummary } from "../types/types.js";
 
-const hasContiguousTrend = (points: AnalyticsGrowthPoint[]): boolean => {
+const checkHasContiguousTrend = (points: AnalyticsGrowthPoint[]): boolean => {
 	let runLength = ZERO_VALUE;
 
 	for (const point of points) {
@@ -30,7 +30,7 @@ const getGrowthSummary = (points: AnalyticsGrowthPoint[]): GrowthSummary => {
 	return {
 		first: scores.at(FIRST_ELEMENT_INDEX) ?? null,
 		hasData: scores.length >= GrowthChartConfig.MIN_SCORED_POINTS,
-		hasTrend: hasContiguousTrend(points),
+		hasTrend: checkHasContiguousTrend(points),
 		latest: scores.at(LAST_ELEMENT_INDEX) ?? null,
 		scores,
 	};

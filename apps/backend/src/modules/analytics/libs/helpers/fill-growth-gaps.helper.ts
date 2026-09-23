@@ -53,7 +53,7 @@ const stepBack = (
 	return stepped;
 };
 
-const toBucketKey = (date: Date): string => {
+const convertToBucketKey = (date: Date): string => {
 	return date
 		.toISOString()
 		.slice(
@@ -81,7 +81,7 @@ const fillGrowthGaps = (
 	) {
 		const stepsAgo = count - GrowthGapFillConfig.OLDEST_STEP_OFFSET - index;
 		const bucketDate = stepBack(currentBucket, unit, stepsAgo);
-		const bucketKey = toBucketKey(bucketDate);
+		const bucketKey = convertToBucketKey(bucketDate);
 
 		points.push({
 			averageScore: averageScoreByBucket.get(bucketKey) ?? null,
