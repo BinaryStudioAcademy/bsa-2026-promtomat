@@ -5,7 +5,6 @@ import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import {
-	ButtonVariant,
 	ControlSize,
 	FormValidationMode,
 	HTTPCode,
@@ -16,6 +15,7 @@ import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-ser
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import {
 	type WorkspaceDto,
 	type WorkspaceUpdateRequestDto,
@@ -25,7 +25,7 @@ import {
 	workspaceUpdateValidationSchema,
 } from "~/modules/workspaces/workspaces.js";
 
-import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import { WorkspaceConfigMessage } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
 import {
 	TECH_STACK_TAG_VALUES,
@@ -34,14 +34,14 @@ import {
 import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
 
 type Properties = {
-	onClose: () => void;
+	isOwner: boolean;
 	workspace: WorkspaceDto;
 };
 
 type WorkspaceEditableFields = Pick<WorkspaceDto, "name" | "stackTags">;
 
 const WorkspaceConfigForm: React.FC<Properties> = ({
-	onClose,
+	isOwner,
 	workspace,
 }: Properties) => {
 	const {
@@ -49,6 +49,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		control,
 		formState: { isDirty, isValid },
 		handleSubmit,
+		reset,
 		setError,
 		trigger,
 	} = useAppForm<WorkspaceEditableFields>({
@@ -83,6 +84,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 			? null
 			: errorMessage;
 
+	const isEditingDisabled = isLoading || !isOwner;
+
 	useEffect(() => {
 		if (hasConflictError && errorMessage) {
 			setError("name", { message: errorMessage, type: "server" });
@@ -115,58 +118,61 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 				const { data } = await updateWorkspace({ id: workspace.id, payload });
 
 				if (data) {
-					onClose();
+					reset({
+						name: data.name,
+						stackTags: sortValuesByDictionary(
+							data.stackTags,
+							TECH_STACK_TAG_VALUES,
+						),
+					});
+					showNotification({
+						message: WorkspaceConfigMessage.SAVE_SUCCESS,
+						type: "success",
+					});
 				}
 			})(event);
 		},
-		[handleSubmit, onClose, updateWorkspace, workspace],
+		[handleSubmit, updateWorkspace, workspace, reset],
 	);
 
 	return (
-		<>
-			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<div className={styles["fields"]}>
-					{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
-					<Input
-						control={control}
-						isDisabled={isLoading}
-						label="Workspace name"
-						name="name"
-						placeholder="Name"
-					/>
-					<SearchableSelect
-						control={control}
-						isDisabled={isLoading}
-						label="Tech Stack Tags"
-						name="stackTags"
-						placeholder="Enter tags"
-						size={ControlSize.MD}
-						valuesDictionary={TECH_STACK_TAG_VALUES}
-					/>
-				</div>
+		<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+			<div className={styles["fields"]}>
+				{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
+				<Input
+					control={control}
+					isDisabled={isEditingDisabled}
+					label="Workspace name"
+					name="name"
+					placeholder="Enter name"
+				/>
+				<SearchableSelect
+					control={control}
+					isDisabled={isEditingDisabled}
+
+					label="Tech Stack Tags"
+					name="stackTags"
+					placeholder="Enter tags"
+					size={ControlSize.MD}
+					valuesDictionary={TECH_STACK_TAG_VALUES}
+				/>
+			</div>
+			{isOwner && (
 				<div className={styles["footer"]}>
-					<Button
-						isDisabled={isLoading}
-						label="Cancel"
-						onClick={onClose}
-						size={ControlSize.MD}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
 					<Button
 						isDisabled={!isDirty || !isValid}
 						isLoading={isLoading}
 						label={
 							isLoading
-								? WorkspaceFormMessage.SAVING
-								: WorkspaceFormMessage.SAVE
+								? WorkspaceConfigMessage.SAVING
+								: WorkspaceConfigMessage.SAVE
 						}
 						size={ControlSize.MD}
 						type="submit"
 					/>
 				</div>
-			</form>
-		</>
+			)}
+		</form>
 	);
 };
 

@@ -1,0 +1,113 @@
+.page {
+	padding-top: var(--space-28);
+	padding-bottom: var(--space-48);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+	width: 100%;
+	max-width: 860px;
+	margin-inline: auto;
+}
+
+.back-link {
+	display: inline-flex;
+	gap: var(--space-8);
+	align-items: center;
+	align-self: flex-start;
+	padding: var(--space-10) var(--space-16) var(--space-10) var(--space-12);
+	font-size: var(--font-size-body-base);
+	font-weight: 600;
+	color: var(--text-strong);
+	text-decoration: none;
+	background-color: var(--surface-raised);
+	border: var(--border-width-hairline) solid var(--border-strong);
+	border-radius: var(--radius-xl);
+	transition: background-color var(--motion-duration-fast)
+		var(--motion-ease-standard);
+}
+
+.back-link:hover {
+	background-color: var(--surface-card);
+}
+
+.back-link:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.back-icon {
+	transform: rotate(90deg);
+}
+
+.heading {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-6);
+}
+
+.kicker {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 500;
+	color: var(--text-accent);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-display-2);
+	font-weight: 700;
+	line-height: 1.15;
+	color: var(--text-strong);
+	letter-spacing: -0.5px;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+	padding: var(--space-24);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-2xl);
+}
+
+.section-title {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 400;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+}
+
+.fields {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+}
+
+.footer {
+	display: flex;
+	justify-content: flex-end;
+}
+
+@container (width <= 640px) {
+	.page {
+		padding-top: var(--space-16);
+	}
+
+	.container {
+		gap: var(--space-12);
+	}
+}

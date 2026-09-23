@@ -9,11 +9,10 @@ import {
 	EMPTY_LENGTH,
 	WORKSPACE_ID_SEARCH_PARAMETER,
 } from "~/libs/constants/constants.js";
-import { IconName } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { AppRoute, IconName } from "~/libs/enums/enums.js";
+import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
-import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useGetWorkspacesQuery,
@@ -21,7 +20,6 @@ import {
 } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
-import { WorkspaceConfigModal } from "./components/workspace-config-modal/workspace-config-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import { WorkspaceHeader } from "./components/workspace-header/workspace-header.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
@@ -38,8 +36,7 @@ const Workspaces: React.FC = () => {
 	const [scope, setScope] = useState<ValueOf<typeof WorkspaceListScope>>(
 		WorkspaceListScope.ALL,
 	);
-	const { data: user } = useGetAuthenticatedUserQuery(undefined);
-	const currentUserId = user?.id;
+
 	const { data, isError, isFetching, isLoading } = useGetWorkspacesQuery({
 		scope,
 		workspaceName: debouncedSearch,
@@ -61,13 +58,13 @@ const Workspaces: React.FC = () => {
 
 	const handleConfigOpen = useCallback(
 		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({
-				isOwner: workspace.userId === currentUserId,
-				type: "config",
-				workspace,
-			});
+			void navigate(
+				configureString(AppRoute.WORKSPACES_$WORKSPACE_ID_CONFIG, {
+					workspaceId: String(workspace.id),
+				}),
+			);
 		},
-		[currentUserId],
+		[navigate],
 	);
 
 	const handleOpen = useCallback(
@@ -139,13 +136,6 @@ const Workspaces: React.FC = () => {
 
 			{activeModal?.type === "create" && (
 				<WorkspaceCreateModal onClose={handleModalClose} />
-			)}
-
-			{activeModal?.type === "config" && activeModal.isOwner && (
-				<WorkspaceConfigModal
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
 			)}
 		</div>
 	);

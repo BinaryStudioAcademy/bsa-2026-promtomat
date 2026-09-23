@@ -2,20 +2,27 @@ import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { Button } from "~/libs/components/button/button.js";
+import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { HTTPCode } from "~/libs/enums/enums.js";
+import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
+import { WorkspaceConfigForm } from "./components/workspace-config-form/workspace-config-form.js";
 import { WorkspaceConfigMessage } from "./libs/enums/enums.js";
+import styles from "./styles.module.css";
 
 const WorkspaceConfig: React.FC = () => {
 	const { workspaceId } = useParams<{ workspaceId?: string }>();
 	const parsedWorkspaceId = Number(workspaceId);
 
-	const { data, error, isLoading, refetch } =
+	const { data: user } = useGetAuthenticatedUserQuery(undefined);
+	const { data, error, isFetching, isLoading, refetch } =
 		useGetWorkspaceByIdQuery(parsedWorkspaceId);
 
 	const isNotFound =
@@ -35,16 +42,40 @@ const WorkspaceConfig: React.FC = () => {
 
 	if (!data) {
 		return (
-			<div className="page-container">
+			<div className={getValidClasses("page-container", styles["page"])}>
 				<p>{WorkspaceConfigMessage.LOAD_FAILED}</p>
-				<Button label="Retry" onClick={handleRetry} type="button" />
+				<Button
+					isLoading={isFetching}
+					label="Retry"
+					onClick={handleRetry}
+					type="button"
+				/>
 			</div>
 		);
 	}
 
+	const isOwner = data.userId === user?.id;
+
 	return (
-		<div className="page-container">
-			<h2>{data.name}</h2>
+		<div className={styles["page"]}>
+			<div className={getValidClasses("page-container", styles["container"])}>
+				<Link
+					className={styles["back-link"]}
+					hasDefaultStyles={false}
+					to={AppRoute.WORKSPACES}
+				>
+					<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+					All workspaces
+				</Link>
+				<div className={styles["heading"]}>
+					<p className={styles["kicker"]}>Workspace config</p>
+					<h2 className={styles["title"]}>{data.name}</h2>
+				</div>
+				<section className={styles["card"]}>
+					<h3 className={styles["section-title"]}>General</h3>
+					<WorkspaceConfigForm isOwner={isOwner} workspace={data} />
+				</section>
+			</div>
 		</div>
 	);
 };
