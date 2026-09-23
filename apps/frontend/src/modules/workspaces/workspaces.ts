@@ -10,6 +10,7 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceByIdQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

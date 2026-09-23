@@ -13,6 +13,7 @@ const AppRoute = {
 	SIGN_UP: "/sign-up",
 	TRAINING: "/training",
 	WORKSPACES: "/workspaces",
+	WORKSPACES_$WORKSPACE_ID_CONFIG: "/workspaces/:workspaceId/config",
 } as const;
 
 export { AppRoute };
