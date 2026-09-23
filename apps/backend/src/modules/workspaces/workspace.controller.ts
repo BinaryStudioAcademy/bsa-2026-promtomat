@@ -31,6 +31,8 @@ import { type WorkspaceService } from "./workspace.service.js";
  *     Workspace:
  *       type: object
  *       properties:
+ *         description:
+ *           type: string
  *         id:
  *           type: number
  *           minimum: 1
@@ -157,6 +159,8 @@ class WorkspaceController extends BaseController {
 	 *            schema:
 	 *              type: object
 	 *              properties:
+	 *                description:
+	 *                  type: string
 	 *                name:
 	 *                  type: string
 	 *                stackTags:
@@ -374,6 +378,9 @@ class WorkspaceController extends BaseController {
 	 *             additionalProperties: false
 	 *             minProperties: 1
 	 *             properties:
+	 *               description:
+	 *                 type: string
+	 *                 maxLength: 200
 	 *               name:
 	 *                 type: string
 	 *                 minLength: 3
