@@ -50,6 +50,7 @@ const config: KnipConfig = {
 		"apps/frontend": {
 			entry: ["src/libs/hooks/**/*.hook.ts"],
 		},
+		"apps/mcp": {},
 		"packages/shared": {
 			includeEntryExports: true,
 		},

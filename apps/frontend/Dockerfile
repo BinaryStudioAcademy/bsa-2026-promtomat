@@ -15,6 +15,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json packages.d.ts
 COPY packages/shared/ ./packages/shared/
 COPY apps/frontend/package.json ./apps/frontend/
 COPY apps/backend/package.json ./apps/backend/
+COPY apps/mcp/package.json ./apps/mcp/
 RUN pnpm install --frozen-lockfile
 
 COPY apps/frontend/ ./apps/frontend/
