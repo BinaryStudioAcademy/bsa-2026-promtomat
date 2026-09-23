@@ -24,8 +24,10 @@ const SettingsPage: React.FC = () => {
 
 	return (
 		<main className={styles["page"]}>
-			<span className={styles["kicker"]}>ACCOUNT</span>
-			<h1 className={styles["title"]}>Profile</h1>
+			<div>
+				<span className={styles["kicker"]}>ACCOUNT</span>
+				<h1 className={styles["title"]}>Profile</h1>
+			</div>
 			<SettingsForm user={{ ...user, totalPrompts: summary.totalPrompts }} />
 			<Activity summary={summary} />
 			<Security email={user.email} />
