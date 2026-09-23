@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
 
 import { WorkspaceVisibility } from "./libs/enums/enums.js";
@@ -38,7 +40,7 @@ class WorkspaceEntity implements Entity {
 		stackTags,
 		userId,
 		visibility,
-	}: WorkspaceEntityPayload): WorkspaceEntity {
+	}: WorkspaceDto): WorkspaceEntity {
 		return new WorkspaceEntity({
 			id,
 			name,
@@ -74,7 +76,7 @@ class WorkspaceEntity implements Entity {
 
 	public toObject(): WorkspaceDto {
 		return {
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.WORKSPACE),
 			name: this.name,
 			stackTags: this.stackTags,
 			userId: this.userId,

@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { Entity } from "~/libs/types/entity.type.js";
 
 class LabelEntity implements Entity {
@@ -31,8 +33,7 @@ class LabelEntity implements Entity {
 		name,
 		workspaceId,
 	}: {
-		createdAt: string;
-		id: null | number;
+		id: number;
 		name: string;
 		workspaceId: number;
 	}): LabelEntity {
@@ -61,7 +62,11 @@ class LabelEntity implements Entity {
 		});
 	}
 
-	toNewObject() {
+	public toNewObject(): {
+		name: string;
+		stem: null | string;
+		workspaceId: number;
+	} {
 		return {
 			name: this.name,
 			stem: this.stem,
@@ -69,9 +74,13 @@ class LabelEntity implements Entity {
 		};
 	}
 
-	toObject() {
+	public toObject(): {
+		id: number;
+		name: string;
+		workspaceId: number;
+	} {
 		return {
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.LABEL),
 			name: this.name,
 			workspaceId: this.workspaceId,
 		};

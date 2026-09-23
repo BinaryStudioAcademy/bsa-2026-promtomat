@@ -1,1 +1,1 @@
-export { TechStackTagSchema } from "./tech-stack.validation-schema.js";
+export { techStackTag } from "./tech-stack.validation-schema.js";
