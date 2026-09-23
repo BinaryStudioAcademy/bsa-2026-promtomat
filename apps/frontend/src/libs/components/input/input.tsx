@@ -22,6 +22,7 @@ type Properties<T extends FieldValues> = {
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
+	leadingIconName?: ValueOf<typeof IconName>;
 	maxLength?: number;
 	name: FieldPath<T>;
 	onBlur?: React.FocusEventHandler<HTMLInputElement>;
@@ -43,6 +44,7 @@ const Input = <T extends FieldValues>({
 	isLabelHidden = false,
 	isRequired = false,
 	label,
+	leadingIconName,
 	maxLength,
 	name,
 	onBlur,
@@ -107,6 +109,9 @@ const Input = <T extends FieldValues>({
 				) : null}
 			</label>
 			<div className={styles["control"]}>
+				{leadingIconName ? (
+					<Icon className={styles["leading-icon"]} iconName={leadingIconName} />
+				) : null}
 				<input
 					{...field}
 					aria-describedby={describedById}
@@ -118,6 +123,7 @@ const Input = <T extends FieldValues>({
 						styles[size],
 						hasError && styles["error"],
 						isPasswordField && styles["with-toggle"],
+						leadingIconName && styles["with-leading-icon"],
 						className,
 					)}
 					id={inputId}

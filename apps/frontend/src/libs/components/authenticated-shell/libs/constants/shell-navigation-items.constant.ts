@@ -7,7 +7,7 @@ const SHELL_NAVIGATION_ITEMS: readonly ShellNavigationItem[] = [
 	{
 		iconName: IconName.SEARCH,
 		label: ShellNavigationLabel.SMART_SEARCH,
-		to: AppRoute.PROMPTS_HISTORY,
+		to: AppRoute.SMART_SEARCH,
 	},
 	{
 		iconName: IconName.FOLDER,

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { type Control, useWatch } from "react-hook-form";
+import { type Control, type UseFormSetValue, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
@@ -18,8 +18,10 @@ type PromptFiltersFormValues = {
 
 type UsePromptFiltersReturn = {
 	control: Control<PromptFiltersFormValues, null>;
-	handleScoreChange: (score: number | string) => () => void;
+	handleClearFilters: () => void;
 	queryPayload: Omit<PromptGetQueryDto, "page">;
+	search: string;
+	setValue: UseFormSetValue<PromptFiltersFormValues>;
 };
 
 const usePromptFilters = (): UsePromptFiltersReturn => {
@@ -42,19 +44,17 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 				: undefined,
 	};
 
-	const handleScoreChange = useCallback(
-		(score: number | string) => {
-			return (): void => {
-				setValue("score", formValues.score === score ? "" : score);
-			};
-		},
-		[formValues.score, setValue],
-	);
+	const handleClearFilters = useCallback((): void => {
+		setValue("score", "");
+		setValue("search", "");
+	}, [setValue]);
 
 	return {
 		control,
-		handleScoreChange,
+		handleClearFilters,
 		queryPayload,
+		search: debouncedSearch,
+		setValue,
 	};
 };
 

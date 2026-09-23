@@ -1,0 +1,126 @@
+.panel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+	padding: var(--space-20);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.heading {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+}
+
+.title-row {
+	display: flex;
+	gap: var(--space-12);
+	align-items: flex-start;
+}
+
+.intent {
+	flex: 1;
+	min-width: 0;
+	margin: 0;
+	font-size: var(--font-size-title-3, var(--font-size-title-2));
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.meta {
+	display: flex;
+	gap: var(--space-8);
+	align-items: center;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.error {
+	color: var(--fg-danger);
+}
+
+.toolbar {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.open-link {
+	display: inline-flex;
+	gap: var(--space-6);
+	align-items: center;
+	padding: var(--space-6) var(--space-12);
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
+	color: var(--text-strong);
+	text-decoration: none;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	transition:
+		color var(--motion-duration-fast) var(--motion-ease-standard),
+		border-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.open-link:hover {
+	color: var(--text-strong);
+	border-color: var(--border-default);
+}
+
+.open-link-icon {
+	width: 13px;
+	height: 13px;
+	color: var(--text-muted);
+	transform: rotate(-90deg);
+}
+
+.body {
+	max-height: 320px;
+	padding: var(--space-16);
+	margin: 0;
+	overflow: auto;
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-sm);
+	line-height: 1.6;
+	color: var(--text-strong);
+	white-space: pre-wrap;
+	background-color: var(--surface-inset);
+	border-radius: var(--radius-lg);
+}
+
+.actions {
+	display: flex;
+}
+
+.copy-button {
+	flex: 1;
+}
+
+.score-badge {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	height: 28px;
+	padding: 0 var(--space-8);
+	font-size: var(--font-size-label-sm);
+	font-weight: 700;
+	border-radius: var(--radius-sm);
+}
+
+.danger-outline {
+	color: var(--fg-danger);
+	background-color: var(--bg-danger);
+}
+
+.warning-outline {
+	color: var(--fg-warning);
+	background-color: var(--bg-warning);
+}
+
+.success-outline {
+	color: var(--fg-success);
+	background-color: var(--bg-success);
+}

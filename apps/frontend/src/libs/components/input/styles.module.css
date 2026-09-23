@@ -77,6 +77,22 @@
 	padding-right: 40px;
 }
 
+.with-leading-icon {
+	padding-left: var(--space-40);
+}
+
+.leading-icon {
+	position: absolute;
+	left: var(--space-12);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	color: var(--text-muted);
+	pointer-events: none;
+}
+
 .toggle {
 	position: absolute;
 	right: 8px;
