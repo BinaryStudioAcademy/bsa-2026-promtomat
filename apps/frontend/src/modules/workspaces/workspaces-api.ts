@@ -141,13 +141,21 @@ const workspacesApi = baseApi
 	});
 
 const {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
+	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 } = workspacesApi;
 
 export {
+	useAddWorkspaceContributorMutation,
 	useCreateWorkspaceMutation,
+	useDeleteWorkspaceContributorMutation,
+	useDeleteWorkspaceMutation,
+	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
 };
