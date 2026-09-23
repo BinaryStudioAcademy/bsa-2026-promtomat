@@ -14,6 +14,8 @@ import {
 } from "./libs/enums/enums.js";
 
 class WorkspaceModel extends AbstractModel {
+	public description!: string;
+
 	public name!: string;
 
 	public stackTags!: string[];

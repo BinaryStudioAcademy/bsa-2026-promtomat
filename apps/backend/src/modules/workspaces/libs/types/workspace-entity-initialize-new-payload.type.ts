@@ -3,6 +3,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { WorkspaceVisibility } from "../enums/enums.js";
 
 type WorkspaceEntityInitializeNewPayload = {
+	description?: string | undefined;
 	name: string;
 	stackTags?: string[] | undefined;
 	userId: number;
