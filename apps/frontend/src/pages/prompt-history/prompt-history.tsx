@@ -5,6 +5,7 @@ import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { Select } from "~/libs/components/select/select.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
@@ -12,8 +13,6 @@ import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
 import styles from "./styles.module.css";
-
-const ZERO_VALUE = 0;
 
 const PromptHistory: React.FC = () => {
 	const { control, queryPayload } = usePromptFilters();
@@ -74,7 +73,7 @@ const PromptHistory: React.FC = () => {
 		<main className={styles["container"]}>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["header"]}>
-					<h1 className={styles["title"]}>Prompt Log History</h1>
+					<h2 className={styles["title"]}>Prompt Log History</h2>
 				</header>
 
 				<div className={styles["metrics"]}>

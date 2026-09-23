@@ -4,4 +4,6 @@ export { MILLISECONDS_IN_SECOND } from "./milliseconds-in-second.constant.js";
 export {
 	FIRST_ELEMENT_INDEX,
 	QUALITY_SCORE_THRESHOLD,
+	ROUND_FACTOR,
+	ZERO_VALUE,
 } from "@promptomat/shared";

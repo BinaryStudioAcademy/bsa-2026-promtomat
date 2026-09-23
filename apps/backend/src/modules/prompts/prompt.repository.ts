@@ -1,6 +1,9 @@
 import { raw, type Transaction } from "objection";
 
-import { QUALITY_SCORE_THRESHOLD } from "~/libs/constants/constants.js";
+import {
+	QUALITY_SCORE_THRESHOLD,
+	ZERO_VALUE,
+} from "~/libs/constants/constants.js";
 import {
 	PromptQualityTier,
 	QueryClearTarget,
@@ -18,7 +21,6 @@ import {
 	PROMPT_LABEL_ID,
 	PROMPT_WORKSPACE_ID,
 	WORKSPACE_RELATION,
-	ZERO_VALUE,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
 	PaginationValue,

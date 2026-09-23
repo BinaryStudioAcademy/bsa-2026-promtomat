@@ -24,6 +24,11 @@ frontend:
           - "apps/frontend/**/*"
           - "!apps/frontend/.env.example"
 
+mcp:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/mcp/**/*"
+
 env:
   - changed-files:
       - any-glob-to-any-file:

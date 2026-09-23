@@ -1,0 +1,3 @@
+const SCORE_FRACTION_DIGITS = 1;
+
+export { SCORE_FRACTION_DIGITS };

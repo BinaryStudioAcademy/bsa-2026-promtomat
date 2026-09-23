@@ -1,0 +1,3 @@
+const TRAILING_SLASH_PATTERN = /\/$/;
+
+export { TRAILING_SLASH_PATTERN };

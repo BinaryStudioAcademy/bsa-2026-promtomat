@@ -1,0 +1,3 @@
+const DEFERRED_FOCUS_DELAY_MS = 0;
+
+export { DEFERRED_FOCUS_DELAY_MS };

@@ -1,5 +1,6 @@
 import { type Transaction } from "objection";
 
+import { ROUND_FACTOR } from "~/libs/constants/constants.js";
 import {
 	PromptDeliveryError,
 	PromptError,
@@ -12,7 +13,6 @@ import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
-import { ROUND_FACTOR } from "./libs/constants/constants.js";
 import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
 import {
