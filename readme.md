@@ -200,6 +200,19 @@ As we are already using js on both frontend and backend it would be useful to sh
 
 1. [Zod](https://github.com/colinhacks/zod) — a schema validator
 
+### 5.5 MCP Server
+
+#### 5.5.1 Reason
+
+A coding agent needs Promptomat where the developer works, not in a browser tab. `apps/mcp` is a local [Model Context Protocol](https://modelcontextprotocol.io/) server: the agent starts it on the developer's machine, talks to it over stdio, and the server talks to the backend API as the user whose API token it holds.
+
+It is installed on the user's machine from a release tarball rather than run from this repository, so it has no part in "How to Run". Installation, connection, troubleshooting and the release procedure are in the [package readme](apps/mcp/readme.md).
+
+#### 5.5.2 Technologies
+
+1. [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) — the protocol server and the stdio transport
+2. [esbuild](https://esbuild.github.io/) — bundles the server and the shared package into one file
+
 ## 6. How to Run
 
 ### 6.1 Manually
