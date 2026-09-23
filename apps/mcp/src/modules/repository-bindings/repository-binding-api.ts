@@ -23,14 +23,11 @@ class RepositoryBindingApi {
 	}
 
 	public async create(payload: CreatePayload): Promise<void> {
-		await this.http.load(
-			`${APIPath.REPOSITORY_BINDINGS}${RepositoryBindingsApiPath.ROOT}`,
-			{
-				headers: new Headers(),
-				method: HTTPMethod.POST,
-				payload: JSON.stringify(payload),
-			},
-		);
+		await this.http.load(APIPath.REPOSITORY_BINDINGS, {
+			headers: new Headers(),
+			method: HTTPMethod.POST,
+			payload: JSON.stringify(payload),
+		});
 	}
 
 	public async resolve(remoteUrl: string): Promise<Resolution> {

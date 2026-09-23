@@ -1,33 +1,13 @@
 import { z } from "zod";
 
 import { type Resolution } from "../types/types.js";
-
-const resolutionWorkspaceValidationSchema = z.object({
-	id: z.number(),
-	name: z.string(),
-});
-
-const ambiguousResolutionValidationSchema = z.object({
-	status: z.literal("ambiguous"),
-	workspaces: z.array(resolutionWorkspaceValidationSchema),
-});
-
-const resolvedResolutionValidationSchema = z.object({
-	status: z.literal("resolved"),
-	workspaceId: z.number(),
-});
-
-const unresolvedResolutionValidationSchema = z.object({
-	status: z.literal("unresolved"),
-});
+import { ambiguousResolution } from "./ambiguous-resolution.validation-schema.js";
+import { resolvedResolution } from "./resolved-resolution.validation-schema.js";
+import { unresolvedResolution } from "./unresolved-resolution.validation-schema.js";
 
 const resolutionValidationSchema: z.ZodType<Resolution> = z.discriminatedUnion(
 	"status",
-	[
-		ambiguousResolutionValidationSchema,
-		resolvedResolutionValidationSchema,
-		unresolvedResolutionValidationSchema,
-	],
+	[ambiguousResolution, resolvedResolution, unresolvedResolution],
 );
 
 export { resolutionValidationSchema };

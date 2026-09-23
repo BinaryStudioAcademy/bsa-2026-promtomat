@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { type z } from "zod";
 
 import { ToolName } from "~/libs/enums/enums.js";
 import { createMCPTextResult } from "~/libs/helpers/helpers.js";
@@ -9,18 +9,11 @@ import {
 	getRepositoryRemoteUrl,
 	readPackageJson,
 } from "./libs/helpers/helpers.js";
+import { bindRepositoryInputSchema } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
 
 const DESCRIPTION =
 	"Bind this checkout's repository to a Promptomat workspace, so future tool calls resolve to it. Call it after resolve-repository reports the checkout as unresolved or ambiguous, passing the workspaceId to bind to. Detects the project's technologies from package.json and records them on the workspace.";
-
-const INPUT_SCHEMA = {
-	workspaceId: z
-		.number()
-		.int()
-		.positive()
-		.describe("The id of the workspace to bind this repository to."),
-};
 
 const createBindRepositoryTool = (
 	repositoryBindingApi: RepositoryBindingApi,
@@ -28,7 +21,7 @@ const createBindRepositoryTool = (
 	description: DESCRIPTION,
 	execute: async (arguments_) => {
 		const { workspaceId } = arguments_ as z.infer<
-			z.ZodObject<typeof INPUT_SCHEMA>
+			z.ZodObject<typeof bindRepositoryInputSchema>
 		>;
 
 		const projectDirectory = process.cwd();
@@ -51,7 +44,7 @@ const createBindRepositoryTool = (
 			`Bound this repository to workspace id ${String(workspaceId)}.`,
 		);
 	},
-	inputSchema: INPUT_SCHEMA,
+	inputSchema: bindRepositoryInputSchema,
 	name: ToolName.BIND_REPOSITORY,
 });
 

@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	binding: RepositoryBindingDto;
-	isDisabled?: boolean | undefined;
+	isDisabled: boolean;
 	onRemove: (repositoryBindingId: number) => void;
 };
 
