@@ -5,6 +5,7 @@ const PromptsApiPath = {
 	RECENT: "/recent",
 	ROOT: "/",
 	SEARCH: "/search",
+	STREAK: "/streak",
 } as const;
 
 export { PromptsApiPath };

@@ -13,6 +13,7 @@ export {
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 	type PromptRouteParametersDto,
+	type PromptStreakDayDto,
 	type PromptUpdateIntentRequestDto,
 } from "./libs/types/types.js";
 export {
@@ -20,6 +21,8 @@ export {
 	type PromptIdParameterDto,
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
+	type PromptStreakQueryDto,
+	type PromptStreakResponseDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 export {
@@ -27,6 +30,7 @@ export {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
+	promptStreakQueryValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
