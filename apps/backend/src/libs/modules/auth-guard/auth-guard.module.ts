@@ -1,12 +1,12 @@
 import { BEARER, MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
-import { ErrorCode } from "~/libs/enums/enums.js";
+import { AuthErrorMessage, ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserDto } from "~/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
-import { AuthErrorMessage, AuthSuccessMessage } from "./libs/enums/enums.js";
+import { AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
 class AuthGuard {

@@ -1,5 +1,5 @@
 export { type ComposedPromptStructuredGenerationOutput } from "./composed-prompt-structured-generation-output.type.js";
-export { type GeneratorInterface } from "./generator-interface.type.js";
+export { type Generator } from "./generator.type.js";
 export { type LabelStructuredGenerationOutput } from "./label-structured-generation-output.type.js";
 export { type OutputGuardMap } from "./output-guard-map.type.js";
 export { type SchemaResultMap } from "./schema-result-map.type.js";

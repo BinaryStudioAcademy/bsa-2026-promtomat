@@ -4,7 +4,7 @@ import {
 } from "~/libs/exceptions/exceptions.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
-import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
+import { Generator } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
@@ -32,7 +32,7 @@ import { type PromptRepository } from "./prompt.repository.js";
 
 type Constructor = {
 	database: Database;
-	generator: GeneratorInterface;
+	generator: Generator;
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
@@ -42,7 +42,7 @@ type Constructor = {
 class PromptService {
 	private database: Database;
 
-	private generator: GeneratorInterface;
+	private generator: Generator;
 
 	private labelService: LabelService;
 

@@ -5,6 +5,7 @@ export { SQLAlias } from "./sql-alias.enum.js";
 export {
 	APIPath,
 	AppEnvironment,
+	AuthErrorMessage,
 	ErrorCode,
 	SortOrder,
 	TokenErrorCode,
