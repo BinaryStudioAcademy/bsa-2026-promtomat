@@ -9,7 +9,6 @@ const AppRoute = {
 	PROMPTS_HISTORY: "/prompts/history",
 	RESET_PASSWORD: "/reset-password",
 	ROOT: "/",
-	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",
 	SIGN_UP: "/sign-up",
 	TRAINING: "/training",

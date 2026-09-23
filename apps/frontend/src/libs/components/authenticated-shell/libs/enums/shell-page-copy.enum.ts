@@ -8,12 +8,8 @@ const ShellPageCopy = {
 		title: "Generate",
 	},
 	PROFILE: {
-		subtitle: "Account details and prompt activity",
+		subtitle: "Account, activity and security",
 		title: "Profile",
-	},
-	SETTINGS: {
-		subtitle: "Update your account details and security",
-		title: "Settings",
 	},
 	SMART_SEARCH: {
 		subtitle: "Retrieve and browse every prompt your team logged",
