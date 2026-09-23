@@ -22,7 +22,7 @@ const SettingsPage: React.FC = () => {
 		<main className={styles["page"]}>
 			<div className={getValidClasses("page-container", styles["container"])}>
 				<p className={styles["kicker"]}>ACCOUNT</p>
-				<h1 className={styles["title"]}>User settings</h1>
+				<h2 className={styles["title"]}>User settings</h2>
 				<div className={styles["content"]}>
 					<SettingsForm user={user} />
 					<SecurityCard email={user.email} />

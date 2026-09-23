@@ -1,109 +1,55 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { type Ref } from "react";
 
 import { IconButton } from "~/libs/components/icon-button/icon-button.js";
-import { Link } from "~/libs/components/link/link.js";
-import { Logo } from "~/libs/components/logo/logo.js";
-import {
-	AppRoute,
-	ControlSize,
-	IconName,
-	KeyboardKey,
-} from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type UserDto } from "~/modules/users/users.js";
 
-import { HeaderNavigation } from "./components/header-navigation/header-navigation.js";
+import { AccountMenu } from "./components/account-menu/account-menu.js";
+import { HeaderLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	isLoading: boolean;
-	user: null | UserDto;
+	isNavigationOpen: boolean;
+	navigationId: string;
+	navigationToggleReference: Ref<HTMLButtonElement>;
+	onNavigationToggle: () => void;
+	subtitle: string;
+	title: string;
+	user: UserDto;
 };
 
-const Header: React.FC<Properties> = ({ isLoading, user }: Properties) => {
-	const { pathname } = useLocation();
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [previousPathname, setPreviousPathname] = useState(pathname);
-	const toggleButtonReference = useRef<HTMLButtonElement>(null);
-	const navReference = useRef<HTMLElement>(null);
-
-	if (pathname !== previousPathname) {
-		setPreviousPathname(pathname);
-		setIsMenuOpen(false);
-	}
-
-	const handleMenuToggle = useCallback((): void => {
-		setIsMenuOpen((previousIsMenuOpen) => !previousIsMenuOpen);
-	}, []);
-
-	const handleMenuClose = useCallback((): void => {
-		setIsMenuOpen(false);
-	}, []);
-
-	useEffect(() => {
-		if (!isMenuOpen) {
-			return;
-		}
-
-		const handleKeyDown = (event: KeyboardEvent): void => {
-			if (event.key !== KeyboardKey.ESCAPE) {
-				return;
-			}
-
-			setIsMenuOpen(false);
-			toggleButtonReference.current?.focus();
-		};
-
-		document.addEventListener("keydown", handleKeyDown);
-
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [isMenuOpen]);
-
-	useEffect(() => {
-		const navElement = navReference.current;
-
-		if (!navElement) {
-			return;
-		}
-
-		navElement.addEventListener("click", handleMenuClose);
-
-		return () => {
-			navElement.removeEventListener("click", handleMenuClose);
-		};
-	}, [handleMenuClose]);
-
+const Header: React.FC<Properties> = ({
+	isNavigationOpen,
+	navigationId,
+	navigationToggleReference,
+	onNavigationToggle,
+	subtitle,
+	title,
+	user,
+}: Properties) => {
 	return (
 		<header className={styles["header"]}>
-			<Link className={styles["identity"]} to={AppRoute.WORKSPACES}>
-				<Logo size={ControlSize.SM} />
-			</Link>
-
 			<div className={styles["menu-toggle"]}>
 				<IconButton
-					ariaControls="primary-navigation"
-					ariaExpanded={isMenuOpen}
-					ariaLabel="Toggle navigation"
+					ariaControls={navigationId}
+					ariaExpanded={isNavigationOpen}
+					ariaLabel={HeaderLabel.TOGGLE_NAVIGATION}
+					className={styles["navigation-toggle"]}
 					iconName={IconName.MENU}
-					onClick={handleMenuToggle}
-					reference={toggleButtonReference}
+					onClick={onNavigationToggle}
+					reference={navigationToggleReference}
+					size={ControlSize.LG}
 				/>
 			</div>
 
-			<nav
-				aria-label="Main"
-				className={getValidClasses(
-					styles["nav"],
-					isMenuOpen && styles["nav-open"],
-				)}
-				id="primary-navigation"
-				ref={navReference}
-			>
-				<HeaderNavigation isLoading={isLoading} user={user} />
-			</nav>
+			<div className={styles["copy"]}>
+				<h1 className={styles["title"]}>{title}</h1>
+				<p className={styles["subtitle"]}>{subtitle}</p>
+			</div>
+
+			<div className={styles["actions"]}>
+				<AccountMenu isNavigationOpen={isNavigationOpen} user={user} />
+			</div>
 		</header>
 	);
 };
