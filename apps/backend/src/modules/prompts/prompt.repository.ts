@@ -2,6 +2,7 @@ import { raw, type Transaction } from "objection";
 
 import { QueryClearTarget, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
 	FIRST_PAGE,
@@ -45,16 +46,87 @@ class PromptRepository {
 		query: ReturnType<typeof this.promptModel.query>,
 		{ score, userId, workspaceId }: PromptFilterByQueryParameters,
 	): ReturnType<typeof this.promptModel.query> {
-		query.where(
-			`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-			userId,
-		);
-
 		if (workspaceId) {
 			query.where(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				workspaceId,
 			);
+
+			query.where((builder) => {
+				builder
+					.whereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							)
+							.from(DatabaseTableName.WORKSPACES)
+							.where(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+								workspaceId,
+							)
+							.where(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+								userId,
+							),
+					)
+					.orWhereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+							)
+							.from(DatabaseTableName.CONTRIBUTORS)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+								workspaceId,
+							)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+								userId,
+							),
+					);
+			});
+		} else {
+			query.where((builder) => {
+				builder
+					.whereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							)
+							.from(DatabaseTableName.WORKSPACES)
+							.where(
+								raw("?? = ??", [
+									`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+									`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+								]),
+							)
+							.where(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+								userId,
+							),
+					)
+					.orWhereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+							)
+							.from(DatabaseTableName.CONTRIBUTORS)
+							.where(
+								raw("?? = ??", [
+									`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+									`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+								]),
+							)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+								userId,
+							),
+					);
+			});
 		}
 
 		if (score) {

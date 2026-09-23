@@ -2,6 +2,7 @@ import { raw, type Transaction } from "objection";
 
 import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { ZERO_VALUE } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
@@ -92,7 +93,31 @@ class PromptEmbeddingRepository {
 		const baseQuery = this.promptEmbeddingModel
 			.query()
 			.joinRelated(PROMPT_WORKSPACE_RELATION)
-			.where(`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`, userId)
+			.where((builder) => {
+				builder
+					.where(
+						`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.USER_ID}`,
+						userId,
+					)
+					.orWhereExists(
+						this.promptEmbeddingModel
+							.query()
+							.select(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+							)
+							.from(DatabaseTableName.CONTRIBUTORS)
+							.where(
+								raw("?? = ??", [
+									`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+									`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
+								]),
+							)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+								userId,
+							),
+					);
+			})
 			.where(
 				raw("?? <=> ?::vector", [
 					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
@@ -187,8 +212,8 @@ class PromptEmbeddingRepository {
 			.from(DatabaseTableName.PROMPTS)
 			.leftJoin(
 				DatabaseTableName.PROMPT_EMBEDDINGS,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
 				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
-				promptId,
 			)
 			.where(promptId, ">", afterId)
 			.orderBy(promptId)
