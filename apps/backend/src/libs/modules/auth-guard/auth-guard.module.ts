@@ -1,9 +1,8 @@
-import { API_TOKEN_PREFIX } from "~/libs/constants/constants.js";
+import { API_TOKEN_PREFIX, BEARER } from "~/libs/constants/constants.js";
+import { AuthErrorMessage } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserDto } from "~/libs/types/types.js";
 
-import { BEARER } from "./libs/constants/constants.js";
-import { AuthErrorMesssage } from "./libs/enums/enums.js";
 import { type TokenGuard } from "./libs/types/types.js";
 
 class AuthGuard {
@@ -32,7 +31,7 @@ class AuthGuard {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
-			throw AuthError.unauthorized(AuthErrorMesssage.MISSING_TOKEN);
+			throw AuthError.unauthorized(AuthErrorMessage.MISSING_TOKEN);
 		}
 
 		const userEntity = await this.selectGuard(token).authenticate(token);

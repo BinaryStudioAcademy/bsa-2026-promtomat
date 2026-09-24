@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity } from "~/libs/types/types.js";
 
 import {
@@ -46,7 +48,7 @@ class ContributorEntity implements Entity {
 
 	public toObject(): ContributorDto {
 		return {
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.CONTRIBUTOR),
 			userId: this.userId,
 			workspaceId: this.workspaceId,
 		};

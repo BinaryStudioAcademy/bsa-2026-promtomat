@@ -1,10 +1,10 @@
-import { TimeUnit } from "~/libs/enums/enums.js";
+import { AuthErrorMessage, TimeUnit } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserEntity } from "~/modules/users/user.entity.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { type TokenService } from "../../../token/libs/types/types.js";
-import { AuthErrorMesssage, AuthSuccessMessage } from "../enums/enums.js";
+import { AuthSuccessMessage } from "../enums/enums.js";
 import { type AuthPayload, type TokenGuard } from "../types/types.js";
 
 class JwtTokenGuard implements TokenGuard {
@@ -26,13 +26,13 @@ class JwtTokenGuard implements TokenGuard {
 		}
 
 		if (!payload.iat) {
-			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+			throw AuthError.unauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
 
 		if (Number.isNaN(changedAtMilliseconds)) {
-			throw AuthError.unauthorized(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
+			throw AuthError.unauthorized(AuthErrorMessage.SESSION_NOT_VERIFIABLE);
 		}
 
 		const changedAtSeconds = Math.floor(
@@ -50,17 +50,17 @@ class JwtTokenGuard implements TokenGuard {
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
-			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_TOKEN);
+			throw AuthError.unauthorized(AuthErrorMessage.INVALID_TOKEN);
 		}
 
 		if (typeof payload.userId !== "number") {
-			throw AuthError.unauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+			throw AuthError.unauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const hasPurpose = Boolean(payload.purpose);
 
 		if (hasPurpose) {
-			throw AuthError.unauthorized(AuthErrorMesssage.WRONG_PURPOSE);
+			throw AuthError.unauthorized(AuthErrorMessage.WRONG_PURPOSE);
 		}
 
 		return payload;
@@ -72,7 +72,7 @@ class JwtTokenGuard implements TokenGuard {
 		const userEntity = await this.userService.findEntityById(payload.userId);
 
 		if (!userEntity) {
-			throw AuthError.unauthorized(AuthErrorMesssage.USER_NOT_FOUND);
+			throw AuthError.unauthorized(AuthErrorMessage.USER_NOT_FOUND);
 		}
 
 		this.assertTokenPredatesNoPasswordChange(

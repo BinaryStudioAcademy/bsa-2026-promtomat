@@ -3,6 +3,7 @@ export { HASH_ENCODING } from "./hash-encoding.constant.js";
 
 export {
 	API_TOKEN_PREFIX,
+	BEARER,
 	EMPTY_LENGTH,
 	FIRST_ELEMENT_INDEX,
 	ROUND_FACTOR,

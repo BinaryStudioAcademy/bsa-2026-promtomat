@@ -6,6 +6,7 @@ import { type SegmentedControlOption } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends string> = {
+	className?: string | undefined;
 	label: string;
 	onChange: (value: T) => void;
 	options: readonly SegmentedControlOption<T>[];
@@ -13,6 +14,7 @@ type Properties<T extends string> = {
 };
 
 const SegmentedControl = <T extends string>({
+	className,
 	label,
 	onChange,
 	options,
@@ -30,7 +32,7 @@ const SegmentedControl = <T extends string>({
 	);
 
 	return (
-		<fieldset className={styles["group"]}>
+		<fieldset className={getValidClasses(styles["group"], className)}>
 			<legend className="visually-hidden">{label}</legend>
 
 			{options.map((option) => {
