@@ -29,7 +29,10 @@ const Profile: React.FC = () => {
 				<h1 className={styles["title"]}>Profile</h1>
 			</div>
 			<SettingsForm user={{ ...user, totalPrompts: summary.totalPrompts }} />
-			<Activity summary={summary} />
+			<Activity
+				averageScore={summary.averageScore}
+				totalPrompts={summary.totalPrompts}
+			/>
 			<Security email={user.email} />
 		</main>
 	);

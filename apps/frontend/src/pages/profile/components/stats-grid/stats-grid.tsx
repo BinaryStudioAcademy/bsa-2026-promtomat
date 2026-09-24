@@ -1,43 +1,31 @@
 import React from "react";
 
-import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { UserProfileSummaryResponseDto } from "~/modules/users/users.js";
-
-import { getScoreColor } from "../../libs/helpers/helpers.js";
+import { StatItem } from "./components/stat-item/stat-item.js";
+import { StatItemVariant } from "./libs/enums/stat-item-variant.enum.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	summary: UserProfileSummaryResponseDto;
+	averageScore: null | number;
+	totalPrompts: number;
 };
 
-const StatsGrid: React.FC<Properties> = ({ summary }: Properties) => {
-	const { averageScore, totalPrompts } = summary;
-
+const StatsGrid: React.FC<Properties> = ({
+	averageScore,
+	totalPrompts,
+}: Properties) => {
 	return (
 		<div className={styles["stats-grid"]}>
-			<div className={styles["stat-tile"]}>
-				<span
-					className={getValidClasses(styles["stat-value"], styles["accent"])}
-				>
-					{totalPrompts}
-				</span>
-				<span className={styles["stat-label"]}>Total prompts</span>
-			</div>
-			<div className={styles["stat-tile"]}>
-				<span
-					className={getValidClasses(
-						styles["stat-value"],
-						styles[getScoreColor(averageScore)],
-					)}
-				>
-					{averageScore}
-				</span>
-				<span className={styles["stat-label"]}>Average score</span>
-			</div>
-			<div className={styles["stat-tile"]}>
-				<span className={styles["stat-value"]}>TODO</span>
-				<span className={styles["stat-label"]}>Day streak</span>
-			</div>
+			<StatItem
+				label="Total prompts"
+				value={totalPrompts}
+				variant={StatItemVariant.ACCENT}
+			/>
+			<StatItem
+				label="Average score"
+				value={averageScore ?? "-"}
+				variant={StatItemVariant.SCORE}
+			/>
+			<StatItem label="Day streak" value={"TODO"} />
 		</div>
 	);
 };

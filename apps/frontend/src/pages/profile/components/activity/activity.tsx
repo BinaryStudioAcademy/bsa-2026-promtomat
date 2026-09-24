@@ -4,24 +4,25 @@ import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Link } from "~/libs/components/link/link.js";
 import { ControlSize } from "~/libs/enums/control-size.enum.js";
 import { AppRoute, ButtonVariant } from "~/libs/enums/enums.js";
-import { UserProfileSummaryResponseDto } from "~/modules/users/users.js";
 
 import { Section } from "../section/section.js";
 import { StatsGrid } from "../stats-grid/stats-grid.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	summary: UserProfileSummaryResponseDto;
+	averageScore: null | number;
+	totalPrompts: number;
 };
 
-const Activity: React.FC<Properties> = ({ summary }: Properties) => {
-	const { totalPrompts } = summary;
-
+const Activity: React.FC<Properties> = ({
+	averageScore,
+	totalPrompts,
+}: Properties) => {
 	return (
 		<Section title="YOUR PROMPT ACTIVITY">
 			{totalPrompts ? (
 				<>
-					<StatsGrid summary={summary} />
+					<StatsGrid averageScore={averageScore} totalPrompts={totalPrompts} />
 					<ButtonLink
 						className={styles["activity-button"]}
 						label="View prompt log history"
