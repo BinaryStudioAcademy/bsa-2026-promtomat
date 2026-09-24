@@ -1,17 +1,19 @@
 .button {
 	display: inline-flex;
+	flex-shrink: 0;
 	gap: var(--space-8);
 	align-items: center;
 	justify-content: center;
-	padding: 0 16px;
+	height: var(--size-control-h-lg);
+	padding: var(--space-10) var(--space-14);
 	font-family: inherit;
-	font-size: var(--font-size-body-base);
-	font-weight: 400;
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
 	line-height: 1;
 	white-space: nowrap;
 	cursor: pointer;
 	border: var(--border-width-hairline) solid transparent;
-	border-radius: var(--radius-md);
+	border-radius: var(--radius-lg);
 	transition:
 		background-color var(--motion-duration-fast) var(--motion-ease-standard),
 		border-color var(--motion-duration-fast) var(--motion-ease-standard),
@@ -32,10 +34,7 @@
 
 .sm {
 	height: var(--size-control-h-sm);
-}
-
-.md {
-	height: var(--size-control-h-md);
+	padding: 0 var(--space-14);
 }
 
 .lg {
@@ -59,8 +58,8 @@
 
 .secondary {
 	color: var(--text-strong);
-	background-color: var(--surface-card);
-	border-color: var(--border-default);
+	background-color: var(--surface-raised);
+	border-color: var(--border-strong);
 }
 
 .secondary:hover:not(:disabled) {
@@ -74,8 +73,9 @@
 
 .danger {
 	font-weight: 600;
-	color: var(--text-strong);
-	background-color: var(--surface-danger);
+	color: var(--fg-danger);
+	background-color: transparent;
+	border-color: var(--surface-danger);
 }
 
 .danger:hover:not(:disabled) {

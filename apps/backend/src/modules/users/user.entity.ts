@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity } from "~/libs/types/types.js";
 
 import { type PrimaryAiCodingTool, type UserDto } from "./libs/types/types.js";
@@ -111,7 +113,7 @@ class UserEntity implements Entity {
 	} {
 		return {
 			email: this.email,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.USER),
 			passwordChangedAt: this.passwordChangedAt,
 			passwordHash: this.passwordHash,
 			passwordSalt: this.passwordSalt,
@@ -138,7 +140,7 @@ class UserEntity implements Entity {
 		return {
 			createdAt: this.createdAt as string,
 			email: this.email,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.USER),
 			nickname: this.nickname,
 			primaryAiCodingTool: this.primaryAiCodingTool,
 		};

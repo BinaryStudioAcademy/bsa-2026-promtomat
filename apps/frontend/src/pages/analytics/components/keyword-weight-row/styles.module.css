@@ -1,0 +1,51 @@
+.row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-6);
+}
+
+.success {
+	--tone-color: var(--fg-success);
+}
+
+.warning {
+	--tone-color: var(--fg-warning);
+}
+
+.danger {
+	--tone-color: var(--fg-danger);
+}
+
+.header {
+	display: flex;
+	gap: var(--space-16);
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.label {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-sm);
+	color: var(--text-strong);
+	overflow-wrap: anywhere;
+}
+
+.stats {
+	display: flex;
+	gap: var(--space-16);
+	align-items: baseline;
+}
+
+.count {
+	min-width: var(--space-32);
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-meta);
+	color: var(--text-faint);
+	text-align: right;
+}
+
+.bar {
+	--progress-fill-color: var(--tone-color);
+	--progress-radius: var(--radius-pill);
+	--progress-track-height: var(--space-4);
+}

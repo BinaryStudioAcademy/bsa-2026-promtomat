@@ -1,0 +1,128 @@
+.shell {
+	--z-index-drawer: 3;
+	--z-index-drawer-scrim: 2;
+
+	display: flex;
+	flex-grow: 1;
+	min-width: 0;
+	min-height: 100vh;
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: var(--z-index-drawer);
+	display: flex;
+	visibility: hidden;
+	flex: none;
+	flex-direction: column;
+	width: var(--layout-navigation-drawer-width);
+	max-width: 100%;
+	height: 100vh;
+	padding: var(--space-20) var(--space-14);
+	overflow-y: auto;
+	pointer-events: none;
+	background-color: var(--surface-sunken);
+	border-right: var(--border-width-hairline) solid var(--border-subtle);
+	transform: translateX(-100%);
+	transition:
+		transform var(--motion-duration-med) var(--motion-ease-out),
+		visibility var(--motion-duration-med);
+}
+
+.sidebar-open {
+	visibility: visible;
+	pointer-events: auto;
+	transform: none;
+}
+
+.sidebar:focus {
+	outline: none;
+}
+
+.identity {
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--space-8) var(--space-20);
+}
+
+.identity:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+	border-radius: var(--radius-xs);
+}
+
+.generate {
+	margin-bottom: var(--space-20);
+}
+
+.section-label {
+	padding: 0 var(--space-12);
+	margin-bottom: var(--space-8);
+	font-size: var(--font-size-meta);
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.scrim {
+	position: fixed;
+	inset: 0;
+	z-index: var(--z-index-drawer-scrim);
+	padding: 0;
+	cursor: pointer;
+	background-color: var(--overlay-scrim);
+	border: 0;
+	animation: scrim-in var(--motion-duration-med) var(--motion-ease-out);
+}
+
+@keyframes scrim-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.content {
+	flex: 1;
+	min-width: 0;
+	container-type: inline-size;
+}
+
+@media (width >= 768px) {
+	.sidebar {
+		position: sticky;
+		z-index: auto;
+		visibility: visible;
+		align-self: flex-start;
+		width: var(--layout-sidebar-width);
+		min-height: 100vh;
+		pointer-events: auto;
+		transform: none;
+		transition: none;
+	}
+
+	.scrim {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sidebar,
+	.scrim {
+		transition: none;
+		animation: none;
+	}
+}

@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Embedding } from "~/libs/modules/embedding/embedding.js";
 import { type Entity } from "~/libs/types/types.js";
 
@@ -118,7 +120,7 @@ class PromptEmbeddingEntity implements Entity {
 		return {
 			createdAt: this.createdAt,
 			embedding: this.embedding,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.PROMPT_EMBEDDING),
 			modelId: this.modelId,
 			promptId: this.promptId,
 			sourceHash: this.sourceHash,

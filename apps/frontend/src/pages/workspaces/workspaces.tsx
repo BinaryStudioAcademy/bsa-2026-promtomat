@@ -1,10 +1,14 @@
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
+import {
+	EMPTY_LENGTH,
+	WORKSPACE_ID_SEARCH_PARAMETER,
+} from "~/libs/constants/constants.js";
 import { IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
@@ -18,28 +22,36 @@ import {
 
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
 import { WorkspaceConfigModal } from "./components/workspace-config-modal/workspace-config-modal.js";
-import { WorkspaceContributorsModal } from "./components/workspace-contributors-modal/workspace-contributors-modal.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
-import { WorkspaceDeleteModal } from "./components/workspace-delete-modal/workspace-delete-modal.js";
-import { WorkspaceLeaveModal } from "./components/workspace-leave-modal/workspace-leave-modal.js";
+import { WorkspaceHeader } from "./components/workspace-header/workspace-header.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
+import { WorkspaceListMessage } from "./libs/enums/enums.js";
+import { getWorkspaceOpenDestination } from "./libs/helpers/helpers.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 const SEARCH_DELAY_MS = 300;
 
 const Workspaces: React.FC = () => {
+	const navigate = useNavigate();
 	const { control, debouncedSearch } = useSearch(SEARCH_DELAY_MS);
 	const [scope, setScope] = useState<ValueOf<typeof WorkspaceListScope>>(
 		WorkspaceListScope.ALL,
 	);
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const currentUserId = user?.id;
-	const { data, isLoading } = useGetWorkspacesQuery({
+	const { data, isError, isFetching, isLoading } = useGetWorkspacesQuery({
 		scope,
 		workspaceName: debouncedSearch,
 	});
 	const workspaces = data?.items ?? [];
+	const isListLoading = isLoading || isFetching;
+	const isListEmpty = workspaces.length === EMPTY_LENGTH;
+	const hasActiveFilter =
+		Boolean(debouncedSearch) || scope !== WorkspaceListScope.ALL;
+	const hasMatches =
+		isListLoading || isError || !isListEmpty || !hasActiveFilter;
+	const hasWorkspaces = !isListLoading && !isListEmpty;
 
 	const [activeModal, setActiveModal] = useState<ActiveModal>(null);
 
@@ -49,54 +61,53 @@ const Workspaces: React.FC = () => {
 
 	const handleConfigOpen = useCallback(
 		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "config", workspace });
+			setActiveModal({
+				isOwner: workspace.userId === currentUserId,
+				type: "config",
+				workspace,
+			});
 		},
-		[],
+		[currentUserId],
 	);
 
-	const handleDeleteOpen = useCallback(
+	const handleOpen = useCallback(
 		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "delete", workspace });
-		},
-		[],
-	);
+			const destination = getWorkspaceOpenDestination(workspace.promptCount);
+			const searchParameters = new URLSearchParams({
+				[WORKSPACE_ID_SEARCH_PARAMETER]: String(workspace.id),
+			});
 
-	const handleLeaveOpen = useCallback(
-		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "leave", workspace });
+			void navigate({
+				pathname: destination,
+				search: searchParameters.toString(),
+			});
 		},
-		[],
-	);
-
-	const handleManageAccessOpen = useCallback(
-		(workspace: WorkspaceListItemDto): void => {
-			setActiveModal({ type: "manage-access", workspace });
-		},
-		[],
+		[navigate],
 	);
 
 	const handleModalClose = useCallback((): void => {
 		setActiveModal(null);
 	}, []);
 
-	const isActiveWorkspaceOwner =
-		activeModal?.type === "manage-access" &&
-		activeModal.workspace.userId === currentUserId;
-
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
-			<header className={styles["header"]}>
-				<h1 className={styles["title"]}>Workspaces</h1>
-				<Button
-					iconName={IconName.PLUS}
-					label="Create Workspace"
-					onClick={handleCreateOpen}
-					type="button"
-				/>
-			</header>
+			<WorkspaceHeader onCreate={handleCreateOpen} />
 
-			<div className={styles["filter-container"]}>
+			<div className={styles["filters"]}>
+				<div className={styles["search"]}>
+					<Input
+						className={styles["search-input"]}
+						control={control}
+						iconName={IconName.SEARCH}
+						isLabelHidden
+						isMessageHidden
+						label="Search"
+						name="search"
+						placeholder="Search workspaces"
+					/>
+				</div>
 				<SegmentedControl
+					className={styles["scope"]}
 					label="Filter workspaces by ownership"
 					onChange={setScope}
 					options={WORKSPACE_LIST_SCOPE_OPTIONS}
@@ -104,62 +115,34 @@ const Workspaces: React.FC = () => {
 				/>
 			</div>
 
-			<div className={styles["search-container"]}>
-				<Input
-					control={control}
-					label="Search"
-					name="search"
-					placeholder="Search workspace"
-				/>
-			</div>
-
 			<div className={styles["list"]}>
-				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
-				{workspaces.map((workspace) => {
-					const isOwner = workspace.userId === currentUserId;
-					return (
-						<WorkspaceCard
-							isOwner={isOwner}
-							key={workspace.id}
-							onConfig={handleConfigOpen}
-							onDelete={handleDeleteOpen}
-							onLeave={handleLeaveOpen}
-							onManageAccess={handleManageAccessOpen}
-							workspace={workspace}
-						/>
-					);
-				})}
+				{isListLoading && <Loader variant={LoaderVariant.SECTION} />}
+				{!hasMatches && (
+					<div className={styles["empty-state"]}>
+						<p className={styles["empty-state-text"]}>
+							{WorkspaceListMessage.NO_MATCHES}
+						</p>
+					</div>
+				)}
+				{hasWorkspaces &&
+					workspaces.map((workspace) => {
+						return (
+							<WorkspaceCard
+								key={workspace.id}
+								onConfig={handleConfigOpen}
+								onOpen={handleOpen}
+								workspace={workspace}
+							/>
+						);
+					})}
 			</div>
 
 			{activeModal?.type === "create" && (
 				<WorkspaceCreateModal onClose={handleModalClose} />
 			)}
 
-			{activeModal?.type === "config" && (
+			{activeModal?.type === "config" && activeModal.isOwner && (
 				<WorkspaceConfigModal
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "delete" && (
-				<WorkspaceDeleteModal
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "leave" && user && (
-				<WorkspaceLeaveModal
-					currentUserId={user.id}
-					onClose={handleModalClose}
-					workspace={activeModal.workspace}
-				/>
-			)}
-
-			{activeModal?.type === "manage-access" && (
-				<WorkspaceContributorsModal
-					isOwner={isActiveWorkspaceOwner}
 					onClose={handleModalClose}
 					workspace={activeModal.workspace}
 				/>

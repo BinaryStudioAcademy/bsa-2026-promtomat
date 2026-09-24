@@ -1,74 +1,81 @@
 .header {
-	position: relative;
+	position: sticky;
+	top: 0;
+	z-index: 1;
 	display: flex;
+	gap: var(--space-12);
 	align-items: center;
-	justify-content: space-between;
-	padding: 0 var(--space-16);
+	min-width: 0;
+	padding: var(--space-8) var(--space-16);
 	background-color: var(--surface-card);
 	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
-}
-
-.identity {
-	display: inline-flex;
-	align-items: center;
-	padding: var(--space-8) 0;
-}
-
-.identity:focus-visible {
-	outline: var(--border-width-focus) solid var(--border-focus);
-	outline-offset: var(--border-width-focus);
-	border-radius: var(--radius-xs);
 }
 
 .menu-toggle {
 	display: inline-flex;
 }
 
-.nav {
-	position: absolute;
-	top: 100%;
-	right: 0;
-	left: 0;
-	display: none;
-	background-color: var(--surface-card);
-	border-bottom: var(--border-width-hairline) solid var(--border-subtle);
+.menu-toggle .navigation-toggle {
+	color: var(--text-strong);
+	background-color: var(--surface-inset);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-lg);
+	transition: background-color var(--motion-duration-fast)
+		var(--motion-ease-standard);
 }
 
-.nav-open {
-	display: flex;
+.menu-toggle .navigation-toggle:hover {
+	background-color: var(--surface-raised);
 }
 
-.nav-list {
+.copy {
 	display: flex;
+	flex: 1;
 	flex-direction: column;
-	gap: 0;
-	align-items: stretch;
-	padding: var(--space-8) var(--space-16) var(--space-16);
+	min-width: 0;
+}
+
+.title {
 	margin: 0;
-	list-style: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--font-size-body-base);
+	font-weight: 600;
+	line-height: 1.2;
+	color: var(--text-strong);
+	white-space: nowrap;
 }
 
-.identity-label {
-	font-size: var(--font-size-body-sm);
+.subtitle {
+	display: none;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: var(--font-size-label-sm);
+	line-height: 1.2;
 	color: var(--text-muted);
+	white-space: nowrap;
 }
 
-@media (width > 640px) {
+.actions {
+	display: flex;
+	gap: var(--space-12);
+	align-items: center;
+	margin-left: auto;
+}
+
+@media (width >= 768px) {
 	.menu-toggle {
 		display: none;
 	}
 
-	.nav {
-		position: static;
-		display: flex;
-		background-color: transparent;
-		border-bottom: none;
+	.subtitle {
+		display: block;
 	}
+}
 
-	.nav-list {
-		flex-direction: row;
-		gap: var(--space-16);
-		align-items: center;
-		padding: 0;
+@media (prefers-reduced-motion: reduce) {
+	.menu-toggle .navigation-toggle {
+		transition: none;
 	}
 }

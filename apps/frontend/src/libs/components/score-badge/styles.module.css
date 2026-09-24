@@ -1,0 +1,29 @@
+.badge {
+	flex-shrink: 0;
+	padding: var(--space-4) var(--space-8);
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-sm);
+	border-radius: var(--radius-sm);
+}
+
+.success {
+	color: var(--fg-success);
+
+	--badge-background: var(--bg-success);
+}
+
+.warning {
+	color: var(--fg-warning);
+
+	--badge-background: var(--bg-warning);
+}
+
+.danger {
+	color: var(--fg-danger);
+
+	--badge-background: var(--bg-danger);
+}
+
+.filled {
+	background-color: var(--badge-background);
+}

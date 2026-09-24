@@ -1,0 +1,99 @@
+.container {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	padding: var(--space-48) var(--space-16);
+}
+
+.page-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-32);
+	width: 100%;
+	max-width: 1100px;
+}
+
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-24);
+	align-items: flex-end;
+	justify-content: space-between;
+}
+
+.heading {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+	max-width: 560px;
+}
+
+.kicker {
+	margin: 0;
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-label-sm);
+	font-weight: 500;
+	color: var(--text-accent);
+	text-transform: uppercase;
+}
+
+.title {
+	margin: 0;
+	font-size: var(--font-size-display-2);
+	font-weight: 700;
+	line-height: 1.15;
+	color: var(--text-strong);
+}
+
+.description {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.scope {
+	width: 280px;
+	max-width: 100%;
+}
+
+.message {
+	padding: var(--space-32);
+	margin: 0;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.notice {
+	padding: var(--space-16) var(--space-24);
+	margin: 0;
+	color: var(--text-body);
+	text-align: center;
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) dashed var(--border-default);
+	border-radius: var(--radius-lg);
+}
+
+.refresh-error {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-16);
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--space-16) var(--space-24);
+	color: var(--fg-danger);
+	background-color: var(--bg-danger);
+	border: var(--border-width-hairline) solid var(--border-danger);
+	border-radius: var(--radius-lg);
+}
+
+.columns {
+	display: grid;
+	grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+	gap: var(--space-24);
+}
+
+@media (width < 1000px) {
+	.columns {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
