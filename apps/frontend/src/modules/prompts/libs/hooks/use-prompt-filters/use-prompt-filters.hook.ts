@@ -1,5 +1,9 @@
 import { useCallback } from "react";
-import { type Control, type UseFormSetValue, useWatch } from "react-hook-form";
+import {
+	type Control,
+	type UseFormSetValue,
+	useWatch,
+} from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
@@ -25,7 +29,7 @@ type UsePromptFiltersReturn = {
 };
 
 const usePromptFilters = (): UsePromptFiltersReturn => {
-	const { control, setValue } = useAppForm<PromptFiltersFormValues>({
+	const { control, reset, setValue } = useAppForm<PromptFiltersFormValues>({
 		defaultValues: DEFAULT_PROMPT_FILTERS_VALUES,
 	});
 
@@ -45,9 +49,11 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 	};
 
 	const handleClearFilters = useCallback((): void => {
-		setValue("score", "");
-		setValue("search", "");
-	}, [setValue]);
+		reset({
+			...DEFAULT_PROMPT_FILTERS_VALUES,
+			workspaceId: formValues.workspaceId ?? null,
+		});
+	}, [formValues.workspaceId, reset]);
 
 	return {
 		control,
