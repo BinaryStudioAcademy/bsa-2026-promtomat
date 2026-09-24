@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
+import { ModalTone } from "~/libs/components/modal/libs/enums/enums.js";
 import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
@@ -55,7 +56,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 			onConfirm={handleDeleteConfirm}
 			title={modalTitle}
 			titleIconName={IconName.ALERT_CIRCLE}
-			tone="danger"
+			tone={ModalTone.DANGER}
 		>
 			<div className={styles["consequence"]}>
 				<p className={styles["text"]}>

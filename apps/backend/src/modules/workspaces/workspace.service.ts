@@ -6,8 +6,8 @@ import { type Database } from "~/libs/modules/database/database.js";
 import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/constants.js";
 import { WorkspaceListScope } from "./libs/enums/enums.js";
 import {
-	type WorkspaceCreatePayload,
 	type WorkspaceDto,
+	type WorkspaceEntityInitializeNewPayload,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceListItemDto,
@@ -30,7 +30,7 @@ class WorkspaceService {
 	}
 
 	public async create(
-		payload: WorkspaceCreatePayload,
+		payload: WorkspaceEntityInitializeNewPayload,
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(

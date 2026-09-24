@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
+import { ModalTone } from "~/libs/components/modal/libs/enums/enums.js";
 import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import { useDeleteWorkspaceContributorMutation } from "~/modules/workspaces/workspaces.js";
@@ -53,7 +54,7 @@ const WorkspaceLeaveModal: React.FC<Properties> = ({
 			onConfirm={handleLeaveConfirm}
 			title={WorkspaceLeaveMessage.TITLE}
 			titleIconName={IconName.ALERT_CIRCLE}
-			tone="danger"
+			tone={ModalTone.DANGER}
 		>
 			<div className={styles["content"]}>
 				<p className={styles["text"]}>{question}</p>

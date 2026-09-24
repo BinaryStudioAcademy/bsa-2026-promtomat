@@ -1,4 +1,5 @@
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
+import { ModalTone } from "~/libs/components/modal/libs/enums/enums.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 
 import { ApiTokensMessage } from "../../libs/enums/enums.js";
@@ -25,7 +26,7 @@ const RevokeTokenConfirmation: React.FC<Properties> = ({
 			onCancel={onRevokeCancel}
 			onConfirm={onConfirmRevoke}
 			title={ApiTokensMessage.REVOKE_TITLE}
-			tone="danger"
+			tone={ModalTone.DANGER}
 		>
 			{ApiTokensMessage.REVOKE_CONFIRM}
 		</Confirmation>
