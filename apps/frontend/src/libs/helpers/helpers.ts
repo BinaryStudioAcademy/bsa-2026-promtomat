@@ -4,4 +4,8 @@ export { checkIsDebugEnvironment } from "./check-is-debug-environment/check-is-d
 export { getNicknameInitials } from "./get-nickname-initials/get-nickname-initials.helper.js";
 export { getValidClasses } from "./get-valid-classes/get-valid-classes.helper.js";
 export { sortValuesByDictionary } from "./sort-values-by-dictionary/sort-values-by-dictionary.helper.js";
-export { configureString, getRelativeTimeLabel } from "@promptomat/shared";
+export {
+	configureString,
+	formatDate,
+	getRelativeTimeLabel,
+} from "@promptomat/shared";

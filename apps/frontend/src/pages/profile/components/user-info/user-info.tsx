@@ -1,9 +1,9 @@
 import React from "react";
 
-import { getNicknameInitials } from "~/libs/helpers/helpers.js";
+import { DateFormat } from "~/libs/enums/enums.js";
+import { formatDate, getNicknameInitials } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
-import { formatDate } from "../../libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -11,7 +11,10 @@ type Properties = {
 };
 
 const UserInfo: React.FC<Properties> = ({ user }: Properties) => {
-	const formattedCreatedAt = formatDate(user.createdAt);
+	const formattedCreatedAt = formatDate(
+		user.createdAt,
+		DateFormat.MON_DAY_YEAR,
+	);
 	const userDetails = `Member since ${formattedCreatedAt} · ${String(user.totalPrompts)} prompts contributed`;
 	return (
 		<div className={styles["info"]}>

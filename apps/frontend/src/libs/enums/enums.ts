@@ -6,10 +6,10 @@ export { FormValidationMode } from "./form-validation-mode.enum.js";
 export { IconName } from "./icon-name.enum.js";
 export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
-export { Locale } from "./locale.enum.js";
 export {
 	APIPath,
 	AppEnvironment,
+	DateFormat,
 	ErrorCode,
 	HTTPCode,
 	HTTPHeader,
