@@ -21,10 +21,7 @@ import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-to
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-import {
-	type WorkspaceDto,
-	type WorkspaceUpdateRequestDto,
-} from "~/modules/workspaces/libs/types/types.js";
+import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useUpdateWorkspaceMutation,
 	workspaceUpdateValidationSchema,
@@ -37,17 +34,13 @@ import {
 	TECH_STACK_TAG_VALUES,
 	WORKSPACE_CONFIG_FIELDS,
 } from "./libs/constants/constants.js";
-import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
+import { getWorkspaceUpdatePayload } from "./libs/helpers/get-workspace-update-payload/get-workspace-update-payload.helper.js";
+import { type WorkspaceEditableFields } from "./libs/types/types.js";
 
 type Properties = {
 	isOwner: boolean;
 	workspace: WorkspaceDto;
 };
-
-type WorkspaceEditableFields = Pick<
-	WorkspaceDto,
-	"description" | "name" | "stackTags"
->;
 
 const WorkspaceConfigForm: React.FC<Properties> = ({
 	isOwner,
@@ -105,30 +98,10 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (values: WorkspaceEditableFields) => {
-				const hasDescriptionChanged =
-					values.description !== workspace.description;
-				const hasNameChanged = values.name !== workspace.name;
-				const hasStackTagsChanged = !checkIsStackTagsEqual(
-					values.stackTags,
-					workspace.stackTags,
-				);
+				const payload = getWorkspaceUpdatePayload(values, workspace);
 
-				if (!hasDescriptionChanged && !hasNameChanged && !hasStackTagsChanged) {
+				if (!payload) {
 					return;
-				}
-
-				const payload: WorkspaceUpdateRequestDto = {};
-
-				if (hasDescriptionChanged) {
-					payload.description = values.description;
-				}
-
-				if (hasNameChanged) {
-					payload.name = values.name;
-				}
-
-				if (hasStackTagsChanged) {
-					payload.stackTags = values.stackTags;
 				}
 
 				const { data: savedWorkspace } = await updateWorkspace({
