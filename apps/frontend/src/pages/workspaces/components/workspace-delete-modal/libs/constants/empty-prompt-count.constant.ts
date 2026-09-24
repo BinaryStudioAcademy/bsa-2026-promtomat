@@ -1,3 +1,0 @@
-const EMPTY_PROMPT_COUNT = 0;
-
-export { EMPTY_PROMPT_COUNT };

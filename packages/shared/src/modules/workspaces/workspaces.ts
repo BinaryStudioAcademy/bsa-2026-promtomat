@@ -14,7 +14,7 @@ export {
 	normalizeTagName,
 	normalizeTechStackTag,
 	normalizeTechStackTags,
-	TechStackTagSchema,
+	techStackTag,
 	TechStackTechDictionary,
 } from "./libs/modules/tech-stack-tags/tech-stack-tags.js";
 export {

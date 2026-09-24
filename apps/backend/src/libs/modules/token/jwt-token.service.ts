@@ -1,5 +1,6 @@
 import { errors, type JWTPayload, jwtVerify, SignJWT } from "jose";
 
+import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type JwtAlgorithm } from "~/libs/modules/config/config.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -9,8 +10,6 @@ import {
 	type TokenCreateOptions,
 	type TokenService,
 } from "./libs/types/types.js";
-
-const EMPTY_LENGTH = 0;
 
 type Constructor = {
 	alg: ValueOf<typeof JwtAlgorithm>;

@@ -3,4 +3,8 @@ export { checkIsAuthPath } from "./check-is-auth-path/check-is-auth-path.helper.
 export { checkIsDebugEnvironment } from "./check-is-debug-environment/check-is-debug-environment.helper.js";
 export { getValidClasses } from "./get-valid-classes/get-valid-classes.helper.js";
 export { sortValuesByDictionary } from "./sort-values-by-dictionary/sort-values-by-dictionary.helper.js";
-export { configureString, getRelativeTimeLabel } from "@promptomat/shared";
+export {
+	configureString,
+	formatDate,
+	getRelativeTimeLabel,
+} from "@promptomat/shared";

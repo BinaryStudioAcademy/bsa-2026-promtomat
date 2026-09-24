@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity } from "~/libs/types/types.js";
 
 import {
@@ -196,7 +198,7 @@ class ComposedPromptEntity implements Entity {
 			description: this.description,
 			descriptionHash: this.descriptionHash,
 			explanation: this.explanation,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.COMPOSED_PROMPT),
 			modelId: this.modelId,
 			requesterId: this.requesterId,
 			sources: this.sources.map((source) => ({ ...source })),

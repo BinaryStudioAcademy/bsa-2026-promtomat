@@ -1,3 +1,4 @@
+export { ApiTokenError } from "./api-token-error/api-token-error.exception.js";
 export { ApplicationError } from "./application-error/application-error.exception.js";
 export { AuthError } from "./auth-error/auth-error.exception.js";
 export { ComposedPromptError } from "./composed-prompt-error/composed-prompt-error.exception.js";

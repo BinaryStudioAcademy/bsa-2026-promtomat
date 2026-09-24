@@ -7,7 +7,7 @@ import {
 } from "~/libs/exceptions/exceptions.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
-import { GeneratorInterface } from "~/libs/modules/generator/generator.js";
+import { Generator } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
@@ -34,7 +34,7 @@ import { type PromptRepository } from "./prompt.repository.js";
 
 type Constructor = {
 	database: Database;
-	generator: GeneratorInterface;
+	generator: Generator;
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
@@ -44,7 +44,7 @@ type Constructor = {
 class PromptService {
 	private database: Database;
 
-	private generator: GeneratorInterface;
+	private generator: Generator;
 
 	private labelService: LabelService;
 
@@ -124,17 +124,17 @@ class PromptService {
 				trx,
 			);
 
-			const object = entity.toObject();
+			const createdPrompt = entity.toObject();
 
 			return {
 				computedScore: null,
-				efficiencyScore: object.efficiencyScore,
-				id: object.id,
+				efficiencyScore: createdPrompt.efficiencyScore,
+				id: createdPrompt.id,
 				label: label.name,
-				promptBody: object.promptBody,
-				taskIntent: object.taskIntent,
-				userId: object.userId,
-				workspaceId: object.workspaceId,
+				promptBody: createdPrompt.promptBody,
+				taskIntent: createdPrompt.taskIntent,
+				userId: createdPrompt.userId,
+				workspaceId: createdPrompt.workspaceId,
 			};
 		});
 
@@ -359,11 +359,11 @@ class PromptService {
 			return prompt;
 		});
 
-		const promptObject = updatedPrompt.toObject();
+		const savedPrompt = updatedPrompt.toObject();
 
-		void this.promptEmbeddingService.embedForPrompt(promptObject);
+		void this.promptEmbeddingService.embedForPrompt(savedPrompt);
 
-		return { ...promptObject, label: generatedLabel };
+		return { ...savedPrompt, label: generatedLabel };
 	}
 
 	public async updateLabel(promptId: number, labelId: number): Promise<void> {

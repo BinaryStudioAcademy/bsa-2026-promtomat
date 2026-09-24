@@ -1,0 +1,3 @@
+const WORKSPACE_ID_SEARCH_PARAMETER = "workspaceId";
+
+export { WORKSPACE_ID_SEARCH_PARAMETER };

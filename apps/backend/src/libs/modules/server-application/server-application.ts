@@ -2,6 +2,10 @@ import { config } from "~/libs/modules/config/config.js";
 import { database } from "~/libs/modules/database/database.js";
 import { logger } from "~/libs/modules/logger/logger.js";
 import { analyticsController } from "~/modules/analytics/analytics.js";
+import {
+	apiTokenController,
+	apiTokenService,
+} from "~/modules/api-tokens/api-tokens.js";
 import { authController } from "~/modules/auth/auth.js";
 import { composedPromptController } from "~/modules/composed-prompts/composed-prompts.js";
 import { contributorController } from "~/modules/contributors/contributors.js";
@@ -12,16 +16,23 @@ import { promptController } from "~/modules/prompts/prompts.js";
 import { userController, userService } from "~/modules/users/users.js";
 import { workspaceController } from "~/modules/workspaces/workspaces.js";
 
-import { AuthGuard } from "../auth-guard/auth-guard.js";
+import {
+	ApiTokenGuard,
+	AuthGuard,
+	JwtTokenGuard,
+} from "../auth-guard/auth-guard.js";
 import { token } from "../token/token.js";
 import { BaseServerApplicationApi } from "./base-server-application-api.js";
 import { BaseServerApplication } from "./base-server-application.js";
 
-const authGuard = new AuthGuard(token, userService);
+const apiTokenGuard = new ApiTokenGuard(apiTokenService, userService);
+const jwtTokenGuard = new JwtTokenGuard(token, userService);
+const authGuard = new AuthGuard(apiTokenGuard, jwtTokenGuard);
 
 const apiV1 = new BaseServerApplicationApi(
 	"v1",
 	config,
+	...apiTokenController.routes,
 	...analyticsController.routes,
 	...authController.routes,
 	...composedPromptController.routes,

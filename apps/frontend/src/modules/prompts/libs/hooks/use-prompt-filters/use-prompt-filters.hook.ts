@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { type Control, useWatch } from "react-hook-form";
+import { type Control, type UseFormSetValue, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
@@ -22,14 +22,17 @@ type PromptFiltersFormValues = {
 
 type UsePromptFiltersReturn = {
 	control: Control<PromptFiltersFormValues, null>;
+	handleClearFilters: () => void;
 	handleQualityTierChange: (
 		tier: ValueOf<typeof PromptQualityTier>,
 	) => () => void;
 	queryPayload: Omit<PromptGetQueryDto, "page">;
+	search: string;
+	setValue: UseFormSetValue<PromptFiltersFormValues>;
 };
 
 const usePromptFilters = (): UsePromptFiltersReturn => {
-	const { control, setValue } = useAppForm<PromptFiltersFormValues>({
+	const { control, reset, setValue } = useAppForm<PromptFiltersFormValues>({
 		defaultValues: DEFAULT_PROMPT_FILTERS,
 	});
 
@@ -60,10 +63,20 @@ const usePromptFilters = (): UsePromptFiltersReturn => {
 		[setValue],
 	);
 
+	const handleClearFilters = useCallback((): void => {
+		reset({
+			...DEFAULT_PROMPT_FILTERS,
+			workspaceId: formValues.workspaceId ?? null,
+		});
+	}, [formValues.workspaceId, reset]);
+
 	return {
 		control,
+		handleClearFilters,
 		handleQualityTierChange,
 		queryPayload,
+		search: debouncedSearch,
+		setValue,
 	};
 };
 

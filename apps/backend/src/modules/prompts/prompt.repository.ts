@@ -12,6 +12,7 @@ import {
 } from "~/libs/enums/enums.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
 	FIRST_PAGE,
@@ -54,17 +55,46 @@ class PromptRepository {
 		query: ReturnType<typeof this.promptModel.query>,
 		{ search, userId, workspaceId }: PromptFilterByQueryParameters,
 	): ReturnType<typeof this.promptModel.query> {
-		query.where(
-			`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-			userId,
-		);
-
 		if (workspaceId) {
 			query.where(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				workspaceId,
 			);
 		}
+
+		query.where((builder) => {
+			builder
+				.whereExists(
+					this.promptModel
+						.query()
+						.select(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
+						.from(DatabaseTableName.WORKSPACES)
+						.whereColumn(
+							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						)
+						.where(
+							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+							userId,
+						),
+				)
+				.orWhereExists(
+					this.promptModel
+						.query()
+						.select(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+						)
+						.from(DatabaseTableName.CONTRIBUTORS)
+						.whereColumn(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						)
+						.where(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+							userId,
+						),
+				);
+		});
 
 		if (search) {
 			const escapedSearch = escapeILikePattern(search);
@@ -394,9 +424,12 @@ class PromptRepository {
 	public async findUserPromptSummary(
 		userId: number,
 	): Promise<PromptAggregateResult> {
-		const baseQuery = this.applyFilters(this.promptModel.query(), {
-			userId,
-		});
+		const baseQuery = this.promptModel
+			.query()
+			.where(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+				userId,
+			);
 
 		return await this.findAggregate(baseQuery);
 	}

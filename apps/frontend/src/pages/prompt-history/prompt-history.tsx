@@ -1,24 +1,33 @@
 import React, { useCallback } from "react";
+import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
-import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
-import { Loader } from "~/libs/components/loader/loader.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { ButtonVariant } from "~/libs/enums/enums.js";
+import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
+import {
+	useActiveWorkspace,
+	useGetWorkspacesQuery,
+} from "~/modules/workspaces/workspaces.js";
+import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
-import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
+import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
+import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
+import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
+import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
 import styles from "./styles.module.css";
 
 const FRACTION_DIGITS = 1;
+const SINGLE_RESULT_COUNT = 1;
 
 const QUALITY_TIER_OPTIONS = [
-	{ label: "All Tiers", value: PromptQualityTier.ALL },
+	{ label: "Any quality", value: PromptQualityTier.ALL },
 	{ label: "Proven (8-10)", value: PromptQualityTier.PROVEN },
 	{ label: "Usable (6-7.9)", value: PromptQualityTier.USABLE },
 	{
@@ -29,123 +38,230 @@ const QUALITY_TIER_OPTIONS = [
 ];
 
 const PromptHistory: React.FC = () => {
-	const { control, queryPayload } = usePromptFilters();
+	const {
+		control,
+		handleClearFilters,
+		queryPayload: filterQueryPayload,
+		search,
+		setValue,
+	} = usePromptFilters();
 
-	const { data, fetchNextPage, hasNextPage, isError, isFetching, isLoading } =
-		useGetPromptsInfiniteQuery(queryPayload);
-	const { data: { items: workspaces = [] } = {} } = useGetWorkspacesQuery({});
+	const { data: workspacesData, isLoading: isLoadingWorkspaces } =
+		useGetWorkspacesQuery({});
+	const workspaces = workspacesData?.items;
+	const formWorkspaceId =
+		useWatch({ control, name: "workspaceId" }) ?? undefined;
+	const workspaceId = useActiveWorkspace({
+		formWorkspaceId:
+			typeof formWorkspaceId === "number" ? formWorkspaceId : undefined,
+		workspaces,
+	});
+	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
-	const workspaceOptions = [
-		{ label: "All Workspaces", value: "" },
-		...workspaces.map(({ id, name }) => ({
+	const hasWorkspace = typeof workspaceId === "number";
+	const queryPayload = {
+		...filterQueryPayload,
+		workspaceId: hasWorkspace ? workspaceId : undefined,
+	};
+
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isError,
+		isFetching,
+		isLoading,
+		refetch,
+	} = useGetPromptsInfiniteQuery(queryPayload, { skip: !hasWorkspace });
+
+	const workspaceOptions =
+		workspaces?.map(({ id, name }) => ({
 			label: name,
 			value: id,
-		})),
-	];
+		})) ?? [];
 
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
-
 	const [firstPage] = data?.pages ?? [];
 	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
 	const averageScore = firstPage?.averageScore ?? null;
+
+	const hasActiveFilters = Boolean(search) || Boolean(queryPayload.qualityTier);
+
+	const filterKey = [
+		String(queryPayload.workspaceId ?? ""),
+		queryPayload.qualityTier ?? "",
+		search,
+	].join(":");
+
+	const { handleSelectPrompt, selectedPrompt, selectedPromptId } =
+		usePromptSelection({ filterKey, items });
 
 	const handleLoadMore = useCallback((): void => {
 		void fetchNextPage();
 	}, [fetchNextPage]);
 
-	let listContent: React.ReactNode;
+	const handleRetry = useCallback((): void => {
+		void refetch();
+	}, [refetch]);
 
-	if (isLoading) {
-		listContent = <Loader variant={LoaderVariant.SECTION} />;
-	} else if (isError && items.length === ZERO_VALUE) {
-		listContent = (
-			<div className={styles["empty-state"]}>
-				Failed to load prompts. Please try again.
-			</div>
-		);
-	} else if (!isFetching && items.length === ZERO_VALUE) {
-		listContent = (
-			<div className={styles["empty-state"]}>
-				No prompts match the current filters.
-			</div>
-		);
-	} else {
-		listContent = items.map((item) => (
-			<PromptListItem key={item.id} prompt={item} queryPayload={queryPayload} />
-		));
-	}
+	const resultCountLabel =
+		totalPrompts === SINGLE_RESULT_COUNT
+			? `${String(totalPrompts)} ${PromptHistoryLabel.RESULT}`
+			: `${String(totalPrompts)} ${PromptHistoryLabel.RESULTS}`;
 
-	let loadMoreLabel = "Load More";
+	const modeHint = search
+		? PromptHistoryLabel.HINT_SEARCH
+		: PromptHistoryLabel.HINT_BROWSE;
+
+	let loadMoreLabel: string = PromptHistoryLabel.LOAD_MORE;
 
 	if (isFetching) {
-		loadMoreLabel = "Loading...";
+		loadMoreLabel = PromptHistoryLabel.LOADING;
 	} else if (isError) {
-		loadMoreLabel = "Retry";
+		loadMoreLabel = PromptHistoryLabel.RETRY;
+	}
+
+	const averageScoreLabel =
+		averageScore === null
+			? "—"
+			: `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
+
+	let detailPane: React.ReactNode = null;
+
+	if (selectedPrompt) {
+		detailPane = (
+			<PromptDetailPanel prompt={selectedPrompt} queryPayload={queryPayload} />
+		);
+	} else if (items.length > ZERO_VALUE) {
+		detailPane = (
+			<div className={styles["empty-selection"]}>
+				{PromptHistoryLabel.EMPTY_SELECTION}
+			</div>
+		);
 	}
 
 	return (
-		<main className={styles["container"]}>
+		<div className={styles["container"]}>
 			<div className={styles["page-wrapper"]}>
-				<header className={styles["header"]}>
-					<h2 className={styles["title"]}>Prompt Log History</h2>
+				<header className={styles["intro"]}>
+					<div className={styles["copy"]}>
+						<p className={styles["eyebrow"]}>{PromptHistoryLabel.EYEBROW}</p>
+						<h2 className={styles["title"]}>{PromptHistoryLabel.SUBTITLE}</h2>
+					</div>
+					<div className={styles["workspace"]}>
+						<Select
+							control={control}
+							isDisabled={!workspaces}
+							label={PromptHistoryLabel.WORKSPACE}
+							leadingIconName={IconName.FOLDER}
+							name="workspaceId"
+							options={workspaceOptions}
+							placeholder={PromptHistoryLabel.WORKSPACE}
+							size={ControlSize.LG}
+						/>
+					</div>
 				</header>
 
 				<div className={styles["metrics"]}>
 					<div className={styles["metric-card"]}>
-						<span className={styles["metric-label"]}>Total Prompts</span>
+						<span className={styles["metric-label"]}>
+							{PromptHistoryLabel.PROMPTS_LOGGED}
+						</span>
 						<span className={styles["metric-value"]}>{totalPrompts}</span>
 					</div>
 					<div className={styles["metric-card"]}>
-						<span className={styles["metric-label"]}>Average Score</span>
-						<span className={styles["metric-value"]}>
-							{averageScore === null
-								? "—"
-								: `${String(Number(averageScore.toFixed(FRACTION_DIGITS)))} / 10`}
+						<span className={styles["metric-label"]}>
+							{PromptHistoryLabel.AVERAGE_SCORE}
+						</span>
+						<span
+							className={getValidClasses(
+								styles["metric-value"],
+								styles["metric-score"],
+							)}
+						>
+							{averageScoreLabel}
 						</span>
 					</div>
 				</div>
 
 				<div className={styles["filters"]}>
-					<Input
-						control={control}
-						label="Search Logs"
-						name="search"
-						placeholder="Search logs"
-					/>
-					<div className={styles["workspace-filter"]}>
-						<Select
+					<div className={styles["search"]}>
+						<Input
 							control={control}
-							label="Quality Tier:"
-							name="qualityTier"
-							options={QUALITY_TIER_OPTIONS}
+							iconName={IconName.SEARCH}
+							isLabelHidden
+							label={PromptHistoryLabel.SEARCH}
+							name="search"
+							placeholder={PromptHistoryLabel.SEARCH_PLACEHOLDER}
+							size={ControlSize.LG}
 						/>
 					</div>
-					<div className={styles["workspace-filter"]}>
+					<div className={styles["score-filter"]}>
 						<Select
 							control={control}
-							label="Workspace:"
-							name="workspaceId"
-							options={workspaceOptions}
+							isLabelHidden
+							label="Quality Tier"
+							leadingIconName={IconName.SHIELD_CHECK}
+							name="qualityTier"
+							options={QUALITY_TIER_OPTIONS}
+							size={ControlSize.LG}
 						/>
 					</div>
 				</div>
 
-				<div className={styles["list"]}>{listContent}</div>
+				<div className={styles["results-bar"]}>
+					<span className={styles["result-count"]}>{resultCountLabel}</span>
+					<span className={styles["result-hint"]}>{modeHint}</span>
+					<Button
+						label={PromptHistoryLabel.CLEAR}
+						onClick={handleClearFilters}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
+				</div>
 
-				{hasNextPage && !isLoading && (
-					<div className={styles["load-more-wrapper"]}>
-						<Button
-							isDisabled={isFetching}
-							isLoading={isFetching}
-							label={loadMoreLabel}
-							onClick={handleLoadMore}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
+				<div
+					className={getValidClasses(
+						styles["search-layout"],
+						!selectedPrompt &&
+							items.length === ZERO_VALUE &&
+							styles["search-layout-empty"],
+					)}
+				>
+					<div className={styles["results"]}>
+						<PromptResultsList
+							hasActiveFilters={hasActiveFilters}
+							hasWorkspace={hasWorkspace}
+							isError={isError}
+							isFetching={isFetching}
+							isLoadingPrompts={isLoading}
+							isLoadingWorkspaces={isLoadingWorkspaces}
+							items={items}
+							onRetry={handleRetry}
+							onSelectPrompt={handleSelectPrompt}
+							queryPayload={queryPayload}
+							selectedPromptId={selectedPromptId}
 						/>
+						{hasNextPage && hasWorkspace && !isLoading ? (
+							<div className={styles["load-more-wrapper"]}>
+								<Button
+									isDisabled={isFetching}
+									isLoading={isFetching}
+									label={loadMoreLabel}
+									onClick={handleLoadMore}
+									type="button"
+									variant={ButtonVariant.SECONDARY}
+								/>
+							</div>
+						) : null}
 					</div>
-				)}
+
+					{detailPane ? (
+						<div className={styles["desktop-detail"]}>{detailPane}</div>
+					) : null}
+				</div>
 			</div>
-		</main>
+		</div>
 	);
 };
 

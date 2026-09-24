@@ -7,6 +7,7 @@ import { Select } from "~/libs/components/select/select.js";
 import { ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import {
 	type ComposeRequestDto,
 	composeValidationSchema,
@@ -34,8 +35,6 @@ const GenerateForm: React.FC<Properties> = ({
 	const workspaceCaptionId = useId();
 	const { data: workspacesData } = useGetWorkspacesQuery({});
 
-	const [firstWorkspace] = workspacesData?.items ?? [];
-
 	const options = workspacesData?.items.map(({ id, name }) => ({
 		label: name,
 		value: id,
@@ -56,12 +55,22 @@ const GenerateForm: React.FC<Properties> = ({
 
 	const workspaceId = useWatch({ control, name: "workspaceId" });
 	const hasWorkspace = Boolean(workspaceId);
+	const requestedWorkspaceId = useWorkspaceSearchParameter({
+		selectWorkspace: (workspaceId): void => {
+			setValue("workspaceId", workspaceId);
+		},
+		workspaces: workspacesData?.items,
+	});
 
 	useEffect(() => {
-		if (!hasWorkspace && firstWorkspace) {
-			setValue("workspaceId", firstWorkspace.id);
+		const [firstWorkspace] = workspacesData?.items ?? [];
+
+		if (requestedWorkspaceId !== null || !firstWorkspace || hasWorkspace) {
+			return;
 		}
-	}, [firstWorkspace, hasWorkspace, setValue]);
+
+		setValue("workspaceId", firstWorkspace.id);
+	}, [hasWorkspace, requestedWorkspaceId, setValue, workspacesData?.items]);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {

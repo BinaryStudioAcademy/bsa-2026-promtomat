@@ -4,6 +4,8 @@ import {
 	fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { BEARER } from "~/libs/constants/constants.js";
 import { AppRoute, ErrorCode, HTTPHeader } from "~/libs/enums/enums.js";
 import { checkIsAuthPath } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
@@ -29,7 +31,7 @@ const fetchQuery = fetchBaseQuery({
 		const token = await storage.get(StorageKey.TOKEN);
 
 		if (token) {
-			headers.set(HTTPHeader.AUTHORIZATION, `Bearer ${token}`);
+			headers.set(HTTPHeader.AUTHORIZATION, `${BEARER}${token}`);
 		}
 
 		return headers;
@@ -54,9 +56,11 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			showNotification({
 				id: error.code,
 				message: error.message,
-				type: "danger",
+				type: NotificationType.DANGER,
 			});
-			api.dispatch(setRedirect({ replace: false, to: AppRoute.NO_ACCESS }));
+			api.dispatch(
+				setRedirect({ shouldReplace: false, to: AppRoute.NO_ACCESS }),
+			);
 
 			return { error };
 		}
@@ -65,7 +69,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 			showNotification({
 				id: error.code,
 				message: error.message,
-				type: "danger",
+				type: NotificationType.DANGER,
 			});
 
 			return { error };
@@ -80,13 +84,15 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				showNotification({
 					id: error.code,
 					message: error.message,
-					type: "danger",
+					type: NotificationType.DANGER,
 				});
 			}
 
 			if (!checkIsAuthPath(location.pathname)) {
 				api.dispatch(baseApi.util.resetApiState());
-				api.dispatch(setRedirect({ replace: true, to: AppRoute.SIGN_IN }));
+				api.dispatch(
+					setRedirect({ shouldReplace: true, to: AppRoute.SIGN_IN }),
+				);
 			}
 
 			return { error };
@@ -101,7 +107,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 				showNotification({
 					id: error.code,
 					message: error.message,
-					type: "danger",
+					type: NotificationType.DANGER,
 				});
 			}
 

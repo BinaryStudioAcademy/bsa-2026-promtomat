@@ -1,6 +1,6 @@
 import { TechStackTechDictionary } from "./tech-stack-dictionary.enum.js";
 
-const TechStackVariants = {
+const TechStackVariant = {
 	[TechStackTechDictionary.ADONIS_JS]: ["adonisjs", "adonis", "ADONISJS"],
 	[TechStackTechDictionary.ALPINE_JS]: [
 		"alpinejs",
@@ -364,4 +364,4 @@ const TechStackVariants = {
 	[TechStackTechDictionary.ZUSTAND]: ["zustand", "ZUSTAND"],
 } as const;
 
-export { TechStackVariants };
+export { TechStackVariant };

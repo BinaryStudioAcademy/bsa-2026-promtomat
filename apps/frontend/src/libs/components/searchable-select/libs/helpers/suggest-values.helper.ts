@@ -18,7 +18,7 @@ const getValuesSuggestions = (
 	input: string,
 	valuesDictionary: string[],
 ): string[] => {
-	if (!input || typeof input !== "string" || !input.trim()) {
+	if (!input || !input.trim()) {
 		return Object.values(valuesDictionary);
 	}
 
