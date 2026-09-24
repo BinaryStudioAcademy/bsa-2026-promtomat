@@ -3,7 +3,7 @@ import { type Transaction } from "objection";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 
-import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/workspace.constant.js";
+import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/constants.js";
 import { WorkspaceListScope } from "./libs/enums/enums.js";
 import {
 	type WorkspaceCreatePayload,

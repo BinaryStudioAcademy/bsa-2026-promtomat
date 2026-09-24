@@ -13,7 +13,10 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 import { ContributorColumnName } from "../contributors/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
-import { WORKSPACE_OWNER_COUNT } from "./libs/constants/workspace.constant.js";
+import {
+	PROMPTS_RELATION,
+	WORKSPACE_OWNER_COUNT,
+} from "./libs/constants/constants.js";
 import { WorkspaceColumnName, WorkspaceListScope } from "./libs/enums/enums.js";
 import {
 	type WorkspaceListItemDto,
@@ -52,7 +55,7 @@ class WorkspaceRepository {
 				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 			)
-			.leftJoinRelated("prompts")
+			.leftJoinRelated(PROMPTS_RELATION)
 			.groupBy(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`);
 	}
 

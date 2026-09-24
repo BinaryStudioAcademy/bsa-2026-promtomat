@@ -11,14 +11,14 @@ import styles from "./styles.module.css";
 type Properties = {
 	currentUserId: number;
 	onClose: () => void;
-	onLeft: () => void;
+	onSuccess: () => void;
 	workspace: WorkspaceListItemDto;
 };
 
 const WorkspaceLeaveModal: React.FC<Properties> = ({
 	currentUserId,
 	onClose,
-	onLeft,
+	onSuccess,
 	workspace,
 }: Properties) => {
 	const [leaveWorkspace, { isLoading }] =
@@ -37,10 +37,10 @@ const WorkspaceLeaveModal: React.FC<Properties> = ({
 			const hasError = Boolean(error);
 
 			if (!hasError) {
-				onLeft();
+				onSuccess();
 			}
 		});
-	}, [currentUserId, leaveWorkspace, onLeft, workspace.id]);
+	}, [currentUserId, leaveWorkspace, onSuccess, workspace.id]);
 
 	return (
 		<Confirmation

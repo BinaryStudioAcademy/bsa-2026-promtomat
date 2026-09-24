@@ -2,6 +2,7 @@ import { useCallback } from "react";
 
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
 import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import { useDeleteWorkspaceMutation } from "~/modules/workspaces/workspaces.js";
 
@@ -14,13 +15,13 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	onClose: () => void;
-	onDeleted: () => void;
+	onSuccess: () => void;
 	workspace: WorkspaceListItemDto;
 };
 
 const WorkspaceDeleteModal: React.FC<Properties> = ({
 	onClose,
-	onDeleted,
+	onSuccess,
 	workspace,
 }: Properties) => {
 	const [deleteWorkspace, { isLoading }] = useDeleteWorkspaceMutation();
@@ -29,15 +30,19 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	const promptCountLabel =
 		workspace.promptCount === SINGLE_PROMPT_COUNT ? "prompt" : "prompts";
 
+	const modalTitle = configureString(WorkspaceDeleteMessage.TITLE, {
+		workspaceName: workspace.name,
+	});
+
 	const handleDeleteConfirm = useCallback((): void => {
 		void deleteWorkspace(workspace.id).then(({ error }) => {
 			const hasError = Boolean(error);
 
 			if (!hasError) {
-				onDeleted();
+				onSuccess();
 			}
 		});
-	}, [deleteWorkspace, onDeleted, workspace.id]);
+	}, [deleteWorkspace, onSuccess, workspace.id]);
 
 	return (
 		<Confirmation
@@ -48,7 +53,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 			isOpen
 			onCancel={onClose}
 			onConfirm={handleDeleteConfirm}
-			title={`Delete "${workspace.name}" permanently`}
+			title={modalTitle}
 			titleIconName={IconName.ALERT_CIRCLE}
 			tone="danger"
 		>

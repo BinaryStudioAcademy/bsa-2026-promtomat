@@ -133,7 +133,7 @@ const AccessCard: React.FC<Properties> = ({
 							Add a contributor by email or nickname
 						</h4>
 						<AddContributorForm
-							onAdded={handleAdded}
+							onSuccess={handleAdded}
 							workspaceId={workspace.id}
 						/>
 					</div>
@@ -161,7 +161,7 @@ const AccessCard: React.FC<Properties> = ({
 				<WorkspaceLeaveModal
 					currentUserId={currentUserId}
 					onClose={handleLeaveClose}
-					onLeft={handleLeft}
+					onSuccess={handleLeft}
 					workspace={workspace}
 				/>
 			)}

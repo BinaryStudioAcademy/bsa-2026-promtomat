@@ -54,7 +54,7 @@ const DangerZone: React.FC<Properties> = ({ workspace }: Properties) => {
 			{isDeleteModalOpen && (
 				<WorkspaceDeleteModal
 					onClose={handleDeleteClose}
-					onDeleted={handleDeleted}
+					onSuccess={handleDeleted}
 					workspace={workspace}
 				/>
 			)}

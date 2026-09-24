@@ -5,19 +5,23 @@ import {
 
 import { SOLO_MEMBER_COUNT } from "../../constants/constants.js";
 
+type AccessCardValues = {
+	contributorCount: string;
+	contributors: WorkspaceUserSummaryDto[];
+	subtitle: string;
+};
+
+type Parameters = {
+	contributorsResponse: undefined | WorkspaceContributorsResponseDto;
+	isError: boolean;
+	isOwner: boolean;
+};
+
 const getAccessCardValues = ({
 	contributorsResponse,
 	isError,
 	isOwner,
-}: {
-	contributorsResponse: undefined | WorkspaceContributorsResponseDto;
-	isError: boolean;
-	isOwner: boolean;
-}): {
-	contributorCount: string;
-	contributors: WorkspaceUserSummaryDto[];
-	subtitle: string;
-} => {
+}: Parameters): AccessCardValues => {
 	const contributors = contributorsResponse?.contributors ?? [];
 	const members =
 		contributorsResponse && !isError

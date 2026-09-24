@@ -8,6 +8,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import { PromptModel } from "../prompts/prompt.model.js";
+import { PROMPTS_RELATION } from "./libs/constants/constants.js";
 import {
 	WorkspaceColumnName,
 	WorkspaceVisibility,
@@ -26,7 +27,7 @@ class WorkspaceModel extends AbstractModel {
 
 	public static get relationMappings(): RelationMappings {
 		return {
-			prompts: {
+			[PROMPTS_RELATION]: {
 				join: {
 					from: `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 					to: `${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,

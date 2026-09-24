@@ -21,12 +21,12 @@ import { AddContributorFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	onAdded: () => void;
+	onSuccess: () => void;
 	workspaceId: number;
 };
 
 const AddContributorForm: React.FC<Properties> = ({
-	onAdded,
+	onSuccess,
 	workspaceId,
 }: Properties) => {
 	const [addContributor, { isLoading }] = useAddWorkspaceContributorMutation();
@@ -44,7 +44,7 @@ const AddContributorForm: React.FC<Properties> = ({
 
 				if (result.data) {
 					reset();
-					onAdded();
+					onSuccess();
 				}
 
 				if (
@@ -58,7 +58,7 @@ const AddContributorForm: React.FC<Properties> = ({
 				}
 			})(event);
 		},
-		[addContributor, handleSubmit, onAdded, reset, setError, workspaceId],
+		[addContributor, handleSubmit, onSuccess, reset, setError, workspaceId],
 	);
 
 	return (

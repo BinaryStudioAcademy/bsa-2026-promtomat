@@ -2,12 +2,12 @@ import { type WorkspaceCreateRequestDto } from "./types.js";
 
 type WorkspaceCreatePayload = Omit<
 	WorkspaceCreateRequestDto,
-	"description" | "stackTags" | "visibility"
+	WorkspaceDefaultedField
 > &
-	Partial<
-		Pick<WorkspaceCreateRequestDto, "description" | "stackTags" | "visibility">
-	> & {
+	Partial<Pick<WorkspaceCreateRequestDto, WorkspaceDefaultedField>> & {
 		userId: number;
 	};
+
+type WorkspaceDefaultedField = "description" | "stackTags" | "visibility";
 
 export { type WorkspaceCreatePayload };

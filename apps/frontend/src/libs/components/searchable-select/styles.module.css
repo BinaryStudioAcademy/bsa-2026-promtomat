@@ -25,7 +25,7 @@
 	cursor: text;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-strong);
-	border-radius: var(--radius-xl);
+	border-radius: var(--radius-md);
 	transition:
 		border-color var(--motion-duration-fast) var(--motion-ease-standard),
 		background-color var(--motion-duration-fast) var(--motion-ease-standard);
