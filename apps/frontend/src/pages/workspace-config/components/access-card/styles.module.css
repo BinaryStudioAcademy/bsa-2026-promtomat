@@ -8,7 +8,7 @@
 
 .heading {
 	display: flex;
-	flex: 1;
+	flex: 1 1 200px;
 	flex-direction: column;
 	gap: var(--space-4);
 	min-width: 0;
@@ -18,7 +18,7 @@
 	margin: 0;
 	font-size: var(--font-size-body-sm);
 	color: var(--text-body);
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 .leave-button {
