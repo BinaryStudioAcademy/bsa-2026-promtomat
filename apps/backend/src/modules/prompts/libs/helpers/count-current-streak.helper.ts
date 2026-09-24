@@ -1,6 +1,5 @@
-import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { SINGLE_DAY, ZERO_VALUE } from "~/libs/constants/constants.js";
 
-import { SINGLE_DAY } from "../constants/constants.js";
 import { type PromptStreakDayDto } from "../types/types.js";
 import { getPreviousDate } from "./get-previous-date.helper.js";
 

@@ -2,6 +2,7 @@ export { APIPath } from "./api-path.enum.js";
 export { AppEnvironment } from "./app-environment.enum.js";
 export { ContentType } from "./content-type.enum.js";
 export { ErrorCode } from "./error-code.enum.js";
+export { Locale } from "./locale.enum.js";
 export { PaginationValue } from "./pagination-value.enum.js";
 export { ScoreThreshold } from "./score-threshold.enum.js";
 export { ScoreTierMin } from "./score-tier-min.enum.js";

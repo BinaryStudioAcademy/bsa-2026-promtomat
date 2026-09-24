@@ -8,6 +8,7 @@ export {
 	AppEnvironment,
 	AuthErrorMessage,
 	ErrorCode,
+	Locale,
 	ScoreTierMin,
 	SortOrder,
 	TokenErrorCode,

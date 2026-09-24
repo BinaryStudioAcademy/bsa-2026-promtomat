@@ -1,4 +1,4 @@
-import { STREAK_DATE_LOCALE } from "../constants/constants.js";
+import { Locale } from "~/libs/enums/enums.js";
 
 const findPart = (
 	parts: Intl.DateTimeFormatPart[],
@@ -8,7 +8,7 @@ const findPart = (
 };
 
 const formatDateInTimeZone = (date: Date, timeZone: string): string => {
-	const parts = new Intl.DateTimeFormat(STREAK_DATE_LOCALE, {
+	const parts = new Intl.DateTimeFormat(Locale.EN_US, {
 		day: "2-digit",
 		month: "2-digit",
 		timeZone,
