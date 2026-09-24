@@ -114,7 +114,11 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 
 	return (
 		<Section title="PROFILE">
-			<UserInfo user={user} />
+			<UserInfo
+				memberSince={user.createdAt}
+				nickname={user.nickname}
+				totalPrompts={user.totalPrompts}
+			/>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
 					<Input
