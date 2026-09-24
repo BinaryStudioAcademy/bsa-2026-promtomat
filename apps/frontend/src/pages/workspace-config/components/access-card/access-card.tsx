@@ -45,13 +45,17 @@ const AccessCard: React.FC<Properties> = ({
 	const [statusId, setStatusId] = useState(INITIAL_STATUS_ID);
 	const [statusMessage, setStatusMessage] = useState("");
 
-	const { data, isError, isLoading, refetch } =
-		useGetWorkspaceContributorsQuery(workspace.id);
+	const {
+		data: contributorsResponse,
+		isError,
+		isLoading,
+		refetch,
+	} = useGetWorkspaceContributorsQuery(workspace.id);
 	const [removeContributor, { isLoading: isRemoving }] =
 		useDeleteWorkspaceContributorMutation();
 
 	const { contributorCount, contributors, subtitle } = getAccessCardValues({
-		data,
+		contributorsResponse,
 		isError,
 		isOwner,
 	});
@@ -72,8 +76,10 @@ const AccessCard: React.FC<Properties> = ({
 			}
 
 			void removeContributor({ userId, workspaceId: workspace.id }).then(
-				({ data }) => {
-					if (data !== undefined) {
+				({ error }) => {
+					const hasError = Boolean(error);
+
+					if (!hasError) {
 						announce(WorkspaceContributorsMessage.CONTRIBUTOR_REMOVED);
 					}
 				},

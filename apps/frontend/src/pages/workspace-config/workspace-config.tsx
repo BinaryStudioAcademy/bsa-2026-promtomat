@@ -6,6 +6,7 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
@@ -26,8 +27,13 @@ const WorkspaceConfig: React.FC = () => {
 	const parsedWorkspaceId = Number(workspaceId);
 
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
-	const { data, error, isFetching, isLoading, refetch } =
-		useGetWorkspaceByIdQuery(parsedWorkspaceId);
+	const {
+		data: workspace,
+		error,
+		isFetching,
+		isLoading,
+		refetch,
+	} = useGetWorkspaceByIdQuery(parsedWorkspaceId);
 
 	const isNotFound =
 		isServerError(error) && error.status === HTTPCode.NOT_FOUND;
@@ -44,9 +50,11 @@ const WorkspaceConfig: React.FC = () => {
 		return <NotFoundPage />;
 	}
 
-	if (!data) {
+	const pageClassName = getValidClasses("page-container", styles["page"]);
+
+	if (!workspace) {
 		return (
-			<div className={getValidClasses("page-container", styles["page"])}>
+			<div className={pageClassName}>
 				<p>{WorkspaceConfigMessage.LOAD_FAILED}</p>
 				<Button
 					isLoading={isFetching}
@@ -58,11 +66,15 @@ const WorkspaceConfig: React.FC = () => {
 		);
 	}
 
-	const isOwner = data.userId === user?.id;
+	const isOwner = workspace.userId === user?.id;
+	const containerClassName = getValidClasses(
+		"page-container",
+		styles["container"],
+	);
 
 	return (
 		<div className={styles["page"]}>
-			<div className={getValidClasses("page-container", styles["container"])}>
+			<div className={containerClassName}>
 				<Link
 					className={styles["back-link"]}
 					hasDefaultStyles={false}
@@ -71,18 +83,15 @@ const WorkspaceConfig: React.FC = () => {
 					<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
 					All workspaces
 				</Link>
-				<div className={styles["heading"]}>
-					<p className={styles["kicker"]}>Workspace config</p>
-					<h2 className={styles["title"]}>{data.name}</h2>
-				</div>
+				<PageIntro label="Workspace config" title={workspace.name} />
 				<section className={styles["card"]}>
 					<h3 className={styles["section-title"]}>General</h3>
-					<WorkspaceConfigForm isOwner={isOwner} workspace={data} />
+					<WorkspaceConfigForm isOwner={isOwner} workspace={workspace} />
 				</section>
 				<section className={styles["card"]}>
 					<h3 className={styles["section-title"]}>Dataset target</h3>
 					<ProgressBar
-						count={data.promptCount}
+						count={workspace.promptCount}
 						label="Dataset readiness"
 						target={PromptProgress.TARGET_COUNT}
 					/>
@@ -91,11 +100,11 @@ const WorkspaceConfig: React.FC = () => {
 					<AccessCard
 						currentUserId={user.id}
 						isOwner={isOwner}
-						workspace={data}
+						workspace={workspace}
 					/>
 				)}
 
-				{isOwner && <DangerZone workspace={data} />}
+				{isOwner && <DangerZone workspace={workspace} />}
 			</div>
 		</div>
 	);

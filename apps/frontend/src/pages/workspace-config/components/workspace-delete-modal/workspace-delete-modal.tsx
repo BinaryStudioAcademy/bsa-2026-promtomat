@@ -30,8 +30,10 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 		workspace.promptCount === SINGLE_PROMPT_COUNT ? "prompt" : "prompts";
 
 	const handleDeleteConfirm = useCallback((): void => {
-		void deleteWorkspace(workspace.id).then(({ data }) => {
-			if (data !== undefined) {
+		void deleteWorkspace(workspace.id).then(({ error }) => {
+			const hasError = Boolean(error);
+
+			if (!hasError) {
 				onDeleted();
 			}
 		});
@@ -50,24 +52,22 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 			titleIconName={IconName.ALERT_CIRCLE}
 			tone="danger"
 		>
-			<div className={styles["content"]}>
-				<div className={styles["consequence"]}>
-					<p className={styles["text"]}>
-						{hasNoPrompts ? (
-							WorkspaceDeleteMessage.NO_PROMPTS
-						) : (
-							<>
-								<strong className={styles["impact"]}>
-									{workspace.promptCount} {promptCountLabel}
-								</strong>{" "}
-								will be destroyed.
-							</>
-						)}
-					</p>
-					<p className={styles["text"]}>
-						{WorkspaceDeleteMessage.DELETION_CANNOT_BE_UNDONE}
-					</p>
-				</div>
+			<div className={styles["consequence"]}>
+				<p className={styles["text"]}>
+					{hasNoPrompts ? (
+						WorkspaceDeleteMessage.NO_PROMPTS
+					) : (
+						<>
+							<strong className={styles["impact"]}>
+								{workspace.promptCount} {promptCountLabel}
+							</strong>{" "}
+							will be destroyed.
+						</>
+					)}
+				</p>
+				<p className={styles["text"]}>
+					{WorkspaceDeleteMessage.DELETION_CANNOT_BE_UNDONE}
+				</p>
 			</div>
 		</Confirmation>
 	);

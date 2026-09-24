@@ -33,8 +33,10 @@ const WorkspaceLeaveModal: React.FC<Properties> = ({
 		void leaveWorkspace({
 			userId: currentUserId,
 			workspaceId: workspace.id,
-		}).then(({ data }) => {
-			if (data !== undefined) {
+		}).then(({ error }) => {
+			const hasError = Boolean(error);
+
+			if (!hasError) {
 				onLeft();
 			}
 		});

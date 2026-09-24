@@ -119,6 +119,7 @@ const workspacesApi = baseApi
 				WorkspaceContributorsResponseDto,
 				number
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (workspaceId) => ({
 					url: configureString(

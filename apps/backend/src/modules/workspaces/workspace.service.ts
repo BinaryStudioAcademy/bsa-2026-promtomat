@@ -34,13 +34,7 @@ class WorkspaceService {
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(
-			WorkspaceEntity.initializeNew({
-				description: payload.description,
-				name: payload.name,
-				stackTags: payload.stackTags,
-				userId: payload.userId,
-				visibility: payload.visibility,
-			}),
+			WorkspaceEntity.initializeNew(payload),
 			trx,
 		);
 

@@ -42,30 +42,6 @@
 	transform: rotate(90deg);
 }
 
-.heading {
-	display: flex;
-	flex-direction: column;
-	gap: var(--space-6);
-}
-
-.kicker {
-	margin: 0;
-	font-size: var(--font-size-meta);
-	font-weight: 500;
-	color: var(--text-accent);
-	text-transform: uppercase;
-	letter-spacing: 1px;
-}
-
-.title {
-	margin: 0;
-	font-size: var(--font-size-display-2);
-	font-weight: 700;
-	line-height: 1.15;
-	color: var(--text-strong);
-	letter-spacing: -0.5px;
-}
-
 .card {
 	display: flex;
 	flex-direction: column;

@@ -3,6 +3,7 @@ import { useCallback, useEffect } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import {
@@ -130,20 +131,23 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					payload.stackTags = values.stackTags;
 				}
 
-				const { data } = await updateWorkspace({ id: workspace.id, payload });
+				const { data: savedWorkspace } = await updateWorkspace({
+					id: workspace.id,
+					payload,
+				});
 
-				if (data) {
+				if (savedWorkspace) {
 					reset({
-						description: data.description,
-						name: data.name,
+						description: savedWorkspace.description,
+						name: savedWorkspace.name,
 						stackTags: sortValuesByDictionary(
-							data.stackTags,
+							savedWorkspace.stackTags,
 							TECH_STACK_TAG_VALUES,
 						),
 					});
 					showNotification({
 						message: WorkspaceConfigMessage.SAVE_SUCCESS,
-						type: "success",
+						type: NotificationType.SUCCESS,
 					});
 				}
 			})(event);
