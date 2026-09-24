@@ -51,83 +51,41 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				workspaceId,
 			);
-
-			query.where((builder) => {
-				builder
-					.whereExists(
-						this.promptModel
-							.query()
-							.select(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-							)
-							.from(DatabaseTableName.WORKSPACES)
-							.where(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-								workspaceId,
-							)
-							.where(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
-								userId,
-							),
-					)
-					.orWhereExists(
-						this.promptModel
-							.query()
-							.select(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
-							)
-							.from(DatabaseTableName.CONTRIBUTORS)
-							.where(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-								workspaceId,
-							)
-							.where(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
-								userId,
-							),
-					);
-			});
-		} else {
-			query.where((builder) => {
-				builder
-					.whereExists(
-						this.promptModel
-							.query()
-							.select(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-							)
-							.from(DatabaseTableName.WORKSPACES)
-							.where(
-								raw("?? = ??", [
-									`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-									`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-								]),
-							)
-							.where(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
-								userId,
-							),
-					)
-					.orWhereExists(
-						this.promptModel
-							.query()
-							.select(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
-							)
-							.from(DatabaseTableName.CONTRIBUTORS)
-							.where(
-								raw("?? = ??", [
-									`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-									`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-								]),
-							)
-							.where(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
-								userId,
-							),
-					);
-			});
 		}
+
+		query.where((builder) => {
+			builder
+				.whereExists(
+					this.promptModel
+						.query()
+						.select(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
+						.from(DatabaseTableName.WORKSPACES)
+						.whereColumn(
+							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						)
+						.where(
+							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+							userId,
+						),
+				)
+				.orWhereExists(
+					this.promptModel
+						.query()
+						.select(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+						)
+						.from(DatabaseTableName.CONTRIBUTORS)
+						.whereColumn(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+						)
+						.where(
+							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+							userId,
+						),
+				);
+		});
 
 		if (score) {
 			query.where(
