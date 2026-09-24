@@ -1,4 +1,4 @@
-import { ApiTokensMessage } from "../enums/enums.js";
+import { ApiTokensMessage } from "../enums/api-tokens-message.enum.js";
 
 const API_TOKENS_TABLE_COLUMNS = [
 	ApiTokensMessage.COLUMN_NAME,

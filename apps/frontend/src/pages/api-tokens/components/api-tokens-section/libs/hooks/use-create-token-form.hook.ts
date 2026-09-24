@@ -8,7 +8,7 @@ import {
 } from "~/modules/api-tokens/api-tokens.js";
 
 const DEFAULT_VALUES: ApiTokenRequestDto = {
-	expiration: ApiTokenExpiration.ONE_WEEK,
+	expiration: ApiTokenExpiration.NEVER,
 	name: "",
 };
 
