@@ -4,6 +4,7 @@ import { useWatch } from "react-hook-form";
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -14,6 +15,7 @@ import {
 	useActiveWorkspace,
 	useGetWorkspacesQuery,
 } from "~/modules/workspaces/workspaces.js";
+import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
@@ -21,7 +23,6 @@ import { PromptHistoryLabel } from "./libs/enums/enum.js";
 import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
 import styles from "./styles.module.css";
 
-const ZERO_VALUE = 0;
 const SINGLE_RESULT_COUNT = 1;
 const SCORE_OPTION_START = PromptValidationRule.EFFICIENCY_SCORE_MIN;
 const SCORE_OPTION_COUNT =
@@ -131,7 +132,7 @@ const PromptHistory: React.FC = () => {
 	const averageScoreLabel =
 		averageScore === null
 			? "—"
-			: `${String(averageScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`;
+			: `${String(averageScore)} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
 
 	let detailPane: React.ReactNode = null;
 
@@ -195,9 +196,9 @@ const PromptHistory: React.FC = () => {
 					<div className={styles["search"]}>
 						<Input
 							control={control}
+							iconName={IconName.SEARCH}
 							isLabelHidden
 							label={PromptHistoryLabel.SEARCH}
-							leadingIconName={IconName.SEARCH}
 							name="search"
 							placeholder={PromptHistoryLabel.SEARCH_PLACEHOLDER}
 							size={ControlSize.LG}

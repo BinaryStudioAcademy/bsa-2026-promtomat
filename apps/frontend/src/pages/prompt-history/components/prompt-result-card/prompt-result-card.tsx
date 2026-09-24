@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 
 import { Icon } from "~/libs/components/icon/icon.js";
-import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { IconName } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
@@ -27,7 +27,6 @@ const PromptResultCard: React.FC<Properties> = ({
 	onSelect,
 	prompt,
 }: Properties) => {
-	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 	const [snippet = ""] = prompt.body.split(LINE_BREAK);
 
@@ -48,11 +47,10 @@ const PromptResultCard: React.FC<Properties> = ({
 		>
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
-				<span
-					className={getValidClasses(styles["score-badge"], scoreColorClass)}
-				>
-					{`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-				</span>
+				<ScoreBadge
+					efficiencyScore={prompt.score}
+					label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+				/>
 				<Icon
 					className={getValidClasses(
 						styles["chevron"],

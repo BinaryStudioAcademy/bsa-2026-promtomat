@@ -59,19 +59,6 @@
 	color: var(--text-muted);
 }
 
-.score-badge {
-	display: flex;
-	flex-shrink: 0;
-	align-items: center;
-	justify-content: center;
-	min-width: 40px;
-	height: 28px;
-	padding: 0 var(--space-8);
-	font-size: var(--font-size-label-sm);
-	font-weight: 700;
-	border-radius: var(--radius-sm);
-}
-
 .chevron {
 	flex-shrink: 0;
 	width: var(--space-16);
@@ -83,19 +70,4 @@
 
 .chevron-open {
 	transform: rotate(180deg);
-}
-
-.danger-outline {
-	color: var(--fg-danger);
-	background-color: var(--bg-danger);
-}
-
-.warning-outline {
-	color: var(--fg-warning);
-	background-color: var(--bg-warning);
-}
-
-.success-outline {
-	color: var(--fg-success);
-	background-color: var(--bg-success);
 }

@@ -18,11 +18,12 @@ type Properties<T extends FieldValues> = {
 	className?: string | undefined;
 	control: Control<T, null>;
 	descriptionId?: string | undefined;
+	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
+	isMessageHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
-	leadingIconName?: ValueOf<typeof IconName>;
 	maxLength?: number;
 	name: FieldPath<T>;
 	onBlur?: React.FocusEventHandler<HTMLInputElement>;
@@ -40,11 +41,12 @@ const Input = <T extends FieldValues>({
 	className = "",
 	control,
 	descriptionId,
+	iconName,
 	isDisabled = false,
 	isLabelHidden = false,
+	isMessageHidden = false,
 	isRequired = false,
 	label,
-	leadingIconName,
 	maxLength,
 	name,
 	onBlur,
@@ -69,7 +71,7 @@ const Input = <T extends FieldValues>({
 	const inputId = useId();
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const hasError = Boolean(error) || undefined;
+	const hasError = Boolean(error);
 	const errorMessage = error?.message;
 	const describedById =
 		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
@@ -77,7 +79,9 @@ const Input = <T extends FieldValues>({
 	const isPasswordField = type === InputType.PASSWORD;
 	const inputType =
 		isPasswordField && isPasswordVisible ? InputType.TEXT : type;
-	const iconName = isPasswordVisible ? IconName.EYE_FILLED : IconName.EYE;
+	const visibilityIconName = isPasswordVisible
+		? IconName.EYE_FILLED
+		: IconName.EYE;
 	const buttonAriaLabel = isPasswordVisible ? "Hide password" : "Show password";
 
 	const handleVisibilityToggle = useCallback((): void => {
@@ -109,9 +113,6 @@ const Input = <T extends FieldValues>({
 				) : null}
 			</label>
 			<div className={styles["control"]}>
-				{leadingIconName ? (
-					<Icon className={styles["leading-icon"]} iconName={leadingIconName} />
-				) : null}
 				<input
 					{...field}
 					aria-describedby={describedById}
@@ -122,8 +123,8 @@ const Input = <T extends FieldValues>({
 						styles["input"],
 						styles[size],
 						hasError && styles["error"],
+						iconName && styles["with-icon"],
 						isPasswordField && styles["with-toggle"],
-						leadingIconName && styles["with-leading-icon"],
 						className,
 					)}
 					id={inputId}
@@ -136,6 +137,9 @@ const Input = <T extends FieldValues>({
 					ref={ref}
 					type={inputType}
 				/>
+				{iconName && (
+					<Icon className={styles["leading-icon"]} iconName={iconName} />
+				)}
 				{isPasswordField && (
 					<button
 						aria-label={buttonAriaLabel}
@@ -145,12 +149,21 @@ const Input = <T extends FieldValues>({
 						onClick={handleVisibilityToggle}
 						type="button"
 					>
-						<Icon className={styles["toggle-icon"]} iconName={iconName} />
+						<Icon
+							className={styles["toggle-icon"]}
+							iconName={visibilityIconName}
+						/>
 					</button>
 				)}
 			</div>
-			{!descriptionId && (
-				<span className={styles["message"]} id={errorMessageId}>
+			{!descriptionId && (!isMessageHidden || errorMessage !== undefined) && (
+				<span
+					className={getValidClasses(
+						styles["message"],
+						isMessageHidden && errorMessage === undefined && "visually-hidden",
+					)}
+					id={errorMessageId}
+				>
 					{errorMessage}
 				</span>
 			)}

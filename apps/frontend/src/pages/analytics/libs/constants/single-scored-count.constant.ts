@@ -1,0 +1,3 @@
+const SINGLE_SCORED_COUNT = 1;
+
+export { SINGLE_SCORED_COUNT };

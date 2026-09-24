@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
@@ -84,7 +85,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					reset(getSettingsFormValues(updatedUser));
 					showNotification({
 						message: SettingsMessage.SUCCESS,
-						type: "success",
+						type: NotificationType.SUCCESS,
 					});
 				})
 				.catch((caughtError: unknown) => {

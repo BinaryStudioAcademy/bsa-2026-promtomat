@@ -97,6 +97,16 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												},
 												path: AppRoute.SMART_SEARCH,
 											},
+											{
+												handle: ShellPageCopy.ANALYTICS,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/analytics/analytics.js");
+
+													return { Component: pageModule.Analytics };
+												},
+												path: AppRoute.ANALYTICS,
+											},
 										],
 										element: <AuthenticatedShell />,
 									},

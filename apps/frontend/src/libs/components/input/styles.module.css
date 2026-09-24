@@ -73,23 +73,20 @@
 	align-items: center;
 }
 
+.with-icon {
+	padding-left: calc(var(--space-16) * 2 + var(--space-10));
+}
+
 .with-toggle {
 	padding-right: 40px;
 }
 
-.with-leading-icon {
-	padding-left: var(--space-40);
-}
-
 .leading-icon {
 	position: absolute;
-	left: var(--space-12);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 16px;
-	height: 16px;
-	color: var(--text-muted);
+	left: var(--space-16);
+	width: var(--space-16);
+	height: var(--space-16);
+	color: var(--border-strong);
 	pointer-events: none;
 }
 

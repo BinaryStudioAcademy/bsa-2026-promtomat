@@ -20,6 +20,7 @@ const IconName = {
 	SETTINGS: "settings",
 	SHIELD_CHECK: "shield-check",
 	SPARKLES: "sparkles",
+	STATS_BAR: "stats-bars",
 	TRASH_2: "trash-2",
 	USER: "user",
 	USER_COG: "user-cog",

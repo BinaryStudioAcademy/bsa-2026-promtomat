@@ -1,20 +1,38 @@
 .group {
 	display: inline-flex;
-	gap: var(--space-4);
-	padding: var(--space-4);
+	padding: 0;
 	margin: 0;
+	overflow: hidden;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-default);
 	border-radius: var(--radius-lg);
 }
 
 .label {
-	padding: var(--space-8) var(--space-16);
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0 var(--space-16);
 	font-size: var(--font-size-body-base);
 	color: var(--text-muted);
+	white-space: nowrap;
 	cursor: pointer;
-	border: var(--border-width-hairline) solid transparent;
-	border-radius: var(--radius-md);
+	background-color: transparent;
+	border: 0;
+	border-radius: 0;
+	transition:
+		background-color var(--motion-duration-fast) var(--motion-ease-standard),
+		color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.label:not(:first-of-type) {
+	border-left: var(--border-width-hairline) solid var(--border-default);
+}
+
+.label:hover {
+	background-color: var(--state-hover-tint);
 }
 
 .label::after {
@@ -29,11 +47,16 @@
 .input:checked + .label {
 	font-weight: 600;
 	color: var(--text-accent);
-	background-color: var(--bg-info);
-	border-color: var(--border-accent);
+}
+
+@container (width <= 480px) {
+	.label {
+		padding-right: var(--space-8);
+		padding-left: var(--space-8);
+	}
 }
 
 .input:focus-visible + .label {
 	outline: var(--border-width-focus) solid var(--border-focus);
-	outline-offset: var(--border-width-focus);
+	outline-offset: calc(-1 * var(--border-width-focus));
 }

@@ -4,7 +4,8 @@ import { Button } from "~/libs/components/button/button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
 import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
 import { Link } from "~/libs/components/link/link.js";
-import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import {
 	configureString,
@@ -53,7 +54,6 @@ const PromptDetailPanel: React.FC<Properties> = ({
 
 	const errorMessage = errors.taskIntent?.message;
 	const isOwner = user?.id === prompt.userId;
-	const scoreColorClass = styles[getScoreColor(prompt.score)];
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
 		promptId: String(prompt.id),
@@ -78,7 +78,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					}).unwrap();
 					showNotification({
 						message: PromptHistoryMessage.UPDATE_INTENT_SUCCESS,
-						type: "success",
+						type: NotificationType.SUCCESS,
 					});
 				} catch {
 					lastValidIntentReference.current = previousIntent;
@@ -101,13 +101,13 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			.then(() => {
 				showNotification({
 					message: PromptHistoryMessage.COPY_SUCCESS,
-					type: "success",
+					type: NotificationType.SUCCESS,
 				});
 			})
 			.catch(() => {
 				showNotification({
 					message: PromptHistoryMessage.COPY_FAILURE,
-					type: "danger",
+					type: NotificationType.DANGER,
 				});
 			})
 			.finally(() => {
@@ -133,11 +133,10 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					) : (
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
-					<span
-						className={getValidClasses(styles["score-badge"], scoreColorClass)}
-					>
-						{`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-					</span>
+					<ScoreBadge
+						efficiencyScore={prompt.score}
+						label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+					/>
 				</div>
 				<div
 					className={
