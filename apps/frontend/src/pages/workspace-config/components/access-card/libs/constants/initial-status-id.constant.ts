@@ -1,0 +1,3 @@
+const INITIAL_STATUS_ID = 0;
+
+export { INITIAL_STATUS_ID };
