@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
+import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
-import { type ValueOf } from "~/libs/types/types.js";
+import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
 import {
 	type PromptRecentDto,
 	PromptValidationRule,
@@ -59,7 +59,11 @@ const RecentPromptsContent: React.FC<Properties> = ({
 
 				return (
 					<li key={item.id}>
-						<Link className={styles["item"]} to={promptPath}>
+						<Link
+							className={styles["item"]}
+							hasDefaultStyles={false}
+							to={promptPath as NavigableRoute}
+						>
 							<span className={styles["intent"]}>{item.taskIntent}</span>
 							<span
 								className={getValidClasses(
