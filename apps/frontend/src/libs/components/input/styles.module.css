@@ -73,8 +73,21 @@
 	align-items: center;
 }
 
+.with-icon {
+	padding-left: calc(var(--space-16) * 2 + var(--space-10));
+}
+
 .with-toggle {
 	padding-right: 40px;
+}
+
+.leading-icon {
+	position: absolute;
+	left: var(--space-16);
+	width: var(--space-16);
+	height: var(--space-16);
+	color: var(--border-strong);
+	pointer-events: none;
 }
 
 .toggle {

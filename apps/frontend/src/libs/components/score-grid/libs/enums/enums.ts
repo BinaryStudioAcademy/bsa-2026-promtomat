@@ -1,1 +1,1 @@
-export { ScoreDescriptions } from "./score-description.enum.js";
+export { ScoreDescription } from "./score-description.enum.js";
