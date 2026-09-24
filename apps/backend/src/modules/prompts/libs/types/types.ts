@@ -22,6 +22,8 @@ export {
 	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptRouteParametersDto,
+	type PromptStreakDayDto,
+	type PromptStreakResponseDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";

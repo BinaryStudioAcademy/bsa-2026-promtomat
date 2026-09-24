@@ -11,6 +11,7 @@ import {
 	PROMPT_ID,
 	PROMPT_LABEL_ID,
 	PROMPT_WORKSPACE_ID,
+	STREAK_DATE_FORMAT,
 	WORKSPACE_RELATION,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
@@ -31,6 +32,7 @@ import {
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
+	type PromptStreakDayDto,
 	type PromptUpdatePayload,
 } from "./libs/types/types.js";
 
@@ -104,6 +106,33 @@ class PromptRepository {
 			.execute();
 
 		return PromptEntity.initialize(prompt);
+	}
+
+	public async findActiveDaysByUserId(
+		userId: number,
+		timeZone: string,
+	): Promise<PromptStreakDayDto[]> {
+		const rows = await this.promptModel
+			.query()
+			.select(
+				raw("to_char((?? AT TIME ZONE ?)::date, ?) as ??", [
+					PromptColumnName.CREATED_AT,
+					timeZone,
+					STREAK_DATE_FORMAT,
+					SQLAlias.DATE,
+				]),
+				raw("count(*) as ??", [SQLAlias.PROMPT_COUNT]),
+			)
+			.where(PromptColumnName.USER_ID, userId)
+			.groupBy(SQLAlias.DATE)
+			.orderBy(SQLAlias.DATE, SortOrder.DESC)
+			.castTo<{ date: string; promptCount: string }[]>()
+			.execute();
+
+		return rows.map((row) => ({
+			date: row.date,
+			promptCount: Number(row.promptCount),
+		}));
 	}
 
 	public async findAll({

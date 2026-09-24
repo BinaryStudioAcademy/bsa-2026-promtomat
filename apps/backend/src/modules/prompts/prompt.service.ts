@@ -12,7 +12,13 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import { LabelService } from "../labels/labels.js";
 import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
-import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
+import {
+	buildActivityWindow,
+	countCurrentStreak,
+	createGenerateLabelOptions,
+	formatDateInTimeZone,
+	resolveTimeZone,
+} from "./libs/helpers/helpers.js";
 import {
 	type PromptCandidateQuery,
 	type PromptCreatePayload,
@@ -25,6 +31,7 @@ import {
 	type PromptItemResponseDto,
 	type PromptLabelSource,
 	type PromptProgressResponseDto,
+	type PromptStreakResponseDto,
 	type PromptUpdateIntentPayload,
 } from "./libs/types/types.js";
 import { PromptEntity } from "./prompt.entity.js";
@@ -267,6 +274,25 @@ class PromptService {
 		);
 
 		return { items };
+	}
+
+	public async findStreak(
+		userId: number,
+		timeZone: string,
+	): Promise<PromptStreakResponseDto> {
+		const resolvedTimeZone = resolveTimeZone(timeZone);
+
+		const activeDays = await this.promptRepository.findActiveDaysByUserId(
+			userId,
+			resolvedTimeZone,
+		);
+
+		const today = formatDateInTimeZone(new Date(), resolvedTimeZone);
+
+		return {
+			currentStreak: countCurrentStreak(activeDays, today),
+			days: buildActivityWindow(activeDays, today),
+		};
 	}
 
 	public async findUserPromptSummary(userId: number): Promise<{
