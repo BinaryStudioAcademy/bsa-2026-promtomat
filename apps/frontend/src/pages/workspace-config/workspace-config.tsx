@@ -35,7 +35,7 @@ const WorkspaceConfig: React.FC = () => {
 		refetch,
 	} = useGetWorkspaceByIdQuery(parsedWorkspaceId);
 
-	const isNotFound =
+	const isWorkspaceMissing =
 		isServerError(error) && error.status === HTTPCode.NOT_FOUND;
 
 	const handleRetry = useCallback((): void => {
@@ -46,7 +46,7 @@ const WorkspaceConfig: React.FC = () => {
 		return <Loader variant={LoaderVariant.SECTION} />;
 	}
 
-	if (isNotFound) {
+	if (isWorkspaceMissing) {
 		return <NotFoundPage />;
 	}
 

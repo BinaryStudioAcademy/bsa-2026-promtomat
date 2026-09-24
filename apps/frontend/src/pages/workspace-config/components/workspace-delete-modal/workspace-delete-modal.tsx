@@ -26,7 +26,7 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 	workspace,
 }: Properties) => {
 	const [deleteWorkspace, { isLoading }] = useDeleteWorkspaceMutation();
-	const hasNoPrompts = workspace.promptCount === EMPTY_PROMPT_COUNT;
+	const hasPrompts = workspace.promptCount > EMPTY_PROMPT_COUNT;
 
 	const promptCountLabel =
 		workspace.promptCount === SINGLE_PROMPT_COUNT ? "prompt" : "prompts";
@@ -60,15 +60,15 @@ const WorkspaceDeleteModal: React.FC<Properties> = ({
 		>
 			<div className={styles["consequence"]}>
 				<p className={styles["text"]}>
-					{hasNoPrompts ? (
-						WorkspaceDeleteMessage.NO_PROMPTS
-					) : (
+					{hasPrompts ? (
 						<>
 							<strong className={styles["impact"]}>
 								{workspace.promptCount} {promptCountLabel}
 							</strong>{" "}
 							will be destroyed.
 						</>
+					) : (
+						WorkspaceDeleteMessage.NO_PROMPTS
 					)}
 				</p>
 				<p className={styles["text"]}>
