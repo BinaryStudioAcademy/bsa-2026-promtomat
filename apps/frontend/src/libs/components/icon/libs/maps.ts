@@ -8,6 +8,7 @@ import CircleXIcon from "~/assets/img/circle-x.svg?react";
 import ClipboardListIcon from "~/assets/img/clipboard-list.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
 import CodeIcon from "~/assets/img/code.svg?react";
+import CopyIcon from "~/assets/img/copy.svg?react";
 import EditIcon from "~/assets/img/edit.svg?react";
 import EyeFilledIcon from "~/assets/img/eye-filled.svg?react";
 import EyeIcon from "~/assets/img/eye.svg?react";
@@ -19,6 +20,7 @@ import MenuIcon from "~/assets/img/menu.svg?react";
 import PlusIcon from "~/assets/img/plus.svg?react";
 import SearchIcon from "~/assets/img/search.svg?react";
 import SettingsIcon from "~/assets/img/settings.svg?react";
+import ShieldCheckIcon from "~/assets/img/shield-check.svg?react";
 import SparklesIcon from "~/assets/img/sparkles.svg?react";
 import StatsBars from "~/assets/img/stats-bars.svg?react";
 import Trash2Icon from "~/assets/img/trash-2.svg?react";
@@ -37,6 +39,7 @@ const iconNameToIcon = {
 	[IconName.CLIPBOARD_LIST]: ClipboardListIcon,
 	[IconName.CLOSE]: CloseIcon,
 	[IconName.CODE]: CodeIcon,
+	[IconName.COPY]: CopyIcon,
 	[IconName.EDIT]: EditIcon,
 	[IconName.EYE]: EyeIcon,
 	[IconName.EYE_FILLED]: EyeFilledIcon,
@@ -48,6 +51,7 @@ const iconNameToIcon = {
 	[IconName.PLUS]: PlusIcon,
 	[IconName.SEARCH]: SearchIcon,
 	[IconName.SETTINGS]: SettingsIcon,
+	[IconName.SHIELD_CHECK]: ShieldCheckIcon,
 	[IconName.SPARKLES]: SparklesIcon,
 	[IconName.STATS_BAR]: StatsBars,
 	[IconName.TRASH_2]: Trash2Icon,

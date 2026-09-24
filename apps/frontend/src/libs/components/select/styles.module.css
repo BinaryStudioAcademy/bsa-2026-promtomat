@@ -50,6 +50,10 @@
 	opacity: 0.7;
 }
 
+.with-leading-icon {
+	padding-left: var(--space-40);
+}
+
 .sm {
 	height: var(--size-control-h-sm);
 }
@@ -63,18 +67,6 @@
 	font-size: var(--font-size-body-xl);
 }
 
-.iconed {
-	padding-left: var(--space-32);
-}
-
-.icon {
-	position: absolute;
-	left: var(--space-12);
-	display: flex;
-	color: var(--text-accent);
-	pointer-events: none;
-}
-
 .error {
 	border-color: var(--surface-danger);
 }
@@ -83,6 +75,16 @@
 	min-height: var(--space-18);
 	font-size: var(--font-size-label-sm);
 	color: var(--fg-danger);
+}
+
+.leading-icon {
+	position: absolute;
+	left: var(--space-12);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-accent);
+	pointer-events: none;
 }
 
 .chevron {

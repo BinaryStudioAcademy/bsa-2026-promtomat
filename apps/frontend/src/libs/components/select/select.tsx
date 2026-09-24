@@ -17,11 +17,11 @@ import styles from "./styles.module.css";
 type Properties<T extends FieldValues> = {
 	control: Control<T, null>;
 	descriptionId?: string;
-	iconName?: ValueOf<typeof IconName>;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
+	leadingIconName?: ValueOf<typeof IconName>;
 	name: FieldPath<T>;
 	options: SelectOption[];
 	placeholder?: string;
@@ -31,11 +31,11 @@ type Properties<T extends FieldValues> = {
 const Select = <T extends FieldValues>({
 	control,
 	descriptionId,
-	iconName,
 	isDisabled = false,
 	isLabelHidden = false,
 	isRequired = false,
 	label,
+	leadingIconName,
 	name,
 	options,
 	placeholder,
@@ -87,7 +87,9 @@ const Select = <T extends FieldValues>({
 				) : null}
 			</label>
 			<div className={styles["control"]}>
-				{iconName && <Icon className={styles["icon"]} iconName={iconName} />}
+				{leadingIconName ? (
+					<Icon className={styles["leading-icon"]} iconName={leadingIconName} />
+				) : null}
 				<select
 					{...restField}
 					aria-describedby={describedById}
@@ -97,7 +99,7 @@ const Select = <T extends FieldValues>({
 						styles["select"],
 						styles[size],
 						hasError && styles["error"],
-						iconName && styles["iconed"],
+						leadingIconName && styles["with-leading-icon"],
 					)}
 					id={selectId}
 					onChange={handleChange}

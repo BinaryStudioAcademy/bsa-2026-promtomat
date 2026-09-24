@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
 
+import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Button } from "~/libs/components/button/button.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 
@@ -42,6 +43,12 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 					onClick={handleResetClick}
 					size={ControlSize.LG}
 					type="button"
+					variant={ButtonVariant.SECONDARY}
+				/>
+				<ButtonLink
+					label={SettingsMessage.MANAGE_API_TOKENS}
+					size={ControlSize.LG}
+					to={AppRoute.API_TOKENS}
 					variant={ButtonVariant.SECONDARY}
 				/>
 			</div>

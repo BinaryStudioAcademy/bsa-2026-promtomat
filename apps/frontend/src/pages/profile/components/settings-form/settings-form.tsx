@@ -128,8 +128,8 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					/>
 					<Select
 						control={control}
-						iconName="code"
 						label="Primary AI coding tool"
+						leadingIconName="code"
 						name="primaryAiCodingTool"
 						options={AI_CODING_TOOL_OPTIONS}
 						placeholder={SettingsMessage.TOOL_PLACEHOLDER}
@@ -138,9 +138,8 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 				</div>
 				<div className={styles["profile-save-row"]}>
 					<Button
-						isDisabled={isSaveDisabled}
-						isLoading={isLoading}
-						label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
+						isDisabled={isSaveDisabled || isLoading}
+						label={SettingsMessage.SAVE}
 						size={ControlSize.LG}
 						type="submit"
 					/>

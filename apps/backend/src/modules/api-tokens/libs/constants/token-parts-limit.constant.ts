@@ -1,0 +1,3 @@
+const TOKEN_PARTS_LIMIT = 2;
+
+export { TOKEN_PARTS_LIMIT };

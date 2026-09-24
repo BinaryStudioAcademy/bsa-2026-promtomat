@@ -23,7 +23,7 @@
 	color: var(--text-strong);
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: var(--radius-xl);
+	border-radius: var(--radius-md);
 	transition:
 		border-color var(--motion-duration-fast) var(--motion-ease-standard),
 		background-color var(--motion-duration-fast) var(--motion-ease-standard);
@@ -55,6 +55,7 @@
 .lg {
 	height: var(--size-control-h-lg);
 	font-size: var(--font-size-body-xl);
+	border-radius: var(--radius-xl);
 }
 
 .error {

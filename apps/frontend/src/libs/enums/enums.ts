@@ -8,6 +8,7 @@ export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
 export {
 	APIPath,
+	ApiTokenExpiration,
 	AppEnvironment,
 	DateFormat,
 	ErrorCode,
@@ -17,4 +18,5 @@ export {
 	ScoreThreshold,
 	ScoreTierMin,
 	TechStackTechDictionary,
+	TimeUnit,
 } from "@promptomat/shared";

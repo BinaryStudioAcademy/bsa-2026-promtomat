@@ -63,10 +63,12 @@ class AuthError extends HTTPError {
 		});
 	}
 
-	public static unauthorized(): AuthError {
+	public static unauthorized(
+		message: string = AuthErrorMessage.UNAUTHORIZED,
+	): AuthError {
 		return new AuthError({
 			code: ErrorCode.UNAUTHENTICATED,
-			message: AuthErrorMessage.UNAUTHORIZED,
+			message,
 			status: HTTPCode.UNAUTHORIZED,
 		});
 	}
