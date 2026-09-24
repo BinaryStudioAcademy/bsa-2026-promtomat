@@ -16,7 +16,12 @@ const SelectedValue = ({
 	value,
 }: SelectedValueProperties): React.JSX.Element => {
 	return (
-		<li className={styles["value"]}>
+		<li
+			className={getValidClasses(
+				styles["value"],
+				isDisabled && styles["value-disabled"],
+			)}
+		>
 			<span className={styles["value-text"]}>{value}</span>
 			<IconButton
 				ariaLabel={`Remove ${value}`}

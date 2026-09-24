@@ -24,8 +24,8 @@
 	font-family: inherit;
 	cursor: text;
 	background-color: var(--surface-inset);
-	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: var(--radius-md);
+	border: var(--border-width-hairline) solid var(--border-strong);
+	border-radius: var(--radius-xl);
 	transition:
 		border-color var(--motion-duration-fast) var(--motion-ease-standard),
 		background-color var(--motion-duration-fast) var(--motion-ease-standard);
@@ -38,8 +38,8 @@
 
 .control:has(.input:disabled) {
 	cursor: not-allowed;
-	background-color: var(--surface-subtle);
-	opacity: 0.6;
+	background-color: var(--state-disabled-tint);
+	border-color: var(--border-subtle);
 }
 
 .error {
