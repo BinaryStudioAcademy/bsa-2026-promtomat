@@ -14,7 +14,7 @@ type Properties = {
 
 const RepositoryBindingItem: React.FC<Properties> = ({
 	binding,
-	isDisabled = false,
+	isDisabled,
 	onRemove,
 }: Properties) => {
 	const identity = `${binding.owner}/${binding.repo}`;
