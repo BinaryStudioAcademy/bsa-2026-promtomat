@@ -7,15 +7,13 @@ import {
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
 
-import { RepositoryBindingColumnName } from "./libs/enums/enums.js";
+import {
+	RepositoryBindingColumnName,
+	RepositoryBindingConstraintName,
+} from "./libs/enums/enums.js";
 import { type RepositoryIdentity } from "./libs/types/types.js";
 import { RepositoryBindingEntity } from "./repository-binding.entity.js";
 import { type RepositoryBindingModel } from "./repository-binding.model.js";
-
-const RepositoryBindingConstraintName = {
-	WORKSPACE_ID_HOST_OWNER_REPO_UNIQUE:
-		"repository_bindings_workspace_id_host_owner_repo_unique",
-} as const;
 
 class RepositoryBindingRepository {
 	private repositoryBindingModel: typeof RepositoryBindingModel;

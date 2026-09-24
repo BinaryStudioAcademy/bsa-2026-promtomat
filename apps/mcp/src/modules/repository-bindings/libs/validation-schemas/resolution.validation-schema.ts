@@ -5,9 +5,10 @@ import { ambiguousResolution } from "./ambiguous-resolution.validation-schema.js
 import { resolvedResolution } from "./resolved-resolution.validation-schema.js";
 import { unresolvedResolution } from "./unresolved-resolution.validation-schema.js";
 
-const resolutionValidationSchema: z.ZodType<Resolution> = z.discriminatedUnion(
-	"status",
-	[ambiguousResolution, resolvedResolution, unresolvedResolution],
-);
+const resolution: z.ZodType<Resolution> = z.discriminatedUnion("status", [
+	ambiguousResolution,
+	resolvedResolution,
+	unresolvedResolution,
+]);
 
-export { resolutionValidationSchema };
+export { resolution };

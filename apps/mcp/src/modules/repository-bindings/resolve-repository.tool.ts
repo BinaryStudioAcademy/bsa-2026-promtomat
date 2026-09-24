@@ -2,16 +2,14 @@ import { ToolName } from "~/libs/enums/enums.js";
 import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
+import { RESOLVE_REPOSITORY_DESCRIPTION } from "./libs/constants/constants.js";
 import { getRepositoryRemoteUrl } from "./libs/helpers/helpers.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
-
-const DESCRIPTION =
-	"Check which Promptomat workspace this checkout is bound to, by reading its git remote. Call it before composing or searching prompts, to know the current workspace. If the result is unresolved or ambiguous, call bind-repository with the workspaceId to bind. Takes no arguments.";
 
 const createResolveRepositoryTool = (
 	repositoryBindingApi: RepositoryBindingApi,
 ): Tool => ({
-	description: DESCRIPTION,
+	description: RESOLVE_REPOSITORY_DESCRIPTION,
 	execute: async () => {
 		const remoteUrl = await getRepositoryRemoteUrl(process.cwd());
 

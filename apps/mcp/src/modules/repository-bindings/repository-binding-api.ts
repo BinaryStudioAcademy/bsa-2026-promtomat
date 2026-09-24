@@ -7,7 +7,7 @@ import {
 
 import { RepositoryBindingsApiPath } from "./libs/enums/enums.js";
 import { type Resolution } from "./libs/types/types.js";
-import { resolutionValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
+import { resolution } from "./libs/validation-schemas/validation-schemas.js";
 
 type CreatePayload = {
 	remoteUrl: string;
@@ -41,7 +41,7 @@ class RepositoryBindingApi {
 			},
 		);
 
-		return await parseResponseBody(response, resolutionValidationSchema);
+		return await parseResponseBody(response, resolution);
 	}
 }
 
