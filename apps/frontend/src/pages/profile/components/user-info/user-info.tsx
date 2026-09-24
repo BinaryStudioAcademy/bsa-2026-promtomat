@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getNicknameInitials } from "~/libs/components/header/libs/helpers/get-nickname-initials.helper.js";
+import { getNicknameInitials } from "~/libs/helpers/helpers.js";
 import { type UserDto } from "~/modules/users/users.js";
 
 import { formatDate } from "../../libs/helpers/helpers.js";
