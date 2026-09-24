@@ -9,6 +9,7 @@ export { KeyboardKey } from "./keyboard-key.enum.js";
 export { Locale } from "./locale.enum.js";
 export {
 	APIPath,
+	ApiTokenExpiration,
 	AppEnvironment,
 	ErrorCode,
 	HTTPCode,
@@ -17,4 +18,5 @@ export {
 	ScoreThreshold,
 	ScoreTierMin,
 	TechStackTechDictionary,
+	TimeUnit,
 } from "@promptomat/shared";

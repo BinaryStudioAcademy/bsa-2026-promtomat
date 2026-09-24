@@ -58,6 +58,16 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.SETTINGS,
 											},
 											{
+												handle: ShellPageCopy.API_TOKENS,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/api-tokens/api-tokens.js");
+
+													return { Component: pageModule.ApiTokensPage };
+												},
+												path: AppRoute.API_TOKENS,
+											},
+											{
 												handle: ShellPageCopy.TRAINING,
 												lazy: async () => {
 													const pageModule =

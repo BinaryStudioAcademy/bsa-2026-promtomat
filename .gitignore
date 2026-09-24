@@ -5,6 +5,10 @@
 # dependencies
 node_modules
 
+# oh-my-claudecode local state
+.omc/
+
+
 # production
 build
 
