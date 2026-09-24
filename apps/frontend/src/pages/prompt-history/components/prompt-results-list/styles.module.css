@@ -1,0 +1,28 @@
+.empty-state {
+	padding: var(--space-32);
+	color: var(--text-muted);
+	text-align: center;
+	background-color: var(--surface-sunken);
+	border: var(--border-width-hairline) dashed var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.empty-state-message {
+	margin: 0 0 var(--space-12);
+}
+
+.result-block {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-10);
+}
+
+.mobile-detail {
+	display: block;
+}
+
+@media (width >= 768px) {
+	.mobile-detail {
+		display: none;
+	}
+}

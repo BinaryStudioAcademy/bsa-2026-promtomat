@@ -21,6 +21,7 @@ type Properties<T extends FieldValues> = {
 	isLabelHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
+	leadingIconName?: ValueOf<typeof IconName>;
 	name: FieldPath<T>;
 	options: SelectOption[];
 	placeholder?: string;
@@ -34,6 +35,7 @@ const Select = <T extends FieldValues>({
 	isLabelHidden = false,
 	isRequired = false,
 	label,
+	leadingIconName,
 	name,
 	options,
 	placeholder,
@@ -85,6 +87,9 @@ const Select = <T extends FieldValues>({
 				) : null}
 			</label>
 			<div className={styles["control"]}>
+				{leadingIconName ? (
+					<Icon className={styles["leading-icon"]} iconName={leadingIconName} />
+				) : null}
 				<select
 					{...restField}
 					aria-describedby={describedById}
@@ -94,6 +99,7 @@ const Select = <T extends FieldValues>({
 						styles["select"],
 						styles[size],
 						hasError && styles["error"],
+						leadingIconName && styles["with-leading-icon"],
 					)}
 					id={selectId}
 					onChange={handleChange}

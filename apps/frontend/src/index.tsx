@@ -105,7 +105,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 
 													return { Component: pageModule.PromptHistory };
 												},
-												path: AppRoute.PROMPTS_HISTORY,
+												path: AppRoute.SMART_SEARCH,
 											},
 											{
 												handle: ShellPageCopy.ANALYTICS,
