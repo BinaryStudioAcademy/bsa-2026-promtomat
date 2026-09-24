@@ -10,7 +10,7 @@ import {
 	getRepositoryRemoteUrl,
 	readPackageJson,
 } from "./libs/helpers/helpers.js";
-import { bindRepositoryInputSchema } from "./libs/validation-schemas/validation-schemas.js";
+import { bindRepository } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
 
 const createBindRepositoryTool = (
@@ -19,7 +19,7 @@ const createBindRepositoryTool = (
 	description: BIND_REPOSITORY_DESCRIPTION,
 	execute: async (arguments_) => {
 		const { workspaceId } = arguments_ as z.infer<
-			z.ZodObject<typeof bindRepositoryInputSchema>
+			z.ZodObject<typeof bindRepository>
 		>;
 
 		const projectDirectory = process.cwd();
@@ -42,7 +42,7 @@ const createBindRepositoryTool = (
 			`Bound this repository to workspace id ${String(workspaceId)}.`,
 		);
 	},
-	inputSchema: bindRepositoryInputSchema,
+	inputSchema: bindRepository,
 	name: ToolName.BIND_REPOSITORY,
 });
 

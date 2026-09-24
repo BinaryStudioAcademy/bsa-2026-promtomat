@@ -1,3 +1,5 @@
+import { EntityName } from "~/libs/enums/enums.js";
+import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity } from "~/libs/types/types.js";
 
 import {
@@ -62,7 +64,7 @@ class RepositoryBindingEntity implements Entity {
 	public toObject(): RepositoryBindingDto {
 		return {
 			host: this.host,
-			id: this.id as number,
+			id: requireEntityId(this.id, EntityName.REPOSITORY_BINDING),
 			owner: this.owner,
 			repo: this.repo,
 			workspaceId: this.workspaceId,

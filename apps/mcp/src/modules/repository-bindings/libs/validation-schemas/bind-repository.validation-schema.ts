@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const bindRepositoryInputSchema = {
+const bindRepository = {
 	workspaceId: z
 		.number()
 		.int()
@@ -8,4 +8,4 @@ const bindRepositoryInputSchema = {
 		.describe("The id of the workspace to bind this repository to."),
 };
 
-export { bindRepositoryInputSchema };
+export { bindRepository };

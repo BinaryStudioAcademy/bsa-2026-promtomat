@@ -1,10 +1,12 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
-const execFileAsync = promisify(execFile);
+import {
+	GIT_COMMAND,
+	REMOTE_ORIGIN_ARGUMENTS,
+} from "../constants/constants.js";
 
-const GIT_COMMAND = "git";
-const REMOTE_ORIGIN_ARGUMENTS = ["remote", "get-url", "origin"];
+const execFileAsync = promisify(execFile);
 
 const getRepositoryRemoteUrl = async (
 	projectDirectory: string,

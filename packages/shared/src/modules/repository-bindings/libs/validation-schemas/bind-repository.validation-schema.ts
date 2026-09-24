@@ -9,7 +9,7 @@ import {
 	RepositoryBindingValidationRule,
 } from "../enums/enums.js";
 
-const createRepositoryBinding = z.strictObject({
+const bindRepository = z.strictObject({
 	remoteUrl: z
 		.string()
 		.trim()
@@ -30,4 +30,4 @@ const createRepositoryBinding = z.strictObject({
 	workspaceId: z.number().int().positive(),
 });
 
-export { createRepositoryBinding };
+export { bindRepository };

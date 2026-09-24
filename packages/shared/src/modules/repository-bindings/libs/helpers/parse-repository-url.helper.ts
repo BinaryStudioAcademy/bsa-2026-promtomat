@@ -1,6 +1,4 @@
-const SCP_LIKE_PATTERN = /^[^/@]+@([^:/]+):(.+)$/;
-const URL_LIKE_PATTERN =
-	/^(?:[a-z][a-z0-9+.-]*):\/\/(?:[^/@]*@)?([^/:]+)(?::\d+)?\/(.+)$/i;
+import { SCP_LIKE_PATTERN, URL_LIKE_PATTERN } from "../constants/constants.js";
 
 type ParsedRepositoryUrl = {
 	host: string;

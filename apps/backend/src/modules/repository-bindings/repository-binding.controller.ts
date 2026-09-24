@@ -20,7 +20,7 @@ import {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 import {
-	createRepositoryBinding,
+	bindRepository,
 	listRepositoryBindingsQuery,
 	repositoryBindingRouteParameters,
 	resolveRepositoryBindingQuery,
@@ -104,7 +104,7 @@ class RepositoryBindingController extends BaseController {
 			path: RepositoryBindingsApiPath.ROOT,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
-				body: createRepositoryBinding,
+				body: bindRepository,
 			},
 		});
 

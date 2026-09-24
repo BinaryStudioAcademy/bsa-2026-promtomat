@@ -34,12 +34,12 @@ const createResolveRepositoryTool = (
 				.join(", ");
 
 			return createMCPTextResult(
-				`This repository is bound to more than one workspace you can use: ${workspaceList}. Call bind-repository with the workspaceId you want.`,
+				`This repository is bound to more than one workspace you can use: ${workspaceList}. Call ${ToolName.BIND_REPOSITORY} with the workspaceId you want.`,
 			);
 		}
 
 		return createMCPTextResult(
-			"This repository is not bound to any workspace yet. Call bind-repository with the workspaceId it belongs to.",
+			`This repository is not bound to any workspace yet. Call ${ToolName.BIND_REPOSITORY} with the workspaceId it belongs to.`,
 		);
 	},
 	name: ToolName.RESOLVE_REPOSITORY,

@@ -1,0 +1,3 @@
+const TRAILING_GIT_SUFFIX_PATTERN = /\.git\/?$/i;
+
+export { TRAILING_GIT_SUFFIX_PATTERN };

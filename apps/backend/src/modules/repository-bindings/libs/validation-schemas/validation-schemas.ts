@@ -1,5 +1,5 @@
 export {
-	createRepositoryBinding,
+	bindRepository,
 	listRepositoryBindingsQuery,
 	repositoryBindingRouteParameters,
 	resolveRepositoryBindingQuery,

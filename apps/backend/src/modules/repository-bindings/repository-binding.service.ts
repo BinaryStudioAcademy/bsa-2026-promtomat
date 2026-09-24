@@ -5,6 +5,7 @@ import {
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
+import { SINGLE_MATCH_COUNT } from "./libs/constants/constants.js";
 import {
 	RepositoryBindingResolutionStatus,
 	RepositoryIdentityRefusalReason,
@@ -19,8 +20,6 @@ import {
 } from "./libs/types/types.js";
 import { RepositoryBindingEntity } from "./repository-binding.entity.js";
 import { type RepositoryBindingRepository } from "./repository-binding.repository.js";
-
-const SINGLE_MATCH_COUNT = 1;
 
 class RepositoryBindingService {
 	private repositoryBindingRepository: RepositoryBindingRepository;

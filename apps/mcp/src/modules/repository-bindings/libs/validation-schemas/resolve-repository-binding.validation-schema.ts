@@ -5,11 +5,11 @@ import { ambiguousResolution } from "./ambiguous-resolution.validation-schema.js
 import { resolvedResolution } from "./resolved-resolution.validation-schema.js";
 import { unresolvedResolution } from "./unresolved-resolution.validation-schema.js";
 
-const resolution: z.ZodType<RepositoryBindingResolution> =
+const resolveRepositoryBinding: z.ZodType<RepositoryBindingResolution> =
 	z.discriminatedUnion("status", [
 		ambiguousResolution,
 		resolvedResolution,
 		unresolvedResolution,
 	]);
 
-export { resolution };
+export { resolveRepositoryBinding };

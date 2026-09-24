@@ -23,7 +23,7 @@ export {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 export {
-	createRepositoryBinding,
+	bindRepository,
 	listRepositoryBindingsQuery,
 	repositoryBindingRouteParameters,
 	resolveRepositoryBindingQuery,

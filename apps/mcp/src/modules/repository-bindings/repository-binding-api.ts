@@ -10,7 +10,7 @@ import {
 	type CreateRepositoryBindingRequestDto,
 	type RepositoryBindingResolution,
 } from "./libs/types/types.js";
-import { resolution } from "./libs/validation-schemas/validation-schemas.js";
+import { resolveRepositoryBinding } from "./libs/validation-schemas/validation-schemas.js";
 
 class RepositoryBindingApi {
 	private http: HTTP;
@@ -29,7 +29,9 @@ class RepositoryBindingApi {
 		});
 	}
 
-	public async resolve(remoteUrl: string): Promise<RepositoryBindingResolution> {
+	public async resolve(
+		remoteUrl: string,
+	): Promise<RepositoryBindingResolution> {
 		const query = new URLSearchParams({ remoteUrl }).toString();
 		const response = await this.http.load(
 			`${APIPath.REPOSITORY_BINDINGS}${RepositoryBindingsApiPath.RESOLVE}?${query}`,
@@ -40,7 +42,7 @@ class RepositoryBindingApi {
 			},
 		);
 
-		return await parseResponseBody(response, resolution);
+		return await parseResponseBody(response, resolveRepositoryBinding);
 	}
 }
 
