@@ -1,4 +1,4 @@
-import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
+import { TimeUnit } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
 import { type Logger } from "~/libs/modules/logger/logger.js";
@@ -151,7 +151,7 @@ class AuthService {
 		}
 
 		return {
-			issuedAt: new Date(claims.iat * MILLISECONDS_IN_SECOND),
+			issuedAt: new Date(claims.iat * TimeUnit.MILLISECONDS_PER_SECOND),
 			userId: claims.userId,
 		};
 	}

@@ -8,4 +8,5 @@ export { ScoreThreshold } from "./score-threshold.enum.js";
 export { ScoreTierMin } from "./score-tier-min.enum.js";
 export { ServerErrorCode } from "./server-error-code.enum.js";
 export { SortOrder } from "./sort-order.enum.js";
+export { TimeUnit } from "./time-unit.enum.js";
 export { TokenErrorCode } from "./token-error-code.enum.js";

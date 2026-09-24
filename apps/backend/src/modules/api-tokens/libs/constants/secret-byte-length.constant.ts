@@ -1,0 +1,3 @@
+const SECRET_BYTE_LENGTH = 32;
+
+export { SECRET_BYTE_LENGTH };
