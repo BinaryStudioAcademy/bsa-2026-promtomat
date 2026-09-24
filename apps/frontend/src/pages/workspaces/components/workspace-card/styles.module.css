@@ -89,9 +89,11 @@
 .description {
 	min-width: 0;
 	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	font-size: var(--font-size-body-sm);
 	color: var(--text-body);
-	overflow-wrap: anywhere;
+	white-space: nowrap;
 }
 
 .visibility-badge {
