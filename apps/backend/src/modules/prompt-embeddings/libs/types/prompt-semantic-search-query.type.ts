@@ -7,7 +7,6 @@ type PromptSemanticSearchQuery = {
 	limit: number;
 	offset: number;
 	qualityTier?: undefined | ValueOf<typeof PromptQualityTier>;
-	score?: number | undefined;
 	userId: number;
 	workspaceId?: number | undefined;
 };

@@ -398,7 +398,7 @@ class PromptRepository {
 	}: PromptFindByWorkspacePayload): Promise<PromptDto[]> {
 		const query = this.promptModel
 			.knex()
-			.select<PromptDto[]>(
+			.select(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 				PROMPT_ID,
@@ -419,7 +419,17 @@ class PromptRepository {
 			query.where(PROMPT_LABEL_ID, "=", labelId);
 		}
 
-		return await query;
+		const items = (await query) as Array<
+			Omit<PromptDto, "computedScore"> & {
+				computedScore: null | number | string;
+			}
+		>;
+
+		return items.map((item) => ({
+			...item,
+			computedScore:
+				item.computedScore === null ? null : Number(item.computedScore),
+		}));
 	}
 
 	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {

@@ -47,6 +47,8 @@ class AnalyticsRepository {
 				"=",
 				workspaceId,
 			);
+
+			return;
 		}
 
 		const contributorAccessQuery = this.promptModel

@@ -31,7 +31,8 @@ const PromptMetaSection: React.FC<Properties> = ({
 	const rawScore = computedScore ?? efficiencyScore;
 	const formattedScore = formatScore(rawScore);
 
-	const hasMeta = formattedScore !== null || Boolean(workspaceName);
+	const hasMeta =
+		formattedScore !== null || computedScore === null || Boolean(workspaceName);
 
 	if (!hasMeta) {
 		return null;

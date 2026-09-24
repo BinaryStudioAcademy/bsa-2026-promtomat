@@ -88,7 +88,6 @@ class PromptEmbeddingRepository {
 		limit,
 		offset,
 		qualityTier,
-		score,
 		userId,
 		workspaceId,
 	}: PromptSemanticSearchQuery): Promise<PromptSemanticSearchResult> {
@@ -136,14 +135,6 @@ class PromptEmbeddingRepository {
 				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
 				workspaceId,
 			);
-		}
-
-		if (score) {
-			baseQuery.whereRaw("COALESCE(??, ??) = ?", [
-				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				score,
-			]);
 		}
 
 		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {

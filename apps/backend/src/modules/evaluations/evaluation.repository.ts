@@ -28,9 +28,11 @@ class EvaluationRepository {
 					userId,
 				})
 				.onConflict(
-					knex.raw(
-						`(${EvaluationColumnName.USER_ID}, ${EvaluationColumnName.PROMPT_ID}) WHERE ${EvaluationColumnName.PROMPT_ID} IS NOT NULL`,
-					),
+					knex.raw("(??, ??) WHERE ?? IS NOT NULL", [
+						EvaluationColumnName.USER_ID,
+						EvaluationColumnName.PROMPT_ID,
+						EvaluationColumnName.PROMPT_ID,
+					]),
 				)
 				.merge({
 					score,
@@ -50,9 +52,11 @@ class EvaluationRepository {
 				userId,
 			})
 			.onConflict(
-				knex.raw(
-					`(${EvaluationColumnName.USER_ID}, ${EvaluationColumnName.COMPOSED_PROMPT_ID}) WHERE ${EvaluationColumnName.COMPOSED_PROMPT_ID} IS NOT NULL`,
-				),
+				knex.raw("(??, ??) WHERE ?? IS NOT NULL", [
+					EvaluationColumnName.USER_ID,
+					EvaluationColumnName.COMPOSED_PROMPT_ID,
+					EvaluationColumnName.COMPOSED_PROMPT_ID,
+				]),
 			)
 			.merge({
 				score,

@@ -311,7 +311,6 @@ class PromptEmbeddingService {
 		limit,
 		offset,
 		qualityTier,
-		score,
 		search,
 		userId,
 		workspaceId,
@@ -330,7 +329,6 @@ class PromptEmbeddingService {
 				limit,
 				offset,
 				qualityTier,
-				score,
 				userId,
 				workspaceId,
 			});
