@@ -8,7 +8,7 @@
 	border-radius: var(--radius-2xl);
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.section {
 		gap: var(--space-16);
 		padding: var(--space-24);

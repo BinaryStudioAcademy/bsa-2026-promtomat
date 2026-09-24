@@ -20,7 +20,7 @@
 	grid-column: 1 / -1;
 }
 
-@media (width >=830px) {
+@media (width >= 830px) {
 	.stats-grid {
 		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 		gap: var(--space-16);
@@ -31,7 +31,7 @@
 	}
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.stat-tile {
 		gap: var(--space-6);
 		padding: var(--space-20) var(--space-16);
@@ -44,7 +44,7 @@
 	overflow-wrap: anywhere;
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.stat-value {
 		font-size: var(--font-size-title-1);
 	}
@@ -71,7 +71,7 @@
 	color: var(--text-muted);
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.stat-label {
 		font-size: var(--font-size-body-base);
 		line-height: 1.25;

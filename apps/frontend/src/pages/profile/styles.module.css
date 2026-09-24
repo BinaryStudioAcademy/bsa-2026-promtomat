@@ -7,7 +7,7 @@
 	margin: 0 auto;
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.page {
 		gap: var(--space-16);
 		padding: var(--space-28) var(--space-32) var(--space-48);
@@ -32,7 +32,7 @@
 	line-height: 1.15;
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.title {
 		font-size: var(--font-size-display-2);
 	}

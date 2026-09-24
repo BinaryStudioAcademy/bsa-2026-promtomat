@@ -4,7 +4,7 @@
 	color: var(--text-muted);
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.small {
 		font-size: var(--font-size-body-base);
 	}
@@ -35,7 +35,7 @@
 	align-items: stretch;
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.profile-save-row {
 		flex-direction: row;
 		gap: var(--space-16);

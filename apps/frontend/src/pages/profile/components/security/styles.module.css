@@ -4,7 +4,7 @@
 	gap: var(--space-8);
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.security-row {
 		gap: var(--space-10);
 	}
@@ -14,7 +14,7 @@
 	flex: 1 1 100%;
 }
 
-@media (width >=600px) {
+@media (width >= 600px) {
 	.button {
 		flex: 0;
 	}
