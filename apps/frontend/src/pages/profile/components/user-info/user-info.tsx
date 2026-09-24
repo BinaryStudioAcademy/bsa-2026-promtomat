@@ -16,7 +16,7 @@ const UserInfo: React.FC<Properties> = ({
 	nickname,
 	totalPrompts,
 }: Properties) => {
-	const formattedCreatedAt = formatDate(memberSince, DateFormat.MON_DAY_YEAR);
+	const formattedCreatedAt = formatDate(memberSince, DateFormat.MONTH_DAY_YEAR);
 	const userDetails = `Member since ${formattedCreatedAt} · ${String(totalPrompts)} prompts contributed`;
 	return (
 		<div className={styles["info"]}>
