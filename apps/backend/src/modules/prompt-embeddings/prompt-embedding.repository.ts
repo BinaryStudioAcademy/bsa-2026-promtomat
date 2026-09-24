@@ -139,37 +139,35 @@ class PromptEmbeddingRepository {
 		}
 
 		if (score) {
-			baseQuery.where(
-				raw("COALESCE(??, ??)", [
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				]),
+			baseQuery.whereRaw("COALESCE(??, ??) = ?", [
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				score,
-			);
+			]);
 		}
 
 		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
 			switch (qualityTier) {
 				case PromptQualityTier.NEEDS_IMPROVEMENT: {
 					baseQuery
-						.where(
+						.whereRaw("COALESCE(??, ??) >= ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							">=",
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 							QUALITY_SCORE_THRESHOLD.MIN_NEEDS_IMPROVEMENT,
-						)
-						.andWhere(
+						])
+						.andWhereRaw("COALESCE(??, ??) < ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							"<",
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 							QUALITY_SCORE_THRESHOLD.MAX_NEEDS_IMPROVEMENT,
-						);
+						]);
 					break;
 				}
 				case PromptQualityTier.PROVEN: {
-					baseQuery.where(
+					baseQuery.whereRaw("COALESCE(??, ??) >= ?", [
 						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-						">=",
+						`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 						QUALITY_SCORE_THRESHOLD.PROVEN,
-					);
+					]);
 					break;
 				}
 				case PromptQualityTier.UNRATED: {
@@ -180,16 +178,16 @@ class PromptEmbeddingRepository {
 				}
 				case PromptQualityTier.USABLE: {
 					baseQuery
-						.where(
+						.whereRaw("COALESCE(??, ??) >= ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							">=",
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 							QUALITY_SCORE_THRESHOLD.USABLE,
-						)
-						.andWhere(
+						])
+						.andWhereRaw("COALESCE(??, ??) < ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							"<",
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 							QUALITY_SCORE_THRESHOLD.PROVEN,
-						);
+						]);
 					break;
 				}
 			}
