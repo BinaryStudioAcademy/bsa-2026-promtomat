@@ -1,7 +1,9 @@
+import { NotificationType } from "../enums/enums.js";
+
 const LAST_INDEX_FROM_END = -1;
 const DEFAULT_NOTIFICATION_DURATION_MS = 6000;
 const NOTIFICATION_CLOSING_DURATION_MS = 200;
-const DEFAULT_NOTIFICATION_TYPE = "info" as const;
+const DEFAULT_NOTIFICATION_TYPE = NotificationType.INFO;
 const NOTIFICATION_ID_INCREMENT = 1;
 
 export {

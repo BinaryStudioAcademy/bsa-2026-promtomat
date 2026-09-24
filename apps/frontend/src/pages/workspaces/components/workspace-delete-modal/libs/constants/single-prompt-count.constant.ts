@@ -1,3 +1,0 @@
-const SINGLE_PROMPT_COUNT = 1;
-
-export { SINGLE_PROMPT_COUNT };

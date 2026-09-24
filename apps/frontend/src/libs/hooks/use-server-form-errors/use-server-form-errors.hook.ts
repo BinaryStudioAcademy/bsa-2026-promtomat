@@ -6,7 +6,7 @@ import {
 	type UseFormSetError,
 } from "react-hook-form";
 
-import { isValidationError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { isValidationError } from "~/libs/modules/api/libs/helpers/is-validation-error.helper.js";
 
 type Parameters<T extends FieldValues> = {
 	clearErrors: UseFormClearErrors<T>;

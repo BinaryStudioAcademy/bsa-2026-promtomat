@@ -1,13 +1,12 @@
-import { MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
-import { ErrorCode } from "~/libs/enums/enums.js";
+import { BEARER, MILLISECONDS_IN_SECOND } from "~/libs/constants/constants.js";
+import { AuthErrorMessage, ErrorCode } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type UserDto } from "~/libs/types/types.js";
 import { type UserService } from "~/modules/users/user.service.js";
 
 import { HTTPCode } from "../http/http.js";
 import { type TokenService } from "../token/libs/types/types.js";
-import { BEARER } from "./libs/constants/constants.js";
-import { AuthErrorMesssage, AuthSuccessMessage } from "./libs/enums/enums.js";
+import { AuthSuccessMessage } from "./libs/enums/enums.js";
 import { type AuthPayload } from "./libs/types/types.js";
 
 class AuthGuard {
@@ -29,13 +28,13 @@ class AuthGuard {
 		}
 
 		if (!payload.iat) {
-			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const changedAtMilliseconds = new Date(passwordChangedAt).getTime();
 
 		if (Number.isNaN(changedAtMilliseconds)) {
-			this.throwUnauthorized(AuthErrorMesssage.SESSION_NOT_VERIFIABLE);
+			this.throwUnauthorized(AuthErrorMessage.SESSION_NOT_VERIFIABLE);
 		}
 
 		const changedAtSeconds = Math.floor(
@@ -67,17 +66,17 @@ class AuthGuard {
 		try {
 			payload = await this.tokenService.verify<AuthPayload>(token);
 		} catch {
-			this.throwUnauthorized(AuthErrorMesssage.INVALID_TOKEN);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_TOKEN);
 		}
 
 		if (typeof payload.userId !== "number") {
-			this.throwUnauthorized(AuthErrorMesssage.INVALID_PAYLOAD);
+			this.throwUnauthorized(AuthErrorMessage.INVALID_PAYLOAD);
 		}
 
 		const hasPurpose = Boolean(payload.purpose);
 
 		if (hasPurpose) {
-			this.throwUnauthorized(AuthErrorMesssage.WRONG_PURPOSE);
+			this.throwUnauthorized(AuthErrorMessage.WRONG_PURPOSE);
 		}
 
 		return payload;
@@ -87,7 +86,7 @@ class AuthGuard {
 		const token = this.extractBearerToken(authHeader);
 
 		if (!token) {
-			this.throwUnauthorized(AuthErrorMesssage.MISSING_TOKEN);
+			this.throwUnauthorized(AuthErrorMessage.MISSING_TOKEN);
 		}
 
 		const payload = await this.verifyToken(token);
@@ -95,7 +94,7 @@ class AuthGuard {
 		const userEntity = await this.userService.findEntityById(payload.userId);
 
 		if (!userEntity) {
-			this.throwUnauthorized(AuthErrorMesssage.USER_NOT_FOUND);
+			this.throwUnauthorized(AuthErrorMessage.USER_NOT_FOUND);
 		}
 
 		this.assertTokenPredatesNoPasswordChange(

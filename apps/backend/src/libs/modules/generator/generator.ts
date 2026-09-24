@@ -1,11 +1,11 @@
 import { bedrock } from "~/libs/modules/bedrock/bedrock.js";
 
-import { Generator } from "./generator.module.js";
+import { BedrockGenerator } from "./bedrock-generator.module.js";
 
-const generator = new Generator({
+const generator = new BedrockGenerator({
 	bedrockService: bedrock,
 });
 
 export { generator };
 export { SchemaKey } from "./libs/enums/enums.js";
-export { type GeneratorInterface } from "./libs/types/types.js";
+export { type Generator } from "./libs/types/types.js";
