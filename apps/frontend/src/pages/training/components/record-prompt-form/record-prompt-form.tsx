@@ -4,7 +4,7 @@ import { type Control, useWatch } from "react-hook-form";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
-import { ScoreDescriptions } from "~/libs/components/score-grid/libs/enums/enums.js";
+import { ScoreDescription } from "~/libs/components/score-grid/libs/enums/enums.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
@@ -105,7 +105,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 								</>
 							) : (
 								<span className={styles[getScoreColor(score)]}>
-									{ScoreDescriptions[score]}
+									{ScoreDescription[score]}
 								</span>
 							)}
 						</p>
