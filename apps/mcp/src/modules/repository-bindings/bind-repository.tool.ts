@@ -4,6 +4,7 @@ import { ToolName } from "~/libs/enums/enums.js";
 import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
+import { BIND_REPOSITORY_DESCRIPTION } from "./libs/constants/constants.js";
 import {
 	detectStackTagsFromPackageJson,
 	getRepositoryRemoteUrl,
@@ -12,13 +13,10 @@ import {
 import { bindRepositoryInputSchema } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
 
-const DESCRIPTION =
-	"Bind this checkout's repository to a Promptomat workspace, so future tool calls resolve to it. Call it after resolve-repository reports the checkout as unresolved or ambiguous, passing the workspaceId to bind to. Detects the project's technologies from package.json and records them on the workspace.";
-
 const createBindRepositoryTool = (
 	repositoryBindingApi: RepositoryBindingApi,
 ): Tool => ({
-	description: DESCRIPTION,
+	description: BIND_REPOSITORY_DESCRIPTION,
 	execute: async (arguments_) => {
 		const { workspaceId } = arguments_ as z.infer<
 			z.ZodObject<typeof bindRepositoryInputSchema>
