@@ -295,6 +295,10 @@ class PromptService {
 		};
 	}
 
+	public async findWorkspaceId(id: number): Promise<null | number> {
+		return await this.promptRepository.findWorkspaceId(id);
+	}
+
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
 		const generatedLabel = await this.generateLabel({
 			promptBody: prompt.promptBody,

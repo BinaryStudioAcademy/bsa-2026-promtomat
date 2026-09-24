@@ -434,6 +434,16 @@ class PromptRepository {
 		return await this.findAggregate(baseQuery);
 	}
 
+	public async findWorkspaceId(id: number): Promise<null | number> {
+		const prompt = await this.promptModel
+			.query()
+			.select(PromptColumnName.WORKSPACE_ID)
+			.findById(id)
+			.castTo<undefined | { workspaceId: number }>();
+
+		return prompt?.workspaceId ?? null;
+	}
+
 	public async update(
 		id: number,
 		payload: PromptUpdatePayload,

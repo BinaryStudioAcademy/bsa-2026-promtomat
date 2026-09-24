@@ -140,7 +140,10 @@ class PromptEmbeddingRepository {
 
 		if (score) {
 			baseQuery.where(
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				raw("COALESCE(??, ??)", [
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				]),
 				score,
 			);
 		}
@@ -224,7 +227,7 @@ class PromptEmbeddingRepository {
 				]),
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -232,6 +235,7 @@ class PromptEmbeddingRepository {
 					serializedEmbeddings,
 					SIMILARITY_THRESHOLD,
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 					MAX_EFFICIENCY_SCORE,
 				],
@@ -307,7 +311,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -315,6 +319,7 @@ class PromptEmbeddingRepository {
 					serializedEmbeddings,
 					SIMILARITY_THRESHOLD,
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 					MAX_EFFICIENCY_SCORE,
 				],

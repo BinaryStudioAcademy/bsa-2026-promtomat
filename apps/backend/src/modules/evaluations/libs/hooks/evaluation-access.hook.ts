@@ -3,6 +3,7 @@ import { type onRequestAsyncHookHandler } from "fastify";
 import {
 	AuthError,
 	ComposedPromptError,
+	PromptError,
 } from "~/libs/exceptions/exceptions.js";
 import { type ComposedPromptService } from "~/modules/composed-prompts/composed-prompt.service.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
@@ -29,18 +30,12 @@ const evaluationAccessHook = ({
 		const { composedPromptId, promptId } =
 			request.body as EvaluationCreateRequestDto;
 
-		if (promptId) {
-			await promptService.findById(promptId, request.user.id);
-
-			return;
-		}
-
-		const workspaceId = await composedPromptService.findWorkspaceId(
-			composedPromptId as number,
-		);
+		const workspaceId = promptId
+			? await promptService.findWorkspaceId(promptId)
+			: await composedPromptService.findWorkspaceId(composedPromptId as number);
 
 		if (!workspaceId) {
-			throw ComposedPromptError.notFound();
+			throw promptId ? PromptError.notFound() : ComposedPromptError.notFound();
 		}
 
 		const [ownerWorkspace, contributorWorkspace] = await Promise.all([
@@ -49,7 +44,7 @@ const evaluationAccessHook = ({
 		]);
 
 		if (!ownerWorkspace && !contributorWorkspace) {
-			throw ComposedPromptError.notFound();
+			throw promptId ? PromptError.notFound() : ComposedPromptError.notFound();
 		}
 	};
 };
