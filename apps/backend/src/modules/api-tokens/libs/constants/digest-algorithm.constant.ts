@@ -1,0 +1,3 @@
+const DIGEST_ALGORITHM = "sha256";
+
+export { DIGEST_ALGORITHM };

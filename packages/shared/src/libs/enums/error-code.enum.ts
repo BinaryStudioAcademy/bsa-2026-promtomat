@@ -1,3 +1,4 @@
+import { ApiTokenErrorCode } from "../../modules/api-tokens/api-tokens.js";
 import { AuthErrorCode } from "../../modules/auth/auth.js";
 import { ComposedPromptsErrorCode } from "../../modules/composed-prompts/composed-prompts.js";
 import { LabelsErrorCode } from "../../modules/labels/labels.js";
@@ -21,6 +22,7 @@ const ErrorCode = {
 	...WorkspacesErrorCode,
 	...TokenErrorCode,
 	...PromptsErrorCode,
+	...ApiTokenErrorCode,
 	...RepositoryBindingsErrorCode,
 } as const;
 
