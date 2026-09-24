@@ -44,10 +44,13 @@ const useRecordPromptForm = (): ReturnValue => {
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
 
-	const selectedScore = useWatch({ control, name: "efficiencyScore" });
+	const selectedScore = useWatch({ control, name: "efficiencyScore" }) as
+		number | undefined;
+
 	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
 
-	const score = typeof selectedScore === "number" ? selectedScore : null;
+	const score = selectedScore ?? null;
+
 	const formWorkspaceId =
 		typeof selectedWorkspaceId === "number" ? selectedWorkspaceId : undefined;
 
@@ -55,6 +58,7 @@ const useRecordPromptForm = (): ReturnValue => {
 		formWorkspaceId,
 		workspaces: workspaces?.items,
 	});
+
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
 	const handleWorkspaceSelect = useCallback(
