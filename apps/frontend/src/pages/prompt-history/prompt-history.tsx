@@ -7,12 +7,26 @@ import { Loader } from "~/libs/components/loader/loader.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
+import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces-api.js";
 
 import { PromptListItem } from "./components/prompt-list-item/prompt-list-item.js";
 import styles from "./styles.module.css";
+
+const FRACTION_DIGITS = 1;
+
+const QUALITY_TIER_OPTIONS = [
+	{ label: "All Tiers", value: PromptQualityTier.ALL },
+	{ label: "Proven (8-10)", value: PromptQualityTier.PROVEN },
+	{ label: "Usable (6-7.9)", value: PromptQualityTier.USABLE },
+	{
+		label: "Needs Improvement (1-5.9)",
+		value: PromptQualityTier.NEEDS_IMPROVEMENT,
+	},
+	{ label: "Unrated", value: PromptQualityTier.UNRATED },
+];
 
 const PromptHistory: React.FC = () => {
 	const { control, queryPayload } = usePromptFilters();
@@ -84,7 +98,9 @@ const PromptHistory: React.FC = () => {
 					<div className={styles["metric-card"]}>
 						<span className={styles["metric-label"]}>Average Score</span>
 						<span className={styles["metric-value"]}>
-							{averageScore === null ? "—" : `${String(averageScore)} / 10`}
+							{averageScore === null
+								? "—"
+								: `${String(Number(averageScore.toFixed(FRACTION_DIGITS)))} / 10`}
 						</span>
 					</div>
 				</div>
@@ -96,6 +112,14 @@ const PromptHistory: React.FC = () => {
 						name="search"
 						placeholder="Search logs"
 					/>
+					<div className={styles["workspace-filter"]}>
+						<Select
+							control={control}
+							label="Quality Tier:"
+							name="qualityTier"
+							options={QUALITY_TIER_OPTIONS}
+						/>
+					</div>
 					<div className={styles["workspace-filter"]}>
 						<Select
 							control={control}

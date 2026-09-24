@@ -115,7 +115,7 @@ class PromptRepository {
 
 	private initializeEntity(model: PromptModel): PromptEntity {
 		return PromptEntity.initialize({
-			computedScore: model.computedScore,
+			computedScore: model.computedScore === null ? null : model.computedScore,
 			createdAt: model.createdAt,
 			efficiencyScore: model.efficiencyScore,
 			id: model.id,
@@ -285,9 +285,11 @@ class PromptRepository {
 			return null;
 		}
 
+		const computedScore = row.computedScore === null ? null : row.computedScore;
+
 		return {
 			body: row.promptBody,
-			computedScore: row.computedScore,
+			computedScore,
 			createdAt: row.createdAt,
 			id: row.id,
 			intent: row.taskIntent,

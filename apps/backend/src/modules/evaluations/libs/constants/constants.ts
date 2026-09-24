@@ -1,5 +1,5 @@
 const DAMPING_FACTOR = 5;
 const DECIMAL_PLACES = 2;
-const ZERO_VALUE = 0;
 
-export { DAMPING_FACTOR, DECIMAL_PLACES, ZERO_VALUE };
+export { ZERO_VALUE } from "@promptomat/shared";
+export { DAMPING_FACTOR, DECIMAL_PLACES };

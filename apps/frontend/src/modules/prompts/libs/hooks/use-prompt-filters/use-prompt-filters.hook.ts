@@ -5,7 +5,7 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useDebounce } from "~/libs/hooks/use-debounce/use-debounce.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import {
-	DEFAULT_PROMPT_FILTERS_VALUES,
+	DEFAULT_PROMPT_FILTERS,
 	SEARCH_DELAY_MS,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
@@ -30,7 +30,7 @@ type UsePromptFiltersReturn = {
 
 const usePromptFilters = (): UsePromptFiltersReturn => {
 	const { control, setValue } = useAppForm<PromptFiltersFormValues>({
-		defaultValues: DEFAULT_PROMPT_FILTERS_VALUES,
+		defaultValues: DEFAULT_PROMPT_FILTERS,
 	});
 
 	const formValues = useWatch({ control });

@@ -62,6 +62,21 @@ class PromptModel extends AbstractModel {
 	public static override get tableName(): string {
 		return DatabaseTableName.PROMPTS;
 	}
+
+	public override $parseDatabaseJson(
+		json: Record<string, unknown>,
+	): Record<string, unknown> {
+		const parsed = super.$parseDatabaseJson(json);
+
+		if (
+			parsed["computedScore"] !== null &&
+			parsed["computedScore"] !== undefined
+		) {
+			parsed["computedScore"] = Number(parsed["computedScore"]);
+		}
+
+		return parsed;
+	}
 }
 
 export { PromptModel };

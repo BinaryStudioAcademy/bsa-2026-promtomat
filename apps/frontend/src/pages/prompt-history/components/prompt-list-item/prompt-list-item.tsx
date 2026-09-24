@@ -12,6 +12,7 @@ import {
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
+import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
 import {
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
@@ -85,10 +86,13 @@ const PromptListItem: React.FC<Properties> = ({
 		)();
 	}, [handleSubmit, updateIntent, prompt.id, reset, queryPayload]);
 
+	const rawScore = prompt.computedScore ?? prompt.score;
+	const formattedScore = +rawScore.toFixed(FRACTION_DIGITS);
+
 	return (
 		<Link className={styles["item"]} to={deliveryPath}>
 			<div className={styles["row"]}>
-				<ScoreBadge efficiencyScore={prompt.score} />
+				<ScoreBadge efficiencyScore={formattedScore} />
 				<div className={styles["info"]}>
 					<InlineEdit
 						className={styles["intent"]}
