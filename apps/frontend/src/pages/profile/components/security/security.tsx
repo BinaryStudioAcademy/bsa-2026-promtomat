@@ -32,6 +32,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 		<Section title="SECURITY">
 			<div className={styles["security-row"]}>
 				<Button
+					className={styles["button"]}
 					isDisabled={isLoading || isSuccess}
 					label={
 						isLoading

@@ -10,12 +10,12 @@
 	}
 }
 
-.security-row > button {
+.button {
 	flex: 1 1 100%;
 }
 
 @media (width >=600px) {
-	.security-row > button {
+	.button {
 		flex: 0;
 	}
 }
