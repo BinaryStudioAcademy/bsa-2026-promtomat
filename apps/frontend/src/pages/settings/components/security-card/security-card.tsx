@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 
+import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
-import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
+import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 import { SettingsMessage } from "~/pages/settings/libs/enums/enums.js";
 import styles from "~/pages/settings/styles.module.css";
@@ -32,6 +33,12 @@ const SecurityCard: React.FC<Properties> = ({ email }: Properties) => {
 				onClick={handleResetClick}
 				size={ControlSize.LG}
 				type="button"
+				variant={ButtonVariant.SECONDARY}
+			/>
+			<ButtonLink
+				label={SettingsMessage.MANAGE_API_TOKENS}
+				size={ControlSize.LG}
+				to={AppRoute.API_TOKENS}
 				variant={ButtonVariant.SECONDARY}
 			/>
 			{isSuccess ? (
