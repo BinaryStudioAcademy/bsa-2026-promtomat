@@ -300,7 +300,7 @@ class PromptRepository {
 			.where(PROMPT_ID, "=", id);
 
 		const [row] = rows as Array<{
-			computedScore: null | number;
+			computedScore: null | number | string;
 			createdAt: string;
 			efficiencyScore: number;
 			id: number;
@@ -315,7 +315,8 @@ class PromptRepository {
 			return null;
 		}
 
-		const computedScore = row.computedScore === null ? null : row.computedScore;
+		const computedScore =
+			row.computedScore === null ? null : Number(row.computedScore);
 
 		return {
 			body: row.promptBody,
@@ -334,7 +335,44 @@ class PromptRepository {
 		id: number,
 		userId: number,
 	): Promise<null | PromptEntity> {
-		const prompt = await this.promptModel.query().findOne({ id, userId });
+		const prompt = await this.promptModel
+			.query()
+			.findOne({ id, userId })
+			.where((builder) => {
+				builder
+					.whereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							)
+							.from(DatabaseTableName.WORKSPACES)
+							.whereColumn(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+							)
+							.where(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+								userId,
+							),
+					)
+					.orWhereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+							)
+							.from(DatabaseTableName.CONTRIBUTORS)
+							.whereColumn(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+							)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+								userId,
+							),
+					);
+			});
 
 		return prompt ? this.initializeEntity(prompt) : null;
 	}
@@ -426,10 +464,42 @@ class PromptRepository {
 	): Promise<PromptAggregateResult> {
 		const baseQuery = this.promptModel
 			.query()
-			.where(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-				userId,
-			);
+			.where(`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`, userId)
+			.where((builder) => {
+				builder
+					.whereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+							)
+							.from(DatabaseTableName.WORKSPACES)
+							.whereColumn(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+							)
+							.where(
+								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
+								userId,
+							),
+					)
+					.orWhereExists(
+						this.promptModel
+							.query()
+							.select(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
+							)
+							.from(DatabaseTableName.CONTRIBUTORS)
+							.whereColumn(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
+								`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
+							)
+							.where(
+								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
+								userId,
+							),
+					);
+			});
 
 		return await this.findAggregate(baseQuery);
 	}
