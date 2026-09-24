@@ -1,4 +1,4 @@
-import { FALLBACK_TIME_ZONE } from "../constants/constants.js";
+import { DEFAULT_TIME_ZONE } from "../constants/constants.js";
 import { formatDateInTimeZone } from "./format-date-in-time-zone.helper.js";
 
 const resolveTimeZone = (timeZone: string): string => {
@@ -7,7 +7,7 @@ const resolveTimeZone = (timeZone: string): string => {
 
 		return timeZone;
 	} catch {
-		return FALLBACK_TIME_ZONE;
+		return DEFAULT_TIME_ZONE;
 	}
 };
 

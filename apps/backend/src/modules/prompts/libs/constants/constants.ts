@@ -1,7 +1,6 @@
 export { BACKFILL_CRON_EXPRESSION } from "./backfill-cron-expression.constant.js";
 export { BACKFILL_TIMEZONE } from "./backfill-cron-timezone.constant.js";
 export { BACKFILL_LABELS_LIMIT } from "./backfill-labels-limit.constant.js";
-export { FALLBACK_TIME_ZONE } from "./fallback-time-zone.constant.js";
 export { FIRST_PAGE } from "./first-page.constant.js";
 export { LABEL_ALIAS } from "./label-alias.constant.js";
 export { LABEL_GENERATION_MAX_TOKENS } from "./label-generation-max-tokens.constant.js";
@@ -16,3 +15,4 @@ export { STREAK_DATE_FORMAT } from "./streak-date-format.constant.js";
 export { STREAK_DATE_LOCALE } from "./streak-date-locale.constant.js";
 export { UNEXPECTED_ERROR } from "./unexpected-error.constant.js";
 export { WORKSPACE_RELATION } from "./workspace-relation.constant.js";
+export { DEFAULT_TIME_ZONE } from "@promptomat/shared";

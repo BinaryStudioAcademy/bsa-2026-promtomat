@@ -1,3 +1,0 @@
-const FALLBACK_TIME_ZONE = "UTC";
-
-export { FALLBACK_TIME_ZONE };
