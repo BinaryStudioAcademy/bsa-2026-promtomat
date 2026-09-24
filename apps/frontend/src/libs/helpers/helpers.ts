@@ -4,4 +4,8 @@ export { checkIsDebugEnvironment } from "./check-is-debug-environment/check-is-d
 export { getValidClasses } from "./get-valid-classes/get-valid-classes.helper.js";
 export { preventLineBreak } from "./prevent-line-break/prevent-line-break.helper.js";
 export { sortValuesByDictionary } from "./sort-values-by-dictionary/sort-values-by-dictionary.helper.js";
-export { configureString, getRelativeTimeLabel } from "@promptomat/shared";
+export {
+	configureString,
+	formatDate,
+	getRelativeTimeLabel,
+} from "@promptomat/shared";

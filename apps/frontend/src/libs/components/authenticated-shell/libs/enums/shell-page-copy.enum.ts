@@ -3,6 +3,10 @@ const ShellPageCopy = {
 		subtitle: "See which tiers, keywords, and trends are moving the index",
 		title: "Data intelligence",
 	},
+	API_TOKENS: {
+		subtitle: "Issue and revoke tokens for the MCP server",
+		title: "API tokens",
+	},
 	GENERATE: {
 		subtitle: "Compose a new prompt from what already worked",
 		title: "Generate",
