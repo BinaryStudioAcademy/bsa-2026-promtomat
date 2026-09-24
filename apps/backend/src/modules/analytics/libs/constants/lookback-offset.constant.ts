@@ -1,0 +1,3 @@
+const LOOKBACK_OFFSET = 1;
+
+export { LOOKBACK_OFFSET };

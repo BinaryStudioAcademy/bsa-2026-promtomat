@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { sortValuesByDictionary } from "~/libs/helpers/helpers.js";
+
 import {
 	EMPTY_SELECTION_LENGTH,
 	NO_ACTIVE_SUGGESTION,
@@ -12,12 +14,15 @@ import {
 const useSelectedValues = ({
 	onChange,
 	selectedValues,
+	valuesDictionary,
 }: UseSelectedValuesParameters): UseSelectedValuesResult => {
 	const addValue = useCallback(
 		(value: string): void => {
-			onChange([...selectedValues, value]);
+			onChange(
+				sortValuesByDictionary([...selectedValues, value], valuesDictionary),
+			);
 		},
-		[onChange, selectedValues],
+		[onChange, selectedValues, valuesDictionary],
 	);
 
 	const removeValue = useCallback(

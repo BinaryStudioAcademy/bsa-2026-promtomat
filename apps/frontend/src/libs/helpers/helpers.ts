@@ -2,6 +2,7 @@ export { capitalizeFirstLetter } from "./capitalize-first-letter/capitalize-firs
 export { checkIsAuthPath } from "./check-is-auth-path/check-is-auth-path.helper.js";
 export { checkIsDebugEnvironment } from "./check-is-debug-environment/check-is-debug-environment.helper.js";
 export { getValidClasses } from "./get-valid-classes/get-valid-classes.helper.js";
+export { sortValuesByDictionary } from "./sort-values-by-dictionary/sort-values-by-dictionary.helper.js";
 export {
 	configureString,
 	formatDate,

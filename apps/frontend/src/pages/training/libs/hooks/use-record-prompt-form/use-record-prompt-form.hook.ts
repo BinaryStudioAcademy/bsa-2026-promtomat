@@ -4,6 +4,7 @@ import { type Control, useWatch } from "react-hook-form";
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
+import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
 import {
@@ -55,6 +56,18 @@ const useRecordPromptForm = (): ReturnValue => {
 		workspaces: workspaces?.items,
 	});
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
+
+	const handleWorkspaceSelect = useCallback(
+		(requestedWorkspaceId: number): void => {
+			setValue("workspaceId", requestedWorkspaceId);
+		},
+		[setValue],
+	);
+
+	useWorkspaceSearchParameter({
+		selectWorkspace: handleWorkspaceSelect,
+		workspaces: workspaces?.items,
+	});
 
 	const handleScoreSelect = useCallback(
 		(nextScore: number) => {

@@ -2,15 +2,15 @@ import { z } from "zod";
 
 import {
 	MAX_TAGS_COUNT,
-	TagsErrorMessages,
-	TechStackTagSchema,
+	TagsErrorMessage,
+	techStackTag,
 } from "../modules/tech-stack-tags/tech-stack-tags.js";
 
 const stackTagsField = z
-	.array(TechStackTagSchema)
+	.array(techStackTag)
 	.refine((tags) => new Set(tags).size === tags.length, {
-		message: TagsErrorMessages.DUPLICATE_TAGS_ERROR_MESSAGE,
+		message: TagsErrorMessage.DUPLICATE_TAGS,
 	})
-	.max(MAX_TAGS_COUNT, { message: TagsErrorMessages.MAX_TAGS_ERROR_MESSAGE });
+	.max(MAX_TAGS_COUNT, { message: TagsErrorMessage.MAX_TAGS });
 
 export { stackTagsField };

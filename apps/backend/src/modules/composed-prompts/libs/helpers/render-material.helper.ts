@@ -1,6 +1,7 @@
 import {
 	FIRST_SOURCE_NUMBER,
 	LANGUAGE_REMINDER,
+	MAX_EFFICIENCY_SCORE,
 } from "../constants/constants.js";
 import { type PromptCandidateDto } from "../types/types.js";
 import { truncateSourceBody } from "./truncate-source-body.helper.js";
@@ -19,7 +20,7 @@ const renderSource = (
 	[
 		`Source ${(index + FIRST_SOURCE_NUMBER).toString()}`,
 		`Task intent: ${candidate.taskIntent}`,
-		`Efficiency score: ${candidate.efficiencyScore.toString()}/10`,
+		`Efficiency score: ${candidate.efficiencyScore.toString()}/${MAX_EFFICIENCY_SCORE.toString()}`,
 		"Prompt:",
 		truncateSourceBody(candidate.promptBody, sourceBodyMaxLength),
 	].join("\n");

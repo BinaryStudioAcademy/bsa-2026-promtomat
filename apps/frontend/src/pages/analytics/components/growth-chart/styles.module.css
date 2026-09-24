@@ -1,0 +1,59 @@
+.scroll {
+	flex: 1;
+	width: 100%;
+	min-width: 0;
+	min-height: 200px;
+	overflow-x: auto;
+}
+
+.chart {
+	display: block;
+	width: 100%;
+	min-width: 520px;
+	height: 100%;
+	overflow: visible;
+}
+
+.grid {
+	stroke: var(--border-subtle);
+	stroke-width: 1;
+}
+
+.axis-label-y,
+.axis-label-x {
+	font-family: var(--font-family-mono);
+	font-size: 11px;
+	fill: var(--text-faint);
+}
+
+.axis-label-y {
+	dominant-baseline: middle;
+	text-anchor: end;
+}
+
+.axis-label-x {
+	text-anchor: middle;
+}
+
+.line {
+	fill: none;
+	stroke: var(--text-accent);
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.dot {
+	fill: var(--text-accent);
+}
+
+.stop-start {
+	stop-color: var(--text-accent);
+	stop-opacity: 0.35;
+}
+
+.stop-end {
+	stop-color: var(--text-accent);
+	stop-opacity: 0;
+}

@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
+import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
 import {
@@ -21,7 +22,11 @@ import {
 
 const promptApi = baseApi
 	.enhanceEndpoints({
-		addTagTypes: [PromptsApiTag.PROMPT, WorkspacesApiTag.WORKSPACE],
+		addTagTypes: [
+			AnalyticsApiTag.ANALYTIC,
+			PromptsApiTag.PROMPT,
+			WorkspacesApiTag.WORKSPACE,
+		],
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
@@ -67,7 +72,11 @@ const promptApi = baseApi
 				}),
 			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
-				invalidatesTags: [PromptsApiTag.PROMPT, WorkspacesApiTag.WORKSPACE],
+				invalidatesTags: [
+					AnalyticsApiTag.ANALYTIC,
+					PromptsApiTag.PROMPT,
+					WorkspacesApiTag.WORKSPACE,
+				],
 				query: (payload) => ({
 					body: payload,
 					method: HTTPMethod.POST,

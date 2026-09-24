@@ -1,7 +1,6 @@
 import { ButtonVariant } from "~/libs/enums/button-variant.enum.js";
+import { ScoreThreshold } from "~/libs/enums/enums.js";
 import { ValueOf } from "~/libs/types/types.js";
-
-import { ScoreThreshold } from "../enums/enums.js";
 
 const getScoreColor = (score: number): ValueOf<typeof ButtonVariant> => {
 	if (score <= ScoreThreshold.DANGER_MAX) {

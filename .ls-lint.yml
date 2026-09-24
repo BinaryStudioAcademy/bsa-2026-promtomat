@@ -19,4 +19,6 @@ ignore:
   - apps/backend/build
   - apps/backend/node_modules
   - apps/backend/.model-cache
+  - apps/mcp/build
+  - apps/mcp/node_modules
   - infra/.terraform
