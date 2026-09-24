@@ -18,12 +18,14 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 		useForgotPasswordMutation();
 
 	const handleResetClick = useCallback((): void => {
-		void forgotPassword({ email }).then(() => {
-			showNotification({
-				message: SettingsMessage.RESET_PASSWORD_SENT,
-				type: "success",
+		void forgotPassword({ email })
+			.unwrap()
+			.then(() => {
+				showNotification({
+					message: SettingsMessage.RESET_PASSWORD_SENT,
+					type: "success",
+				});
 			});
-		});
 	}, [email, forgotPassword]);
 
 	return (

@@ -1,5 +1,6 @@
 import React from "react";
 
+import { getNicknameInitials } from "~/libs/components/header/libs/helpers/get-nickname-initials.helper.js";
 import { type UserDto } from "~/modules/users/users.js";
 
 import { formatDate } from "../../libs/helpers/helpers.js";
@@ -14,7 +15,9 @@ const UserInfo: React.FC<Properties> = ({ user }: Properties) => {
 	const userDetails = `Member since ${formattedCreatedAt} · ${String(user.totalPrompts)} prompts contributed`;
 	return (
 		<div className={styles["info"]}>
-			<div className={styles["avatar-wrapper"]}>So</div>
+			<div className={styles["avatar-wrapper"]}>
+				{getNicknameInitials(user.nickname)}
+			</div>
 			<div>
 				<p className={styles["nickname"]}>{user.nickname}</p>
 				<span className={styles["details"]}>{userDetails}</span>
