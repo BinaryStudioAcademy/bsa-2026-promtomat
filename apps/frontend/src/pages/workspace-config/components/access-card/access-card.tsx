@@ -24,8 +24,8 @@ import { WorkspaceLeaveModal } from "../workspace-leave-modal/workspace-leave-mo
 import { AddContributorForm } from "./components/add-contributor-form/add-contributor-form.js";
 import { ContributorList } from "./components/contributor-list/contributor-list.js";
 import {
-	INITIAL_STATUS_ID,
-	STATUS_ID_STEP,
+	INITIAL_STATUS_MESSAGE_KEY,
+	STATUS_MESSAGE_KEY_STEP,
 } from "./libs/constants/constants.js";
 import styles from "./styles.module.css";
 
@@ -42,7 +42,9 @@ const AccessCard: React.FC<Properties> = ({
 }: Properties) => {
 	const navigate = useNavigate();
 	const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
-	const [statusId, setStatusId] = useState(INITIAL_STATUS_ID);
+	const [statusMessageKey, setStatusMessageKey] = useState(
+		INITIAL_STATUS_MESSAGE_KEY,
+	);
 	const [statusMessage, setStatusMessage] = useState("");
 
 	const {
@@ -54,14 +56,16 @@ const AccessCard: React.FC<Properties> = ({
 	const [removeContributor, { isLoading: isRemoving }] =
 		useDeleteWorkspaceContributorMutation();
 
-	const { contributorCount, contributors, subtitle } = getAccessCardValues({
-		contributorsResponse,
-		isError,
-		isOwner,
-	});
+	const { contributorCountLabel, contributors, subtitle } = getAccessCardValues(
+		{
+			contributorsResponse,
+			isError,
+			isOwner,
+		},
+	);
 
 	const announce = useCallback((message: string): void => {
-		setStatusId((previous) => previous + STATUS_ID_STEP);
+		setStatusMessageKey((previous) => previous + STATUS_MESSAGE_KEY_STEP);
 		setStatusMessage(message);
 	}, []);
 
@@ -124,7 +128,7 @@ const AccessCard: React.FC<Properties> = ({
 				)}
 			</div>
 			<p className="visually-hidden" role="status">
-				<span key={statusId}>{statusMessage}</span>
+				<span key={statusMessageKey}>{statusMessage}</span>
 			</p>
 			{isOwner && (
 				<>
@@ -143,7 +147,7 @@ const AccessCard: React.FC<Properties> = ({
 			<div className={styles["section"]}>
 				<div className={styles["section-header"]}>
 					<h4 className={styles["label"]}>Current contributors</h4>
-					<span className={styles["count"]}>{contributorCount}</span>
+					<span className={styles["count"]}>{contributorCountLabel}</span>
 				</div>
 				<ContributorList
 					contributors={contributors}

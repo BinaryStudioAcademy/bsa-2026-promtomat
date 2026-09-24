@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { Confirmation } from "~/libs/components/confirmation/confirmation.js";
 import { ModalTone } from "~/libs/components/modal/libs/enums/enums.js";
 import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import { useDeleteWorkspaceContributorMutation } from "~/modules/workspaces/workspaces.js";
 
@@ -25,7 +26,10 @@ const WorkspaceLeaveModal: React.FC<Properties> = ({
 	const [leaveWorkspace, { isLoading }] =
 		useDeleteWorkspaceContributorMutation();
 
-	const question = `Are you sure you want to leave “${workspace.name}”?`;
+	const question = configureString(
+		WorkspaceLeaveMessage.CONFIRMATION_QUESTION,
+		{ workspaceName: workspace.name },
+	);
 	const confirmLabel = isLoading
 		? WorkspaceLeaveMessage.LEAVING
 		: WorkspaceLeaveMessage.LEAVE;

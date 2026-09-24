@@ -3,7 +3,7 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-varian
 import { Loader } from "~/libs/components/loader/loader.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/get-valid-classes.helper.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type WorkspaceUserSummaryDto } from "~/modules/workspaces/libs/types/types.js";
 
 import { ContributorItem } from "../contributor-item/contributor-item.js";

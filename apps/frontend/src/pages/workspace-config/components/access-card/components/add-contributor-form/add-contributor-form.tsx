@@ -69,7 +69,6 @@ const AddContributorForm: React.FC<Properties> = ({
 					isLabelHidden
 					label="Email or nickname"
 					name="emailOrNickname"
-
 					placeholder={AddContributorFormMessage.EMAIL_OR_NICKNAME_PLACEHOLDER}
 				/>
 				<Button

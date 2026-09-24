@@ -6,7 +6,7 @@ import {
 import { SOLO_MEMBER_COUNT } from "../../constants/constants.js";
 
 type AccessCardValues = {
-	contributorCount: string;
+	contributorCountLabel: string;
 	contributors: WorkspaceUserSummaryDto[];
 	subtitle: string;
 };
@@ -35,12 +35,12 @@ const getAccessCardValues = ({
 		members && ownerLabel
 			? `Owned by ${ownerLabel} · ${String(members.length)} ${memberLabel}`
 			: fallbackSubtitle;
-	const contributorCount =
+	const contributorCountLabel =
 		contributorsResponse && !isError
 			? String(contributorsResponse.contributors.length)
 			: "–";
 
-	return { contributorCount, contributors, subtitle };
+	return { contributorCountLabel, contributors, subtitle };
 };
 
 export { getAccessCardValues };

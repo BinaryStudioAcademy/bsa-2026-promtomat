@@ -7,7 +7,7 @@ import { type WorkspaceUserSummaryDto } from "~/modules/workspaces/libs/types/ty
 import styles from "./styles.module.css";
 
 type Properties = {
-	isDisabled?: boolean | undefined;
+	isDisabled?: boolean;
 	isOwner: boolean;
 	onRemove: (userId: number) => void;
 	user: WorkspaceUserSummaryDto;
