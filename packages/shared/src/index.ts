@@ -34,6 +34,7 @@ export {
 export {
 	configureString,
 	countPercentage,
+	formatDate,
 	getRelativeTimeLabel,
 	roundScore,
 } from "./libs/helpers/helpers.js";
