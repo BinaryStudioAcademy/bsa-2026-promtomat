@@ -1,1 +1,4 @@
-export { RepositoryBindingsApiPath } from "@promptomat/shared";
+export {
+	RepositoryBindingResolutionStatus,
+	RepositoryBindingsApiPath,
+} from "@promptomat/shared";

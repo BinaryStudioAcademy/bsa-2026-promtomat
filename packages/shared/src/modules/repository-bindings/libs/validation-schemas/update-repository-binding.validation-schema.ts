@@ -5,7 +5,7 @@ import {
 	RepositoryBindingValidationRule,
 } from "../enums/enums.js";
 
-const repositoryBindingUpdate = z.strictObject({
+const updateRepositoryBinding = z.strictObject({
 	remoteUrl: z
 		.string()
 		.trim()
@@ -15,4 +15,4 @@ const repositoryBindingUpdate = z.strictObject({
 		),
 });
 
-export { repositoryBindingUpdate };
+export { updateRepositoryBinding };

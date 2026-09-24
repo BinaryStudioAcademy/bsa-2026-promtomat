@@ -3,6 +3,7 @@ import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import { RESOLVE_REPOSITORY_DESCRIPTION } from "./libs/constants/constants.js";
+import { RepositoryBindingResolutionStatus } from "./libs/enums/enums.js";
 import { getRepositoryRemoteUrl } from "./libs/helpers/helpers.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
 
@@ -21,13 +22,13 @@ const createResolveRepositoryTool = (
 
 		const resolution = await repositoryBindingApi.resolve(remoteUrl);
 
-		if (resolution.status === "resolved") {
+		if (resolution.status === RepositoryBindingResolutionStatus.RESOLVED) {
 			return createMCPTextResult(
 				`Resolved to workspace id ${String(resolution.workspaceId)}.`,
 			);
 		}
 
-		if (resolution.status === "ambiguous") {
+		if (resolution.status === RepositoryBindingResolutionStatus.AMBIGUOUS) {
 			const workspaceList = resolution.workspaces
 				.map((workspace) => `${String(workspace.id)}: ${workspace.name}`)
 				.join(", ");

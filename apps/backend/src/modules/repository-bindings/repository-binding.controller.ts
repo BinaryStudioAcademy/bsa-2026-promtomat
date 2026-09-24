@@ -20,11 +20,11 @@ import {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 import {
+	createRepositoryBinding,
 	listRepositoryBindingsQuery,
-	repositoryBindingCreation,
 	repositoryBindingRouteParameters,
-	repositoryBindingUpdate,
 	resolveRepositoryBindingQuery,
+	updateRepositoryBinding,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingService } from "./repository-binding.service.js";
 
@@ -104,7 +104,7 @@ class RepositoryBindingController extends BaseController {
 			path: RepositoryBindingsApiPath.ROOT,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
-				body: repositoryBindingCreation,
+				body: createRepositoryBinding,
 			},
 		});
 
@@ -170,7 +170,7 @@ class RepositoryBindingController extends BaseController {
 				workspaceService,
 			),
 			validation: {
-				body: repositoryBindingUpdate,
+				body: updateRepositoryBinding,
 				params: repositoryBindingRouteParameters,
 			},
 		});

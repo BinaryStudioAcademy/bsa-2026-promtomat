@@ -1,1 +1,4 @@
-export { type Resolution } from "./resolution.type.js";
+export {
+	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingResolution,
+} from "@promptomat/shared";

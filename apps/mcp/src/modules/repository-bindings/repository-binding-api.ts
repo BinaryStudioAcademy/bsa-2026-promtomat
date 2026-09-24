@@ -6,14 +6,11 @@ import {
 } from "~/libs/modules/http/http.js";
 
 import { RepositoryBindingsApiPath } from "./libs/enums/enums.js";
-import { type Resolution } from "./libs/types/types.js";
+import {
+	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingResolution,
+} from "./libs/types/types.js";
 import { resolution } from "./libs/validation-schemas/validation-schemas.js";
-
-type CreatePayload = {
-	remoteUrl: string;
-	stackTags: string[];
-	workspaceId: number;
-};
 
 class RepositoryBindingApi {
 	private http: HTTP;
@@ -22,7 +19,9 @@ class RepositoryBindingApi {
 		this.http = http;
 	}
 
-	public async create(payload: CreatePayload): Promise<void> {
+	public async create(
+		payload: CreateRepositoryBindingRequestDto,
+	): Promise<void> {
 		await this.http.load(APIPath.REPOSITORY_BINDINGS, {
 			headers: new Headers(),
 			method: HTTPMethod.POST,
@@ -30,7 +29,7 @@ class RepositoryBindingApi {
 		});
 	}
 
-	public async resolve(remoteUrl: string): Promise<Resolution> {
+	public async resolve(remoteUrl: string): Promise<RepositoryBindingResolution> {
 		const query = new URLSearchParams({ remoteUrl }).toString();
 		const response = await this.http.load(
 			`${APIPath.REPOSITORY_BINDINGS}${RepositoryBindingsApiPath.RESOLVE}?${query}`,

@@ -23,9 +23,9 @@ export {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 export {
+	createRepositoryBinding,
 	listRepositoryBindingsQuery,
-	repositoryBindingCreation,
 	repositoryBindingRouteParameters,
-	repositoryBindingUpdate,
 	resolveRepositoryBindingQuery,
+	updateRepositoryBinding,
 } from "./libs/validation-schemas/validation-schemas.js";

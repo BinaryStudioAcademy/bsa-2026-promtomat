@@ -1,7 +1,7 @@
 export {
+	createRepositoryBinding,
 	listRepositoryBindingsQuery,
-	repositoryBindingCreation,
 	repositoryBindingRouteParameters,
-	repositoryBindingUpdate,
 	resolveRepositoryBindingQuery,
+	updateRepositoryBinding,
 } from "@promptomat/shared";
