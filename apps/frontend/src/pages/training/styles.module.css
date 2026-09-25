@@ -1,57 +1,44 @@
-.container {
-	display: flex;
-	justify-content: center;
+.page {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--space-20);
+	align-items: start;
 	width: 100%;
-	padding: 48px 16px;
+	max-width: 1192px;
+	padding: var(--space-24) var(--space-16) var(--space-64);
+	margin-inline: auto;
 }
 
-.card {
+.panel {
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
-	width: 100%;
-	max-width: 800px;
-	padding: 32px;
+	gap: var(--space-24);
+	min-width: 0;
+	padding: var(--space-18);
 	background-color: var(--surface-card);
 	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: var(--radius-lg);
+	border-radius: var(--radius-xl);
 }
 
-.heading {
-	margin: 0;
-	font-size: var(--font-size-title-2);
-	color: var(--text-strong);
-}
-
-.sub-heading {
-	margin: 0;
-	font-size: var(--font-size-body-sm);
-	color: var(--text-muted);
-}
-
-.form {
+.aside {
 	display: flex;
 	flex-direction: column;
-	gap: 36px;
+	gap: var(--space-14);
+	min-width: 0;
 }
 
-.input-wrapper {
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
+@media (width >= 768px) {
+	.page {
+		padding: var(--space-32) var(--space-24) var(--space-80);
+	}
+
+	.panel {
+		padding: var(--space-28);
+	}
 }
 
-.footer {
-	display: flex;
-	gap: 5px;
-	align-self: center;
-	margin: 0;
-	font-size: var(--font-size-body-sm);
-	color: var(--text-muted);
-}
-
-.password-field {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
+@media (width >= 1024px) {
+	.page {
+		grid-template-columns: minmax(0, 804fr) minmax(0, 320fr);
+	}
 }

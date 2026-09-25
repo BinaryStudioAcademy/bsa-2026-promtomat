@@ -65,6 +65,19 @@
 	height: var(--size-control-h-lg);
 }
 
+.adorned {
+	padding-left: calc(
+		var(--space-12) + var(--size-control-h-md) + var(--space-8)
+	);
+}
+
+.adornment {
+	position: absolute;
+	left: var(--space-12);
+	display: flex;
+	pointer-events: none;
+}
+
 .error {
 	border-color: var(--surface-danger);
 }

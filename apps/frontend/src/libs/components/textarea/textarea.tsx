@@ -15,9 +15,11 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+		className?: string | undefined;
 		control: Control<T, null>;
 		descriptionId?: string;
 		isDisabled?: boolean;
+		isLabelHidden?: boolean;
 		label: string;
 		maxHeight?: number;
 		name: FieldPath<T>;
@@ -26,9 +28,11 @@ type Properties<T extends FieldValues> =
 	};
 
 const Textarea = <T extends FieldValues>({
+	className,
 	control,
 	descriptionId,
 	isDisabled = false,
+	isLabelHidden = false,
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
@@ -83,7 +87,13 @@ const Textarea = <T extends FieldValues>({
 
 	return (
 		<div className={styles["field"]}>
-			<label className={styles["label"]} htmlFor={textareaId}>
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isLabelHidden && "visually-hidden",
+				)}
+				htmlFor={textareaId}
+			>
 				{label}
 			</label>
 			<div className={styles["control"]}>
@@ -96,6 +106,7 @@ const Textarea = <T extends FieldValues>({
 						styles["textarea"],
 						styles[size],
 						hasError && styles["error"],
+						className,
 					)}
 					id={textareaId}
 					onChange={field.onChange}
