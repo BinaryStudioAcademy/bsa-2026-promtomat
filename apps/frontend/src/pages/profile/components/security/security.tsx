@@ -46,6 +46,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 					variant={ButtonVariant.SECONDARY}
 				/>
 				<ButtonLink
+					className={styles["button"]}
 					label={SettingsMessage.MANAGE_API_TOKENS}
 					size={ControlSize.LG}
 					to={AppRoute.API_TOKENS}
