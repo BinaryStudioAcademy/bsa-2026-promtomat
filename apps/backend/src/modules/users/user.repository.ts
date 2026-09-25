@@ -4,13 +4,20 @@ import {
 	UniqueViolationError,
 } from "objection";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
-import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
+import {
+	NO_UPDATED_ROWS,
+	STREAK_ON_PROMPT_LOG_QUERY,
+	STREAK_READ_QUERY,
+	STREAK_RECOMPUTE_QUERY,
+} from "./libs/constants/constants.js";
 import {
 	type ResetPasswordPayload,
+	type UserStreak,
 	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
 
@@ -69,6 +76,23 @@ class UserRepository {
 		return user ? UserEntity.initialize(user) : null;
 	}
 
+	public async findStreakByUserId(
+		userId: number,
+		timeZone: string,
+	): Promise<null | UserStreak> {
+		const result = await this.userModel
+			.knex()
+			.raw<{ rows: UserStreak[] }>(STREAK_READ_QUERY, [
+				timeZone,
+				timeZone,
+				userId,
+			]);
+
+		const [row] = result.rows;
+
+		return row ?? null;
+	}
+
 	public async update(
 		id: number,
 		payload: UserUpdateRequestDto,
@@ -114,6 +138,30 @@ class UserRepository {
 			});
 
 		return updatedRows !== NO_UPDATED_ROWS;
+	}
+	public async updateStreakForTimeZone(
+		userId: number,
+		timeZone: string,
+	): Promise<number> {
+		const result = await this.userModel
+			.knex()
+			.raw<{ rows: { currentStreak: number }[] }>(STREAK_RECOMPUTE_QUERY, {
+				timeZone,
+				userId,
+			});
+
+		const [row] = result.rows;
+
+		return row?.currentStreak ?? ZERO_VALUE;
+	}
+
+	public async updateStreakOnPromptLog(
+		userId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		const queryRunner = trx ?? this.userModel.knex();
+
+		await queryRunner.raw(STREAK_ON_PROMPT_LOG_QUERY, [userId]);
 	}
 }
 
