@@ -18,7 +18,8 @@ const StatItem: React.FC<Properties> = ({
 	value,
 	variant = "default",
 }: Properties) => {
-	const isScore = variant === "score" && typeof value === "number";
+	const isScore =
+		variant === StatItemVariant.SCORE && typeof value === "number";
 	return (
 		<div className={styles["stat-tile"]}>
 			{isScore ? (
