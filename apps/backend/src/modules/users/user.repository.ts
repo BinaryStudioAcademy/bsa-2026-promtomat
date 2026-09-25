@@ -76,17 +76,10 @@ class UserRepository {
 		return user ? UserEntity.initialize(user) : null;
 	}
 
-	public async findStreakByUserId(
-		userId: number,
-		timeZone: string,
-	): Promise<null | UserStreak> {
+	public async findStreakByUserId(userId: number): Promise<null | UserStreak> {
 		const result = await this.userModel
 			.knex()
-			.raw<{ rows: UserStreak[] }>(STREAK_READ_QUERY, [
-				timeZone,
-				timeZone,
-				userId,
-			]);
+			.raw<{ rows: UserStreak[] }>(STREAK_READ_QUERY, [userId]);
 
 		const [row] = result.rows;
 

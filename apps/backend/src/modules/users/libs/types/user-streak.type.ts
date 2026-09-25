@@ -1,6 +1,6 @@
 type UserStreak = {
 	currentStreak: number;
-	hasDifferentDay: boolean;
+	timeZone: string;
 };
 
 export { type UserStreak };
