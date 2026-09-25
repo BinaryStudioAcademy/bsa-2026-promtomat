@@ -18,6 +18,7 @@ import {
 import {
 	PaginationValue,
 	PromptColumnName,
+	PromptProgress,
 } from "~/modules/prompts/libs/enums/enums.js";
 import { PromptEntity } from "~/modules/prompts/prompt.entity.js";
 import { type PromptModel } from "~/modules/prompts/prompt.model.js";
@@ -154,6 +155,17 @@ class PromptRepository {
 				raw("count(*) as ??", [SQLAlias.PROMPT_COUNT]),
 			)
 			.where(PromptColumnName.USER_ID, userId)
+			.where(
+				raw(
+					"(?? AT TIME ZONE ?)::date > (now() AT TIME ZONE ?)::date - (?)::int",
+					[
+						PromptColumnName.CREATED_AT,
+						timeZone,
+						timeZone,
+						PromptProgress.ACTIVITY_WINDOW,
+					],
+				),
+			)
 			.groupBy(SQLAlias.DATE)
 			.orderBy(SQLAlias.DATE, SortOrder.DESC)
 			.castTo<{ date: string; promptCount: string }[]>()

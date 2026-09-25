@@ -1,4 +1,4 @@
-import { ROUND_FACTOR } from "~/libs/constants/constants.js";
+import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
 import {
 	PromptDeliveryError,
 	PromptError,
@@ -8,13 +8,13 @@ import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+import { type UserRepository } from "~/modules/users/user.repository.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
 import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import {
 	buildActivityWindow,
-	countCurrentStreak,
 	createGenerateLabelOptions,
 	formatDateInTimeZone,
 	resolveTimeZone,
@@ -43,6 +43,7 @@ type Constructor = {
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
+	userRepository: UserRepository;
 	workspaceService: WorkspaceService;
 };
 
@@ -56,6 +57,8 @@ class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
 	private promptRepository: PromptRepository;
 
+	private userRepository: UserRepository;
+
 	private workspaceService: WorkspaceService;
 
 	public constructor({
@@ -64,6 +67,7 @@ class PromptService {
 		labelService,
 		promptEmbeddingService,
 		promptRepository,
+		userRepository,
 		workspaceService,
 	}: Constructor) {
 		this.promptRepository = promptRepository;
@@ -71,6 +75,7 @@ class PromptService {
 		this.generator = generator;
 		this.database = database;
 		this.promptEmbeddingService = promptEmbeddingService;
+		this.userRepository = userRepository;
 		this.workspaceService = workspaceService;
 	}
 
@@ -130,6 +135,8 @@ class PromptService {
 			);
 
 			const createdPrompt = entity.toObject();
+
+			await this.userRepository.updateStreakOnPromptLog(userId, trx);
 
 			return {
 				efficiencyScore: createdPrompt.efficiencyScore,
@@ -282,6 +289,18 @@ class PromptService {
 	): Promise<PromptStreakResponseDto> {
 		const resolvedTimeZone = resolveTimeZone(timeZone);
 
+		const storedStreak = await this.userRepository.findStreakByUserId(
+			userId,
+			resolvedTimeZone,
+		);
+
+		const currentStreak = storedStreak?.hasDifferentDay
+			? await this.userRepository.updateStreakForTimeZone(
+					userId,
+					resolvedTimeZone,
+				)
+			: (storedStreak?.currentStreak ?? ZERO_VALUE);
+
 		const activeDays = await this.promptRepository.findActiveDaysByUserId(
 			userId,
 			resolvedTimeZone,
@@ -290,7 +309,7 @@ class PromptService {
 		const today = formatDateInTimeZone(new Date(), resolvedTimeZone);
 
 		return {
-			currentStreak: countCurrentStreak(activeDays, today),
+			currentStreak,
 			days: buildActivityWindow(activeDays, today),
 		};
 	}
