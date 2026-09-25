@@ -1,3 +1,7 @@
+import {
+	FIRST_ELEMENT_INDEX,
+	MAX_TAGS_COUNT,
+} from "../../../workspaces/libs/modules/tech-stack-tags/tech-stack-tags.js";
 import { PackageNameToTechStackTag } from "../enums/enums.js";
 
 type PackageJsonManifest = {
@@ -35,7 +39,7 @@ const detectStackTagsFromPackageJson = (
 		.map((packageName) => PackageNameToTechStackTag[packageName])
 		.filter((tag): tag is string => Boolean(tag));
 
-	return [...new Set(detectedTags)];
+	return [...new Set(detectedTags)].slice(FIRST_ELEMENT_INDEX, MAX_TAGS_COUNT);
 };
 
 export { detectStackTagsFromPackageJson };
