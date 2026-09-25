@@ -12,6 +12,7 @@ import {
 	type WorkspaceDto,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 
@@ -99,10 +100,26 @@ const workspacesApi = baseApi
 					),
 				}),
 			}),
+
+			getWorkspaceById: builder.query<WorkspaceListItemDto, number>({
+				extraOptions: { shouldSuppressToast: true },
+				providesTags: [WorkspacesApiTag.WORKSPACE],
+				query: (workspaceId) => ({
+					url: configureString(
+						APIPath.WORKSPACES,
+						WorkspacesApiPath.$WORKSPACE_ID,
+						{
+							workspaceId: String(workspaceId),
+						},
+					),
+				}),
+			}),
+
 			getWorkspaceContributors: builder.query<
 				WorkspaceContributorsResponseDto,
 				number
 			>({
+				extraOptions: { shouldSuppressToast: true },
 				providesTags: [WorkspacesApiTag.WORKSPACE],
 				query: (workspaceId) => ({
 					url: configureString(
@@ -152,6 +169,7 @@ const {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceByIdQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
@@ -162,6 +180,7 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceByIdQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,
