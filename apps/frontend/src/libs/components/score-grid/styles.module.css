@@ -12,10 +12,7 @@
 
 .control {
 	display: grid;
-	grid-template-columns: repeat(
-		auto-fill,
-		minmax(clamp(var(--space-48), 15vw, var(--space-64)), 1fr)
-	);
+	grid-template-columns: repeat(5, minmax(0, 1fr));
 	gap: var(--space-6);
 }
 
@@ -38,4 +35,10 @@
 
 .score-button {
 	height: var(--size-control-h-xl);
+}
+
+@media (width >= 768px) {
+	.control {
+		grid-template-columns: repeat(10, minmax(0, 1fr));
+	}
 }

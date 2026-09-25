@@ -90,6 +90,35 @@
 	background-color: var(--surface-danger-active);
 }
 
+.accent {
+	padding: 0 var(--space-20);
+	font-size: var(--font-size-body-base);
+	font-weight: 700;
+	color: var(--text-on-accent);
+	background-color: var(--text-accent);
+	border-radius: var(--radius-lg);
+}
+
+.accent:disabled {
+	color: var(--text-faint);
+	background-color: var(--surface-raised);
+	border-color: var(--border-default);
+}
+
+.accent:hover:not(:disabled) {
+	background-image: linear-gradient(
+		var(--state-hover-tint),
+		var(--state-hover-tint)
+	);
+}
+
+.accent:active:not(:disabled) {
+	background-image: linear-gradient(
+		var(--state-press-tint),
+		var(--state-press-tint)
+	);
+}
+
 .danger-outline {
 	color: var(--fg-danger);
 	background-color: var(--bg-danger);

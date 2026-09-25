@@ -406,10 +406,6 @@ class PromptRepository {
 		}));
 	}
 
-	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
-		return await this.promptModel.query().where({ workspaceId }).resultSize();
-	}
-
 	public async findPromptsWithoutLabels(
 		limit: number,
 		afterId: number,

@@ -1,4 +1,5 @@
 const ButtonVariant = {
+	ACCENT: "accent",
 	DANGER: "danger",
 	DANGER_OUTLINE: "danger-outline",
 	PRIMARY: "primary",
