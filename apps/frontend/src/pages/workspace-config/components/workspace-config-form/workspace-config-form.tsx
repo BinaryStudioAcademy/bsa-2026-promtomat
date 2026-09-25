@@ -3,34 +3,37 @@ import { useCallback, useEffect } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
+import { Textarea } from "~/libs/components/textarea/textarea.js";
 import {
-	ButtonVariant,
 	ControlSize,
 	FormValidationMode,
 	HTTPCode,
 } from "~/libs/enums/enums.js";
-import { sortValuesByDictionary } from "~/libs/helpers/helpers.js";
+import {
+	preventLineBreak,
+	sortValuesByDictionary,
+} from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import {
 	useDeleteRepositoryBindingMutation,
 	useGetRepositoryBindingsQuery,
 } from "~/modules/repository-bindings/repository-bindings.js";
-import {
-	type WorkspaceDto,
-	type WorkspaceUpdateRequestDto,
-} from "~/modules/workspaces/libs/types/types.js";
+import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useUpdateWorkspaceMutation,
 	workspaceUpdateValidationSchema,
+	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import {
-	WorkspaceFormMessage,
+	WorkspaceConfigMessage,
 	WorkspaceRepositoryBindingsMessage,
 } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
@@ -39,17 +42,16 @@ import {
 	TECH_STACK_TAG_VALUES,
 	WORKSPACE_CONFIG_FIELDS,
 } from "./libs/constants/constants.js";
-import { checkIsStackTagsEqual } from "./libs/helpers/check-is-stack-tags-equal/check-is-stack-tags-equal.helper.js";
+import { getWorkspaceUpdatePayload } from "./libs/helpers/get-workspace-update-payload/get-workspace-update-payload.helper.js";
+import { type WorkspaceEditableFields } from "./libs/types/types.js";
 
 type Properties = {
-	onClose: () => void;
+	isOwner: boolean;
 	workspace: WorkspaceDto;
 };
 
-type WorkspaceEditableFields = Pick<WorkspaceDto, "name" | "stackTags">;
-
 const WorkspaceConfigForm: React.FC<Properties> = ({
-	onClose,
+	isOwner,
 	workspace,
 }: Properties) => {
 	const {
@@ -57,10 +59,12 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		control,
 		formState: { isDirty, isValid },
 		handleSubmit,
+		reset,
 		setError,
 		trigger,
 	} = useAppForm<WorkspaceEditableFields>({
 		defaultValues: {
+			description: workspace.description,
 			name: workspace.name,
 			stackTags: sortValuesByDictionary(
 				workspace.stackTags,
@@ -113,6 +117,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 			? null
 			: errorMessage;
 
+	const isEditingDisabled = isLoading || !isOwner;
+
 	useEffect(() => {
 		if (hasConflictError && errorMessage) {
 			setError("name", { message: errorMessage, type: "server" });
@@ -122,98 +128,100 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (values: WorkspaceEditableFields) => {
-				const hasNameChanged = values.name !== workspace.name;
-				const hasStackTagsChanged = !checkIsStackTagsEqual(
-					values.stackTags,
-					workspace.stackTags,
-				);
+				const payload = getWorkspaceUpdatePayload(values, workspace);
 
-				if (!hasNameChanged && !hasStackTagsChanged) {
+				if (!payload) {
 					return;
 				}
 
-				const payload: WorkspaceUpdateRequestDto = {};
+				const { data: savedWorkspace } = await updateWorkspace({
+					id: workspace.id,
+					payload,
+				});
 
-				if (hasNameChanged) {
-					payload.name = values.name;
-				}
-
-				if (hasStackTagsChanged) {
-					payload.stackTags = values.stackTags;
-				}
-
-				const { data } = await updateWorkspace({ id: workspace.id, payload });
-
-				if (data) {
-					onClose();
+				if (savedWorkspace) {
+					reset({
+						description: savedWorkspace.description,
+						name: savedWorkspace.name,
+						stackTags: sortValuesByDictionary(
+							savedWorkspace.stackTags,
+							TECH_STACK_TAG_VALUES,
+						),
+					});
+					showNotification({
+						message: WorkspaceConfigMessage.SAVE_SUCCESS,
+						type: NotificationType.SUCCESS,
+					});
 				}
 			})(event);
 		},
-		[handleSubmit, onClose, updateWorkspace, workspace],
+		[handleSubmit, updateWorkspace, workspace, reset],
 	);
 
 	return (
-		<>
-			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<div className={styles["fields"]}>
-					{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
-					<Input
-						control={control}
-						isDisabled={isLoading}
-						label="Workspace name"
-						name="name"
-						placeholder="Name"
-					/>
-					<SearchableSelect
-						control={control}
-						isDisabled={isLoading}
-						label="Tech Stack Tags"
-						name="stackTags"
-						placeholder="Enter tags"
-						size={ControlSize.MD}
-						valuesDictionary={TECH_STACK_TAG_VALUES}
-					/>
-				</div>
-				<div className={styles["section"]}>
-					<h3 className={styles["section-label"]}>Bound repositories</h3>
-					<RepositoryBindingList
-						bindings={bindingList}
-						emptyMessage={
-							WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS
-						}
-						errorMessage={
-							WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
-						}
-						isError={isBindingsError}
-						isLoading={isBindingsLoading}
-						isRemoving={isRemovingBinding}
-						onRemove={handleRemoveBinding}
-						onRetry={handleRetryBindings}
-					/>
-				</div>
+		<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+			<div className={styles["fields"]}>
+				{generalErrorMessage && <FormAlert message={generalErrorMessage} />}
+				<Input
+					control={control}
+					isDisabled={isEditingDisabled}
+					label="Workspace name"
+					name="name"
+					placeholder="Enter name"
+				/>
+				<Textarea
+					control={control}
+					isDisabled={isEditingDisabled}
+					label="Description"
+					maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
+					name="description"
+					onKeyDown={preventLineBreak}
+					placeholder="Enter description"
+					rows={2}
+				/>
+				<SearchableSelect
+					control={control}
+					isDisabled={isEditingDisabled}
+					label="Tech Stack Tags"
+					name="stackTags"
+					placeholder="Enter tags"
+					size={ControlSize.MD}
+					valuesDictionary={TECH_STACK_TAG_VALUES}
+				/>
+			</div>
+			<div className={styles["section"]}>
+				<h3 className={styles["section-label"]}>Bound repositories</h3>
+				<RepositoryBindingList
+					bindings={bindingList}
+					emptyMessage={
+						WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS
+					}
+					errorMessage={
+						WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
+					}
+					isError={isBindingsError}
+					isLoading={isBindingsLoading}
+					isRemoving={isRemovingBinding}
+					onRemove={handleRemoveBinding}
+					onRetry={handleRetryBindings}
+				/>
+			</div>
+			{isOwner && (
 				<div className={styles["footer"]}>
-					<Button
-						isDisabled={isLoading}
-						label="Cancel"
-						onClick={onClose}
-						size={ControlSize.MD}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
 					<Button
 						isDisabled={!isDirty || !isValid}
 						isLoading={isLoading}
 						label={
 							isLoading
-								? WorkspaceFormMessage.SAVING
-								: WorkspaceFormMessage.SAVE
+								? WorkspaceConfigMessage.SAVING
+								: WorkspaceConfigMessage.SAVE
 						}
 						size={ControlSize.MD}
 						type="submit"
 					/>
 				</div>
-			</form>
-		</>
+			)}
+		</form>
 	);
 };
 

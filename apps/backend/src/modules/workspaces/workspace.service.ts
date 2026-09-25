@@ -10,10 +10,11 @@ import {
 } from "./libs/constants/constants.js";
 import { WorkspaceListScope } from "./libs/enums/enums.js";
 import {
-	type WorkspaceCreatePayload,
 	type WorkspaceDto,
+	type WorkspaceEntityInitializeNewPayload,
 	type WorkspaceGetAllRequestDto,
 	type WorkspaceGetAllResponseDto,
+	type WorkspaceListItemDto,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
@@ -52,16 +53,11 @@ class WorkspaceService {
 	}
 
 	public async create(
-		payload: WorkspaceCreatePayload,
+		payload: WorkspaceEntityInitializeNewPayload,
 		trx?: Transaction,
 	): Promise<WorkspaceDto> {
 		const workspace = await this.workspaceRepository.create(
-			WorkspaceEntity.initializeNew({
-				name: payload.name,
-				stackTags: payload.stackTags,
-				userId: payload.userId,
-				visibility: payload.visibility,
-			}),
+			WorkspaceEntity.initializeNew(payload),
 			trx,
 		);
 
@@ -95,6 +91,16 @@ class WorkspaceService {
 		return {
 			items: workspaces,
 		};
+	}
+
+	public async findById(id: number): Promise<WorkspaceListItemDto> {
+		const workspace = await this.workspaceRepository.findByIdWithCounts(id);
+
+		if (!workspace) {
+			throw WorkspaceError.notFound();
+		}
+
+		return workspace;
 	}
 
 	public async findByIdAndContributor(

@@ -3,12 +3,19 @@
 	gap: var(--space-4);
 	align-items: center;
 	padding: var(--space-2) var(--space-6);
+	font-family: var(--font-family-mono);
 	font-size: var(--font-size-label-sm);
-	color: var(--text-strong);
+	color: var(--text-accent);
 	white-space: nowrap;
-	background-color: var(--surface-raised);
-	border-radius: var(--radius-sm);
+	background-color: transparent;
+	border: var(--border-width-hairline) solid var(--border-accent);
+	border-radius: var(--radius-md);
 	animation: fade-in var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.value-disabled {
+	color: var(--text-muted);
+	border-color: var(--border-strong);
 }
 
 @keyframes fade-in {
@@ -36,7 +43,7 @@
 	width: 16px;
 	height: 16px;
 	padding: 0;
-	color: var(--text-muted);
+	color: var(--text-accent);
 	cursor: pointer;
 	background-color: transparent;
 	border: 0;

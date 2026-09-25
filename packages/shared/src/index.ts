@@ -236,5 +236,6 @@ export {
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
 	workspaceUpdateValidationSchema,
+	WorkspaceValidationRule,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

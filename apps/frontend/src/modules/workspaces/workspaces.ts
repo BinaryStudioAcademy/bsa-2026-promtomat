@@ -1,6 +1,11 @@
-export { WorkspaceListScope, WorkspacesApiTag } from "./libs/enums/enums.js";
+export {
+	WorkspaceListScope,
+	WorkspacesApiTag,
+	WorkspaceValidationRule,
+} from "./libs/enums/enums.js";
 export { useActiveWorkspace } from "./libs/hooks/use-active-workspace/use-active-workspace.hook.js";
 export {
+	workspaceAddContributorValidationSchema,
 	workspaceCreationValidationSchema,
 	workspaceUpdateValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -9,6 +14,7 @@ export {
 	useCreateWorkspaceMutation,
 	useDeleteWorkspaceContributorMutation,
 	useDeleteWorkspaceMutation,
+	useGetWorkspaceByIdQuery,
 	useGetWorkspaceContributorsQuery,
 	useGetWorkspacesQuery,
 	useUpdateWorkspaceMutation,

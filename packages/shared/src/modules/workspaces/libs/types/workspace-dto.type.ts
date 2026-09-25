@@ -2,6 +2,7 @@ import { type ValueOf } from "../../../../libs/types/value-of.type.js";
 import { WorkspaceVisibility } from "../enums/workspace-visibility.enum.js";
 
 type WorkspaceDto = {
+	description: string;
 	id: number;
 	name: string;
 	stackTags: string[];
