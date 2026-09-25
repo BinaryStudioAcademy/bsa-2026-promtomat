@@ -1,9 +1,9 @@
 import React, { useCallback, useRef } from "react";
 
-import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
 
 import { ExplanationSection } from "./libs/components/explanation-section/explanation-section.js";
+import { FeedbackSection } from "./libs/components/feedback-section/feedback-section.js";
 import { PromptBodySection } from "./libs/components/prompt-body-section/prompt-body-section.js";
 import { PromptDeliveryCard } from "./libs/components/prompt-delivery-card/prompt-delivery-card.js";
 import { PromptMetaSection } from "./libs/components/prompt-meta-section/prompt-meta-section.js";
@@ -12,9 +12,11 @@ import styles from "./styles.module.css";
 
 const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
+	bodySlot,
 	efficiencyScore,
 	explanation = "",
 	feedback,
+	feedbackSlot,
 	isBodyHeaderHidden = false,
 	sources = [],
 	workspaceName,
@@ -27,6 +29,9 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 
 	const handleCopyPrompt = useCopyPrompt({ body, onCopied: handleCopied });
 
+	const feedbackContent =
+		feedbackSlot ?? (feedback && <FeedbackSection feedback={feedback} />);
+
 	return (
 		<div className={styles["view"]}>
 			<PromptMetaSection
@@ -36,19 +41,14 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 
 			<PromptBodySection
 				body={body}
+				bodySlot={bodySlot}
 				isHeaderHidden={isBodyHeaderHidden}
 				onCopyPrompt={handleCopyPrompt}
 			/>
 
-			{feedback && (
+			{feedbackContent && (
 				<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
-					<ScoreGrid
-						label={feedback.label}
-						onScoreSelect={feedback.onScoreSelect}
-					/>
-					{feedback.hint && (
-						<p className={styles["feedback-hint"]}>{feedback.hint}</p>
-					)}
+					{feedbackContent}
 				</PromptDeliveryCard>
 			)}
 

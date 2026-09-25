@@ -9,12 +9,14 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	body: string;
+	bodySlot: React.ReactNode;
 	isHeaderHidden: boolean;
 	onCopyPrompt: () => void;
 };
 
 const PromptBodySection: React.FC<Properties> = ({
 	body,
+	bodySlot,
 	isHeaderHidden,
 	onCopyPrompt,
 }: Properties) => (
@@ -34,7 +36,7 @@ const PromptBodySection: React.FC<Properties> = ({
 			</PromptDeliveryCard.Header>
 		)}
 		<PromptDeliveryCard.Body>
-			<pre className={styles["prompt-body"]}>{body}</pre>
+			{bodySlot ?? <pre className={styles["prompt-body"]}>{body}</pre>}
 		</PromptDeliveryCard.Body>
 	</PromptDeliveryCard>
 );

@@ -13,10 +13,12 @@ import { type ComposedPromptService } from "./composed-prompt.service.js";
 import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
 import { composedPromptAccessHook } from "./libs/hooks/composed-prompt-access.hook.js";
 import {
+	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptIdParametersDto,
 	type ComposeRequestDto,
 } from "./libs/types/types.js";
 import {
+	composedPromptAdoptValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	composeValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -141,6 +143,105 @@ class ComposedPromptController extends BaseController {
 				params: composedPromptIdParametersValidationSchema,
 			},
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.adopt(
+					options as APIHandlerOptions<{
+						body: ComposedPromptAdoptRequestDto;
+						params: ComposedPromptIdParametersDto;
+					}>,
+				),
+			method: HTTPMethod.POST,
+			path: ComposedPromptsApiPath.$ID_ADOPT,
+			preHandler: composedPromptAccessHook(
+				this.composedPromptService,
+				this.workspaceService,
+			),
+			validation: {
+				body: composedPromptAdoptValidationSchema,
+				params: composedPromptIdParametersValidationSchema,
+			},
+		});
+	}
+
+	/**
+	 * @swagger
+	 * /composed-prompts/{id}/adopt:
+	 *    post:
+	 *      description: Records a prompt owned by the caller from a composed prompt of a workspace the caller may read, with the task description as intent and the given or composed body; the composed prompt is left unchanged
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: path
+	 *          name: id
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *      requestBody:
+	 *        description: The efficiency score and, when edited, the prompt body
+	 *        required: true
+	 *        content:
+	 *          application/json:
+	 *            schema:
+	 *              type: object
+	 *              required: [score]
+	 *              properties:
+	 *                score:
+	 *                  type: number
+	 *                  minimum: 1
+	 *                  maximum: 10
+	 *                promptBody:
+	 *                  type: string
+	 *                  minLength: 1
+	 *                  maxLength: 50000
+	 *      responses:
+	 *        201:
+	 *          description: A prompt was recorded
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Prompt"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        404:
+	 *          description: Composed prompt not found, or its workspace is not readable by the caller
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
+	 *        503:
+	 *          description: The prompt label could not be generated; nothing was recorded
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 */
+	private async adopt(
+		options: APIHandlerOptions<{
+			body: ComposedPromptAdoptRequestDto;
+			params: ComposedPromptIdParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.composedPromptService.adopt({
+				...options.body,
+				id: options.params.id,
+				userId: options.user?.id as number,
+			}),
+			status: HTTPCode.CREATED,
+		};
 	}
 
 	/**

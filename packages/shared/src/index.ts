@@ -109,12 +109,14 @@ export {
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export {
+	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,
+	composedPromptAdoptValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	ComposedPromptsApiPath,
 	ComposedPromptsErrorCode,

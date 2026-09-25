@@ -16,7 +16,7 @@ import { GenerateLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 const Generate: React.FC = () => {
-	const [compose, { data, error, isLoading }] = useComposeMutation();
+	const [compose, { data, error, isLoading, reset }] = useComposeMutation();
 	const lastPayloadReference = useRef<ComposeRequestDto | null>(null);
 
 	const handleCompose = useCallback(
@@ -53,7 +53,11 @@ const Generate: React.FC = () => {
 					<GenerationFailedNotice onRetry={handleRetry} />
 				)}
 				{!isLoading && data && (
-					<ComposeResult onTryAgain={handleRetry} result={data} />
+					<ComposeResult
+						onDiscard={reset}
+						onTryAgain={handleRetry}
+						result={data}
+					/>
 				)}
 			</div>
 		</div>

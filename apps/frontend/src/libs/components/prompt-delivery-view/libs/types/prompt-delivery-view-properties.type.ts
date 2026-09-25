@@ -3,9 +3,11 @@ import { type PromptDeliverySource } from "./prompt-delivery-source.type.js";
 
 type PromptDeliveryViewProperties = {
 	body: string;
+	bodySlot?: React.ReactNode;
 	efficiencyScore?: number;
 	explanation?: string;
-	feedback?: PromptDeliveryFeedback;
+	feedback?: PromptDeliveryFeedback | undefined;
+	feedbackSlot?: React.ReactNode;
 	isBodyHeaderHidden?: boolean;
 	sources?: PromptDeliverySource[];
 	workspaceName?: string;

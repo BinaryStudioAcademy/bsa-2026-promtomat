@@ -1,8 +1,14 @@
 const GenerateLabel = {
+	APPLY: "Apply",
+	BODY_FIELD: "Prompt body",
+	CANCEL: "Cancel",
 	COPY_PROMPT: "Copy prompt",
 	DESCRIPTION_FIELD: "Task description",
 	DESCRIPTION_PLACEHOLDER:
 		"Describe your coding task (e.g., Implement middleware session validation)",
+	DISCARD: "Discard",
+	EDIT: "Edit",
+	EDITED_KICKER: "Edited by you",
 	FALLBACK_KICKER: "Closest stored prompt",
 	GENERATED_KICKER: "Generated",
 	OPEN_IN_LOG: "Open in log",
@@ -15,6 +21,7 @@ const GenerateLabel = {
 	RATE_HEADING: "Rate this prompt",
 	RECORD_PROMPT_LINK: "Record a prompt",
 	RETRY: "Retry",
+	SAVED_TO_LOG: "Saved to your log",
 	STORED_PROMPT_ONE: "stored prompt",
 	STORED_PROMPTS_MANY: "stored prompts",
 	SUBMIT: "Generate",

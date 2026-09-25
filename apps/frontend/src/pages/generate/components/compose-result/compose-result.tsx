@@ -10,17 +10,25 @@ import { FallbackPromptCard } from "../fallback-prompt-card/fallback-prompt-card
 import { NoMatchesNotice } from "../no-matches-notice/no-matches-notice.js";
 
 type Properties = {
+	onDiscard: () => void;
 	onTryAgain: () => void;
 	result: ComposeResponseDto;
 };
 
 const ComposeResult: React.FC<Properties> = ({
+	onDiscard,
 	onTryAgain,
 	result,
 }: Properties) => {
 	switch (result.kind) {
 		case ComposeResultKind.COMPOSED: {
-			return <ComposedResultCard composedPrompt={result.composedPrompt} />;
+			return (
+				<ComposedResultCard
+					composedPrompt={result.composedPrompt}
+					key={result.composedPrompt.id}
+					onDiscard={onDiscard}
+				/>
+			);
 		}
 
 		case ComposeResultKind.FALLBACK: {
