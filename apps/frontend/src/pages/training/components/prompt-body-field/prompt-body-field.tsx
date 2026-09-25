@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { type Control, useFormState, useWatch } from "react-hook-form";
 
-import { Markdown } from "~/libs/components/markdown/markdown.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
-import { Textarea } from "~/libs/components/textarea/textarea.js";
-import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 
+import { PromptBodyContent } from "./components/prompt-body-content/prompt-body-content.js";
 import { PROMPT_BODY_MODE_OPTIONS } from "./libs/constants/constants.js";
 import { PromptBodyFieldMessage, PromptBodyMode } from "./libs/enums/enums.js";
+import { getPromptBodyState } from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -30,37 +29,7 @@ const PromptBodyField: React.FC<Properties> = ({
 	const characterCount = promptBody.length;
 	const previewErrorMessage =
 		mode === PromptBodyMode.PREVIEW ? errors.promptBody?.message : undefined;
-
-	let content: React.ReactNode;
-
-	if (mode === PromptBodyMode.WRITE) {
-		content = (
-			<Textarea
-				autoComplete="off"
-				className={styles["textarea"]}
-				control={control}
-				isDisabled={isDisabled}
-				isLabelHidden={true}
-				label={PromptBodyFieldMessage.LABEL}
-				name="promptBody"
-				placeholder={PromptBodyFieldMessage.PLACEHOLDER}
-			/>
-		);
-	} else if (characterCount === EMPTY_LENGTH) {
-		content = (
-			<div className={styles["preview"]}>
-				<p className={styles["empty"]}>
-					{PromptBodyFieldMessage.EMPTY_PREVIEW}
-				</p>
-			</div>
-		);
-	} else {
-		content = (
-			<div className={styles["preview"]}>
-				<Markdown content={promptBody} />
-			</div>
-		);
-	}
+	const state = getPromptBodyState({ characterCount, mode });
 
 	return (
 		<div className={styles["field"]}>
@@ -81,7 +50,12 @@ const PromptBodyField: React.FC<Properties> = ({
 					{characterCount} {PromptBodyFieldMessage.CHARS}
 				</span>
 			</div>
-			{content}
+			<PromptBodyContent
+				control={control}
+				isDisabled={isDisabled}
+				promptBody={promptBody}
+				state={state}
+			/>
 			{previewErrorMessage && (
 				<p className={styles["error"]} role="alert">
 					{previewErrorMessage}
