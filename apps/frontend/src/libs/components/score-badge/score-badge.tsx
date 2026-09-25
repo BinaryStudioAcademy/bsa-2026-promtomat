@@ -6,7 +6,7 @@ import { getScoreVariant } from "./libs/helpers/get-score-variant.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	isFill?: boolean;
 	label?: string;
 };
@@ -16,6 +16,9 @@ const ScoreBadge: React.FC<Properties> = ({
 	isFill = true,
 	label,
 }) => {
+	const defaultLabel =
+		efficiencyScore === null ? "Unrated" : String(efficiencyScore);
+
 	return (
 		<span
 			className={getValidClasses(
@@ -24,7 +27,7 @@ const ScoreBadge: React.FC<Properties> = ({
 				isFill && styles["filled"],
 			)}
 		>
-			{label ?? efficiencyScore}
+			{label ?? defaultLabel}
 		</span>
 	);
 };

@@ -21,7 +21,6 @@ import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
-	type PromptItemResponseDto,
 	type PromptUpdateIntentRequestDto,
 } from "~/modules/prompts/libs/types/types.js";
 import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
@@ -31,10 +30,11 @@ import {
 	PromptHistoryLabel,
 	PromptHistoryMessage,
 } from "../../libs/enums/enum.js";
+import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	prompt: PromptItemResponseDto;
+	prompt: PromptHistoryItem;
 	queryPayload: Omit<PromptGetQueryDto, "page">;
 };
 
@@ -55,11 +55,19 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	const [isCopyPending, setIsCopyPending] = useState(false);
 
 	const errorMessage = errors.taskIntent?.message;
-	const isOwner = user?.id === prompt.userId;
+	const isComposed = Boolean(prompt.isComposed);
+	const isOwner = user?.id === prompt.userId && !isComposed;
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
-	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
-		promptId: String(prompt.id),
-	}) as NavigableRoute;
+
+	const deliveryPath = (
+		isComposed
+			? configureString(AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID, {
+					composedPromptId: String(prompt.id),
+				})
+			: configureString(AppRoute.PROMPTS_$PROMPT_ID, {
+					promptId: String(prompt.id),
+				})
+	) as NavigableRoute;
 
 	useEffect(() => {
 		lastValidIntentReference.current = prompt.intent;
@@ -67,6 +75,10 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	}, [prompt.id, prompt.intent, reset]);
 
 	const handleSaveUpdatedIntent = useCallback((): void => {
+		if (isComposed) {
+			return;
+		}
+
 		void handleSubmit(
 			async (payload: PromptUpdateIntentRequestDto) => {
 				const previousIntent = lastValidIntentReference.current;
@@ -94,7 +106,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				);
 			},
 		)();
-	}, [handleSubmit, prompt.id, queryPayload, reset, updateIntent]);
+	}, [handleSubmit, isComposed, prompt.id, queryPayload, reset, updateIntent]);
 
 	const handleCopyPrompt = useCallback((): void => {
 		setIsCopyPending(true);
@@ -117,11 +129,10 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			});
 	}, [prompt.body]);
 
-	const rawScore = prompt.computedScore ?? prompt.score;
+	const rawScore =
+		prompt.computedScore ?? (prompt.score > ZERO_VALUE ? prompt.score : null);
 	const formattedScore =
-		typeof rawScore === "number"
-			? +rawScore.toFixed(FRACTION_DIGITS)
-			: ZERO_VALUE;
+		typeof rawScore === "number" ? +rawScore.toFixed(FRACTION_DIGITS) : null;
 
 	return (
 		<article className={styles["panel"]}>
@@ -141,10 +152,19 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					) : (
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
-					<ScoreBadge
-						efficiencyScore={formattedScore}
-						label={`${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-					/>
+					<div className={styles["badges"]}>
+						{isComposed && (
+							<span className={styles["badge-generated"]}>GENERATED</span>
+						)}
+						<ScoreBadge
+							efficiencyScore={formattedScore}
+							label={
+								formattedScore === null
+									? "Unrated"
+									: `${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`
+							}
+						/>
+					</div>
 				</div>
 				<div
 					className={

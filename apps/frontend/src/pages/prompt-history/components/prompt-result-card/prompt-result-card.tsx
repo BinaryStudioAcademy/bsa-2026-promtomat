@@ -8,15 +8,15 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
+import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	detailId: string;
 	isSelected: boolean;
-	onSelect: (promptId: number) => void;
-	prompt: PromptItemResponseDto;
+	onSelect: (uniqueKey: string) => void;
+	prompt: PromptHistoryItem;
 };
 
 const LINE_BREAK = "\n";
@@ -31,14 +31,13 @@ const PromptResultCard: React.FC<Properties> = ({
 	const [snippet = ""] = prompt.body.split(LINE_BREAK);
 
 	const handleSelect = useCallback((): void => {
-		onSelect(prompt.id);
-	}, [onSelect, prompt.id]);
+		onSelect(prompt.uniqueKey);
+	}, [onSelect, prompt.uniqueKey]);
 
-	const rawScore = prompt.computedScore ?? prompt.score;
+	const rawScore =
+		prompt.computedScore ?? (prompt.score > ZERO_VALUE ? prompt.score : null);
 	const formattedScore =
-		typeof rawScore === "number"
-			? +rawScore.toFixed(FRACTION_DIGITS)
-			: ZERO_VALUE;
+		typeof rawScore === "number" ? +rawScore.toFixed(FRACTION_DIGITS) : null;
 
 	return (
 		<button
@@ -55,7 +54,11 @@ const PromptResultCard: React.FC<Properties> = ({
 				<span className={styles["intent"]}>{prompt.intent}</span>
 				<ScoreBadge
 					efficiencyScore={formattedScore}
-					label={`${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+					label={
+						formattedScore === null
+							? "Unrated"
+							: `${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`
+					}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

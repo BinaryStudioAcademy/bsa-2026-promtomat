@@ -8,6 +8,7 @@ export {
 } from "./libs/enums/enums.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptGetAllResponseDto,
 	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,

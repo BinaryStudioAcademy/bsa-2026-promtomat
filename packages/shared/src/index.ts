@@ -111,6 +111,7 @@ export {
 } from "./modules/auth/auth.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptGetAllResponseDto,
 	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,

@@ -148,6 +148,24 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 										},
 										path: AppRoute.PROMPTS_$PROMPT_ID,
 									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+											return { Component: pageModule.PromptDelivery };
+										},
+										path: AppRoute.PROMPTS_$PROMPT_ID,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+											return { Component: pageModule.PromptDelivery };
+										},
+										path: AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID,
+									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
 								hydrateFallbackElement: <Loader />,

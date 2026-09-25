@@ -2,6 +2,7 @@ const AppRoute = {
 	ANALYTICS: "/analytics",
 	ANY: "*",
 	API_TOKENS: "/api-tokens",
+	COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID: "/composed-prompts/:composedPromptId",
 	FORGOT_PASSWORD: "/forgot-password",
 	GENERATE: "/generate",
 	NO_ACCESS: "/no-access",
