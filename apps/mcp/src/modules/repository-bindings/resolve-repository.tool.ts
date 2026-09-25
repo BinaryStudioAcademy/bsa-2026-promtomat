@@ -5,7 +5,15 @@ import { type Tool } from "~/libs/types/types.js";
 import { RESOLVE_REPOSITORY_DESCRIPTION } from "./libs/constants/constants.js";
 import { RepositoryBindingResolutionStatus } from "./libs/enums/enums.js";
 import { getRepositoryRemoteUrl } from "./libs/helpers/helpers.js";
+import { type RepositoryBindingCandidateWorkspace } from "./libs/types/types.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
+
+const formatWorkspaceList = (
+	workspaces: RepositoryBindingCandidateWorkspace[],
+): string =>
+	workspaces
+		.map((workspace) => `${String(workspace.id)}: ${workspace.name}`)
+		.join(", ");
 
 const createResolveRepositoryTool = (
 	repositoryBindingApi: RepositoryBindingApi,
@@ -29,17 +37,13 @@ const createResolveRepositoryTool = (
 		}
 
 		if (resolution.status === RepositoryBindingResolutionStatus.AMBIGUOUS) {
-			const workspaceList = resolution.workspaces
-				.map((workspace) => `${String(workspace.id)}: ${workspace.name}`)
-				.join(", ");
-
 			return createMCPTextResult(
-				`This repository is bound to more than one workspace you can use: ${workspaceList}. Call ${ToolName.BIND_REPOSITORY} with the workspaceId you want.`,
+				`This repository is bound to more than one workspace you can use: ${formatWorkspaceList(resolution.workspaces)}. Call ${ToolName.BIND_REPOSITORY} with the workspaceId you want.`,
 			);
 		}
 
 		return createMCPTextResult(
-			`This repository is not bound to any workspace yet. Call ${ToolName.BIND_REPOSITORY} with the workspaceId it belongs to.`,
+			`This repository is not bound to a workspace yet. Workspaces you can use: ${formatWorkspaceList(resolution.workspaces)}. Call ${ToolName.BIND_REPOSITORY} with the workspaceId to bind it to.`,
 		);
 	},
 	name: ToolName.RESOLVE_REPOSITORY,

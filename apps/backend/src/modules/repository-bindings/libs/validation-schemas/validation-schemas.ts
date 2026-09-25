@@ -1,7 +1,7 @@
 export {
-	bindRepository,
-	listRepositoryBindingsQuery,
-	repositoryBindingRouteParameters,
-	resolveRepositoryBindingQuery,
-	updateRepositoryBinding,
+	bindRepositoryValidationSchema,
+	listRepositoryBindingsQueryValidationSchema,
+	repositoryBindingRouteParametersValidationSchema,
+	resolveRepositoryBindingQueryValidationSchema,
+	updateRepositoryBindingValidationSchema,
 } from "@promptomat/shared";

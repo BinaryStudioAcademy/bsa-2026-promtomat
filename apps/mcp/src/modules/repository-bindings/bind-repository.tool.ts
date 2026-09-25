@@ -1,5 +1,3 @@
-import { type z } from "zod";
-
 import { ToolName } from "~/libs/enums/enums.js";
 import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
@@ -10,7 +8,8 @@ import {
 	getRepositoryRemoteUrl,
 	readPackageJson,
 } from "./libs/helpers/helpers.js";
-import { bindRepository } from "./libs/validation-schemas/validation-schemas.js";
+import { type BindRepositoryArguments } from "./libs/types/types.js";
+import { bindRepositoryInputSchema } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingApi } from "./repository-binding-api.js";
 
 const createBindRepositoryTool = (
@@ -18,9 +17,7 @@ const createBindRepositoryTool = (
 ): Tool => ({
 	description: BIND_REPOSITORY_DESCRIPTION,
 	execute: async (arguments_) => {
-		const { workspaceId } = arguments_ as z.infer<
-			z.ZodObject<typeof bindRepository>
-		>;
+		const { workspaceId } = arguments_ as BindRepositoryArguments;
 
 		const projectDirectory = process.cwd();
 		const remoteUrl = await getRepositoryRemoteUrl(projectDirectory);
@@ -42,7 +39,7 @@ const createBindRepositoryTool = (
 			`Bound this repository to workspace id ${String(workspaceId)}.`,
 		);
 	},
-	inputSchema: bindRepository,
+	inputSchema: bindRepositoryInputSchema,
 	name: ToolName.BIND_REPOSITORY,
 });
 

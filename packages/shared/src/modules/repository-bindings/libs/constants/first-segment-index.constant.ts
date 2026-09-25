@@ -1,3 +1,0 @@
-const FIRST_SEGMENT_INDEX = 0;
-
-export { FIRST_SEGMENT_INDEX };

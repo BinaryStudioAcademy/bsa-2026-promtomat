@@ -1,8 +1,10 @@
 export {
+	PackageNameToTechStackTag,
 	RepositoryBindingResolutionStatus,
 	RepositoryBindingsApiPath,
 	RepositoryBindingsErrorCode,
 	RepositoryBindingsErrorMessage,
+	RepositoryBindingValidationMessage,
 	RepositoryBindingValidationRule,
 	RepositoryIdentityRefusalReason,
 } from "./libs/enums/enums.js";
@@ -23,9 +25,9 @@ export {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 export {
-	bindRepository,
-	listRepositoryBindingsQuery,
-	repositoryBindingRouteParameters,
-	resolveRepositoryBindingQuery,
-	updateRepositoryBinding,
+	bindRepositoryValidationSchema,
+	listRepositoryBindingsQueryValidationSchema,
+	repositoryBindingRouteParametersValidationSchema,
+	resolveRepositoryBindingQueryValidationSchema,
+	updateRepositoryBindingValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

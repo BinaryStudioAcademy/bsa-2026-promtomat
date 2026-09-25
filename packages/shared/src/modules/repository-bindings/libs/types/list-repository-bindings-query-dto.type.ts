@@ -1,9 +1,9 @@
 import { type z } from "zod";
 
-import { type listRepositoryBindingsQuery } from "../validation-schemas/validation-schemas.js";
+import { type listRepositoryBindingsQueryValidationSchema } from "../validation-schemas/validation-schemas.js";
 
 type ListRepositoryBindingsQueryDto = z.infer<
-	typeof listRepositoryBindingsQuery
+	typeof listRepositoryBindingsQueryValidationSchema
 >;
 
 export { type ListRepositoryBindingsQueryDto };

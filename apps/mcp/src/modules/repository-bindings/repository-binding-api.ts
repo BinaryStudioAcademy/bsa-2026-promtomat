@@ -10,7 +10,7 @@ import {
 	type CreateRepositoryBindingRequestDto,
 	type RepositoryBindingResolution,
 } from "./libs/types/types.js";
-import { resolveRepositoryBinding } from "./libs/validation-schemas/validation-schemas.js";
+import { resolveRepositoryBindingValidationSchema } from "./libs/validation-schemas/validation-schemas.js";
 
 class RepositoryBindingApi {
 	private http: HTTP;
@@ -42,7 +42,10 @@ class RepositoryBindingApi {
 			},
 		);
 
-		return await parseResponseBody(response, resolveRepositoryBinding);
+		return await parseResponseBody(
+			response,
+			resolveRepositoryBindingValidationSchema,
+		);
 	}
 }
 

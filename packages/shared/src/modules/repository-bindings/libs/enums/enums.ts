@@ -1,3 +1,4 @@
+export { PackageNameToTechStackTag } from "./package-name-to-tech-stack-tag.enum.js";
 export { RepositoryBindingResolutionStatus } from "./repository-binding-resolution-status.enum.js";
 export { RepositoryBindingValidationMessage } from "./repository-binding-validation-message.enum.js";
 export { RepositoryBindingValidationRule } from "./repository-binding-validation-rule.enum.js";

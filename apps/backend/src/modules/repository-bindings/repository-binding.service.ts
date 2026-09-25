@@ -3,6 +3,7 @@ import {
 	FIRST_ELEMENT_INDEX,
 } from "~/libs/constants/constants.js";
 import { RepositoryBindingError } from "~/libs/exceptions/exceptions.js";
+import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { SINGLE_MATCH_COUNT } from "./libs/constants/constants.js";
@@ -13,6 +14,7 @@ import {
 import { normalizeRepositoryIdentity } from "./libs/helpers/helpers.js";
 import {
 	type CreateRepositoryBindingRequestDto,
+	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryIdentity,
@@ -48,6 +50,15 @@ class RepositoryBindingService {
 		}
 
 		throw RepositoryBindingError.unrecognizedFormat();
+	}
+
+	private toCandidateWorkspaces(
+		workspaces: WorkspaceListItemDto[],
+	): RepositoryBindingCandidateWorkspace[] {
+		return workspaces.map((workspace) => ({
+			id: workspace.id,
+			name: workspace.name,
+		}));
 	}
 
 	public async create(
@@ -115,7 +126,10 @@ class RepositoryBindingService {
 			);
 
 		if (matchingWorkspaceIds.length === EMPTY_LENGTH) {
-			return { status: RepositoryBindingResolutionStatus.UNRESOLVED };
+			return {
+				status: RepositoryBindingResolutionStatus.UNRESOLVED,
+				workspaces: this.toCandidateWorkspaces(accessibleWorkspaces),
+			};
 		}
 
 		if (matchingWorkspaceIds.length === SINGLE_MATCH_COUNT) {
@@ -125,13 +139,13 @@ class RepositoryBindingService {
 			};
 		}
 
-		const workspaces = accessibleWorkspaces
-			.filter((workspace) => matchingWorkspaceIds.includes(workspace.id))
-			.map((workspace) => ({ id: workspace.id, name: workspace.name }));
+		const matchingWorkspaces = accessibleWorkspaces.filter((workspace) =>
+			matchingWorkspaceIds.includes(workspace.id),
+		);
 
 		return {
 			status: RepositoryBindingResolutionStatus.AMBIGUOUS,
-			workspaces,
+			workspaces: this.toCandidateWorkspaces(matchingWorkspaces),
 		};
 	}
 

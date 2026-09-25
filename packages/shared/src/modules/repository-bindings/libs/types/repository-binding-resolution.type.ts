@@ -9,11 +9,16 @@ type AmbiguousRepositoryBindingResolution = {
 type RepositoryBindingResolution =
 	| AmbiguousRepositoryBindingResolution
 	| ResolvedRepositoryBindingResolution
-	| { status: typeof RepositoryBindingResolutionStatus.UNRESOLVED };
+	| UnresolvedRepositoryBindingResolution;
 
 type ResolvedRepositoryBindingResolution = {
 	status: typeof RepositoryBindingResolutionStatus.RESOLVED;
 	workspaceId: number;
+};
+
+type UnresolvedRepositoryBindingResolution = {
+	status: typeof RepositoryBindingResolutionStatus.UNRESOLVED;
+	workspaces: RepositoryBindingCandidateWorkspace[];
 };
 
 export { type RepositoryBindingResolution };

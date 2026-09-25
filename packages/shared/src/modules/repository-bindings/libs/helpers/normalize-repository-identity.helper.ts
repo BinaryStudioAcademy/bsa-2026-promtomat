@@ -1,6 +1,6 @@
 import { type ValueOf } from "../../../../libs/types/value-of.type.js";
+import { FIRST_ELEMENT_INDEX } from "../../../workspaces/workspaces.js";
 import {
-	FIRST_SEGMENT_INDEX,
 	LAST_SEGMENT_OFFSET,
 	MINIMUM_PATH_SEGMENTS,
 	TRAILING_GIT_SUFFIX_PATTERN,
@@ -37,7 +37,7 @@ const normalizeRepositoryIdentity = (
 
 	const repo = segments.at(LAST_SEGMENT_OFFSET);
 	const owner = segments
-		.slice(FIRST_SEGMENT_INDEX, LAST_SEGMENT_OFFSET)
+		.slice(FIRST_ELEMENT_INDEX, LAST_SEGMENT_OFFSET)
 		.join("/");
 
 	if (!repo || !owner) {

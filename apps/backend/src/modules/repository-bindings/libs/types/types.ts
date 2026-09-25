@@ -2,6 +2,7 @@ export { type RepositoryBindingCreatePayload } from "./repository-binding-create
 export {
 	type CreateRepositoryBindingRequestDto,
 	type ListRepositoryBindingsQueryDto,
+	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingDto,
 	type RepositoryBindingResolution,
 	type RepositoryBindingRouteParametersDto,

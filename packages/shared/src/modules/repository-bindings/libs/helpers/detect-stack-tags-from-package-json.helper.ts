@@ -1,4 +1,4 @@
-import { PackageNameToTechStackTag } from "../constants/package-name-to-tech-stack-tag.constant.js";
+import { PackageNameToTechStackTag } from "../enums/enums.js";
 
 type PackageJsonManifest = {
 	dependencies?: Record<string, string>;

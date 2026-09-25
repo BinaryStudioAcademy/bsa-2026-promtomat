@@ -20,11 +20,11 @@ import {
 	type UpdateRepositoryBindingRequestDto,
 } from "./libs/types/types.js";
 import {
-	bindRepository,
-	listRepositoryBindingsQuery,
-	repositoryBindingRouteParameters,
-	resolveRepositoryBindingQuery,
-	updateRepositoryBinding,
+	bindRepositoryValidationSchema,
+	listRepositoryBindingsQueryValidationSchema,
+	repositoryBindingRouteParametersValidationSchema,
+	resolveRepositoryBindingQueryValidationSchema,
+	updateRepositoryBindingValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type RepositoryBindingService } from "./repository-binding.service.js";
 
@@ -104,7 +104,7 @@ class RepositoryBindingController extends BaseController {
 			path: RepositoryBindingsApiPath.ROOT,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
-				body: bindRepository,
+				body: bindRepositoryValidationSchema,
 			},
 		});
 
@@ -122,7 +122,7 @@ class RepositoryBindingController extends BaseController {
 				workspaceService,
 			),
 			validation: {
-				params: repositoryBindingRouteParameters,
+				params: repositoryBindingRouteParametersValidationSchema,
 			},
 		});
 
@@ -137,7 +137,7 @@ class RepositoryBindingController extends BaseController {
 			path: RepositoryBindingsApiPath.ROOT,
 			preHandler: workspaceAccessHook(workspaceService),
 			validation: {
-				query: listRepositoryBindingsQuery,
+				query: listRepositoryBindingsQueryValidationSchema,
 			},
 		});
 
@@ -151,7 +151,7 @@ class RepositoryBindingController extends BaseController {
 			method: HTTPMethod.GET,
 			path: RepositoryBindingsApiPath.RESOLVE,
 			validation: {
-				query: resolveRepositoryBindingQuery,
+				query: resolveRepositoryBindingQueryValidationSchema,
 			},
 		});
 
@@ -170,8 +170,8 @@ class RepositoryBindingController extends BaseController {
 				workspaceService,
 			),
 			validation: {
-				body: updateRepositoryBinding,
-				params: repositoryBindingRouteParameters,
+				body: updateRepositoryBindingValidationSchema,
+				params: repositoryBindingRouteParametersValidationSchema,
 			},
 		});
 	}
