@@ -113,13 +113,6 @@ import { type PromptService } from "./prompt.service.js";
  *           type: number
  *         totalCount:
  *           type: number
- *     PromptProgress:
- *       type: object
- *       properties:
- *         count:
- *           type: number
- *         target:
- *           type: number
  *     PromptRecent:
  *       type: object
  *       properties:
@@ -158,21 +151,6 @@ class PromptController extends BaseController {
 
 		this.promptService = promptService;
 		this.workspaceService = workspaceService;
-
-		this.addRoute({
-			handler: (options) =>
-				this.findProgress(
-					options as APIHandlerOptions<{
-						query: PromptWorkspaceQueryDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.PROGRESS,
-			preHandler: workspaceAccessHook(this.workspaceService),
-			validation: {
-				query: promptWorkspaceQueryValidationSchema,
-			},
-		});
 
 		this.addRoute({
 			handler: (options) =>
@@ -452,56 +430,6 @@ class PromptController extends BaseController {
 				options.params.id,
 				options.user?.id as number,
 			),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /prompts/progress:
-	 *   get:
-	 *     description: Returns recorded prompt count and target for a workspace
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: query
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: number
-	 *           minimum: 1
-	 *         description: Workspace to count prompts in
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/PromptProgress"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	private async findProgress(
-		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.promptService.findProgress(options.query.workspaceId),
 			status: HTTPCode.OK,
 		};
 	}

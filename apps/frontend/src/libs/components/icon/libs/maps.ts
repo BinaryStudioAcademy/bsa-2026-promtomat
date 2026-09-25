@@ -1,10 +1,12 @@
 import { type FunctionComponent, type SVGProps } from "react";
 
 import AlertCircleIcon from "~/assets/img/alert-circle.svg?react";
+import BoltIcon from "~/assets/img/bolt.svg?react";
 import CheckCircleIcon from "~/assets/img/check-circle.svg?react";
 import CheckIcon from "~/assets/img/check.svg?react";
 import ChevronIcon from "~/assets/img/chevron.svg?react";
 import CircleXIcon from "~/assets/img/circle-x.svg?react";
+import ClipboardCheckIcon from "~/assets/img/clipboard-check.svg?react";
 import ClipboardListIcon from "~/assets/img/clipboard-list.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
 import CopyIcon from "~/assets/img/copy.svg?react";
@@ -31,10 +33,12 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 const iconNameToIcon = {
 	[IconName.ALERT_CIRCLE]: AlertCircleIcon,
+	[IconName.BOLT]: BoltIcon,
 	[IconName.CHECK]: CheckIcon,
 	[IconName.CHECK_CIRCLE]: CheckCircleIcon,
 	[IconName.CHEVRON]: ChevronIcon,
 	[IconName.CIRCLE_X]: CircleXIcon,
+	[IconName.CLIPBOARD_CHECK]: ClipboardCheckIcon,
 	[IconName.CLIPBOARD_LIST]: ClipboardListIcon,
 	[IconName.CLOSE]: CloseIcon,
 	[IconName.COPY]: CopyIcon,

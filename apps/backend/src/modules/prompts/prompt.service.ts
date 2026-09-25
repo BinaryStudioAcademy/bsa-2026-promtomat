@@ -30,7 +30,6 @@ import {
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptLabelSource,
-	type PromptProgressResponseDto,
 	type PromptStreakResponseDto,
 	type PromptUpdateIntentPayload,
 } from "./libs/types/types.js";
@@ -247,18 +246,6 @@ class PromptService {
 			limit,
 			workspaceId,
 		);
-	}
-
-	public async findProgress(
-		workspaceId: number,
-	): Promise<PromptProgressResponseDto> {
-		const count =
-			await this.promptRepository.findCountByWorkspaceId(workspaceId);
-
-		return {
-			count,
-			target: PromptProgress.TARGET_COUNT,
-		};
 	}
 
 	public async findPromptsWithoutLabels(
