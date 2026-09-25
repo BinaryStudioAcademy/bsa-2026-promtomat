@@ -12,7 +12,7 @@ import {
 	FIRST_INDEX,
 	LAST_INDEX_FROM_END,
 } from "./libs/constants/constants.js";
-import { ModalLabel } from "./libs/enums/enums.js";
+import { ModalLabel, ModalTone } from "./libs/enums/enums.js";
 import { getFocusableElements } from "./libs/helpers/get-focusable-elements.helper.js";
 import styles from "./styles.module.css";
 
@@ -27,7 +27,7 @@ type Properties = {
 	subtitle?: string;
 	title: string;
 	titleIconName?: undefined | ValueOf<typeof IconName>;
-	tone?: "danger" | "default";
+	tone?: ValueOf<typeof ModalTone>;
 };
 
 const Modal = ({
@@ -41,14 +41,14 @@ const Modal = ({
 	subtitle,
 	title,
 	titleIconName,
-	tone = "default",
+	tone = ModalTone.DEFAULT,
 }: Properties) => {
 	const modalId = useId();
 	const titleId = `${modalId}-title`;
 	const subtitleId = `${modalId}-subtitle`;
 	const descriptionId = subtitle ? subtitleId : undefined;
 	const isSectioned = Boolean(footer);
-	const isDangerTone = tone === "danger";
+	const isDangerTone = tone === ModalTone.DANGER;
 	const shapeClassName = isSectioned
 		? styles["modal-sectioned"]
 		: styles["modal-flat"];

@@ -148,7 +148,6 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptIdParameterDto,
 	type PromptItemResponseDto,
-	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptRouteParametersDto,
 	type PromptUpdateIntentRequestDto,
@@ -210,5 +209,6 @@ export {
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
 	workspaceUpdateValidationSchema,
+	WorkspaceValidationRule,
 	WorkspaceVisibility,
 } from "./modules/workspaces/workspaces.js";

@@ -16,7 +16,6 @@ import {
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
-	type PromptProgressResponseDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
@@ -37,16 +36,6 @@ const promptApi = baseApi
 					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
 						id: String(id),
 					}),
-				}),
-			}),
-			getPromptProgress: builder.query<
-				PromptProgressResponseDto,
-				PromptWorkspaceQueryDto
-			>({
-				providesTags: [PromptsApiTag.PROMPT],
-				query: ({ workspaceId }) => ({
-					params: { workspaceId },
-					url: `${APIPath.PROMPTS}${PromptsApiPath.PROGRESS}`,
 				}),
 			}),
 			getPromptRecent: builder.query<
@@ -144,7 +133,6 @@ const promptApi = baseApi
 
 const {
 	useGetPromptByIdQuery,
-	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
@@ -153,7 +141,6 @@ const {
 
 export {
 	useGetPromptByIdQuery,
-	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,

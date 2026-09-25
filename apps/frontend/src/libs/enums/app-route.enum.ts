@@ -14,6 +14,7 @@ const AppRoute = {
 	SMART_SEARCH: "/smart-search",
 	TRAINING: "/training",
 	WORKSPACES: "/workspaces",
+	WORKSPACES_$WORKSPACE_ID_CONFIG: "/workspaces/:workspaceId/config",
 } as const;
 
 export { AppRoute };

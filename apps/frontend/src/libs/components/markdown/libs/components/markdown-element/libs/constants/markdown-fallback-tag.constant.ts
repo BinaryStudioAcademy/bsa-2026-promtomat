@@ -1,0 +1,3 @@
+const MARKDOWN_FALLBACK_TAG = "div";
+
+export { MARKDOWN_FALLBACK_TAG };

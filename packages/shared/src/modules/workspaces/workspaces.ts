@@ -5,6 +5,7 @@ export {
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	WorkspaceValidationRule,
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";
 export {

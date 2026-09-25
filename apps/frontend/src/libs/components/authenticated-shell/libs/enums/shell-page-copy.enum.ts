@@ -23,6 +23,10 @@ const ShellPageCopy = {
 		subtitle: "Log a prompt and score how well it worked",
 		title: "Training",
 	},
+	WORKSPACE_CONFIG: {
+		subtitle: "Name, tech stack and dataset target",
+		title: "Workspace config",
+	},
 	WORKSPACES: {
 		subtitle: "One workspace per codebase",
 		title: "Workspaces",
