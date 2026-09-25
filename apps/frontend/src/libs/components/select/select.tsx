@@ -124,7 +124,7 @@ const Select = <T extends FieldValues>({
 						</option>
 					))}
 				</select>
-				<Icon className={styles["icon"]} iconName={IconName.CHEVRON} />
+				<Icon className={styles["chevron"]} iconName={IconName.CHEVRON} />
 			</div>
 			{!descriptionId && (
 				<span className={styles["message"]} id={errorMessageId}>

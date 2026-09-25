@@ -5,6 +5,7 @@ export {
 	PERCENTAGE_MULTIPLIER,
 	ROUND_FACTOR,
 	SINGLE_DAY,
+	UNEXPECTED_ERROR,
 	ZERO_VALUE,
 } from "./libs/constants/constants.js";
 export {

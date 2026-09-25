@@ -4,23 +4,23 @@
 	align-items: center;
 	width: fit-content;
 	max-width: 400px;
-	padding: var(--space-10) var(--space-16);
+	padding: var(--space-14) var(--space-20);
 	background-color: var(--surface-card);
 	border: var(--border-width-hairline) solid var(--border-default);
-	border-radius: var(--radius-lg);
-	box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+	border-radius: var(--radius-xl);
+	box-shadow: 0 10px 60px rgb(0 0 0 / 50%);
 	animation: notification-in 200ms ease-out;
 }
 
 @keyframes notification-in {
 	from {
 		opacity: 0;
-		transform: translateX(16px);
+		transform: translateY(20px);
 	}
 
 	to {
 		opacity: 1;
-		transform: translateX(0);
+		transform: translateY(0);
 	}
 }
 
@@ -31,19 +31,19 @@
 @keyframes notification-out {
 	from {
 		opacity: 1;
-		transform: translateX(0);
+		transform: translateY(0);
 	}
 
 	to {
 		opacity: 0;
-		transform: translateX(16px);
+		transform: translateY(20px);
 	}
 }
 
 .message {
 	margin: 0;
 	font-size: var(--font-size-body-base);
-	font-weight: 400;
+	font-weight: 600;
 	line-height: normal;
 	color: var(--text-strong);
 	letter-spacing: 0;
