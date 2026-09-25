@@ -6,24 +6,25 @@ import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
 import { Link } from "~/libs/components/link/link.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
-import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import {
-	configureString,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-import { type NavigableRoute } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
-import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 	type PromptUpdateIntentRequestDto,
 } from "~/modules/prompts/libs/types/types.js";
 import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
-import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js";
+import {
+	getPromptRoute,
+	getScoreLabel,
+	promptUpdateIntentValidationSchema,
+} from "~/modules/prompts/prompts.js";
 
 import {
 	PromptHistoryLabel,
@@ -55,9 +56,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	const errorMessage = errors.taskIntent?.message;
 	const isOwner = user?.id === prompt.userId;
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
-	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
-		promptId: String(prompt.id),
-	}) as NavigableRoute;
+	const deliveryPath = getPromptRoute(prompt.id);
 
 	useEffect(() => {
 		lastValidIntentReference.current = prompt.intent;
@@ -135,7 +134,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					)}
 					<ScoreBadge
 						efficiencyScore={prompt.score}
-						label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+						label={getScoreLabel(prompt.score)}
 					/>
 				</div>
 				<div

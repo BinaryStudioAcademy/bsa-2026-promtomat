@@ -1,6 +1,11 @@
 import React from "react";
 
+import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
+import { IconName } from "~/libs/enums/enums.js";
+import { getPromptRoute, getScoreLabel } from "~/modules/prompts/prompts.js";
 
 import { PromptDeliveryViewLabel } from "../../enums/enums.js";
 import { type PromptDeliverySource } from "../../types/types.js";
@@ -39,8 +44,26 @@ const ExplanationSection: React.FC<Properties> = ({
 						</h3>
 						<ol className={styles["sources"]}>
 							{sources.map((source) => (
-								<li key={source.promptId} value={source.rank}>
-									{source.taskIntent}
+								<li key={source.promptId}>
+									<Link
+										className={styles["source"]}
+										hasDefaultStyles={false}
+										shouldOpenInNewTab
+										to={getPromptRoute(source.promptId)}
+									>
+										<span className={styles["source-rank"]}>{source.rank}</span>
+										<span className={styles["source-intent"]}>
+											{source.taskIntent}
+										</span>
+										<ScoreBadge
+											efficiencyScore={source.efficiencyScore}
+											label={getScoreLabel(source.efficiencyScore)}
+										/>
+										<Icon
+											className={styles["source-icon"]}
+											iconName={IconName.CHEVRON}
+										/>
+									</Link>
 								</li>
 							))}
 						</ol>

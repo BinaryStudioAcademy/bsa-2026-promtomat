@@ -34,6 +34,10 @@ import {
  *            minimum: 1
  *          taskIntent:
  *            type: string
+ *          efficiencyScore:
+ *            type: number
+ *            minimum: 1
+ *            maximum: 10
  *      ComposedPrompt:
  *        type: object
  *        properties:

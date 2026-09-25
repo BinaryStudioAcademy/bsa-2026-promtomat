@@ -95,7 +95,7 @@ const GenerateForm: React.FC<Properties> = ({
 						name="workspaceId"
 						options={options ?? []}
 						placeholder={GenerateLabel.WORKSPACE_PLACEHOLDER}
-						size={ControlSize.LG}
+						size={ControlSize.MD}
 					/>
 				</div>
 			</div>
