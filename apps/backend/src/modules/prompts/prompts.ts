@@ -5,6 +5,7 @@ import { scheduler } from "~/libs/modules/scheduler/scheduler.js";
 import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embeddings.js";
 
 import { labelService } from "../labels/labels.js";
+import { UserStreakService } from "../users/user-streak.service.js";
 import { UserModel } from "../users/user.model.js";
 import { UserRepository } from "../users/user.repository.js";
 import { workspaceService } from "../workspaces/workspaces.js";
@@ -16,13 +17,14 @@ import { PromptService } from "./prompt.service.js";
 
 const promptRepository = new PromptRepository(PromptModel);
 const userRepository = new UserRepository(UserModel);
+const userStreakService = new UserStreakService({ userRepository });
 const promptService = new PromptService({
 	database,
 	generator,
 	labelService,
 	promptEmbeddingService,
 	promptRepository,
-	userRepository,
+	userStreakService,
 	workspaceService,
 });
 

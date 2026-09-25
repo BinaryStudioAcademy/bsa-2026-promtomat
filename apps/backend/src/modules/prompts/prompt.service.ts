@@ -8,7 +8,7 @@ import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
-import { type UserRepository } from "~/modules/users/user.repository.js";
+import { type UserStreakService } from "~/modules/users/user-streak.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
@@ -42,7 +42,7 @@ type Constructor = {
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
-	userRepository: UserRepository;
+	userStreakService: UserStreakService;
 	workspaceService: WorkspaceService;
 };
 
@@ -56,7 +56,7 @@ class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
 	private promptRepository: PromptRepository;
 
-	private userRepository: UserRepository;
+	private userStreakService: UserStreakService;
 
 	private workspaceService: WorkspaceService;
 
@@ -66,7 +66,7 @@ class PromptService {
 		labelService,
 		promptEmbeddingService,
 		promptRepository,
-		userRepository,
+		userStreakService,
 		workspaceService,
 	}: Constructor) {
 		this.promptRepository = promptRepository;
@@ -74,7 +74,7 @@ class PromptService {
 		this.generator = generator;
 		this.database = database;
 		this.promptEmbeddingService = promptEmbeddingService;
-		this.userRepository = userRepository;
+		this.userStreakService = userStreakService;
 		this.workspaceService = workspaceService;
 	}
 
@@ -135,7 +135,7 @@ class PromptService {
 
 			const createdPrompt = entity.toObject();
 
-			await this.userRepository.updateStreakOnPromptLog(userId, trx);
+			await this.userStreakService.recordPromptLog(userId, trx);
 
 			return {
 				efficiencyScore: createdPrompt.efficiencyScore,
@@ -276,11 +276,11 @@ class PromptService {
 	): Promise<PromptStreakResponseDto> {
 		const resolvedTimeZone = resolveTimeZone(timeZone);
 
-		const storedStreak = await this.userRepository.findStreakByUserId(userId);
+		const storedStreak = await this.userStreakService.findByUserId(userId);
 
 		const currentStreak =
 			storedStreak && storedStreak.timeZone !== resolvedTimeZone
-				? await this.userRepository.updateStreakForTimeZone(
+				? await this.userStreakService.recomputeForTimeZone(
 						userId,
 						resolvedTimeZone,
 					)
