@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 
-import { Icon } from "~/libs/components/icon/icon.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
-import { IconName } from "~/libs/enums/enums.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
+import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
@@ -34,6 +34,12 @@ const PromptResultCard: React.FC<Properties> = ({
 		onSelect(prompt.id);
 	}, [onSelect, prompt.id]);
 
+	const rawScore = prompt.computedScore ?? prompt.score;
+	const formattedScore =
+		typeof rawScore === "number"
+			? +rawScore.toFixed(FRACTION_DIGITS)
+			: ZERO_VALUE;
+
 	return (
 		<button
 			aria-controls={detailId}
@@ -48,15 +54,8 @@ const PromptResultCard: React.FC<Properties> = ({
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
 				<ScoreBadge
-					efficiencyScore={prompt.score}
-					label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-				/>
-				<Icon
-					className={getValidClasses(
-						styles["chevron"],
-						isSelected && styles["chevron-open"],
-					)}
-					iconName={IconName.CHEVRON}
+					efficiencyScore={formattedScore}
+					label={`${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

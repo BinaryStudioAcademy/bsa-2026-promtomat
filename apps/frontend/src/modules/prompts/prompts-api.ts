@@ -32,6 +32,7 @@ const promptApi = baseApi
 		endpoints: (builder) => ({
 			getPromptById: builder.query<PromptItemResponseDto, number>({
 				extraOptions: { shouldSuppressToast: true },
+				providesTags: [PromptsApiTag.PROMPT],
 				query: (id) => ({
 					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
 						id: String(id),

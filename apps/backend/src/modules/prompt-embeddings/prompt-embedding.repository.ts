@@ -1,7 +1,10 @@
 import { raw, type Transaction } from "objection";
 
-import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
+import {
+	QualityScoreThreshold,
+	ZERO_VALUE,
+} from "~/libs/constants/constants.js";
+import { PromptQualityTier, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
@@ -84,7 +87,7 @@ class PromptEmbeddingRepository {
 		embedding,
 		limit,
 		offset,
-		score,
+		qualityTier,
 		userId,
 		workspaceId,
 	}: PromptSemanticSearchQuery): Promise<PromptSemanticSearchResult> {
@@ -134,19 +137,63 @@ class PromptEmbeddingRepository {
 			);
 		}
 
-		if (score) {
-			baseQuery.where(
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				score,
-			);
+		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
+			switch (qualityTier) {
+				case PromptQualityTier.NEEDS_IMPROVEMENT: {
+					baseQuery
+						.whereRaw("COALESCE(??, ??) >= ?", [
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+							QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT,
+						])
+						.andWhereRaw("COALESCE(??, ??) < ?", [
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+							QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT,
+						]);
+					break;
+				}
+				case PromptQualityTier.PROVEN: {
+					baseQuery.whereRaw("COALESCE(??, ??) >= ?", [
+						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+						`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+						QualityScoreThreshold.PROVEN,
+					]);
+					break;
+				}
+				case PromptQualityTier.UNRATED: {
+					baseQuery.whereNull(
+						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+					);
+					break;
+				}
+				case PromptQualityTier.USABLE: {
+					baseQuery
+						.whereRaw("COALESCE(??, ??) >= ?", [
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+							QualityScoreThreshold.USABLE,
+						])
+						.andWhereRaw("COALESCE(??, ??) < ?", [
+							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+							QualityScoreThreshold.PROVEN,
+						]);
+					break;
+				}
+			}
 		}
 
 		const [aggregation] = await baseQuery
 			.clone()
 			.clearSelect()
 			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`)
-			.avg(
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			.select(
+				raw("AVG(COALESCE(??, ??)) as ??", [
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					SQLAlias.AVERAGE_SCORE,
+				]),
 			)
 			.castTo<PromptAggregateRow[]>()
 			.execute();
@@ -162,13 +209,14 @@ class PromptEmbeddingRepository {
 				`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`,
 				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
 				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 				raw("?? AS ??", [
 					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
 					SQLAlias.WORKSPACE_NAME,
 				]),
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -176,6 +224,7 @@ class PromptEmbeddingRepository {
 					serializedEmbeddings,
 					SIMILARITY_THRESHOLD,
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 					MAX_EFFICIENCY_SCORE,
 				],
@@ -251,7 +300,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (??::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -259,6 +308,7 @@ class PromptEmbeddingRepository {
 					serializedEmbeddings,
 					SIMILARITY_THRESHOLD,
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
 					MAX_EFFICIENCY_SCORE,
 				],

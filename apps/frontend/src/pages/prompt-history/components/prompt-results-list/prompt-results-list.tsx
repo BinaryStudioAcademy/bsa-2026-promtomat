@@ -9,7 +9,7 @@ import {
 	type PromptItemResponseDto,
 } from "~/modules/prompts/libs/types/types.js";
 
-import { PromptHistoryLabel } from "../../libs/enums/enum.js";
+import { PromptHistoryLabel } from "../../libs/enums/prompt-history-label.enum.js";
 import { PromptDetailPanel } from "../prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";

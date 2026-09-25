@@ -310,7 +310,7 @@ class PromptEmbeddingService {
 	public async findAllByQuery({
 		limit,
 		offset,
-		score,
+		qualityTier,
 		search,
 		userId,
 		workspaceId,
@@ -328,7 +328,7 @@ class PromptEmbeddingService {
 				embedding,
 				limit,
 				offset,
-				score,
+				qualityTier,
 				userId,
 				workspaceId,
 			});

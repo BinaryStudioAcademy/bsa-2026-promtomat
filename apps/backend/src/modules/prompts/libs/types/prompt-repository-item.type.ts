@@ -1,4 +1,5 @@
 type PromptRepositoryItem = {
+	computedScore: null | number;
 	createdAt: string;
 	efficiencyScore: number;
 	id: number;

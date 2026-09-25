@@ -6,6 +6,7 @@ import { InlineEdit } from "~/libs/components/inline-edit/inline-edit.js";
 import { Link } from "~/libs/components/link/link.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import {
 	configureString,
@@ -16,6 +17,7 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type NavigableRoute } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
+import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
@@ -115,6 +117,12 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			});
 	}, [prompt.body]);
 
+	const rawScore = prompt.computedScore ?? prompt.score;
+	const formattedScore =
+		typeof rawScore === "number"
+			? +rawScore.toFixed(FRACTION_DIGITS)
+			: ZERO_VALUE;
+
 	return (
 		<article className={styles["panel"]}>
 			<div className={styles["heading"]}>
@@ -134,8 +142,8 @@ const PromptDetailPanel: React.FC<Properties> = ({
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
 					<ScoreBadge
-						efficiencyScore={prompt.score}
-						label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+						efficiencyScore={formattedScore}
+						label={`${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
 					/>
 				</div>
 				<div

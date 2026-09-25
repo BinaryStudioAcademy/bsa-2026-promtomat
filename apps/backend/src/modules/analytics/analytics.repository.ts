@@ -83,30 +83,44 @@ class AnalyticsRepository {
 		const query = this.promptModel
 			.query()
 			.select(
-				raw("COALESCE(sum(case when ??.?? < ? then 1 else 0 end), 0) as ??", [
-					DatabaseTableName.PROMPTS,
-					PromptColumnName.EFFICIENCY_SCORE,
-					ScoreTierMin.MID,
-					AnalyticsDistributionAlias.LOW,
-				]),
 				raw(
-					"COALESCE(sum(case when ??.?? >= ? and ??.?? < ? then 1 else 0 end), 0) as ??",
+					"COALESCE(sum(case when COALESCE(??.??, ??.??) < ? then 1 else 0 end), 0) as ??",
 					[
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
 						ScoreTierMin.MID,
+						AnalyticsDistributionAlias.LOW,
+					],
+				),
+				raw(
+					"COALESCE(sum(case when COALESCE(??.??, ??.??) >= ? and COALESCE(??.??, ??.??) < ? then 1 else 0 end), 0) as ??",
+					[
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.EFFICIENCY_SCORE,
+						ScoreTierMin.MID,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
 						ScoreTierMin.HIGH,
 						AnalyticsDistributionAlias.MID,
 					],
 				),
-				raw("COALESCE(sum(case when ??.?? >= ? then 1 else 0 end), 0) as ??", [
-					DatabaseTableName.PROMPTS,
-					PromptColumnName.EFFICIENCY_SCORE,
-					ScoreTierMin.HIGH,
-					AnalyticsDistributionAlias.HIGH,
-				]),
+				raw(
+					"COALESCE(sum(case when COALESCE(??.??, ??.??) >= ? then 1 else 0 end), 0) as ??",
+					[
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.EFFICIENCY_SCORE,
+						ScoreTierMin.HIGH,
+						AnalyticsDistributionAlias.HIGH,
+					],
+				),
 			)
 			.castTo<{ high: string; low: string; mid: string }[]>();
 
@@ -145,7 +159,9 @@ class AnalyticsRepository {
 					AnalyticsRepositoryConfig.BUCKET_DATE_FORMAT,
 					SQLAlias.BUCKET,
 				]),
-				raw("avg(??.??) as ??", [
+				raw("avg(COALESCE(??.??, ??.??)) as ??", [
+					DatabaseTableName.PROMPTS,
+					PromptColumnName.COMPUTED_SCORE,
 					DatabaseTableName.PROMPTS,
 					PromptColumnName.EFFICIENCY_SCORE,
 					SQLAlias.AVERAGE_SCORE,
@@ -181,8 +197,14 @@ class AnalyticsRepository {
 			.query()
 			.joinRelated(LABEL_RELATION)
 			.select(`${LABEL_RELATION}.${LabelColumnName.NAME} as ${SQLAlias.LABEL}`)
-			.avg(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			.select(
+				raw("avg(COALESCE(??.??, ??.??)) as ??", [
+					DatabaseTableName.PROMPTS,
+					PromptColumnName.COMPUTED_SCORE,
+					DatabaseTableName.PROMPTS,
+					PromptColumnName.EFFICIENCY_SCORE,
+					SQLAlias.AVERAGE_SCORE,
+				]),
 			)
 			.count(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`,
@@ -213,26 +235,34 @@ class AnalyticsRepository {
 	}: AnalyticsScopeQuery): Promise<PromptSummaryRow> {
 		const query = this.promptModel
 			.query()
-			.avg(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			.select(
+				raw("avg(COALESCE(??.??, ??.??)) as ??", [
+					DatabaseTableName.PROMPTS,
+					PromptColumnName.COMPUTED_SCORE,
+					DatabaseTableName.PROMPTS,
+					PromptColumnName.EFFICIENCY_SCORE,
+					SQLAlias.AVERAGE_SCORE,
+				]),
 			)
 			.countDistinct(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.LABEL_ID} as ${SQLAlias.KEYWORD_COUNT}`,
 			)
 			.select(
 				raw(
-					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval then ??.?? end) as ??",
+					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval then COALESCE(??.??, ??.??) end) as ??",
 					[
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.CREATED_AT,
 						`${String(WeeklyChangeWindow.CURRENT_LOOKBACK_DAYS)} day`,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
 						SQLAlias.CURRENT_SCORE,
 					],
 				),
 				raw(
-					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval and ??.?? < date_trunc('day', now()) - (?)::interval then ??.?? end) as ??",
+					"avg(case when ??.?? >= date_trunc('day', now()) - (?)::interval and ??.?? < date_trunc('day', now()) - (?)::interval then COALESCE(??.??, ??.??) end) as ??",
 					[
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.CREATED_AT,
@@ -240,6 +270,8 @@ class AnalyticsRepository {
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.CREATED_AT,
 						`${String(WeeklyChangeWindow.CURRENT_LOOKBACK_DAYS)} day`,
+						DatabaseTableName.PROMPTS,
+						PromptColumnName.COMPUTED_SCORE,
 						DatabaseTableName.PROMPTS,
 						PromptColumnName.EFFICIENCY_SCORE,
 						SQLAlias.PREVIOUS_SCORE,

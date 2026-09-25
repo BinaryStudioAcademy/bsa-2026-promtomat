@@ -9,6 +9,7 @@ export {
 	AppEnvironment,
 	AuthErrorMessage,
 	ErrorCode,
+	PromptQualityTier,
 	ScoreTierMin,
 	SortOrder,
 	TimeUnit,

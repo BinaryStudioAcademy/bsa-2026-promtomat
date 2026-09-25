@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 import { ComposedPromptError } from "~/libs/exceptions/exceptions.js";
 import {
@@ -257,6 +259,7 @@ class ComposedPromptService {
 	private toDto(entity: ComposedPromptEntity): ComposedPromptDto {
 		const {
 			body,
+			computedScore,
 			createdAt,
 			description,
 			explanation,
@@ -268,6 +271,7 @@ class ComposedPromptService {
 
 		return {
 			body,
+			computedScore,
 			createdAt,
 			description,
 			explanation,
@@ -333,8 +337,27 @@ class ComposedPromptService {
 		return this.toDto(composedPrompt);
 	}
 
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | { id: number }> {
+		return await this.composedPromptRepository.findByIdForUpdate(id, trx);
+	}
+
 	public async findWorkspaceId(id: number): Promise<null | number> {
 		return await this.composedPromptRepository.findWorkspaceId(id);
+	}
+
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.composedPromptRepository.updateComputedScore(
+			id,
+			computedScore,
+			trx,
+		);
 	}
 }
 

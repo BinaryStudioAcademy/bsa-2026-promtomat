@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -8,7 +8,7 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
+import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import {
@@ -19,16 +19,35 @@ import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
-import { PromptHistoryLabel } from "./libs/enums/enum.js";
+import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
 import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
 import styles from "./styles.module.css";
 
+const FRACTION_DIGITS = 1;
 const SINGLE_RESULT_COUNT = 1;
-const SCORE_OPTION_START = PromptValidationRule.EFFICIENCY_SCORE_MIN;
-const SCORE_OPTION_COUNT =
-	PromptValidationRule.EFFICIENCY_SCORE_MAX -
-	SCORE_OPTION_START +
-	SINGLE_RESULT_COUNT;
+
+const QUALITY_TIER_OPTIONS = [
+	{
+		label: PromptHistoryLabel.QUALITY_TIER_ALL,
+		value: PromptQualityTier.ALL,
+	},
+	{
+		label: PromptHistoryLabel.QUALITY_TIER_PROVEN,
+		value: PromptQualityTier.PROVEN,
+	},
+	{
+		label: PromptHistoryLabel.QUALITY_TIER_USABLE,
+		value: PromptQualityTier.USABLE,
+	},
+	{
+		label: PromptHistoryLabel.QUALITY_TIER_NEEDS_IMPROVEMENT,
+		value: PromptQualityTier.NEEDS_IMPROVEMENT,
+	},
+	{
+		label: PromptHistoryLabel.QUALITY_TIER_UNRATED,
+		value: PromptQualityTier.UNRATED,
+	},
+];
 
 const PromptHistory: React.FC = () => {
 	const {
@@ -56,6 +75,7 @@ const PromptHistory: React.FC = () => {
 		...filterQueryPayload,
 		workspaceId: hasWorkspace ? workspaceId : undefined,
 	};
+
 	const {
 		data,
 		fetchNextPage,
@@ -72,32 +92,16 @@ const PromptHistory: React.FC = () => {
 			value: id,
 		})) ?? [];
 
-	const scoreOptions = useMemo(() => {
-		const scores = Array.from({ length: SCORE_OPTION_COUNT }, (_, index) => {
-			const score = SCORE_OPTION_START + index;
-
-			return {
-				label: `${String(score)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`,
-				value: score,
-			};
-		});
-
-		return [
-			{ label: PromptHistoryLabel.ANY_SCORE, value: "" },
-			...scores.toReversed(),
-		];
-	}, []);
-
 	const items = data?.pages.flatMap((page) => page.items) ?? [];
 	const [firstPage] = data?.pages ?? [];
 	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
 	const averageScore = firstPage?.averageScore ?? null;
-	const hasActiveFilters =
-		Boolean(search) || typeof queryPayload.score === "number";
+
+	const hasActiveFilters = Boolean(search) || Boolean(queryPayload.qualityTier);
 
 	const filterKey = [
 		String(queryPayload.workspaceId ?? ""),
-		String(queryPayload.score ?? ""),
+		queryPayload.qualityTier ?? "",
 		search,
 	].join(":");
 
@@ -132,7 +136,7 @@ const PromptHistory: React.FC = () => {
 	const averageScoreLabel =
 		averageScore === null
 			? "—"
-			: `${String(averageScore)} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
+			: `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
 
 	let detailPane: React.ReactNode = null;
 
@@ -208,10 +212,10 @@ const PromptHistory: React.FC = () => {
 						<Select
 							control={control}
 							isLabelHidden
-							label={PromptHistoryLabel.EFFICIENCY_SCORE}
+							label={PromptHistoryLabel.QUALITY_TIER}
 							leadingIconName={IconName.SHIELD_CHECK}
-							name="score"
-							options={scoreOptions}
+							name="qualityTier"
+							options={QUALITY_TIER_OPTIONS}
 							size={ControlSize.LG}
 						/>
 					</div>

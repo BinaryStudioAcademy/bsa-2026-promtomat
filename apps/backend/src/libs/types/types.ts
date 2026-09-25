@@ -12,6 +12,8 @@ export {
 	type ApiTokenRequestDto,
 	type ApiTokenResponseDto,
 	type ApiTokenRouteParametersDto,
+	type EvaluationCreateRequestDto,
+	type EvaluationResponseDto,
 	type ServerCommonErrorResponse,
 	type ServerValidationErrorResponse,
 	type UserDto,

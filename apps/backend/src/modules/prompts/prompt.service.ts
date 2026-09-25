@@ -1,3 +1,5 @@
+import { type Transaction } from "objection";
+
 import { ROUND_FACTOR } from "~/libs/constants/constants.js";
 import {
 	PromptDeliveryError,
@@ -124,6 +126,7 @@ class PromptService {
 			const createdPrompt = entity.toObject();
 
 			return {
+				computedScore: null,
 				efficiencyScore: createdPrompt.efficiencyScore,
 				id: createdPrompt.id,
 				label: label.name,
@@ -146,7 +149,7 @@ class PromptService {
 		const {
 			limit = PaginationValue.DEFAULT_LIMIT,
 			page = PaginationValue.DEFAULT_PAGE,
-			score,
+			qualityTier,
 			search,
 			workspaceId,
 		} = query;
@@ -156,7 +159,7 @@ class PromptService {
 			? await this.promptEmbeddingService.findAllByQuery({
 					limit,
 					offset,
-					score,
+					qualityTier,
 					search,
 					userId,
 					workspaceId,
@@ -216,6 +219,13 @@ class PromptService {
 		return prompt ? prompt.toObject() : null;
 	}
 
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | PromptEntity> {
+		return await this.promptRepository.findByIdForUpdate(id, trx);
+	}
+
 	public async findByWorkspace(
 		payload: PromptFindByWorkspacePayload,
 	): Promise<PromptDto[]> {
@@ -272,6 +282,10 @@ class PromptService {
 		};
 	}
 
+	public async findWorkspaceId(id: number): Promise<null | number> {
+		return await this.promptRepository.findWorkspaceId(id);
+	}
+
 	public async regenerateLabel(prompt: PromptLabelSource): Promise<void> {
 		const generatedLabel = await this.generateLabel({
 			promptBody: prompt.promptBody,
@@ -285,6 +299,14 @@ class PromptService {
 		});
 
 		await this.promptRepository.updateLabel(prompt.id, label.id);
+	}
+
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.promptRepository.updateComputedScore(id, computedScore, trx);
 	}
 
 	public async updateIntent(

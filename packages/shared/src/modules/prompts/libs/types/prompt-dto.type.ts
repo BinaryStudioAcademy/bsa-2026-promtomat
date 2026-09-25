@@ -1,4 +1,5 @@
 type PromptDto = {
+	computedScore: null | number;
 	efficiencyScore: number;
 	id: number;
 	label: string;

@@ -1,4 +1,5 @@
 const ColumnName = {
+	COMPUTED_SCORE: "computed_score",
 	CREATED_AT: "created_at",
 	EFFICIENCY_SCORE: "efficiency_score",
 	ID: "id",

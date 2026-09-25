@@ -1,4 +1,4 @@
-import { UniqueViolationError } from "objection";
+import { type Transaction, UniqueViolationError } from "objection";
 
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
@@ -18,6 +18,7 @@ class ComposedPromptRepository {
 	): ComposedPromptEntity {
 		return ComposedPromptEntity.initialize({
 			body: composedPrompt.body,
+			computedScore: composedPrompt.computedScore,
 			createdAt: composedPrompt.createdAt,
 			description: composedPrompt.description,
 			descriptionHash: composedPrompt.descriptionHash,
@@ -69,6 +70,20 @@ class ComposedPromptRepository {
 		return composedPrompt ? this.initializeEntity(composedPrompt) : null;
 	}
 
+	public async findByIdForUpdate(
+		id: number,
+		trx: Transaction,
+	): Promise<null | { id: number }> {
+		const model = await this.composedPromptModel
+			.query(trx)
+			.select("id")
+			.findById(id)
+			.forUpdate()
+			.castTo<undefined | { id: number }>();
+
+		return model ?? null;
+	}
+
 	public async findByWorkspaceAndHash(
 		workspaceId: number,
 		descriptionHash: string,
@@ -90,6 +105,17 @@ class ComposedPromptRepository {
 			.execute();
 
 		return composedPrompt?.workspaceId ?? null;
+	}
+
+	public async updateComputedScore(
+		id: number,
+		computedScore: null | number,
+		trx?: Transaction,
+	): Promise<void> {
+		await this.composedPromptModel
+			.query(trx)
+			.findById(id)
+			.patch({ computedScore });
 	}
 }
 

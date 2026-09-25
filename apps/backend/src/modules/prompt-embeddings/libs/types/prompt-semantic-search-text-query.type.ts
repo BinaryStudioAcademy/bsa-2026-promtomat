@@ -1,7 +1,10 @@
+import { type PromptQualityTier } from "~/libs/enums/enums.js";
+import { type ValueOf } from "~/libs/types/types.js";
+
 type PromptSemanticSearchTextQuery = {
 	limit: number;
 	offset: number;
-	score?: number | undefined;
+	qualityTier?: undefined | ValueOf<typeof PromptQualityTier>;
 	search: string;
 	userId: number;
 	workspaceId?: number | undefined;
