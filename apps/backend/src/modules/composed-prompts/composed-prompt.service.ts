@@ -14,6 +14,7 @@ import {
 import { type Logger } from "~/libs/modules/logger/logger.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
+import { PaginationValue } from "../prompts/libs/enums/enums.js";
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptRepository } from "./composed-prompt.repository.js";
 import { SYSTEM_PROMPT } from "./libs/constants/constants.js";
@@ -34,6 +35,7 @@ import {
 } from "./libs/helpers/helpers.js";
 import {
 	type ComposedPromptDto,
+	type ComposedPromptGetQueryDto,
 	type ComposePayload,
 	type ComposeResult,
 	type GenerationOutcome,
@@ -325,6 +327,25 @@ class ComposedPromptService {
 			payload,
 			topCandidate,
 		});
+	}
+
+	public async findAll(
+		options: ComposedPromptGetQueryDto & { userId: number },
+	): Promise<{
+		items: ComposedPromptDto[];
+		page: number;
+		pageSize: number;
+		totalCount: number;
+	}> {
+		const { items, totalCount } =
+			await this.composedPromptRepository.findAll(options);
+
+		return {
+			items: items.map((item) => this.toDto(item)),
+			page: options.page ?? PaginationValue.DEFAULT_PAGE,
+			pageSize: options.limit ?? PaginationValue.DEFAULT_LIMIT,
+			totalCount,
+		};
 	}
 
 	public async findById(id: number): Promise<ComposedPromptDto> {

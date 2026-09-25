@@ -8,6 +8,7 @@ export {
 } from "./libs/enums/enums.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,
@@ -15,6 +16,7 @@ export {
 	type PromptCandidateDto,
 } from "./libs/types/types.js";
 export {
+	composedPromptGetQueryValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	composeValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
