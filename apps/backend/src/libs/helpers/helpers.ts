@@ -5,6 +5,7 @@ export { getErrorDetails } from "./get-error-details/get-error-details.helper.js
 export { requireEntityId } from "./require-entity-id/require-entity-id.helper.js";
 export {
 	countPercentage,
+	formatDateInTimeZone,
 	getPreviousUtcDate,
 	roundScore,
 } from "@promptomat/shared";

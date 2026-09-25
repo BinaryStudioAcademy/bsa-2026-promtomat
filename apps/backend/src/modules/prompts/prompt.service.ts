@@ -1,8 +1,10 @@
 import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
+import { DateFormat } from "~/libs/enums/enums.js";
 import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
+import { formatDateInTimeZone } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
@@ -16,7 +18,6 @@ import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
 import {
 	buildActivityWindow,
 	createGenerateLabelOptions,
-	formatDateInTimeZone,
 	resolveTimeZone,
 } from "./libs/helpers/helpers.js";
 import {
@@ -291,7 +292,11 @@ class PromptService {
 			resolvedTimeZone,
 		);
 
-		const today = formatDateInTimeZone(new Date(), resolvedTimeZone);
+		const today = formatDateInTimeZone(
+			new Date(),
+			resolvedTimeZone,
+			DateFormat.ISO_DATE,
+		);
 
 		return {
 			currentStreak,

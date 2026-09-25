@@ -41,6 +41,7 @@ export {
 	configureString,
 	countPercentage,
 	formatDate,
+	formatDateInTimeZone,
 	getPreviousUtcDate,
 	getRelativeTimeLabel,
 	roundScore,

@@ -9,7 +9,12 @@ import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
-import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
+import {
+	NO_UPDATED_ROWS,
+	STREAK_ON_PROMPT_LOG_QUERY,
+	STREAK_READ_QUERY,
+	STREAK_RECOMPUTE_QUERY,
+} from "./libs/constants/constants.js";
 import {
 	type ResetPasswordPayload,
 	type UserStreak,
@@ -19,67 +24,6 @@ import {
 const UsersConstraintName = {
 	NICKNAME_UNIQUE: "users_nickname_unique",
 } as const;
-
-const STREAK_ON_PROMPT_LOG_QUERY = `
-	UPDATE users
-	SET
-		current_streak = CASE
-			WHEN last_prompt_date = (now() AT TIME ZONE time_zone)::date
-				THEN current_streak
-			WHEN last_prompt_date = (now() AT TIME ZONE time_zone)::date - 1
-				THEN current_streak + 1
-			ELSE 1
-		END,
-		last_prompt_date = (now() AT TIME ZONE time_zone)::date
-	WHERE id = ?
-`;
-
-const STREAK_READ_QUERY = `
-	SELECT
-		CASE
-			WHEN last_prompt_date >= (now() AT TIME ZONE time_zone)::date - 1
-				THEN current_streak
-			ELSE 0
-		END AS "currentStreak",
-		time_zone AS "timeZone"
-	FROM users
-	WHERE id = ?
-`;
-
-const STREAK_RECOMPUTE_QUERY = `
-	WITH active_days AS (
-		SELECT (created_at AT TIME ZONE :timeZone)::date AS day
-		FROM prompts
-		WHERE user_id = :userId
-		GROUP BY 1
-	), runs AS (
-		SELECT day, day - (row_number() OVER (ORDER BY day))::int AS run_id
-		FROM active_days
-	), latest_run AS (
-		SELECT count(*) AS length, max(day) AS last_day
-		FROM runs
-		GROUP BY run_id
-		ORDER BY last_day DESC
-		LIMIT 1
-	)
-	UPDATE users
-	SET
-		time_zone = :timeZone,
-		current_streak = COALESCE(
-			(
-				SELECT CASE
-					WHEN last_day >= (now() AT TIME ZONE :timeZone)::date - 1
-						THEN length
-					ELSE 0
-				END
-				FROM latest_run
-			),
-			0
-		),
-		last_prompt_date = (SELECT last_day FROM latest_run)
-	WHERE id = :userId
-	RETURNING current_streak AS "currentStreak"
-`;
 
 class UserRepository {
 	private userModel: typeof UserModel;
