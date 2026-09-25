@@ -1,4 +1,5 @@
 import { Button } from "~/libs/components/button/button.js";
+import { ModalTone } from "~/libs/components/modal/libs/enums/enums.js";
 import { Modal } from "~/libs/components/modal/modal.js";
 import { ButtonVariant, type IconName } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -18,7 +19,7 @@ type Properties = {
 	onConfirm: () => void;
 	title: string;
 	titleIconName?: ValueOf<typeof IconName>;
-	tone?: "danger" | "default";
+	tone?: ValueOf<typeof ModalTone>;
 };
 
 const Confirmation = ({
@@ -33,7 +34,7 @@ const Confirmation = ({
 	onConfirm,
 	title,
 	titleIconName,
-	tone = "default",
+	tone = ModalTone.DEFAULT,
 }: Properties) => {
 	return (
 		<Modal

@@ -1,5 +1,6 @@
 const ColumnName = {
 	CREATED_AT: "created_at",
+	DESCRIPTION: "description",
 	ID: "id",
 	NAME: "name",
 	STACK_TAGS: "stack_tags",
