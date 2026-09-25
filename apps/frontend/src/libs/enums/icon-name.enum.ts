@@ -8,6 +8,7 @@ const IconName = {
 	CLIPBOARD_CHECK: "clipboard-check",
 	CLIPBOARD_LIST: "clipboard-list",
 	CLOSE: "close",
+	CODE: "code",
 	COPY: "copy",
 	EDIT: "edit",
 	EYE: "eye",

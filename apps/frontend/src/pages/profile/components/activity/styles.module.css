@@ -1,0 +1,30 @@
+@media (width >= 600px) {
+	.activity-button {
+		align-self: flex-start;
+	}
+}
+
+.empty-state {
+	padding: var(--space-24);
+	text-align: center;
+	border: var(--border-width-hairline) dashed var(--border-subtle);
+	border-radius: var(--radius-md);
+}
+
+.empty-state-text {
+	margin: 0 0 var(--space-4);
+	font-weight: bold;
+	color: var(--text-strong);
+}
+
+.empty-state-subtext {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.empty-state-cta {
+	display: inline-block;
+	margin-top: var(--space-16);
+	font-weight: bold;
+}
