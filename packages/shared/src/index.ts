@@ -4,6 +4,7 @@ export {
 	MAX_EFFICIENCY_SCORE,
 	PERCENTAGE_MULTIPLIER,
 	ROUND_FACTOR,
+	UNEXPECTED_ERROR,
 	ZERO_VALUE,
 } from "./libs/constants/constants.js";
 export {
@@ -111,11 +112,14 @@ export {
 } from "./modules/auth/auth.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptGetAllResponseDto,
+	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,
+	composedPromptGetQueryValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	ComposedPromptsApiPath,
 	ComposedPromptsErrorCode,

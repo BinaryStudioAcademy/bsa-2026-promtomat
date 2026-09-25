@@ -7,6 +7,7 @@ import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/promp
 import { AppRoute } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
+import { useGetComposedPromptByIdQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
 import {
 	EvaluationMessage,
 	useEvaluateMutation,
@@ -18,20 +19,38 @@ import styles from "./styles.module.css";
 
 const PromptDelivery: React.FC = () => {
 	const navigate = useNavigate();
-	const { promptId } = useParams<{ promptId?: string }>();
-	const parsedPromptId = Number(promptId);
+	const { composedPromptId, promptId } = useParams<{
+		composedPromptId?: string;
+		promptId?: string;
+	}>();
 
-	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
+	const isComposed = Boolean(composedPromptId);
+	const targetId = Number(composedPromptId ?? promptId);
+
+	const { data: regularData, isLoading: isLoadingRegular } =
+		useGetPromptByIdQuery(targetId, {
+			skip: isComposed || !targetId,
+		});
+
+	const { data: composedData, isLoading: isLoadingComposed } =
+		useGetComposedPromptByIdQuery(targetId, {
+			skip: !isComposed || !targetId,
+		});
+
 	const [evaluate] = useEvaluateMutation();
+
+	const isLoading = isComposed ? isLoadingComposed : isLoadingRegular;
+	const data = isComposed ? composedData : regularData;
 
 	const handleScoreSelect = useCallback(
 		(score: number): void => {
 			const recordEvaluation = async (): Promise<void> => {
 				try {
-					await evaluate({
-						promptId: parsedPromptId,
-						score,
-					}).unwrap();
+					await evaluate(
+						isComposed
+							? { composedPromptId: targetId, score }
+							: { promptId: targetId, score },
+					).unwrap();
 
 					showNotification({
 						message: EvaluationMessage.EVALUATION_SUCCESS,
@@ -49,7 +68,7 @@ const PromptDelivery: React.FC = () => {
 
 			void recordEvaluation();
 		},
-		[evaluate, navigate, parsedPromptId],
+		[evaluate, isComposed, navigate, targetId],
 	);
 
 	if (isLoading) {
@@ -60,14 +79,18 @@ const PromptDelivery: React.FC = () => {
 		return <NotFoundPage />;
 	}
 
+	const isRegularPrompt = "score" in data;
+
 	return (
 		<div className={getValidClasses("page-container", styles["page"])}>
 			<PromptDeliveryView
 				body={data.body}
 				computedScore={data.computedScore}
-				efficiencyScore={data.score}
 				onScoreSelect={handleScoreSelect}
-				workspaceName={data.workspaceName}
+				{...(isRegularPrompt && {
+					efficiencyScore: data.score,
+					workspaceName: data.workspaceName,
+				})}
 			/>
 		</div>
 	);

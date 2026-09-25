@@ -48,16 +48,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.PROFILE,
 											},
 											{
-												handle: ShellPageCopy.SETTINGS,
-												lazy: async () => {
-													const pageModule =
-														await import("~/pages/settings/settings.js");
-
-													return { Component: pageModule.SettingsPage };
-												},
-												path: AppRoute.SETTINGS,
-											},
-											{
 												handle: ShellPageCopy.API_TOKENS,
 												lazy: async () => {
 													const pageModule =
@@ -147,6 +137,24 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 											return { Component: pageModule.PromptDelivery };
 										},
 										path: AppRoute.PROMPTS_$PROMPT_ID,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+											return { Component: pageModule.PromptDelivery };
+										},
+										path: AppRoute.PROMPTS_$PROMPT_ID,
+									},
+									{
+										lazy: async () => {
+											const pageModule =
+												await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+											return { Component: pageModule.PromptDelivery };
+										},
+										path: AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID,
 									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,

@@ -1,21 +1,21 @@
 import { useCallback, useState } from "react";
 
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
+import { type PromptHistoryItem } from "../../types/types.js";
 
 type PromptSelection = {
 	filterKey: string;
-	promptId: null | number;
+	uniqueKey: null | string;
 };
 
 type Properties = {
 	filterKey: string;
-	items: PromptItemResponseDto[];
+	items: PromptHistoryItem[];
 };
 
 type UsePromptSelectionReturn = {
-	handleSelectPrompt: (promptId: number) => void;
-	selectedPrompt: null | PromptItemResponseDto;
-	selectedPromptId: null | number;
+	handleSelectPrompt: (uniqueKey: string) => void;
+	selectedPrompt: null | PromptHistoryItem;
+	selectedPromptKey: null | string;
 };
 
 const usePromptSelection = ({
@@ -24,29 +24,29 @@ const usePromptSelection = ({
 }: Properties): UsePromptSelectionReturn => {
 	const [selection, setSelection] = useState<PromptSelection>({
 		filterKey,
-		promptId: null,
+		uniqueKey: null,
 	});
 
 	const [firstItem] = items;
-	const selectedPromptIdFromState =
-		selection.filterKey === filterKey ? selection.promptId : null;
+	const selectedKeyFromState =
+		selection.filterKey === filterKey ? selection.uniqueKey : null;
 	const hasSelectedInList =
-		selectedPromptIdFromState !== null &&
-		items.some((item) => item.id === selectedPromptIdFromState);
-	const selectedPromptId = hasSelectedInList
-		? selectedPromptIdFromState
-		: (firstItem?.id ?? null);
+		selectedKeyFromState !== null &&
+		items.some((item) => item.uniqueKey === selectedKeyFromState);
+	const selectedPromptKey = hasSelectedInList
+		? selectedKeyFromState
+		: (firstItem?.uniqueKey ?? null);
 	const selectedPrompt =
-		items.find((item) => item.id === selectedPromptId) ?? null;
+		items.find((item) => item.uniqueKey === selectedPromptKey) ?? null;
 
 	const handleSelectPrompt = useCallback(
-		(promptId: number): void => {
-			setSelection({ filterKey, promptId });
+		(uniqueKey: string): void => {
+			setSelection({ filterKey, uniqueKey });
 		},
 		[filterKey],
 	);
 
-	return { handleSelectPrompt, selectedPrompt, selectedPromptId };
+	return { handleSelectPrompt, selectedPrompt, selectedPromptKey };
 };
 
 export { usePromptSelection };

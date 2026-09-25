@@ -96,3 +96,22 @@
 .copy-button {
 	flex: 1;
 }
+
+.badges {
+	display: inline-flex;
+	flex-shrink: 0;
+	gap: var(--space-8);
+	align-items: center;
+}
+
+.badge-generated {
+	display: inline-flex;
+	align-items: center;
+	padding: var(--space-4) var(--space-8);
+	font-size: var(--font-size-label-xs);
+	font-weight: 700;
+	color: #38bdf8;
+	text-transform: uppercase;
+	background-color: rgb(56 189 248 / 12%);
+	border-radius: var(--radius-sm);
+}

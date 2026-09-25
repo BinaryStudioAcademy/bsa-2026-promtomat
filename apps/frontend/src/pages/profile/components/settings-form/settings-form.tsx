@@ -1,15 +1,15 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
-import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { Select } from "~/libs/components/select/select.js";
+import { UNEXPECTED_ERROR } from "~/libs/constants/constants.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
+import { ValueOf } from "~/libs/types/types.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
 import { useUpdateProfileMutation } from "~/modules/users/users-api.js";
 import {
@@ -21,20 +21,29 @@ import {
 	AI_CODING_TOOL_OPTIONS,
 	EMPTY_AI_CODING_TOOL,
 } from "../../libs/constants.js";
-import { SettingsMessage } from "../../libs/enums/enums.js";
+import {
+	SettingsDescriptionMessage,
+	SettingsMessage,
+} from "../../libs/enums/enums.js";
 import {
 	checkHasSettingsChanged,
 	getSettingsFormValues,
 } from "../../libs/helpers/helpers.js";
 import { type SettingsFormValues } from "../../libs/types/types.js";
-import styles from "../../styles.module.css";
+import { Section } from "../section/section.js";
+import { UserInfo } from "../user-info/user-info.js";
+import styles from "./styles.module.css";
 
 type Properties = {
+	totalPrompts: number;
 	user: UserDto;
 };
 
-const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
-	const [updateProfile, { error, isLoading }] = useUpdateProfileMutation();
+const SettingsForm: React.FC<Properties> = ({
+	totalPrompts,
+	user,
+}: Properties) => {
+	const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 	const {
 		control,
 		formState: { isDirty },
@@ -46,12 +55,9 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 		defaultValues: getSettingsFormValues(user),
 		validationSchema: updateProfileValidationSchema,
 	});
-
-	const isNicknameConflict =
-		isServerError(error) &&
-		error.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS;
-	const generalError =
-		isNicknameConflict || checkIsToastedError(error) ? undefined : error;
+	const [message, setMessage] = useState<
+		ValueOf<typeof SettingsDescriptionMessage>
+	>(SettingsDescriptionMessage.DEFAULT);
 
 	const isSaveDisabled = isLoading || !isDirty;
 
@@ -87,6 +93,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						message: SettingsMessage.SUCCESS,
 						type: NotificationType.SUCCESS,
 					});
+					setMessage(SettingsDescriptionMessage.SAVED);
 				})
 				.catch((caughtError: unknown) => {
 					if (
@@ -96,6 +103,13 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 						setError("nickname", {
 							message: caughtError.message,
 							type: "server",
+						});
+					} else {
+						showNotification({
+							message: isServerError(caughtError)
+								? caughtError.message
+								: UNEXPECTED_ERROR,
+							type: NotificationType.DANGER,
 						});
 					}
 				});
@@ -111,14 +125,16 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 	);
 
 	return (
-		<section className={styles["card"]}>
-			<h2 className={styles["section-title"]}>PROFILE SETUP</h2>
-			<FormAlert error={generalError} />
+		<Section title="PROFILE">
+			<UserInfo
+				memberSince={user.createdAt}
+				nickname={user.nickname}
+				totalPrompts={totalPrompts}
+			/>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>
 					<Input
 						control={control}
-						isRequired
 						label="Nickname"
 						maxLength={AuthValidationRule.NICKNAME_MAXIMUM_LENGTH}
 						name="nickname"
@@ -128,23 +144,27 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 					/>
 					<Select
 						control={control}
-						isRequired
 						label="Primary AI coding tool"
+						leadingIconName="code"
 						name="primaryAiCodingTool"
 						options={AI_CODING_TOOL_OPTIONS}
 						placeholder={SettingsMessage.TOOL_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
 				</div>
-				<Button
-					isDisabled={isSaveDisabled}
-					isLoading={isLoading}
-					label={isLoading ? SettingsMessage.SAVING : SettingsMessage.SAVE}
-					size={ControlSize.LG}
-					type="submit"
-				/>
+				<div className={styles["profile-save-row"]}>
+					<Button
+						isDisabled={isSaveDisabled || isLoading}
+						label={SettingsMessage.SAVE}
+						size={ControlSize.LG}
+						type="submit"
+					/>
+					<span className={styles["small"]}>
+						{isDirty ? SettingsDescriptionMessage.DEFAULT : message}
+					</span>
+				</div>
 			</form>
-		</section>
+		</Section>
 	);
 };
 

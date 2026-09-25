@@ -13,15 +13,18 @@ import { type ComposedPromptService } from "./composed-prompt.service.js";
 import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
 import { composedPromptAccessHook } from "./libs/hooks/composed-prompt-access.hook.js";
 import {
+	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposeRequestDto,
 } from "./libs/types/types.js";
 import {
+	composedPromptGetQueryValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	composeValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 
-/*** @swagger
+/**
+ * @swagger
  * components:
  *    schemas:
  *      ComposedPromptSource:
@@ -51,6 +54,9 @@ import {
  *            description: Plain prose referring to sources by number
  *          modelId:
  *            type: string
+ *          computedScore:
+ *            type: number
+ *            nullable: true
  *          sources:
  *            type: array
  *            items:
@@ -93,6 +99,19 @@ import {
  *              kind:
  *                type: string
  *                enum: [no-matches]
+ *      ComposedPromptGetAllResponse:
+ *        type: object
+ *        properties:
+ *          items:
+ *            type: array
+ *            items:
+ *              $ref: "#/components/schemas/ComposedPrompt"
+ *          page:
+ *            type: number
+ *          pageSize:
+ *            type: number
+ *          totalCount:
+ *            type: number
  */
 class ComposedPromptController extends BaseController {
 	private composedPromptService: ComposedPromptService;
@@ -117,6 +136,19 @@ class ComposedPromptController extends BaseController {
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: composeValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findAll(
+					options as APIHandlerOptions<{ query: ComposedPromptGetQueryDto }>,
+				),
+			method: HTTPMethod.GET,
+			path: ComposedPromptsApiPath.ROOT,
+			preHandler: workspaceAccessHook(this.workspaceService),
+			validation: {
+				query: composedPromptGetQueryValidationSchema,
 			},
 		});
 
@@ -204,6 +236,73 @@ class ComposedPromptController extends BaseController {
 		return {
 			payload: response,
 			status: isCreated ? HTTPCode.CREATED : HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /composed-prompts:
+	 *    get:
+	 *      description: Returns a paginated list of composed prompts for a workspace accessible to the caller
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: query
+	 *          name: workspaceId
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *        - in: query
+	 *          name: page
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *            default: 1
+	 *        - in: query
+	 *          name: limit
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *            maximum: 100
+	 *            default: 10
+	 *      responses:
+	 *        200:
+	 *          description: Paginated composed prompts successfully retrieved
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ComposedPromptGetAllResponse"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        404:
+	 *          description: Workspace not found
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
+	 */
+	private async findAll(
+		options: APIHandlerOptions<{ query: ComposedPromptGetQueryDto }>,
+	): Promise<APIHandlerResponse> {
+		const result = await this.composedPromptService.findAll({
+			...options.query,
+			userId: options.user?.id as number,
+		});
+
+		return {
+			payload: result,
+			status: HTTPCode.OK,
 		};
 	}
 

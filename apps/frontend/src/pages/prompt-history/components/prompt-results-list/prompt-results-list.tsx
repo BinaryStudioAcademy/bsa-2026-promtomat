@@ -4,12 +4,10 @@ import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
-import {
-	type PromptGetQueryDto,
-	type PromptItemResponseDto,
-} from "~/modules/prompts/libs/types/types.js";
+import { type PromptGetQueryDto } from "~/modules/prompts/libs/types/types.js";
 
 import { PromptHistoryLabel } from "../../libs/enums/prompt-history-label.enum.js";
+import { type PromptHistoryItem } from "../../libs/types/types.js";
 import { PromptDetailPanel } from "../prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";
@@ -24,11 +22,11 @@ type Properties = {
 	isFetching: boolean;
 	isLoadingPrompts: boolean;
 	isLoadingWorkspaces: boolean;
-	items: PromptItemResponseDto[];
+	items: PromptHistoryItem[];
 	onRetry: () => void;
-	onSelectPrompt: (promptId: number) => void;
+	onSelectPrompt: (uniqueKey: string) => void;
 	queryPayload: Omit<PromptGetQueryDto, "page">;
-	selectedPromptId: null | number;
+	selectedPromptKey: null | string;
 };
 
 const PromptResultsList: React.FC<Properties> = ({
@@ -42,7 +40,7 @@ const PromptResultsList: React.FC<Properties> = ({
 	onRetry,
 	onSelectPrompt,
 	queryPayload,
-	selectedPromptId,
+	selectedPromptKey,
 }: Properties) => {
 	if (isLoadingWorkspaces || (hasWorkspace && isLoadingPrompts)) {
 		return <Loader variant={LoaderVariant.SECTION} />;
@@ -85,11 +83,11 @@ const PromptResultsList: React.FC<Properties> = ({
 	return (
 		<>
 			{items.map((item) => {
-				const isSelected = item.id === selectedPromptId;
-				const detailId = `${DETAIL_ID_PREFIX}-${String(item.id)}`;
+				const isSelected = item.uniqueKey === selectedPromptKey;
+				const detailId = `${DETAIL_ID_PREFIX}-${item.uniqueKey}`;
 
 				return (
-					<div className={styles["result-block"]} key={item.id}>
+					<div className={styles["result-block"]} key={item.uniqueKey}>
 						<PromptResultCard
 							detailId={detailId}
 							isSelected={isSelected}

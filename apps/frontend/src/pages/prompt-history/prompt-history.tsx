@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -8,6 +8,7 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
+import { useGetComposedPromptsQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
 import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
@@ -20,7 +21,10 @@ import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
 import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
-import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
+import {
+	usePromptSelection,
+	useUnifiedPromptHistory,
+} from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
 
 const FRACTION_DIGITS = 1;
@@ -80,11 +84,22 @@ const PromptHistory: React.FC = () => {
 		data,
 		fetchNextPage,
 		hasNextPage,
-		isError,
-		isFetching,
-		isLoading,
-		refetch,
+		isError: isPromptsError,
+		isFetching: isPromptsFetching,
+		isLoading: isPromptsLoading,
+		refetch: refetchPrompts,
 	} = useGetPromptsInfiniteQuery(queryPayload, { skip: !hasWorkspace });
+
+	const {
+		data: composedPromptsData,
+		isError: isComposedError,
+		isFetching: isComposedFetching,
+		isLoading: isComposedLoading,
+		refetch: refetchComposed,
+	} = useGetComposedPromptsQuery(
+		{ workspaceId: workspaceId as number },
+		{ skip: !hasWorkspace },
+	);
 
 	const workspaceOptions =
 		workspaces?.map(({ id, name }) => ({
@@ -92,9 +107,26 @@ const PromptHistory: React.FC = () => {
 			value: id,
 		})) ?? [];
 
-	const items = data?.pages.flatMap((page) => page.items) ?? [];
+	const activeWorkspaceName =
+		workspaces?.find((workspace) => workspace.id === workspaceId)?.name ?? "";
+
+	const regularItems = useMemo(
+		() => data?.pages.flatMap((page) => page.items) ?? [],
+		[data?.pages],
+	);
+
+	const items = useUnifiedPromptHistory({
+		composedItems: composedPromptsData?.items ?? [],
+		qualityTier: queryPayload.qualityTier,
+		regularItems,
+		search,
+		workspaceName: activeWorkspaceName,
+	});
+
 	const [firstPage] = data?.pages ?? [];
-	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
+	const regularTotalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
+	const composedTotalPrompts = composedPromptsData?.totalCount ?? ZERO_VALUE;
+	const totalPrompts = regularTotalPrompts + composedTotalPrompts;
 	const averageScore = firstPage?.averageScore ?? null;
 
 	const hasActiveFilters = Boolean(search) || Boolean(queryPayload.qualityTier);
@@ -105,21 +137,26 @@ const PromptHistory: React.FC = () => {
 		search,
 	].join(":");
 
-	const { handleSelectPrompt, selectedPrompt, selectedPromptId } =
+	const { handleSelectPrompt, selectedPrompt, selectedPromptKey } =
 		usePromptSelection({ filterKey, items });
+
+	const isFetching = isPromptsFetching || isComposedFetching;
+	const isLoading = isPromptsLoading || isComposedLoading;
+	const isError = isPromptsError || isComposedError;
 
 	const handleLoadMore = useCallback((): void => {
 		void fetchNextPage();
 	}, [fetchNextPage]);
 
 	const handleRetry = useCallback((): void => {
-		void refetch();
-	}, [refetch]);
+		void refetchPrompts();
+		void refetchComposed();
+	}, [refetchComposed, refetchPrompts]);
 
 	const resultCountLabel =
-		totalPrompts === SINGLE_RESULT_COUNT
-			? `${String(totalPrompts)} ${PromptHistoryLabel.RESULT}`
-			: `${String(totalPrompts)} ${PromptHistoryLabel.RESULTS}`;
+		items.length === SINGLE_RESULT_COUNT
+			? `${String(items.length)} ${PromptHistoryLabel.RESULT}`
+			: `${String(items.length)} ${PromptHistoryLabel.RESULTS}`;
 
 	const modeHint = search
 		? PromptHistoryLabel.HINT_SEARCH
@@ -252,7 +289,7 @@ const PromptHistory: React.FC = () => {
 							onRetry={handleRetry}
 							onSelectPrompt={handleSelectPrompt}
 							queryPayload={queryPayload}
-							selectedPromptId={selectedPromptId}
+							selectedPromptKey={selectedPromptKey}
 						/>
 						{hasNextPage && hasWorkspace && !isLoading ? (
 							<div className={styles["load-more-wrapper"]}>

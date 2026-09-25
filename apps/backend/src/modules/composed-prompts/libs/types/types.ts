@@ -7,6 +7,7 @@ export { type ModelCallLog } from "./model-call-log.type.js";
 export { type StoreResult } from "./store-result.type.js";
 export {
 	type ComposedPromptDto,
+	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,

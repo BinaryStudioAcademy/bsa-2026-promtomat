@@ -24,6 +24,12 @@
 	--badge-background: var(--bg-danger);
 }
 
+.unrated {
+	color: var(--text-muted);
+
+	--badge-background: var(--surface-inset);
+}
+
 .filled {
 	background-color: var(--badge-background);
 }
