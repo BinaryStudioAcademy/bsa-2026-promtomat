@@ -1,6 +1,6 @@
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 
-const DEFAULT_RECORD_PROMT_PAYLOAD: Pick<
+const DEFAULT_RECORD_PROMPT_PAYLOAD: Pick<
 	PromptCreateRequestDto,
 	"promptBody" | "taskIntent"
 > = {
@@ -8,4 +8,4 @@ const DEFAULT_RECORD_PROMT_PAYLOAD: Pick<
 	taskIntent: "",
 };
 
-export { DEFAULT_RECORD_PROMT_PAYLOAD };
+export { DEFAULT_RECORD_PROMPT_PAYLOAD };

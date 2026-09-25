@@ -1,0 +1,13 @@
+.chip {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--size-control-h-md);
+	height: var(--size-control-h-md);
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-meta);
+	color: var(--text-accent);
+	background-color: var(--surface-raised);
+	border: var(--border-width-hairline) solid var(--border-default);
+	border-radius: var(--radius-md);
+}

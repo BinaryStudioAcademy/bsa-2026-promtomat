@@ -1,0 +1,40 @@
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-10);
+	align-items: center;
+}
+
+.label {
+	font-size: var(--font-size-body-sm);
+	font-weight: 500;
+	color: var(--text-body);
+}
+
+.hint {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-meta);
+	color: var(--text-faint);
+}
+
+.mode {
+	margin-left: auto;
+}
+
+.count {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-meta);
+	color: var(--text-muted);
+}
+
+.error {
+	margin: 0;
+	font-size: var(--font-size-label-sm);
+	color: var(--fg-danger);
+}
