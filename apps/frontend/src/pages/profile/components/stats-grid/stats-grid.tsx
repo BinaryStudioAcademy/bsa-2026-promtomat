@@ -6,11 +6,13 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	averageScore: null | number;
+	currentStreak: number;
 	totalPrompts: number;
 };
 
 const StatsGrid: React.FC<Properties> = ({
 	averageScore,
+	currentStreak,
 	totalPrompts,
 }: Properties) => {
 	return (
@@ -25,6 +27,7 @@ const StatsGrid: React.FC<Properties> = ({
 				value={averageScore ?? "-"}
 				variant={StatItemVariant.SCORE}
 			/>
+			<StatItem label="Day streak" value={currentStreak} />
 		</div>
 	);
 };

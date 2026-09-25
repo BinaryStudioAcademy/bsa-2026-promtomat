@@ -31,6 +31,7 @@ const Profile: React.FC = () => {
 			<SettingsForm totalPrompts={summary.totalPrompts} user={user} />
 			<Activity
 				averageScore={summary.averageScore}
+				currentStreak={summary.currentStreak}
 				totalPrompts={summary.totalPrompts}
 			/>
 			<Security email={user.email} />
