@@ -43,9 +43,7 @@ const createResolveRepositoryTool = (
 			);
 		}
 
-		const resolution = await repositoryBindingApi.resolve(
-			detection.remoteUrl,
-		);
+		const resolution = await repositoryBindingApi.resolve(detection.remoteUrl);
 
 		if (resolution.status === RepositoryBindingResolutionStatus.RESOLVED) {
 			return createMCPTextResult(
