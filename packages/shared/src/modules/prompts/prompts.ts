@@ -18,7 +18,6 @@ export {
 export {
 	type PromptGetRecentResponseDto,
 	type PromptIdParameterDto,
-	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";

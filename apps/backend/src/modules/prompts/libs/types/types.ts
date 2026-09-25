@@ -19,7 +19,6 @@ export {
 	type PromptGetRecentResponseDto,
 	type PromptIdParameterDto,
 	type PromptItemResponseDto,
-	type PromptProgressResponseDto,
 	type PromptRecentDto,
 	type PromptRouteParametersDto,
 	type PromptUpdateIntentRequestDto,
