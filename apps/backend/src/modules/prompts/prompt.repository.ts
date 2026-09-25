@@ -108,12 +108,14 @@ class PromptRepository {
 			.clearOrder()
 			.clear(QueryClearTarget.LIMIT)
 			.clear(QueryClearTarget.OFFSET)
-			.count(`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as count`)
+			.count(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`,
+			)
 			.select(
 				raw("AVG(COALESCE(??, ??)) as ??", [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					"averageScore",
+					SQLAlias.AVERAGE_SCORE,
 				]),
 			)
 			.castTo<{ averageScore: null | string; count: string }[]>()
@@ -163,13 +165,11 @@ class PromptRepository {
 			limit = PaginationValue.DEFAULT_LIMIT,
 			page = PaginationValue.DEFAULT_PAGE,
 			qualityTier,
-			search,
 			workspaceId,
 		} = query;
 
 		const baseQuery = this.promptModel.query();
 		this.applyFilters(baseQuery, {
-			search: search ?? undefined,
 			userId,
 			workspaceId: workspaceId ?? undefined,
 		});

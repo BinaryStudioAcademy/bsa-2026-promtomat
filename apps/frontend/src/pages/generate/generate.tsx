@@ -11,7 +11,10 @@ import {
 	ComposeResultKind,
 	useComposeMutation,
 } from "~/modules/composed-prompts/composed-prompts.js";
-import { useEvaluateMutation } from "~/modules/evaluations/evaluations.js";
+import {
+	EvaluationMessage,
+	useEvaluateMutation,
+} from "~/modules/evaluations/evaluations.js";
 
 import { ComposeResult } from "./components/compose-result/compose-result.js";
 import { GenerateForm } from "./components/generate-form/generate-form.js";
@@ -48,14 +51,14 @@ const Generate: React.FC = () => {
 					}).unwrap();
 
 					showNotification({
-						message: "Weights re-calculated successfully!",
+						message: EvaluationMessage.EVALUATION_SUCCESS,
 						type: "success",
 					});
 
 					void navigate(AppRoute.ROOT);
 				} catch {
 					showNotification({
-						message: "Failed to record evaluation. Please try again.",
+						message: EvaluationMessage.EVALUATION_FAILED,
 						type: "danger",
 					});
 				}

@@ -7,7 +7,10 @@ import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/promp
 import { AppRoute } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-import { useEvaluateMutation } from "~/modules/evaluations/evaluations.js";
+import {
+	EvaluationMessage,
+	useEvaluateMutation,
+} from "~/modules/evaluations/evaluations.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
@@ -31,14 +34,14 @@ const PromptDelivery: React.FC = () => {
 					}).unwrap();
 
 					showNotification({
-						message: "Weights re-calculated successfully!",
+						message: EvaluationMessage.EVALUATION_SUCCESS,
 						type: "success",
 					});
 
 					void navigate(AppRoute.ROOT);
 				} catch {
 					showNotification({
-						message: "Failed to record evaluation. Please try again.",
+						message: EvaluationMessage.EVALUATION_FAILED,
 						type: "danger",
 					});
 				}
