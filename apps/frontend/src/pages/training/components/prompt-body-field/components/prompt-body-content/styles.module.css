@@ -1,0 +1,25 @@
+.textarea,
+.preview {
+	min-height: 187px;
+}
+
+.textarea {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-sm);
+	line-height: 1.6;
+}
+
+.preview {
+	padding: var(--space-14);
+	font-size: var(--font-size-body-sm);
+	color: var(--text-body);
+	overflow-wrap: break-word;
+	background-color: var(--surface-sunken);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-md);
+}
+
+.empty {
+	margin: 0;
+	color: var(--text-muted);
+}

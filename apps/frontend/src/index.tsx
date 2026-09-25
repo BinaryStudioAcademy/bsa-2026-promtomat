@@ -48,16 +48,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.PROFILE,
 											},
 											{
-												handle: ShellPageCopy.SETTINGS,
-												lazy: async () => {
-													const pageModule =
-														await import("~/pages/settings/settings.js");
-
-													return { Component: pageModule.SettingsPage };
-												},
-												path: AppRoute.SETTINGS,
-											},
-											{
 												handle: ShellPageCopy.API_TOKENS,
 												lazy: async () => {
 													const pageModule =

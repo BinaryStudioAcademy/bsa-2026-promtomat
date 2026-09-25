@@ -1,0 +1,20 @@
+.block {
+	margin: 0 0 var(--space-12);
+}
+
+.block:last-child {
+	margin-bottom: 0;
+}
+
+.pre {
+	padding: var(--space-12);
+	overflow-x: auto;
+	font-family: var(--font-family-mono);
+	background-color: var(--surface-inset);
+	border-radius: var(--radius-sm);
+}
+
+.code {
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-meta);
+}
