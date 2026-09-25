@@ -4,5 +4,6 @@ export {
 	BEARER,
 	EMPTY_LENGTH,
 	FIRST_ELEMENT_INDEX,
+	UNEXPECTED_ERROR,
 	ZERO_VALUE,
 } from "@promptomat/shared";

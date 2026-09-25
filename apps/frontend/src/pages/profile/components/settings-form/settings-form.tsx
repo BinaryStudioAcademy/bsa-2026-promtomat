@@ -4,6 +4,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { Select } from "~/libs/components/select/select.js";
+import { UNEXPECTED_ERROR } from "~/libs/constants/constants.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
@@ -102,6 +103,13 @@ const SettingsForm: React.FC<Properties> = ({
 						setError("nickname", {
 							message: caughtError.message,
 							type: "server",
+						});
+					} else {
+						showNotification({
+							message: isServerError(caughtError)
+								? caughtError.message
+								: UNEXPECTED_ERROR,
+							type: NotificationType.DANGER,
 						});
 					}
 				});
