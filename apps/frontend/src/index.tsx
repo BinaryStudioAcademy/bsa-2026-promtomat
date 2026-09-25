@@ -98,6 +98,16 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.WORKSPACES,
 											},
 											{
+												handle: ShellPageCopy.WORKSPACE_CONFIG,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/workspace-config/workspace-config.js");
+
+													return { Component: pageModule.WorkspaceConfig };
+												},
+												path: AppRoute.WORKSPACES_$WORKSPACE_ID_CONFIG,
+											},
+											{
 												handle: ShellPageCopy.SMART_SEARCH,
 												lazy: async () => {
 													const pageModule =

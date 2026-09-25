@@ -9,4 +9,5 @@ export {
 	type WorkspaceGetAllResponseDto,
 	type WorkspaceListItemDto,
 	type WorkspaceUpdateRequestDto,
+	type WorkspaceUserSummaryDto,
 } from "@promptomat/shared";

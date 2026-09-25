@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
       name      = "backend"
       image     = "${aws_ecr_repository.ecr[var.ecr_backend].repository_url}:${var.image_tag}"
       cpu       = 1024
-      memory    = 2048
+      memory    = 4096
       essential = true
       portMappings = [
         {
@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "fargate_backend" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
-  memory                   = 2048
+  memory                   = 4096
   execution_role_arn       = aws_iam_role.ecs_execution_backend.arn
   task_role_arn            = aws_iam_role.backend_task.arn
 }

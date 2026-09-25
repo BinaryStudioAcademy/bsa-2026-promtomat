@@ -1,0 +1,3 @@
+const STATUS_MESSAGE_KEY_STEP = 1;
+
+export { STATUS_MESSAGE_KEY_STEP };
