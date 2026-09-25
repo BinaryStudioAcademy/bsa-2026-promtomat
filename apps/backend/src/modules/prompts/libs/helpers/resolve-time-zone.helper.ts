@@ -1,11 +1,12 @@
+import { Locale } from "~/libs/enums/enums.js";
+
 import { DEFAULT_TIME_ZONE } from "../constants/constants.js";
-import { formatDateInTimeZone } from "./format-date-in-time-zone.helper.js";
 
 const resolveTimeZone = (timeZone: string): string => {
 	try {
-		formatDateInTimeZone(new Date(), timeZone);
-
-		return timeZone;
+		return new Intl.DateTimeFormat(Locale.EN_US, {
+			timeZone,
+		}).resolvedOptions().timeZone;
 	} catch {
 		return DEFAULT_TIME_ZONE;
 	}
