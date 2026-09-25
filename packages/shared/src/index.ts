@@ -4,6 +4,7 @@ export {
 	MAX_EFFICIENCY_SCORE,
 	PERCENTAGE_MULTIPLIER,
 	ROUND_FACTOR,
+	UNEXPECTED_ERROR,
 	ZERO_VALUE,
 } from "./libs/constants/constants.js";
 export {

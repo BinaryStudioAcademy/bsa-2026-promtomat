@@ -9,7 +9,6 @@ const AppRoute = {
 	PROMPTS_$PROMPT_ID: "/prompts/:promptId",
 	RESET_PASSWORD: "/reset-password",
 	ROOT: "/",
-	SETTINGS: "/settings",
 	SIGN_IN: "/sign-in",
 	SIGN_UP: "/sign-up",
 	SMART_SEARCH: "/smart-search",
