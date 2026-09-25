@@ -1,7 +1,3 @@
-import {
-	normalizeRepositoryIdentity,
-	type RepositoryIdentity,
-} from "@promptomat/shared";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -14,7 +10,11 @@ import {
 	SINGLE_IDENTITY_COUNT,
 } from "../constants/constants.js";
 import { RemoteDetectionStatus } from "../enums/enums.js";
-import { type RemoteDetectionResult } from "../types/types.js";
+import {
+	type RemoteDetectionResult,
+	type RepositoryIdentity,
+} from "../types/types.js";
+import { normalizeRepositoryIdentity } from "./helpers.js";
 
 const FETCH_REMOTE_LINE_PATTERN = /^(\S+)\s+(\S+)\s+\(fetch\)$/;
 

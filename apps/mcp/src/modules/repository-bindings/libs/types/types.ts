@@ -5,4 +5,5 @@ export {
 	type CreateRepositoryBindingRequestDto,
 	type RepositoryBindingCandidateWorkspace,
 	type RepositoryBindingResolution,
+	type RepositoryIdentity,
 } from "@promptomat/shared";
