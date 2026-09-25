@@ -3,6 +3,7 @@ import { type FieldPath } from "react-hook-form";
 import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 
 const WORKSPACE_CONFIG_FIELDS = [
+	"description",
 	"name",
 	"stackTags",
 ] satisfies FieldPath<WorkspaceDto>[];
