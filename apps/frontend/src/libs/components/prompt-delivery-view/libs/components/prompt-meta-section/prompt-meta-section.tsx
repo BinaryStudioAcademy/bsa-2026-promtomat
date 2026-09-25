@@ -18,9 +18,7 @@ const formatScore = (score: null | number | undefined): null | number => {
 		return null;
 	}
 
-	const numericValue = typeof score === "string" ? Number(score) : score;
-
-	return +numericValue.toFixed(FRACTION_DIGITS);
+	return +score.toFixed(FRACTION_DIGITS);
 };
 
 const PromptMetaSection: React.FC<Properties> = ({

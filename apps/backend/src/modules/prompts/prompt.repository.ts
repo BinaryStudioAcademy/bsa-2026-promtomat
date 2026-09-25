@@ -10,7 +10,6 @@ import {
 	SortOrder,
 	SQLAlias,
 } from "~/libs/enums/enums.js";
-import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
@@ -38,6 +37,7 @@ import {
 	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
 	type PromptItemResponseDto,
+	type PromptRawKnexRow,
 	type PromptRecentDto,
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
@@ -53,7 +53,7 @@ class PromptRepository {
 
 	private applyFilters(
 		query: ReturnType<typeof this.promptModel.query>,
-		{ search, userId, workspaceId }: PromptFilterByQueryParameters,
+		{ userId, workspaceId }: PromptFilterByQueryParameters,
 	): ReturnType<typeof this.promptModel.query> {
 		if (workspaceId) {
 			query.where(
@@ -95,22 +95,6 @@ class PromptRepository {
 						),
 				);
 		});
-
-		if (search) {
-			const escapedSearch = escapeILikePattern(search);
-
-			query.where((subQuery) => {
-				subQuery
-					.whereILike(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-						`%${escapedSearch}%`,
-					)
-					.orWhereILike(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
-						`%${escapedSearch}%`,
-					);
-			});
-		}
 
 		return query;
 	}
@@ -255,7 +239,7 @@ class PromptRepository {
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
 				raw("?? AS ??", [
 					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,
-					"workspaceName",
+					SQLAlias.WORKSPACE_NAME,
 				]),
 			)
 			.joinRelated(WORKSPACE_RELATION)
@@ -299,17 +283,7 @@ class PromptRepository {
 			)
 			.where(PROMPT_ID, "=", id);
 
-		const [row] = rows as Array<{
-			computedScore: null | number | string;
-			createdAt: string;
-			efficiencyScore: number;
-			id: number;
-			promptBody: string;
-			taskIntent: string;
-			userId: number;
-			workspaceId: number;
-			workspaceName: string;
-		}>;
+		const [row] = rows as PromptRawKnexRow[];
 
 		if (!row) {
 			return null;

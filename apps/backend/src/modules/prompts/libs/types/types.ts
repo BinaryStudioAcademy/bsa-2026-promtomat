@@ -6,6 +6,7 @@ export { type PromptFindAllOptions } from "./prompt-find-all-options.type.js";
 export { type PromptFindByWorkspacePayload } from "./prompt-find-by-workspace-payload.type.js";
 export { type PromptGenerateLabelPayload } from "./prompt-generate-label-payload.type.js";
 export { type PromptLabelSource } from "./prompt-label-source.type.js";
+export { type PromptRawKnexRow } from "./prompt-raw-knex-row.type.js";
 export { type PromptRepositoryFindAllResponseDto } from "./prompt-repository-find-all-response-dto.type.js";
 export { type PromptRepositoryItem } from "./prompt-repository-item.type.js";
 export { type PromptUpdateIntentPayload } from "./prompt-update-intent-payload.type.js";
