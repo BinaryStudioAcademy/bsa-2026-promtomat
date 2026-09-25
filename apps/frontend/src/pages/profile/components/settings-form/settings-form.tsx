@@ -34,10 +34,14 @@ import { UserInfo } from "../user-info/user-info.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	user: UserDto & { totalPrompts: number };
+	totalPrompts: number;
+	user: UserDto;
 };
 
-const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
+const SettingsForm: React.FC<Properties> = ({
+	totalPrompts,
+	user,
+}: Properties) => {
 	const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 	const {
 		control,
@@ -117,7 +121,7 @@ const SettingsForm: React.FC<Properties> = ({ user }: Properties) => {
 			<UserInfo
 				memberSince={user.createdAt}
 				nickname={user.nickname}
-				totalPrompts={user.totalPrompts}
+				totalPrompts={totalPrompts}
 			/>
 			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
 				<div className={styles["fields"]}>

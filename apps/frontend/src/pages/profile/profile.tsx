@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
 				<span className={styles["kicker"]}>ACCOUNT</span>
 				<h1 className={styles["title"]}>Profile</h1>
 			</div>
-			<SettingsForm user={{ ...user, totalPrompts: summary.totalPrompts }} />
+			<SettingsForm totalPrompts={summary.totalPrompts} user={user} />
 			<Activity
 				averageScore={summary.averageScore}
 				totalPrompts={summary.totalPrompts}
