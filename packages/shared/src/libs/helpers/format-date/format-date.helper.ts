@@ -1,7 +1,7 @@
-import { format, isValid } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 
 const formatDate = (date: string, formatPattern: string): string => {
-	const parsedDate = new Date(date);
+	const parsedDate = parseISO(date);
 
 	return isValid(parsedDate) ? format(parsedDate, formatPattern) : date;
 };
