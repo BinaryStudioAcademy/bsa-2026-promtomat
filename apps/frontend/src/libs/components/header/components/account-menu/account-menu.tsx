@@ -10,7 +10,10 @@ import {
 	IconName,
 	KeyboardKey,
 } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import {
+	getNicknameInitials,
+	getValidClasses,
+} from "~/libs/helpers/helpers.js";
 import { useSignOut } from "~/modules/auth/auth.js";
 import { type UserDto } from "~/modules/users/users.js";
 
@@ -19,7 +22,6 @@ import {
 	PANEL_CLOSE_DURATION_MS,
 } from "../../libs/constants/constants.js";
 import { HeaderLabel } from "../../libs/enums/enums.js";
-import { getNicknameInitials } from "../../libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {

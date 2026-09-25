@@ -6,12 +6,14 @@ import { getScoreVariant } from "./libs/helpers/get-score-variant.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	className?: string | undefined;
 	efficiencyScore: null | number;
 	isFill?: boolean;
 	label?: string;
 };
 
 const ScoreBadge: React.FC<Properties> = ({
+	className,
 	efficiencyScore,
 	isFill = true,
 	label,
@@ -25,6 +27,7 @@ const ScoreBadge: React.FC<Properties> = ({
 				styles["badge"],
 				styles[getScoreVariant(efficiencyScore)],
 				isFill && styles["filled"],
+				className,
 			)}
 		>
 			{label ?? defaultLabel}

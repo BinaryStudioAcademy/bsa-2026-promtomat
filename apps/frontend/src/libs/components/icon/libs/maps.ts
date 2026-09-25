@@ -9,6 +9,7 @@ import CircleXIcon from "~/assets/img/circle-x.svg?react";
 import ClipboardCheckIcon from "~/assets/img/clipboard-check.svg?react";
 import ClipboardListIcon from "~/assets/img/clipboard-list.svg?react";
 import CloseIcon from "~/assets/img/close.svg?react";
+import CodeIcon from "~/assets/img/code.svg?react";
 import CopyIcon from "~/assets/img/copy.svg?react";
 import EditIcon from "~/assets/img/edit.svg?react";
 import EyeFilledIcon from "~/assets/img/eye-filled.svg?react";
@@ -41,6 +42,7 @@ const iconNameToIcon = {
 	[IconName.CLIPBOARD_CHECK]: ClipboardCheckIcon,
 	[IconName.CLIPBOARD_LIST]: ClipboardListIcon,
 	[IconName.CLOSE]: CloseIcon,
+	[IconName.CODE]: CodeIcon,
 	[IconName.COPY]: CopyIcon,
 	[IconName.EDIT]: EditIcon,
 	[IconName.EYE]: EyeIcon,
