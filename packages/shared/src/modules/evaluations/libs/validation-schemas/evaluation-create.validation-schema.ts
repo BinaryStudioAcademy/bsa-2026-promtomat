@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { EvaluationValidationRule } from "../enums/enums.js";
+import {
+	EvaluationValidationMessage,
+	EvaluationValidationRule,
+} from "../enums/enums.js";
 
 type ValidationSchema = {
 	composedPromptId: z.ZodOptional<z.ZodNumber>;
@@ -23,7 +26,7 @@ const evaluationCreate = z
 			(Boolean(data.promptId) && !data.composedPromptId) ||
 			(!data.promptId && Boolean(data.composedPromptId)),
 		{
-			message: "Exactly one of promptId or composedPromptId must be provided",
+			message: EvaluationValidationMessage.TARGET_EXCLUSIVE,
 		},
 	);
 

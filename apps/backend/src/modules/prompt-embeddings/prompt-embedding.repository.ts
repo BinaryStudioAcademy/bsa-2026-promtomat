@@ -1,7 +1,7 @@
 import { raw, type Transaction } from "objection";
 
 import {
-	QUALITY_SCORE_THRESHOLD,
+	QualityScoreThreshold,
 	ZERO_VALUE,
 } from "~/libs/constants/constants.js";
 import { PromptQualityTier, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
@@ -144,12 +144,12 @@ class PromptEmbeddingRepository {
 						.whereRaw("COALESCE(??, ??) >= ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QUALITY_SCORE_THRESHOLD.MIN_NEEDS_IMPROVEMENT,
+							QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT,
 						])
 						.andWhereRaw("COALESCE(??, ??) < ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QUALITY_SCORE_THRESHOLD.MAX_NEEDS_IMPROVEMENT,
+							QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT,
 						]);
 					break;
 				}
@@ -157,7 +157,7 @@ class PromptEmbeddingRepository {
 					baseQuery.whereRaw("COALESCE(??, ??) >= ?", [
 						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 						`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-						QUALITY_SCORE_THRESHOLD.PROVEN,
+						QualityScoreThreshold.PROVEN,
 					]);
 					break;
 				}
@@ -172,12 +172,12 @@ class PromptEmbeddingRepository {
 						.whereRaw("COALESCE(??, ??) >= ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QUALITY_SCORE_THRESHOLD.USABLE,
+							QualityScoreThreshold.USABLE,
 						])
 						.andWhereRaw("COALESCE(??, ??) < ?", [
 							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QUALITY_SCORE_THRESHOLD.PROVEN,
+							QualityScoreThreshold.PROVEN,
 						]);
 					break;
 				}

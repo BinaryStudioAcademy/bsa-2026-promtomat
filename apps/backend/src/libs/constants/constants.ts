@@ -6,7 +6,7 @@ export {
 	BEARER,
 	EMPTY_LENGTH,
 	FIRST_ELEMENT_INDEX,
-	QUALITY_SCORE_THRESHOLD,
+	QualityScoreThreshold,
 	ROUND_FACTOR,
 	ZERO_VALUE,
 } from "@promptomat/shared";

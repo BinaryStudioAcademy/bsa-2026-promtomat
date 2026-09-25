@@ -1,8 +1,6 @@
-import {
-	DAMPING_FACTOR,
-	DECIMAL_PLACES,
-	ZERO_VALUE,
-} from "../constants/constants.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
+
+import { DAMPING_FACTOR, DECIMAL_PLACES } from "../constants/constants.js";
 
 type ComputeDampedMeanParameters = {
 	evaluationScores: number[];

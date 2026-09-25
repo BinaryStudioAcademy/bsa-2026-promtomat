@@ -1,4 +1,3 @@
-export { QUALITY_SCORE_THRESHOLD } from "./libs/constants/constants.js";
 export {
 	PromptProgress,
 	PromptQualityTier,
@@ -6,6 +5,7 @@ export {
 	PromptsErrorCode,
 	PromptsErrorMessage,
 	PromptValidationRule,
+	QualityScoreThreshold,
 } from "./libs/enums/enums.js";
 export {
 	type GetPromptsRequestDto,

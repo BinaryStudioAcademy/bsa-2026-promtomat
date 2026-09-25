@@ -3,22 +3,13 @@ import React from "react";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
 import { PromptDeliveryViewLabel } from "../../enums/enums.js";
+import { formatScore } from "../../helpers/helpers.js";
 import styles from "./styles.module.css";
-
-const FRACTION_DIGITS = 1;
 
 type Properties = {
 	computedScore: null | number;
 	efficiencyScore?: number | undefined;
 	workspaceName?: string | undefined;
-};
-
-const formatScore = (score: null | number | undefined): null | number => {
-	if (score === null || score === undefined) {
-		return null;
-	}
-
-	return +score.toFixed(FRACTION_DIGITS);
 };
 
 const PromptMetaSection: React.FC<Properties> = ({

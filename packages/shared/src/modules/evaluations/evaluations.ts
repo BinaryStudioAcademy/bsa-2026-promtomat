@@ -1,5 +1,6 @@
 export {
 	EvaluationsApiPath,
+	EvaluationValidationMessage,
 	EvaluationValidationRule,
 } from "./libs/enums/enums.js";
 export {

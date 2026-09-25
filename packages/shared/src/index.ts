@@ -129,6 +129,8 @@ export {
 	type EvaluationResponseDto,
 	evaluationCreate,
 	EvaluationsApiPath,
+	EvaluationValidationMessage,
+	EvaluationValidationRule,
 } from "./modules/evaluations/evaluations.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
@@ -168,7 +170,7 @@ export {
 	promptUpdateIntentValidationSchema,
 	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
-	QUALITY_SCORE_THRESHOLD,
+	QualityScoreThreshold,
 } from "./modules/prompts/prompts.js";
 export {
 	type PrimaryAiCodingTool,

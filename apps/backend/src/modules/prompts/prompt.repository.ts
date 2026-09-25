@@ -1,7 +1,7 @@
 import { raw, type Transaction } from "objection";
 
 import {
-	QUALITY_SCORE_THRESHOLD,
+	QualityScoreThreshold,
 	ZERO_VALUE,
 } from "~/libs/constants/constants.js";
 import {
@@ -181,12 +181,12 @@ class PromptRepository {
 						.where(
 							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 							">=",
-							QUALITY_SCORE_THRESHOLD.MIN_NEEDS_IMPROVEMENT,
+							QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT,
 						)
 						.andWhere(
 							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 							"<",
-							QUALITY_SCORE_THRESHOLD.MAX_NEEDS_IMPROVEMENT,
+							QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT,
 						);
 					break;
 				}
@@ -194,7 +194,7 @@ class PromptRepository {
 					baseQuery.where(
 						`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 						">=",
-						QUALITY_SCORE_THRESHOLD.PROVEN,
+						QualityScoreThreshold.PROVEN,
 					);
 					break;
 				}
@@ -209,12 +209,12 @@ class PromptRepository {
 						.where(
 							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 							">=",
-							QUALITY_SCORE_THRESHOLD.USABLE,
+							QualityScoreThreshold.USABLE,
 						)
 						.andWhere(
 							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 							"<",
-							QUALITY_SCORE_THRESHOLD.PROVEN,
+							QualityScoreThreshold.PROVEN,
 						);
 					break;
 				}
