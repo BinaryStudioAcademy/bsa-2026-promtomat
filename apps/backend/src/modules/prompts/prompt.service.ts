@@ -276,16 +276,17 @@ class PromptService {
 		timeZone: string,
 	): Promise<PromptStreakResponseDto> {
 		const resolvedTimeZone = resolveTimeZone(timeZone);
-
 		const storedStreak = await this.userStreakService.findByUserId(userId);
 
-		const currentStreak =
-			storedStreak && storedStreak.timeZone !== resolvedTimeZone
-				? await this.userStreakService.recomputeForTimeZone(
+		let currentStreak = storedStreak?.currentStreak ?? ZERO_VALUE;
+
+		currentStreak =
+			storedStreak?.timeZone === resolvedTimeZone
+				? currentStreak
+				: await this.userStreakService.recomputeForTimeZone(
 						userId,
 						resolvedTimeZone,
-					)
-				: (storedStreak?.currentStreak ?? ZERO_VALUE);
+					);
 
 		const activeDays = await this.promptRepository.findActiveDaysByUserId(
 			userId,

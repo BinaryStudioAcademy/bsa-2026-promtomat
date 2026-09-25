@@ -135,10 +135,11 @@ class UserService {
 			await this.promptService.findUserPromptSummary(user.id);
 
 		const streak = await this.userRepository.findStreakByUserId(user.id);
+		const currentStreak = streak?.currentStreak ?? ZERO_VALUE;
 
 		return {
 			averageScore,
-			currentStreak: streak?.currentStreak ?? ZERO_VALUE,
+			currentStreak,
 			id: user.id,
 			memberSince: user.createdAt,
 			nickname: user.nickname,

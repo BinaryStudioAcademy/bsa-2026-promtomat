@@ -47,7 +47,11 @@ class UserRepository {
 	public async findByEmail(email: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ email }).execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
 	}
 
 	public async findByEmailOrNickname(
@@ -61,7 +65,11 @@ class UserRepository {
 			.first()
 			.execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
 	}
 
 	public async findById(id: number): Promise<null | UserEntity> {
@@ -73,7 +81,11 @@ class UserRepository {
 	public async findByNickname(nickname: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ nickname }).execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
 	}
 
 	public async findStreakByUserId(userId: number): Promise<null | UserStreak> {
@@ -83,7 +95,11 @@ class UserRepository {
 
 		const [row] = result.rows;
 
-		return row ?? null;
+		if (!row) {
+			return null;
+		}
+
+		return row;
 	}
 
 	public async update(
@@ -145,7 +161,13 @@ class UserRepository {
 
 		const [row] = result.rows;
 
-		return row?.currentStreak ?? ZERO_VALUE;
+		if (!row) {
+			return ZERO_VALUE;
+		}
+
+		const { currentStreak } = row;
+
+		return currentStreak;
 	}
 
 	public async updateStreakOnPromptLog(
