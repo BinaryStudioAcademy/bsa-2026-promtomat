@@ -2,7 +2,7 @@ import { type RemoteDetectionStatus } from "../enums/enums.js";
 
 type RemoteDetectionResult =
 	| { remoteNames: string[]; status: typeof RemoteDetectionStatus.AMBIGUOUS }
-	| { status: typeof RemoteDetectionStatus.NONE }
-	| { remoteUrl: string; status: typeof RemoteDetectionStatus.SINGLE };
+	| { remoteUrl: string; status: typeof RemoteDetectionStatus.SINGLE }
+	| { status: typeof RemoteDetectionStatus.NONE };
 
 export { type RemoteDetectionResult };
