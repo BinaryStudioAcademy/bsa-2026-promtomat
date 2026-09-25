@@ -25,7 +25,6 @@ const StatsGrid: React.FC<Properties> = ({
 				value={averageScore ?? "-"}
 				variant={StatItemVariant.SCORE}
 			/>
-			<StatItem label="Day streak" value={"TODO"} />
 		</div>
 	);
 };

@@ -16,10 +16,6 @@
 	border-radius: var(--radius-xl);
 }
 
-.stat-tile:last-child {
-	grid-column: 1 / -1;
-}
-
 @media (width >= 830px) {
 	.stats-grid {
 		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
