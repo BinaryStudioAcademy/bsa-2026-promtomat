@@ -127,6 +127,17 @@
 	color: var(--text-muted);
 }
 
+@media (width < 480px) {
+	.results-bar {
+		justify-content: space-between;
+	}
+
+	.result-hint {
+		flex-basis: 100%;
+		order: 1;
+	}
+}
+
 .search-layout {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);

@@ -96,6 +96,28 @@
 	color: var(--text-faint);
 }
 
+@media (width < 768px) {
+	.panel:has(.open-link) .heading {
+		display: none;
+	}
+
+	.open-link {
+		order: -2;
+		margin-left: 0;
+	}
+
+	.toolbar::before {
+		flex-basis: 100%;
+		order: -1;
+		content: "";
+	}
+
+	.body,
+	.editor {
+		margin-top: calc(var(--space-4) - var(--space-14));
+	}
+}
+
 .body {
 	padding: var(--space-16);
 	font-size: var(--font-size-body-sm);

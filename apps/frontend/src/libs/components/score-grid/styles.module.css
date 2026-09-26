@@ -16,7 +16,7 @@
 	gap: var(--space-6);
 }
 
-@media (width >= 768px) {
+@media (width >= 1440px) {
 	.control {
 		grid-template-columns: repeat(10, minmax(0, 1fr));
 	}
@@ -55,12 +55,7 @@
 	letter-spacing: 0.77px;
 }
 
-.control-inset {
-	grid-template-columns: repeat(10, minmax(0, 1fr));
-}
-
 .control-inset .score-button {
-	height: auto;
 	padding: var(--space-8) var(--space-4);
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-body-sm);
