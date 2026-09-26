@@ -23,6 +23,7 @@ claude mcp add --scope user promptomat -e PROMPTOMAT_API_URL='https://<your-prom
 ```
 
 - `PROMPTOMAT_API_URL` is the API base including `/api/v1`, not the address of the web app.
+- `PROMPTOMAT_WEB_URL` is optional. It is the address of the web app, used for the links in answers (for example to a stored prompt). When it is not set, it defaults to the host of `PROMPTOMAT_API_URL` without the path, which is right when the web app and the API share a host. Set it when they do not, as in local development: `-e PROMPTOMAT_WEB_URL='http://localhost:3000'`.
 - `--scope user` keeps the token in the client's configuration in your home directory. Do not move it into a project-level configuration file: those get committed.
 - The connect command leaves a copy of the token in your shell history.
 - The values are quoted for a POSIX shell (bash, zsh).
@@ -76,6 +77,12 @@ A value that is present but malformed is reported the same way. A rejected URL i
 ```text
 API.URL: PROMPTOMAT_API_URL must be an absolute http(s) URL: value was "localhost:3001/api/v1"
 API.TOKEN: PROMPTOMAT_API_TOKEN must contain only printable ASCII characters without spaces
+```
+
+`PROMPTOMAT_WEB_URL` is checked only when it is set, and reported the same way:
+
+```text
+WEB.URL: PROMPTOMAT_WEB_URL must be an absolute http(s) URL: value was "localhost:3000"
 ```
 
 ### The backend is unreachable
