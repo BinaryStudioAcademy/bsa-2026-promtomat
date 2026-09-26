@@ -185,7 +185,11 @@ class WorkspaceRepository {
 	public async findById(id: number): Promise<null | WorkspaceEntity> {
 		const workspace = await this.workspaceModel.query().findById(id);
 
-		return workspace ? WorkspaceEntity.initialize(workspace) : null;
+		if (!workspace) {
+			return null;
+		}
+
+		return WorkspaceEntity.initialize(workspace);
 	}
 
 	public async findByIdAndContributorUserId(
