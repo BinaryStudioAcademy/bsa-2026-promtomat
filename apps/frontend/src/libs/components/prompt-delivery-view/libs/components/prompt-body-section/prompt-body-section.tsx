@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button } from "~/libs/components/button/button.js";
+import { Markdown } from "~/libs/components/markdown/markdown.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 
 import { PromptDeliveryViewLabel } from "../../enums/enums.js";
@@ -36,7 +37,11 @@ const PromptBodySection: React.FC<Properties> = ({
 			</PromptDeliveryCard.Header>
 		)}
 		<PromptDeliveryCard.Body>
-			{bodySlot ?? <pre className={styles["prompt-body"]}>{body}</pre>}
+			{bodySlot ?? (
+				<div className={styles["prompt-body"]}>
+					<Markdown content={body} />
+				</div>
+			)}
 		</PromptDeliveryCard.Body>
 	</PromptDeliveryCard>
 );
