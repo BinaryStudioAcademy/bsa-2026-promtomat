@@ -16,6 +16,7 @@ import {
 	type PromptGetQueryDto,
 	type PromptIdParameterDto,
 	type PromptRouteParametersDto,
+	type PromptStreakQueryDto,
 	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptUpdateScoreRequestDto,
@@ -26,6 +27,7 @@ import {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
+	promptStreakQueryValidationSchema,
 	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptUpdateScoreValidationSchema,
@@ -119,13 +121,6 @@ import { type PromptService } from "./prompt.service.js";
  *           type: number
  *         totalCount:
  *           type: number
- *     PromptProgress:
- *       type: object
- *       properties:
- *         count:
- *           type: number
- *         target:
- *           type: number
  *     PromptRecent:
  *       type: object
  *       properties:
@@ -139,6 +134,20 @@ import { type PromptService } from "./prompt.service.js";
  *           minimum: 1
  *         taskIntent:
  *           type: string
+ *     PromptStreak:
+ *       type: object
+ *       properties:
+ *         currentStreak:
+ *           type: number
+ *         days:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *               promptCount:
+ *                 type: number
  */
 class PromptController extends BaseController {
 	private promptService: PromptService;
@@ -156,21 +165,6 @@ class PromptController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
-				this.findProgress(
-					options as APIHandlerOptions<{
-						query: PromptWorkspaceQueryDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.PROGRESS,
-			preHandler: workspaceAccessHook(this.workspaceService),
-			validation: {
-				query: promptWorkspaceQueryValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
 				this.findRecent(
 					options as APIHandlerOptions<{
 						query: PromptWorkspaceQueryDto;
@@ -181,6 +175,20 @@ class PromptController extends BaseController {
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				query: promptWorkspaceQueryValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.findStreak(
+					options as APIHandlerOptions<{
+						query: PromptStreakQueryDto;
+					}>,
+				),
+			method: HTTPMethod.GET,
+			path: PromptsApiPath.STREAK,
+			validation: {
+				query: promptStreakQueryValidationSchema,
 			},
 		});
 
@@ -473,56 +481,6 @@ class PromptController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /prompts/progress:
-	 *   get:
-	 *     description: Returns recorded prompt count and target for a workspace
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: query
-	 *         name: workspaceId
-	 *         required: true
-	 *         schema:
-	 *           type: number
-	 *           minimum: 1
-	 *         description: Workspace to count prompts in
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/PromptProgress"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Workspace not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	private async findProgress(
-		options: APIHandlerOptions<{ query: PromptWorkspaceQueryDto }>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.promptService.findProgress(options.query.workspaceId),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
 	 * /prompts/recent:
 	 *   get:
 	 *     description: Returns the most recent recorded prompts for a workspace
@@ -567,6 +525,52 @@ class PromptController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		return {
 			payload: await this.promptService.findRecent(options.query.workspaceId),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/streak:
+	 *   get:
+	 *     description: Returns the current logging streak and recent day activity for the authenticated user
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: query
+	 *         name: timeZone
+	 *         required: false
+	 *         schema:
+	 *           type: string
+	 *         description: IANA time zone used to group prompts into local days, defaulting to UTC
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/PromptStreak"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 */
+	private async findStreak(
+		options: APIHandlerOptions<{ query: PromptStreakQueryDto }>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.promptService.findStreak(
+				options.user?.id as number,
+				options.query.timeZone,
+			),
 			status: HTTPCode.OK,
 		};
 	}

@@ -16,7 +16,8 @@ import {
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
-	type PromptProgressResponseDto,
+	type PromptStreakQueryDto,
+	type PromptStreakResponseDto,
 	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptUpdateScoreRequestDto,
@@ -40,16 +41,6 @@ const promptApi = baseApi
 					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
 						id: String(id),
 					}),
-				}),
-			}),
-			getPromptProgress: builder.query<
-				PromptProgressResponseDto,
-				PromptWorkspaceQueryDto
-			>({
-				providesTags: [PromptsApiTag.PROMPT],
-				query: ({ workspaceId }) => ({
-					params: { workspaceId },
-					url: `${APIPath.PROMPTS}${PromptsApiPath.PROGRESS}`,
 				}),
 			}),
 			getPromptRecent: builder.query<
@@ -83,6 +74,16 @@ const promptApi = baseApi
 				query: ({ pageParam, queryArg }) => ({
 					params: { ...queryArg, page: pageParam },
 					url: APIPath.PROMPTS,
+				}),
+			}),
+			getPromptStreak: builder.query<
+				PromptStreakResponseDto,
+				PromptStreakQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ timeZone }) => ({
+					params: { timeZone },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.STREAK}`,
 				}),
 			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
@@ -266,9 +267,9 @@ const promptApi = baseApi
 
 const {
 	useGetPromptByIdQuery,
-	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
+	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdatePromptBodyMutation,
 	useUpdatePromptScoreMutation,
@@ -277,9 +278,9 @@ const {
 
 export {
 	useGetPromptByIdQuery,
-	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
+	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdatePromptBodyMutation,
 	useUpdatePromptScoreMutation,

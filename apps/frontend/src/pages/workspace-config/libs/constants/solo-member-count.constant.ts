@@ -1,0 +1,3 @@
+const SOLO_MEMBER_COUNT = 1;
+
+export { SOLO_MEMBER_COUNT };

@@ -12,12 +12,8 @@ const ShellPageCopy = {
 		title: "Generate",
 	},
 	PROFILE: {
-		subtitle: "Account details and prompt activity",
+		subtitle: "Account, activity and security",
 		title: "Profile",
-	},
-	SETTINGS: {
-		subtitle: "Update your account details and security",
-		title: "Settings",
 	},
 	SMART_SEARCH: {
 		subtitle: "Retrieve and browse every prompt your team logged",
@@ -26,6 +22,10 @@ const ShellPageCopy = {
 	TRAINING: {
 		subtitle: "Log a prompt and score how well it worked",
 		title: "Training",
+	},
+	WORKSPACE_CONFIG: {
+		subtitle: "Name, tech stack and dataset target",
+		title: "Workspace config",
 	},
 	WORKSPACES: {
 		subtitle: "One workspace per codebase",

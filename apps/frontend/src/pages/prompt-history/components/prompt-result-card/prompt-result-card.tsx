@@ -56,9 +56,7 @@ const PromptResultCard: React.FC<Properties> = ({
 					iconName={IconName.CHEVRON}
 				/>
 				{prompt.score === null ? (
-					<span className={styles["unrated"]}>
-						{PromptDetailLabel.UNRATED}
-					</span>
+					<span className={styles["unrated"]}>{PromptDetailLabel.UNRATED}</span>
 				) : (
 					<ScoreBadge
 						efficiencyScore={prompt.score}

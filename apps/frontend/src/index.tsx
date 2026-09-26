@@ -48,16 +48,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												path: AppRoute.PROFILE,
 											},
 											{
-												handle: ShellPageCopy.SETTINGS,
-												lazy: async () => {
-													const pageModule =
-														await import("~/pages/settings/settings.js");
-
-													return { Component: pageModule.SettingsPage };
-												},
-												path: AppRoute.SETTINGS,
-											},
-											{
 												handle: ShellPageCopy.API_TOKENS,
 												lazy: async () => {
 													const pageModule =
@@ -96,6 +86,16 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 													return { Component: pageModule.Workspaces };
 												},
 												path: AppRoute.WORKSPACES,
+											},
+											{
+												handle: ShellPageCopy.WORKSPACE_CONFIG,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/workspace-config/workspace-config.js");
+
+													return { Component: pageModule.WorkspaceConfig };
+												},
+												path: AppRoute.WORKSPACES_$WORKSPACE_ID_CONFIG,
 											},
 											{
 												handle: ShellPageCopy.SMART_SEARCH,

@@ -23,6 +23,7 @@ const WorkspaceCard: React.FC<Properties> = ({
 	onOpen,
 	workspace,
 }: Properties) => {
+	const hasDescription = Boolean(workspace.description);
 	const visibility = capitalizeFirstLetter(workspace.visibility);
 
 	const handleConfigClick = useCallback((): void => {
@@ -52,6 +53,9 @@ const WorkspaceCard: React.FC<Properties> = ({
 							/>
 							{visibility}
 						</span>
+						{hasDescription && (
+							<p className={styles["description"]}>{workspace.description}</p>
+						)}
 					</div>
 					<IconButton
 						ariaLabel={`Config ${workspace.name}`}
@@ -61,18 +65,19 @@ const WorkspaceCard: React.FC<Properties> = ({
 						size={ControlSize.SM}
 					/>
 				</header>
+				<div className={styles["details"]}>
+					<WorkspaceTags stackTags={workspace.stackTags} />
 
-				<WorkspaceTags stackTags={workspace.stackTags} />
+					<div className={styles["readiness"]}>
+						<ProgressBar
+							count={workspace.promptCount}
+							label="Dataset readiness"
+							target={PromptProgress.TARGET_COUNT}
+						/>
+					</div>
 
-				<div className={styles["readiness"]}>
-					<ProgressBar
-						count={workspace.promptCount}
-						label="Dataset readiness"
-						target={PromptProgress.TARGET_COUNT}
-					/>
+					<WorkspaceMetrics memberCount={workspace.memberCount} />
 				</div>
-
-				<WorkspaceMetrics memberCount={workspace.memberCount} />
 			</div>
 		</div>
 	);

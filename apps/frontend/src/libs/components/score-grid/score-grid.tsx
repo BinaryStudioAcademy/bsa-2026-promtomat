@@ -12,18 +12,22 @@ import { getScoreColor } from "./libs/helpers/get-score-color.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	isDescriptionHidden?: boolean;
 	isDisabled?: boolean;
 	isRadio?: boolean;
 	label: string;
+	onScoreHover?: (score: null | number) => void;
 	onScoreSelect: (score: number) => () => void;
 	selectedScore?: null | number;
 	variant?: "default" | "inset";
 };
 
 const ScoreGrid: React.FC<Properties> = ({
+	isDescriptionHidden = false,
 	isDisabled = false,
 	isRadio = false,
 	label,
+	onScoreHover,
 	onScoreSelect,
 	selectedScore,
 	variant = "default",
@@ -36,15 +40,20 @@ const ScoreGrid: React.FC<Properties> = ({
 
 	const currentSelectedScore =
 		selectedScore === undefined ? internalScore : selectedScore;
-	const handleHover = useCallback((score: number) => {
-		return (): void => {
-			setHoveredScore(score);
-		};
-	}, []);
+	const handleHover = useCallback(
+		(score: number) => {
+			return (): void => {
+				setHoveredScore(score);
+				onScoreHover?.(score);
+			};
+		},
+		[onScoreHover],
+	);
 
 	const handleClearHover = useCallback((): void => {
 		setHoveredScore(null);
-	}, []);
+		onScoreHover?.(null);
+	}, [onScoreHover]);
 
 	const handleScoreClick = useCallback(
 		(score: number) => {
@@ -121,12 +130,14 @@ const ScoreGrid: React.FC<Properties> = ({
 					);
 				})}
 			</div>
-			<div
-				aria-live="polite"
-				className={getValidClasses(styles["message"], messageColorClass)}
-			>
-				{activeDescription}
-			</div>
+			{!isDescriptionHidden && (
+				<div
+					aria-live="polite"
+					className={getValidClasses(styles["message"], messageColorClass)}
+				>
+					{activeDescription}
+				</div>
+			)}
 		</div>
 	);
 };

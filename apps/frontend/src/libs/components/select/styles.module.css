@@ -26,12 +26,13 @@
 	padding: 0 var(--space-40) 0 var(--space-12);
 	font-family: inherit;
 	font-size: var(--font-size-body-base);
+	font-weight: 500;
 	color: var(--text-strong);
 	appearance: none;
 	cursor: pointer;
 	background-color: var(--surface-inset);
 	border: var(--border-width-hairline) solid var(--border-subtle);
-	border-radius: var(--radius-md);
+	border-radius: var(--radius-xl);
 	transition:
 		border-color var(--motion-duration-fast) var(--motion-ease-standard),
 		background-color var(--motion-duration-fast) var(--motion-ease-standard);
@@ -63,6 +64,20 @@
 
 .lg {
 	height: var(--size-control-h-lg);
+	font-size: var(--font-size-body-xl);
+}
+
+.adorned {
+	padding-left: calc(
+		var(--space-12) + var(--size-control-h-md) + var(--space-8)
+	);
+}
+
+.adornment {
+	position: absolute;
+	left: var(--space-12);
+	display: flex;
+	pointer-events: none;
 }
 
 .error {
@@ -85,7 +100,7 @@
 	pointer-events: none;
 }
 
-.icon {
+.chevron {
 	position: absolute;
 	right: var(--space-12);
 	display: flex;

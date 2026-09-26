@@ -1,156 +1,139 @@
-import { skipToken } from "@reduxjs/toolkit/query";
-import React, { useCallback, useEffect } from "react";
-import { useWatch } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { type Control, useWatch } from "react-hook-form";
 
+import { Button } from "~/libs/components/button/button.js";
+import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
-import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
+import { ScoreDescription } from "~/libs/components/score-grid/libs/enums/enums.js";
+import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { Textarea } from "~/libs/components/textarea/textarea.js";
-import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
-import { isPromptForkDraft } from "~/modules/prompts/libs/helpers/is-prompt-fork-draft.helper.js";
-import {
-	useGetPromptProgressQuery,
-	useGetPromptRecentQuery,
-	useRecordPromptMutation,
-} from "~/modules/prompts/prompts-api.js";
-import {
-	type PromptCreateRequestDto,
-	promptCreateValidationSchema,
-} from "~/modules/prompts/prompts.js";
-import {
-	useActiveWorkspace,
-	useGetWorkspacesQuery,
-} from "~/modules/workspaces/workspaces.js";
+import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
+import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
-import styles from "../../styles.module.css";
-import { RecentInjections } from "../recent-injections/recent-injections.js";
-import { DEFAULT_RECORD_PROMT_PAYLOAD } from "./libs/constants.js";
+import { PromptBodyField } from "../prompt-body-field/prompt-body-field.js";
+import { PromptLabels } from "../prompt-labels/prompt-labels.js";
+import { WorkspaceChip } from "../workspace-chip/workspace-chip.js";
+import { RecordPromptFormMessage } from "./libs/enums/enums.js";
+import styles from "./styles.module.css";
 
-const RecordPromptForm: React.FC = () => {
-	const [recordPrompt, { isLoading }] = useRecordPromptMutation();
+type Properties = {
+	canSubmit: boolean;
+	control: Control<PromptCreateRequestDto, null>;
+	error: unknown;
+	isSubmitting: boolean;
+	loggedLabel: string | undefined;
+	onScoreSelect: (score: number) => () => void;
+	onSubmit: (event: React.BaseSyntheticEvent) => void;
+	score: null | number;
+};
+
+const RecordPromptForm: React.FC<Properties> = ({
+	canSubmit,
+	control,
+	error,
+	isSubmitting,
+	loggedLabel,
+	onScoreSelect,
+	onSubmit,
+	score,
+}: Properties) => {
+	const [hoveredScore, setHoveredScore] = useState<null | number>(null);
+
+	const describedScore = hoveredScore ?? score;
+
 	const { data } = useGetWorkspacesQuery({});
+	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
 
-	const workspaces = data?.items;
+	const selectedWorkspace = data?.items.find(
+		({ id }) => id === selectedWorkspaceId,
+	);
+	const workspaceChip = selectedWorkspace ? (
+		<WorkspaceChip name={selectedWorkspace.name} />
+	) : null;
 
-	const options = workspaces?.map(({ id, name }) => {
-		return {
-			label: name,
-			value: id,
-		};
-	});
-
-	const { control, handleSubmit, reset, setValue } =
-		useAppForm<PromptCreateRequestDto>({
-			defaultValues: DEFAULT_RECORD_PROMT_PAYLOAD,
-			validationSchema: promptCreateValidationSchema,
-		});
-	const location = useLocation();
-
-	useEffect(() => {
-		if (!isPromptForkDraft(location.state)) {
-			return;
-		}
-
-		reset({
-			...DEFAULT_RECORD_PROMT_PAYLOAD,
-			promptBody: location.state.promptBody,
-			taskIntent: location.state.taskIntent,
-		});
-	}, [location.key, location.state, reset]);
-
-	const formWorkspaceId = useWatch({ control, name: "workspaceId" });
-	const workspaceId = useActiveWorkspace({ formWorkspaceId, workspaces });
-	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
-	useWorkspaceSearchParameter({
-		selectWorkspace: (selectedWorkspaceId): void => {
-			setValue("workspaceId", selectedWorkspaceId);
-		},
-		workspaces,
-	});
-
-	const workspaceQuery =
-		typeof workspaceId === "number" ? { workspaceId } : skipToken;
-	const { data: progress } = useGetPromptProgressQuery(workspaceQuery);
-	const { data: recent } = useGetPromptRecentQuery(workspaceQuery);
-
-	const handleScoreSubmit = useCallback(
-		(score: number) => {
-			return (): void => {
-				setValue("efficiencyScore", score);
-				void handleSubmit(async (payload: PromptCreateRequestDto) => {
-					const { data } = await recordPrompt(payload);
-					if (data) {
-						reset({
-							...DEFAULT_RECORD_PROMT_PAYLOAD,
-							workspaceId: payload.workspaceId,
-						});
-					}
-				})();
+	const options =
+		data?.items.map(({ id, name }) => {
+			return {
+				label: name,
+				value: id,
 			};
-		},
-		[handleSubmit, recordPrompt, setValue, reset],
-	);
-
-	const handleFormSubmit = useCallback(
-		(event: React.SubmitEvent<HTMLFormElement>) => {
-			event.preventDefault();
-		},
-		[],
-	);
+		}) ?? [];
 
 	return (
 		<>
-			{progress && (
-				<ProgressBar
-					count={progress.count}
-					label="Training progress"
-					target={progress.target}
-				/>
-			)}
-			<div>
-				<h2 className={styles["heading"]}>Log This Prompt</h2>
-				<span className={styles["sub-heading"]}>
-					Every submission trains the retrieval index.
-				</span>
-			</div>
-			<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
-				<div className={styles["input-wrapper"]}>
+			<header className={styles["header"]}>
+				<p className={styles["eyebrow"]}>{RecordPromptFormMessage.EYEBROW}</p>
+				<h1 className={styles["title"]}>{RecordPromptFormMessage.TITLE}</h1>
+				<p className={styles["subtitle"]}>{RecordPromptFormMessage.SUBTITLE}</p>
+			</header>
+			<form className={styles["form"]} noValidate onSubmit={onSubmit}>
+				<div className={styles["fields"]}>
 					<Select
+						adornment={workspaceChip}
 						control={control}
-						isDisabled={isLoading}
-						label="Context"
+						isDisabled={isSubmitting}
+						label={RecordPromptFormMessage.WORKSPACE_LABEL}
 						name="workspaceId"
-						options={options ?? []}
-						placeholder="Select a workspace"
+						options={options}
+						placeholder={RecordPromptFormMessage.WORKSPACE_PLACEHOLDER}
+						size={ControlSize.LG}
 					/>
 					<Input
 						control={control}
-						isDisabled={isLoading}
-						label="Task Intent"
+						isDisabled={isSubmitting}
+						label={RecordPromptFormMessage.INTENT_LABEL}
 						name="taskIntent"
-						placeholder="What were you trying to achieve? (e.g., JWT Authentication on FastAPI)"
+						placeholder={RecordPromptFormMessage.INTENT_PLACEHOLDER}
+						size={ControlSize.LG}
 					/>
-					<Textarea
-						autoComplete="off"
-						control={control}
-						isDisabled={isLoading}
-						label="Prompt Body"
-						name="promptBody"
-						placeholder="Paste the exact prompt you sent to your &#10;coding AI tool here"
-						rows={6}
+					<PromptBodyField control={control} isDisabled={isSubmitting} />
+					<PromptLabels label={loggedLabel} />
+					<div className={styles["score-field"]}>
+						<ScoreGrid
+							isDescriptionHidden={true}
+							isDisabled={isSubmitting}
+							isRadio={true}
+							label={RecordPromptFormMessage.SCORE_LABEL}
+							onScoreHover={setHoveredScore}
+							onScoreSelect={onScoreSelect}
+							selectedScore={score}
+						/>
+						<p aria-live="polite" className={styles["note"]}>
+							{describedScore === null ? (
+								<>
+									<span className={styles["note-tag"]}>
+										{RecordPromptFormMessage.SCORE_NOTE_TAG}
+									</span>{" "}
+									{RecordPromptFormMessage.SCORE_NOTE}
+								</>
+							) : (
+								<span className={styles[getScoreColor(describedScore)]}>
+									{ScoreDescription[describedScore]}
+								</span>
+							)}
+						</p>
+					</div>
+				</div>
+				<FormAlert error={error} />
+				<div className={styles["actions"]}>
+					<Button
+						iconName={IconName.CLIPBOARD_CHECK}
+						isDisabled={!canSubmit}
+						isLoading={isSubmitting}
+						label={RecordPromptFormMessage.SUBMIT}
+						size={ControlSize.LG}
+						type="submit"
+						variant={ButtonVariant.ACCENT}
 					/>
-					<ScoreGrid
-						isDisabled={isLoading}
-						label="Efficiency Score"
-						onScoreSelect={handleScoreSubmit}
-					/>
+					<span className={styles["hint"]}>
+						{canSubmit
+							? RecordPromptFormMessage.SUBMIT_HINT_READY
+							: RecordPromptFormMessage.SUBMIT_HINT_INCOMPLETE}
+					</span>
 				</div>
 			</form>
-			{recent && <RecentInjections items={recent.items} />}
 		</>
 	);
 };

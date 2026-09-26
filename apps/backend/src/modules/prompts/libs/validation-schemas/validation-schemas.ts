@@ -3,6 +3,7 @@ export {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
+	promptStreakQueryValidationSchema,
 	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptUpdateScoreValidationSchema,

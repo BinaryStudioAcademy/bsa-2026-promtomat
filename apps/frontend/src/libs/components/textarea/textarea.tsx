@@ -15,6 +15,7 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+		className?: string | undefined;
 		control: Control<T, null>;
 		descriptionId?: string;
 		isDisabled?: boolean;
@@ -28,6 +29,7 @@ type Properties<T extends FieldValues> =
 	};
 
 const Textarea = <T extends FieldValues>({
+	className,
 	control,
 	descriptionId,
 	isDisabled = false,
@@ -113,6 +115,7 @@ const Textarea = <T extends FieldValues>({
 						styles["textarea"],
 						styles[size],
 						hasError && styles["error"],
+						className,
 					)}
 					id={textareaId}
 					onChange={field.onChange}

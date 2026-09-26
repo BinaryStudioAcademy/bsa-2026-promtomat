@@ -29,10 +29,7 @@ const PromptDeliveryContent: React.FC<ContentProperties> = ({
 			hasDefaultStyles={false}
 			to={AppRoute.SMART_SEARCH}
 		>
-			<Icon
-				className={styles["back-icon"]}
-				iconName={IconName.CHEVRON}
-			/>
+			<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
 			{PromptDeliveryLabel.BACK_TO_SEARCH}
 		</Link>
 

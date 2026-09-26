@@ -1,18 +1,25 @@
-import { ROUND_FACTOR } from "~/libs/constants/constants.js";
+import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
+import { DateFormat } from "~/libs/enums/enums.js";
 import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
+import { formatDateInTimeZone } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
 import { type NearestPrompt } from "~/modules/prompt-embeddings/libs/types/types.js";
 import { type PromptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embedding.service.js";
+import { type UserStreakService } from "~/modules/users/user-streak.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
 import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
-import { createGenerateLabelOptions } from "./libs/helpers/helpers.js";
+import {
+	buildActivityWindow,
+	createGenerateLabelOptions,
+	resolveTimeZone,
+} from "./libs/helpers/helpers.js";
 import {
 	type PromptCandidateQuery,
 	type PromptCreatePayload,
@@ -24,7 +31,7 @@ import {
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptLabelSource,
-	type PromptProgressResponseDto,
+	type PromptStreakResponseDto,
 	type PromptUpdateBodyPayload,
 	type PromptUpdateIntentPayload,
 	type PromptUpdateScorePayload,
@@ -38,6 +45,7 @@ type Constructor = {
 	labelService: LabelService;
 	promptEmbeddingService: PromptEmbeddingService;
 	promptRepository: PromptRepository;
+	userStreakService: UserStreakService;
 	workspaceService: WorkspaceService;
 };
 
@@ -51,6 +59,8 @@ class PromptService {
 	private promptEmbeddingService: PromptEmbeddingService;
 	private promptRepository: PromptRepository;
 
+	private userStreakService: UserStreakService;
+
 	private workspaceService: WorkspaceService;
 
 	public constructor({
@@ -59,6 +69,7 @@ class PromptService {
 		labelService,
 		promptEmbeddingService,
 		promptRepository,
+		userStreakService,
 		workspaceService,
 	}: Constructor) {
 		this.promptRepository = promptRepository;
@@ -66,6 +77,7 @@ class PromptService {
 		this.generator = generator;
 		this.database = database;
 		this.promptEmbeddingService = promptEmbeddingService;
+		this.userStreakService = userStreakService;
 		this.workspaceService = workspaceService;
 	}
 
@@ -173,6 +185,8 @@ class PromptService {
 			);
 
 			const createdPrompt = entity.toObject();
+
+			await this.userStreakService.recordPromptLog(userId, trx);
 
 			return {
 				efficiencyScore: createdPrompt.efficiencyScore,
@@ -285,18 +299,6 @@ class PromptService {
 		);
 	}
 
-	public async findProgress(
-		workspaceId: number,
-	): Promise<PromptProgressResponseDto> {
-		const count =
-			await this.promptRepository.findCountByWorkspaceId(workspaceId);
-
-		return {
-			count,
-			target: PromptProgress.TARGET_COUNT,
-		};
-	}
-
 	public async findPromptsWithoutLabels(
 		limit: number,
 		afterId: number,
@@ -317,6 +319,40 @@ class PromptService {
 		);
 
 		return { items };
+	}
+
+	public async findStreak(
+		userId: number,
+		timeZone: string,
+	): Promise<PromptStreakResponseDto> {
+		const resolvedTimeZone = resolveTimeZone(timeZone);
+		const storedStreak = await this.userStreakService.findByUserId(userId);
+
+		let currentStreak = storedStreak?.currentStreak ?? ZERO_VALUE;
+
+		currentStreak =
+			storedStreak?.timeZone === resolvedTimeZone
+				? currentStreak
+				: await this.userStreakService.recomputeForTimeZone(
+						userId,
+						resolvedTimeZone,
+					);
+
+		const activeDays = await this.promptRepository.findActiveDaysByUserId(
+			userId,
+			resolvedTimeZone,
+		);
+
+		const today = formatDateInTimeZone(
+			new Date(),
+			resolvedTimeZone,
+			DateFormat.ISO_DATE,
+		);
+
+		return {
+			currentStreak,
+			days: buildActivityWindow(activeDays, today),
+		};
 	}
 
 	public async findUserPromptSummary(userId: number): Promise<{
