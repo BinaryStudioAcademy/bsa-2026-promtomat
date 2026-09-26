@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import { isValidationError } from "~/libs/modules/api/libs/helpers/is-validation-error.helper.js";
 import {
@@ -12,7 +13,10 @@ import {
 	useComposeMutation,
 } from "~/modules/composed-prompts/composed-prompts.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
+import {
+	useActiveWorkspace,
+	useGetWorkspacesQuery,
+} from "~/modules/workspaces/workspaces.js";
 
 import {
 	DEFAULT_GENERATE_PAYLOAD,
@@ -54,8 +58,22 @@ const useGenerateForm = (): ReturnValue => {
 		setError,
 	});
 
-	const workspaceId = useWatch({ control, name: "workspaceId" });
-	const hasWorkspace = Boolean(workspaceId);
+	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
+	const hasWorkspace = Boolean(selectedWorkspaceId);
+	const formWorkspaceId =
+		typeof selectedWorkspaceId === "number" ? selectedWorkspaceId : undefined;
+
+	const activeWorkspaceId = useActiveWorkspace({
+		formWorkspaceId,
+		workspaces: workspacesData?.items,
+	});
+
+	useSyncedFormValue({
+		name: "workspaceId",
+		setValue,
+		value: activeWorkspaceId,
+	});
+
 	const handleWorkspaceSelect = useCallback(
 		(workspaceId: number): void => {
 			setValue("workspaceId", workspaceId);
@@ -63,20 +81,10 @@ const useGenerateForm = (): ReturnValue => {
 		[setValue],
 	);
 
-	const requestedWorkspaceId = useWorkspaceSearchParameter({
+	useWorkspaceSearchParameter({
 		selectWorkspace: handleWorkspaceSelect,
 		workspaces: workspacesData?.items,
 	});
-
-	useEffect(() => {
-		const [firstWorkspace] = workspacesData?.items ?? [];
-
-		if (requestedWorkspaceId !== null || !firstWorkspace || hasWorkspace) {
-			return;
-		}
-
-		setValue("workspaceId", firstWorkspace.id);
-	}, [hasWorkspace, requestedWorkspaceId, setValue, workspacesData?.items]);
 
 	const handleCompose = useCallback(
 		async (payload: ComposeRequestDto): Promise<void> => {
