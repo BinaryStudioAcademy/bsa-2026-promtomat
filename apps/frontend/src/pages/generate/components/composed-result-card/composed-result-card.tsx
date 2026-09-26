@@ -129,21 +129,23 @@ const ComposedResultCard: React.FC<Properties> = ({
 
 	return (
 		<ResultCard>
-			<ResultCard.Kicker>
-				{isEdited
-					? GenerateLabel.EDITED_KICKER
-					: GenerateLabel.GENERATED_KICKER}
-			</ResultCard.Kicker>
-			<p className={styles["provenance"]}>
-				<span>
-					{getProvenanceLabel({
-						sourceCount: composedPrompt.sources.length,
-						workspaceName,
-					})}
-				</span>
-				<span aria-hidden="true">·</span>
-				<span>{getRelativeTimeLabel(composedPrompt.createdAt)}</span>
-			</p>
+			<header className={styles["header"]}>
+				<ResultCard.Kicker>
+					{isEdited
+						? GenerateLabel.EDITED_KICKER
+						: GenerateLabel.GENERATED_KICKER}
+				</ResultCard.Kicker>
+				<p className={styles["provenance"]}>
+					<span>
+						{getProvenanceLabel({
+							sourceCount: composedPrompt.sources.length,
+							workspaceName,
+						})}
+					</span>
+					<span aria-hidden="true">·</span>
+					<span>{getRelativeTimeLabel(composedPrompt.createdAt)}</span>
+				</p>
+			</header>
 			<PromptDeliveryView
 				body={appliedBody}
 				bodySlot={
@@ -185,18 +187,6 @@ const ComposedResultCard: React.FC<Properties> = ({
 					type="button"
 					variant={ButtonVariant.PRIMARY}
 				/>
-				<div className={styles["recompose"]}>
-					<Button
-						isDisabled={isRecomposeDisabled}
-						label={GenerateLabel.RECOMPOSE}
-						onClick={handleRecomposeRequest}
-						type="button"
-						variant={ButtonVariant.SECONDARY}
-					/>
-					<span className={styles["recompose-hint"]}>
-						{getRecompositionsLeftLabel(remainingRecompositions)}
-					</span>
-				</div>
 				{hasActions && (
 					<Button
 						iconName={IconName.EDIT}
@@ -214,6 +204,18 @@ const ComposedResultCard: React.FC<Properties> = ({
 						variant={ButtonVariant.SECONDARY}
 					/>
 				)}
+				<div className={styles["recompose"]}>
+					<Button
+						isDisabled={isRecomposeDisabled}
+						label={GenerateLabel.RECOMPOSE}
+						onClick={handleRecomposeRequest}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
+					<span className={styles["recompose-hint"]}>
+						{getRecompositionsLeftLabel(remainingRecompositions)}
+					</span>
+				</div>
 			</ResultCard.Actions>
 			<PendingActionConfirmation
 				confirmLabel={

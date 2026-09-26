@@ -4,7 +4,7 @@ import { type Control } from "react-hook-form";
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize } from "~/libs/enums/enums.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type ComposeRequestDto } from "~/modules/composed-prompts/composed-prompts.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
@@ -66,6 +66,7 @@ const GenerateForm: React.FC<Properties> = ({
 				</div>
 				<Button
 					className={styles["submit"]}
+					iconName={IconName.SPARKLES}
 					isDisabled={!hasWorkspace}
 					isLoading={isLoading}
 					label={isLoading ? GenerateLabel.SUBMITTING : GenerateLabel.SUBMIT}
