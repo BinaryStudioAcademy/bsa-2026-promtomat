@@ -15,7 +15,7 @@ type Properties = {
 	title?: string;
 };
 
-const DiscardConfirmation: React.FC<Properties> = ({
+const PendingActionConfirmation: React.FC<Properties> = ({
 	confirmLabel = GenerateLabel.DISCARD,
 	isOpen,
 	onCancel,
@@ -38,4 +38,4 @@ const DiscardConfirmation: React.FC<Properties> = ({
 	</Confirmation>
 );
 
-export { DiscardConfirmation };
+export { PendingActionConfirmation };

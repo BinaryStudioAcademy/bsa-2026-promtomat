@@ -25,7 +25,7 @@ import {
 } from "../../libs/helpers/helpers.js";
 import { AdoptedNotice } from "../adopted-notice/adopted-notice.js";
 import { ComposedBodyEditor } from "../composed-body-editor/composed-body-editor.js";
-import { DiscardConfirmation } from "../discard-confirmation/discard-confirmation.js";
+import { PendingActionConfirmation } from "../pending-action-confirmation/pending-action-confirmation.js";
 import { ResultCard } from "../result-card/result-card.js";
 import styles from "./styles.module.css";
 
@@ -116,6 +116,8 @@ const ComposedResultCard: React.FC<Properties> = ({
 	}, []);
 
 	const handleActionConfirm = useCallback((): void => {
+		setPendingAction(null);
+
 		if (isRecomposePending) {
 			onRecompose();
 
@@ -213,7 +215,7 @@ const ComposedResultCard: React.FC<Properties> = ({
 					/>
 				)}
 			</ResultCard.Actions>
-			<DiscardConfirmation
+			<PendingActionConfirmation
 				confirmLabel={
 					isRecomposePending ? GenerateLabel.RECOMPOSE : GenerateLabel.DISCARD
 				}

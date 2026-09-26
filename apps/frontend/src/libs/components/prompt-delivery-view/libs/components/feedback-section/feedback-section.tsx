@@ -10,13 +10,13 @@ type Properties = {
 };
 
 const FeedbackSection: React.FC<Properties> = ({ feedback }: Properties) => {
-	const hasSelectedScore = feedback.selectedScore !== undefined;
+	const isRadio = feedback.selectedScore !== undefined;
 
 	return (
 		<>
 			<ScoreGrid
 				isDisabled={feedback.isDisabled ?? false}
-				isRadio={hasSelectedScore}
+				isRadio={isRadio}
 				label={feedback.label}
 				onScoreSelect={feedback.onScoreSelect}
 				selectedScore={feedback.selectedScore ?? null}

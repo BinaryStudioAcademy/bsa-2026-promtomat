@@ -56,10 +56,15 @@ const useGenerateForm = (): ReturnValue => {
 
 	const workspaceId = useWatch({ control, name: "workspaceId" });
 	const hasWorkspace = Boolean(workspaceId);
-	const requestedWorkspaceId = useWorkspaceSearchParameter({
-		selectWorkspace: (workspaceId): void => {
+	const handleWorkspaceSelect = useCallback(
+		(workspaceId: number): void => {
 			setValue("workspaceId", workspaceId);
 		},
+		[setValue],
+	);
+
+	const requestedWorkspaceId = useWorkspaceSearchParameter({
+		selectWorkspace: handleWorkspaceSelect,
 		workspaces: workspacesData?.items,
 	});
 
