@@ -71,3 +71,10 @@
 .chevron-open {
 	transform: rotate(180deg);
 }
+
+.unrated {
+	flex-shrink: 0;
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
+	color: var(--text-muted);
+}

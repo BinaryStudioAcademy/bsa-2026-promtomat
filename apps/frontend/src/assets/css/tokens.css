@@ -1,4 +1,8 @@
 :root {
+	--layout-header-height: calc(
+		var(--space-8) * 2 + var(--space-4) * 2 + var(--size-control-h-md) +
+			var(--border-width-hairline) * 3
+	);
 	--layout-navigation-drawer-width: 300px;
 	--layout-page-max-width: 1440px;
 	--layout-sidebar-width: 232px;

@@ -20,7 +20,11 @@ const RecentInjections: React.FC<Properties> = ({ items }: Properties) => {
 						return (
 							<li className={styles["item"]} key={item.id}>
 								<span className={styles["intent"]}>{item.taskIntent}</span>
-								<span className={styles["score"]}>{item.efficiencyScore}</span>
+								<span className={styles["score"]}>
+									{item.efficiencyScore === null
+										? RecentInjectionsMessage.UNRATED
+										: item.efficiencyScore}
+								</span>
 							</li>
 						);
 					})}

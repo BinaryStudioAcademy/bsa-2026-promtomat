@@ -17,7 +17,9 @@ import {
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptProgressResponseDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
+	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 
@@ -33,6 +35,7 @@ const promptApi = baseApi
 		endpoints: (builder) => ({
 			getPromptById: builder.query<PromptItemResponseDto, number>({
 				extraOptions: { shouldSuppressToast: true },
+				providesTags: [PromptsApiTag.PROMPT],
 				query: (id) => ({
 					url: configureString(APIPath.PROMPTS, PromptsApiPath.$ID, {
 						id: String(id),
@@ -94,6 +97,119 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			updatePromptBody: builder.mutation<
+				PromptDto,
+				{
+					id: number;
+					payload: PromptUpdateBodyRequestDto;
+				}
+			>({
+				async onQueryStarted({ id }, queryLifecycle) {
+					try {
+						const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
+						const cachedArguments = promptApi.util.selectCachedArgsForQuery(
+							queryLifecycle.getState(),
+							"getPrompts",
+						);
+
+						for (const queryArguments of cachedArguments) {
+							queryLifecycle.dispatch(
+								promptApi.util.updateQueryData(
+									"getPrompts",
+									queryArguments,
+									(draft) => {
+										for (const pageData of draft.pages) {
+											const promptToUpdate = pageData.items.find((prompt) => {
+												return prompt.id === id;
+											});
+
+											if (promptToUpdate) {
+												promptToUpdate.body = updatedPrompt.promptBody;
+											}
+										}
+									},
+								),
+							);
+						}
+
+						queryLifecycle.dispatch(
+							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
+								draft.body = updatedPrompt.promptBody;
+							}),
+						);
+					} catch {
+						// The form restores the last persisted body.
+					}
+				},
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_BODY,
+						{
+							promptId: String(id),
+						},
+					),
+				}),
+			}),
+			updatePromptScore: builder.mutation<
+				PromptDto,
+				{
+					id: number;
+					payload: PromptUpdateScoreRequestDto;
+				}
+			>({
+				invalidatesTags: [AnalyticsApiTag.ANALYTIC, PromptsApiTag.PROMPT],
+				async onQueryStarted({ id }, queryLifecycle) {
+					try {
+						const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
+						const cachedArguments = promptApi.util.selectCachedArgsForQuery(
+							queryLifecycle.getState(),
+							"getPrompts",
+						);
+
+						for (const queryArguments of cachedArguments) {
+							queryLifecycle.dispatch(
+								promptApi.util.updateQueryData(
+									"getPrompts",
+									queryArguments,
+									(draft) => {
+										for (const pageData of draft.pages) {
+											const promptToUpdate = pageData.items.find((prompt) => {
+												return prompt.id === id;
+											});
+
+											if (promptToUpdate) {
+												promptToUpdate.score = updatedPrompt.efficiencyScore;
+											}
+										}
+									},
+								),
+							);
+						}
+
+						queryLifecycle.dispatch(
+							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
+								draft.score = updatedPrompt.efficiencyScore;
+							}),
+						);
+					} catch {
+						// The score control keeps the last persisted value.
+					}
+				},
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_SCORE,
+						{
+							promptId: String(id),
+						},
+					),
+				}),
+			}),
 			updateTaskIntent: builder.mutation<
 				PromptDto,
 				{
@@ -123,6 +239,12 @@ const promptApi = baseApi
 								},
 							),
 						);
+
+						dispatch(
+							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
+								draft.intent = updatedPrompt.taskIntent;
+							}),
+						);
 					} catch {
 						// The UI will naturally handle the error
 					}
@@ -148,6 +270,8 @@ const {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
+	useUpdatePromptBodyMutation,
+	useUpdatePromptScoreMutation,
 	useUpdateTaskIntentMutation,
 } = promptApi;
 
@@ -157,5 +281,7 @@ export {
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
 	useRecordPromptMutation,
+	useUpdatePromptBodyMutation,
+	useUpdatePromptScoreMutation,
 	useUpdateTaskIntentMutation,
 };

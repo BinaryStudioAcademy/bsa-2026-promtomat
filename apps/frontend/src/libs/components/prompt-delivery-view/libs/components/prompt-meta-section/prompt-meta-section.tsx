@@ -6,7 +6,7 @@ import { PromptDeliveryViewLabel } from "../../enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	efficiencyScore: number | undefined;
+	efficiencyScore: null | number | undefined;
 	workspaceName: string | undefined;
 };
 
@@ -24,7 +24,9 @@ const PromptMetaSection: React.FC<Properties> = ({
 		<div className={styles["meta-row"]}>
 			{efficiencyScore !== undefined && (
 				<span className={styles["badge"]}>
-					{`${PromptDeliveryViewLabel.SCORE} ${String(efficiencyScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+					{efficiencyScore === null
+						? PromptDeliveryViewLabel.UNRATED
+						: `${PromptDeliveryViewLabel.SCORE} ${String(efficiencyScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
 				</span>
 			)}
 			{workspaceName && (

@@ -9,5 +9,7 @@ export { type PromptItemResponseDto } from "./prompt-item-response-dto.type.js";
 export { type PromptProgressResponseDto } from "./prompt-progress-response-dto.type.js";
 export { type PromptRecentDto } from "./prompt-recent-dto.type.js";
 export { type PromptRouteParametersDto } from "./prompt-route-parameters-dto.type.js";
+export { type PromptUpdateBodyRequestDto } from "./prompt-update-body-request-dto.type.js";
 export { type PromptUpdateIntentRequestDto } from "./prompt-update-request-dto.type.js";
+export { type PromptUpdateScoreRequestDto } from "./prompt-update-score-request-dto.type.js";
 export { type PromptWorkspaceQueryDto } from "./prompt-workspace-query-dto.type.js";

@@ -1,6 +1,7 @@
 import { skipToken } from "@reduxjs/toolkit/query";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useWatch } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
 import { Input } from "~/libs/components/input/input.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
@@ -10,6 +11,7 @@ import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
+import { isPromptForkDraft } from "~/modules/prompts/libs/helpers/is-prompt-fork-draft.helper.js";
 import {
 	useGetPromptProgressQuery,
 	useGetPromptRecentQuery,
@@ -46,6 +48,19 @@ const RecordPromptForm: React.FC = () => {
 			defaultValues: DEFAULT_RECORD_PROMT_PAYLOAD,
 			validationSchema: promptCreateValidationSchema,
 		});
+	const location = useLocation();
+
+	useEffect(() => {
+		if (!isPromptForkDraft(location.state)) {
+			return;
+		}
+
+		reset({
+			...DEFAULT_RECORD_PROMT_PAYLOAD,
+			promptBody: location.state.promptBody,
+			taskIntent: location.state.taskIntent,
+		});
+	}, [location.key, location.state, reset]);
 
 	const formWorkspaceId = useWatch({ control, name: "workspaceId" });
 	const workspaceId = useActiveWorkspace({ formWorkspaceId, workspaces });

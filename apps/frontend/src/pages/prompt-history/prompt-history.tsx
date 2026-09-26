@@ -3,6 +3,7 @@ import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
@@ -17,7 +18,6 @@ import {
 } from "~/modules/workspaces/workspaces.js";
 import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
-import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
 import { PromptHistoryLabel } from "./libs/enums/enum.js";
 import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";

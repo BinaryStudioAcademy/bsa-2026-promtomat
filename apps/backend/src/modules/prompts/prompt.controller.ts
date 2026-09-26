@@ -16,7 +16,9 @@ import {
 	type PromptGetQueryDto,
 	type PromptIdParameterDto,
 	type PromptRouteParametersDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
+	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
@@ -24,7 +26,9 @@ import {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
+	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
+	promptUpdateScoreValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
@@ -70,6 +74,7 @@ import { type PromptService } from "./prompt.service.js";
  *           type: number
  *           minimum: 1
  *           maximum: 10
+ *           nullable: true
  *         promptBody:
  *           type: string
  *         taskIntent:
@@ -91,6 +96,9 @@ import { type PromptService } from "./prompt.service.js";
  *           type: string
  *         score:
  *           type: number
+ *           minimum: 1
+ *           maximum: 10
+ *           nullable: true
  *         workspaceId:
  *           type: number
  *         workspaceName:
@@ -123,6 +131,9 @@ import { type PromptService } from "./prompt.service.js";
  *       properties:
  *         efficiencyScore:
  *           type: number
+ *           minimum: 1
+ *           maximum: 10
+ *           nullable: true
  *         id:
  *           type: number
  *           minimum: 1
@@ -221,6 +232,23 @@ class PromptController extends BaseController {
 
 		this.addRoute({
 			handler: (options) =>
+				this.updateBody(
+					options as APIHandlerOptions<{
+						body: PromptUpdateBodyRequestDto;
+						params: PromptRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: PromptsApiPath.$PROMPT_ID_BODY,
+			preHandler: promptAccessHook(this.promptService),
+			validation: {
+				body: promptUpdateBodyValidationSchema,
+				params: promptRouteParametersValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
 				this.updateIntent(
 					options as APIHandlerOptions<{
 						body: PromptUpdateIntentRequestDto;
@@ -232,6 +260,23 @@ class PromptController extends BaseController {
 			preHandler: promptAccessHook(this.promptService),
 			validation: {
 				body: promptUpdateIntentValidationSchema,
+				params: promptRouteParametersValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.updateScore(
+					options as APIHandlerOptions<{
+						body: PromptUpdateScoreRequestDto;
+						params: PromptRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: PromptsApiPath.$PROMPT_ID_SCORE,
+			preHandler: promptAccessHook(this.promptService),
+			validation: {
+				body: promptUpdateScoreValidationSchema,
 				params: promptRouteParametersValidationSchema,
 			},
 		});
@@ -528,6 +573,81 @@ class PromptController extends BaseController {
 
 	/**
 	 * @swagger
+	 * /prompts/{promptId}/body:
+	 *   patch:
+	 *     description: Updates the stored body of a prompt the caller owns
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: promptId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       description: New prompt body
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               promptBody:
+	 *                 type: string
+	 *                 minLength: 1
+	 *                 maxLength: 50000
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 *       503:
+	 *         description: Derived data could not be regenerated
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 */
+	private async updateBody(
+		options: APIHandlerOptions<{
+			body: PromptUpdateBodyRequestDto;
+			params: PromptRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			id: options.params.promptId,
+		};
+
+		return {
+			payload: await this.promptService.updateBody(payload),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
 	 * /prompts/{promptId}/intent:
 	 *   patch:
 	 *     description: Updates the intent of a prompt
@@ -617,6 +737,76 @@ class PromptController extends BaseController {
 
 		return {
 			payload: await this.promptService.updateIntent(payload),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/{promptId}/score:
+	 *   patch:
+	 *     description: Sets or clears the efficiency score of a prompt the caller owns
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: promptId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       description: New efficiency score, or null to clear it
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               efficiencyScore:
+	 *                 type: number
+	 *                 minimum: 1
+	 *                 maximum: 10
+	 *                 nullable: true
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 */
+	private async updateScore(
+		options: APIHandlerOptions<{
+			body: PromptUpdateScoreRequestDto;
+			params: PromptRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			id: options.params.promptId,
+		};
+
+		return {
+			payload: await this.promptService.updateScore(payload),
 			status: HTTPCode.OK,
 		};
 	}

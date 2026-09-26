@@ -185,7 +185,7 @@
 
 	.desktop-detail {
 		position: sticky;
-		top: var(--space-24);
+		top: calc(var(--layout-header-height) + var(--space-12));
 		display: block;
 	}
 }
