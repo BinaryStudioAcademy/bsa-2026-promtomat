@@ -9,7 +9,7 @@ import { RepositoryIdentityRefusalReason } from "../enums/enums.js";
 import { type RepositoryIdentityOutcome } from "../types/types.js";
 import { parseRepositoryUrl } from "./parse-repository-url.helper.js";
 
-const refuse = (
+const createRefusedIdentityOutcome = (
 	reason: ValueOf<typeof RepositoryIdentityRefusalReason>,
 ): RepositoryIdentityOutcome => ({ identity: null, reason });
 
@@ -19,20 +19,26 @@ const normalizeRepositoryIdentity = (
 	const trimmedUrl = remoteUrl?.trim();
 
 	if (!trimmedUrl) {
-		return refuse(RepositoryIdentityRefusalReason.NO_REMOTE_CONFIGURED);
+		return createRefusedIdentityOutcome(
+			RepositoryIdentityRefusalReason.NO_REMOTE_CONFIGURED,
+		);
 	}
 
 	const parsed = parseRepositoryUrl(trimmedUrl);
 
 	if (!parsed) {
-		return refuse(RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT);
+		return createRefusedIdentityOutcome(
+			RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT,
+		);
 	}
 
 	const trimmedPath = parsed.path.replace(TRAILING_GIT_SUFFIX_PATTERN, "");
 	const segments = trimmedPath.split("/").filter(Boolean);
 
 	if (segments.length < MINIMUM_PATH_SEGMENTS) {
-		return refuse(RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT);
+		return createRefusedIdentityOutcome(
+			RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT,
+		);
 	}
 
 	const repo = segments.at(LAST_SEGMENT_OFFSET);
@@ -41,7 +47,9 @@ const normalizeRepositoryIdentity = (
 		.join("/");
 
 	if (!repo || !owner) {
-		return refuse(RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT);
+		return createRefusedIdentityOutcome(
+			RepositoryIdentityRefusalReason.UNRECOGNIZED_FORMAT,
+		);
 	}
 
 	return {

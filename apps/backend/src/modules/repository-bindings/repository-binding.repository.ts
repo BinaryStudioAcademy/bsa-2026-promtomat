@@ -48,12 +48,7 @@ class RepositoryBindingRepository {
 	}
 
 	public async deleteById(id: number): Promise<number> {
-		const deletedRepositoryBindingCount = await this.repositoryBindingModel
-			.query()
-			.deleteById(id)
-			.execute();
-
-		return deletedRepositoryBindingCount;
+		return await this.repositoryBindingModel.query().deleteById(id).execute();
 	}
 
 	public async findAllByWorkspaceId(

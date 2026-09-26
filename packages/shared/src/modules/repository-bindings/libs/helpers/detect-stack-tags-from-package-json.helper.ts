@@ -36,8 +36,11 @@ const detectStackTagsFromPackageJson = (
 	];
 
 	const detectedTags = packageNames
-		.map((packageName) => PackageNameToTechStackTag[packageName])
-		.filter((tag): tag is string => Boolean(tag));
+		.filter(
+			(packageName): packageName is keyof typeof PackageNameToTechStackTag =>
+				Object.hasOwn(PackageNameToTechStackTag, packageName),
+		)
+		.map((packageName) => PackageNameToTechStackTag[packageName]);
 
 	return [...new Set(detectedTags)].slice(FIRST_ELEMENT_INDEX, MAX_TAGS_COUNT);
 };

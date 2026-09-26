@@ -1,5 +1,5 @@
 .list {
-	--visible-items: 5;
+	--visible-items: 3;
 	--item-height: 54px;
 
 	display: flex;
@@ -38,9 +38,9 @@
 	text-align: center;
 }
 
-@media (height < 760px) {
+@media (height >= 760px) {
 	.list {
-		--visible-items: 3;
+		--visible-items: 5;
 	}
 }
 

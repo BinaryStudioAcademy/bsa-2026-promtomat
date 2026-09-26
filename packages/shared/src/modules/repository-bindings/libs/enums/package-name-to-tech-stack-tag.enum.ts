@@ -1,6 +1,6 @@
 import { TechStackTechDictionary } from "../../../workspaces/libs/modules/tech-stack-tags/tech-stack-tags.js";
 
-const PackageNameToTechStackTag: Record<string, string> = {
+const PackageNameToTechStackTag = {
 	"@adonisjs/core": TechStackTechDictionary.ADONIS_JS,
 	"@babel/core": TechStackTechDictionary.BABEL,
 	"@builder.io/qwik": TechStackTechDictionary.QWIK,
