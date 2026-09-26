@@ -2,6 +2,10 @@ output "alb_dns_name" {
   value = aws_alb.lb.dns_name
 }
 
+output "cloudfront_domain_name" {
+  value = aws_cloudfront_distribution.app.domain_name
+}
+
 output "ecr_repository_urls" {
   value = { for k, r in aws_ecr_repository.ecr : k => r.repository_url }
 }
