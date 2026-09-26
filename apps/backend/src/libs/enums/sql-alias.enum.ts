@@ -8,6 +8,7 @@ const SQLAlias = {
 	LABEL: "label",
 	PREVIOUS_SCORE: "previousScore",
 	PROMPT_COUNT: "promptCount",
+	RECENT_ACTIVITY: "recentActivity",
 	WORKSPACE_NAME: "workspaceName",
 } as const;
 
