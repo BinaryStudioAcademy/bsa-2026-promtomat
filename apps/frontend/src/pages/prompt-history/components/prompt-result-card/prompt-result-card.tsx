@@ -7,8 +7,8 @@ import {
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
-import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
+import { getScoreLabel } from "~/modules/prompts/prompts.js";
 
 import styles from "./styles.module.css";
 
@@ -49,7 +49,7 @@ const PromptResultCard: React.FC<Properties> = ({
 				<span className={styles["intent"]}>{prompt.intent}</span>
 				<ScoreBadge
 					efficiencyScore={prompt.score}
-					label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+					label={getScoreLabel(prompt.score)}
 				/>
 				<Icon
 					className={getValidClasses(

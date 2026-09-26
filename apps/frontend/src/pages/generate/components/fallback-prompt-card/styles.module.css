@@ -1,0 +1,28 @@
+.notice {
+	padding: var(--space-12) var(--space-16);
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--fg-warning);
+	background-color: var(--bg-warning);
+	border-radius: var(--radius-sm);
+}
+
+.candidate-header {
+	display: flex;
+	gap: var(--space-16);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.heading {
+	min-width: 0;
+	margin: 0;
+	font-size: var(--font-size-body-xl);
+	color: var(--text-strong);
+}
+
+.hint {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}

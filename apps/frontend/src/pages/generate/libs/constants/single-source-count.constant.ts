@@ -1,0 +1,3 @@
+const SINGLE_SOURCE_COUNT = 1;
+
+export { SINGLE_SOURCE_COUNT };

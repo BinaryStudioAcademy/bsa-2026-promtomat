@@ -26,6 +26,7 @@ class ComposedPromptRepository {
 			modelId: composedPrompt.modelId,
 			requesterId: composedPrompt.requesterId,
 			sources: composedPrompt.sources.map((source) => ({
+				efficiencyScore: source.prompt.efficiencyScore,
 				promptId: source.promptId,
 				rank: source.rank,
 				taskIntent: source.prompt.taskIntent,
