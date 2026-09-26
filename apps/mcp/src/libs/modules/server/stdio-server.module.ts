@@ -43,11 +43,14 @@ class StdioServer implements Server {
 		);
 	}
 
-	private async callTool(tool: Tool): Promise<CallToolResult> {
+	private async callTool(
+		tool: Tool,
+		arguments_: Record<string, unknown>,
+	): Promise<CallToolResult> {
 		const startedAt = performance.now();
 
 		try {
-			const result = await tool.execute();
+			const result = await tool.execute(arguments_);
 
 			this.logToolCall({
 				outcome: ToolOutcome.OK,
@@ -94,10 +97,22 @@ class StdioServer implements Server {
 	}
 
 	private registerTool(tool: Tool): void {
+		const { description, inputSchema, name } = tool;
+
+		if (inputSchema === undefined) {
+			this.mcpServer.registerTool(
+				name,
+				{ description },
+				async () => await this.callTool(tool, {}),
+			);
+
+			return;
+		}
+
 		this.mcpServer.registerTool(
-			tool.name,
-			{ description: tool.description },
-			async () => await this.callTool(tool),
+			name,
+			{ description, inputSchema },
+			async (arguments_) => await this.callTool(tool, arguments_),
 		);
 	}
 

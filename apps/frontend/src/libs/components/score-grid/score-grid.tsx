@@ -13,6 +13,7 @@ type Properties = {
 	isDisabled?: boolean;
 	isRadio?: boolean;
 	label: string;
+	onScoreHover?: (score: null | number) => void;
 	onScoreSelect: (score: number) => () => void;
 	selectedScore?: null | number;
 };
@@ -22,6 +23,7 @@ const ScoreGrid: React.FC<Properties> = ({
 	isDisabled = false,
 	isRadio = false,
 	label,
+	onScoreHover,
 	onScoreSelect,
 	selectedScore,
 }) => {
@@ -32,15 +34,20 @@ const ScoreGrid: React.FC<Properties> = ({
 
 	const currentSelectedScore =
 		selectedScore === undefined ? internalScore : selectedScore;
-	const handleHover = useCallback((score: number) => {
-		return (): void => {
-			setHoveredScore(score);
-		};
-	}, []);
+	const handleHover = useCallback(
+		(score: number) => {
+			return (): void => {
+				setHoveredScore(score);
+				onScoreHover?.(score);
+			};
+		},
+		[onScoreHover],
+	);
 
 	const handleClearHover = useCallback((): void => {
 		setHoveredScore(null);
-	}, []);
+		onScoreHover?.(null);
+	}, [onScoreHover]);
 
 	const handleScoreClick = useCallback(
 		(score: number) => {

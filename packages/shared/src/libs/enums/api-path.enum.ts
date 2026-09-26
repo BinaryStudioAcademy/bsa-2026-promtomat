@@ -6,6 +6,7 @@ const APIPath = {
 	HEALTH: "/health",
 	LABELS: "/labels",
 	PROMPTS: "/prompts",
+	REPOSITORY_BINDINGS: "/repository-bindings",
 	USERS: "/users",
 	WORKSPACES: "/workspaces",
 	WORKSPACES_$WORKSPACE_ID: "/workspaces/:workspaceId",
