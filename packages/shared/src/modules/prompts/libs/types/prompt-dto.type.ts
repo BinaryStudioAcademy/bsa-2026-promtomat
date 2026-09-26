@@ -1,5 +1,5 @@
 type PromptDto = {
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	id: number;
 	label: string;
 	promptBody: string;

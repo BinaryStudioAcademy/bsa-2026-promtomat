@@ -16,6 +16,12 @@
 	gap: var(--space-6);
 }
 
+@media (width >= 768px) {
+	.control {
+		grid-template-columns: repeat(10, minmax(0, 1fr));
+	}
+}
+
 .message {
 	font-size: var(--font-size-body-sm);
 	color: var(--text-faint);
@@ -37,8 +43,59 @@
 	height: var(--size-control-h-xl);
 }
 
-@media (width >= 768px) {
-	.control {
-		grid-template-columns: repeat(10, minmax(0, 1fr));
-	}
+.inset {
+	gap: var(--space-10);
+}
+
+.label-eyebrow {
+	font-size: var(--font-size-meta);
+	font-weight: 400;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.77px;
+}
+
+.control-inset {
+	grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.control-inset .score-button {
+	height: auto;
+	padding: var(--space-8) var(--space-4);
+	font-family: var(--font-family-mono);
+	font-size: var(--font-size-body-sm);
+	font-weight: 500;
+	color: var(--text-body);
+	border-radius: var(--radius-lg);
+}
+
+.control-inset .score-button:hover:not(:disabled),
+.control-inset .score-button:active:not(:disabled) {
+	color: var(--text-body);
+	background-color: var(--surface-raised);
+	border-color: var(--border-strong);
+}
+
+.control-inset .score-button-solid-danger,
+.control-inset .score-button-solid-danger:hover:not(:disabled),
+.control-inset .score-button-solid-danger:active:not(:disabled) {
+	color: var(--text-on-accent);
+	background-color: var(--fg-danger);
+	border-color: transparent;
+}
+
+.control-inset .score-button-solid-warning,
+.control-inset .score-button-solid-warning:hover:not(:disabled),
+.control-inset .score-button-solid-warning:active:not(:disabled) {
+	color: var(--text-on-accent);
+	background-color: var(--fg-warning);
+	border-color: transparent;
+}
+
+.control-inset .score-button-solid-success,
+.control-inset .score-button-solid-success:hover:not(:disabled),
+.control-inset .score-button-solid-success:active:not(:disabled) {
+	color: var(--text-on-accent);
+	background-color: var(--fg-success);
+	border-color: transparent;
 }

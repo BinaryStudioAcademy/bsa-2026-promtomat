@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PromptDetailLabel } from "~/libs/components/prompt-detail-panel/libs/enums/enums.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { AppRoute } from "~/libs/enums/enums.js";
 import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
@@ -65,15 +66,21 @@ const RecentPromptsContent: React.FC<Properties> = ({
 							to={promptPath as NavigableRoute}
 						>
 							<span className={styles["intent"]}>{item.taskIntent}</span>
-							<span
-								className={getValidClasses(
-									styles["score"],
-									styles[getScoreColor(item.efficiencyScore)],
-								)}
-							>
-								{item.efficiencyScore}/
-								{PromptValidationRule.EFFICIENCY_SCORE_MAX}
-							</span>
+							{item.efficiencyScore === null ? (
+								<span className={styles["score"]}>
+									{PromptDetailLabel.UNRATED}
+								</span>
+							) : (
+								<span
+									className={getValidClasses(
+										styles["score"],
+										styles[getScoreColor(item.efficiencyScore)],
+									)}
+								>
+									{item.efficiencyScore}/
+									{PromptValidationRule.EFFICIENCY_SCORE_MAX}
+								</span>
+							)}
 						</Link>
 					</li>
 				);

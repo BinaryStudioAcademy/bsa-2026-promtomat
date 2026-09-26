@@ -20,8 +20,9 @@ type Properties<T extends FieldValues> =
 		descriptionId?: string;
 		isDisabled?: boolean;
 		isLabelHidden?: boolean;
+		isMessageHidden?: boolean;
 		label: string;
-		maxHeight?: number;
+		maxHeight?: null | number;
 		name: FieldPath<T>;
 		rows?: number;
 		size?: ValueOf<typeof ControlSize>;
@@ -33,6 +34,7 @@ const Textarea = <T extends FieldValues>({
 	descriptionId,
 	isDisabled = false,
 	isLabelHidden = false,
+	isMessageHidden = false,
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
@@ -66,6 +68,13 @@ const Textarea = <T extends FieldValues>({
 		}
 
 		textarea.style.height = "auto";
+
+		if (maxHeight === null) {
+			textarea.style.height = `${String(textarea.scrollHeight)}px`;
+			textarea.style.overflowY = "hidden";
+			return;
+		}
+
 		const height = Math.min(textarea.scrollHeight, maxHeight);
 
 		textarea.style.height = `${String(height)}px`;
@@ -114,7 +123,7 @@ const Textarea = <T extends FieldValues>({
 					rows={rows}
 				/>
 			</div>
-			{!descriptionId && (
+			{!descriptionId && (!isMessageHidden || errorMessage !== undefined) && (
 				<span className={styles["message"]} id={errorMessageId}>
 					{errorMessage}
 				</span>

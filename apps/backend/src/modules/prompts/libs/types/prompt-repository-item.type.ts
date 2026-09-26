@@ -1,6 +1,6 @@
 type PromptRepositoryItem = {
 	createdAt: string;
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	id: number;
 	labelId: number;
 	promptBody: string;

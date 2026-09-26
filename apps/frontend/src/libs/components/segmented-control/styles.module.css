@@ -35,6 +35,14 @@
 	background-color: var(--state-hover-tint);
 }
 
+.raised .label {
+	padding: var(--space-6) var(--space-14);
+	font-size: var(--font-size-body-sm);
+	font-weight: 600;
+	border-left-width: 0;
+	border-radius: var(--radius-md);
+}
+
 .label::after {
 	display: block;
 	visibility: hidden;
@@ -59,4 +67,16 @@
 .input:focus-visible + .label {
 	outline: var(--border-width-focus) solid var(--border-focus);
 	outline-offset: calc(-1 * var(--border-width-focus));
+}
+
+.raised {
+	gap: var(--space-2);
+	padding: var(--space-4);
+	background-color: var(--surface-raised);
+	border-color: var(--border-strong);
+}
+
+.raised .input:checked + .label {
+	color: var(--text-strong);
+	background-color: var(--border-subtle);
 }

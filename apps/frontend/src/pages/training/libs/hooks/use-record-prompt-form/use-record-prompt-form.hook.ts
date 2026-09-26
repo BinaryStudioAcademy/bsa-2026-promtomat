@@ -1,11 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { type Control, useWatch } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
+import { isPromptForkDraft } from "~/modules/prompts/libs/helpers/is-prompt-fork-draft.helper.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
 import {
 	type PromptCreateRequestDto,
@@ -43,6 +45,20 @@ const useRecordPromptForm = (): ReturnValue => {
 		});
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
+
+	const location = useLocation();
+
+	useEffect(() => {
+		if (!isPromptForkDraft(location.state)) {
+			return;
+		}
+
+		reset({
+			...DEFAULT_RECORD_PROMPT_PAYLOAD,
+			promptBody: location.state.promptBody,
+			taskIntent: location.state.taskIntent,
+		});
+	}, [location.key, location.state, reset]);
 
 	const selectedScore = useWatch({ control, name: "efficiencyScore" }) as
 		number | undefined;

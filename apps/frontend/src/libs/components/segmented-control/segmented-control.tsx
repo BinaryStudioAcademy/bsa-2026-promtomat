@@ -11,6 +11,7 @@ type Properties<T extends string> = {
 	onChange: (value: T) => void;
 	options: readonly SegmentedControlOption<T>[];
 	value: T;
+	variant?: "default" | "raised";
 };
 
 const SegmentedControl = <T extends string>({
@@ -19,6 +20,7 @@ const SegmentedControl = <T extends string>({
 	onChange,
 	options,
 	value,
+	variant = "default",
 }: Properties<T>): React.JSX.Element => {
 	const groupName = useId();
 
@@ -32,7 +34,13 @@ const SegmentedControl = <T extends string>({
 	);
 
 	return (
-		<fieldset className={getValidClasses(styles["group"], className)}>
+		<fieldset
+			className={getValidClasses(
+				styles["group"],
+				variant === "raised" && styles["raised"],
+				className,
+			)}
+		>
 			<legend className="visually-hidden">{label}</legend>
 
 			{options.map((option) => {

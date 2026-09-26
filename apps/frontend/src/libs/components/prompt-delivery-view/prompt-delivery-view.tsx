@@ -1,7 +1,9 @@
 import React, { useCallback, useRef } from "react";
 
+import { Button } from "~/libs/components/button/button.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
+import { ButtonVariant } from "~/libs/enums/enums.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 
 import { ExplanationSection } from "./libs/components/explanation-section/explanation-section.js";
@@ -19,6 +21,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
 	efficiencyScore,
 	explanation = "",
+	revision,
 	sources = [],
 	workspaceName,
 }: PromptDeliveryViewProperties) => {
@@ -46,6 +49,20 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 		return (): void => {};
 	}, []);
 
+	const bodyEditor =
+		revision?.isOwner === true
+			? {
+					control: revision.bodyControl,
+					isEditing: revision.isEditingBody,
+					isSaving: revision.isSavingBody,
+					onCancel: revision.onCancelBodyEdit,
+					onSave: revision.onSaveBody,
+					onStart: revision.onStartBodyEdit,
+				}
+			: undefined;
+
+	const isShowScoreGrid = revision === undefined || revision.isOwner;
+
 	return (
 		<div className={styles["view"]}>
 			<PromptMetaSection
@@ -53,16 +70,34 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 				workspaceName={workspaceName}
 			/>
 
-			<PromptBodySection body={body} onCopyPrompt={handleCopyPrompt} />
+			<PromptBodySection
+				body={body}
+				onCopyPrompt={handleCopyPrompt}
+				{...(bodyEditor ? { editor: bodyEditor } : {})}
+			/>
 
 			<ExplanationSection explanation={explanation} sources={sources} />
 
-			<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
-				<ScoreGrid
-					label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
-					onScoreSelect={handleScoreSelect}
+			{isShowScoreGrid && (
+				<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
+					<ScoreGrid
+						isDisabled={revision?.isSavingScore ?? false}
+						isRadio={revision !== undefined}
+						label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
+						onScoreSelect={revision?.onScoreSelect ?? handleScoreSelect}
+						{...(revision ? { selectedScore: revision.selectedScore } : {})}
+					/>
+				</PromptDeliveryCard>
+			)}
+
+			{revision && (
+				<Button
+					label={PromptDeliveryViewLabel.FORK_INTO_TRAINING}
+					onClick={revision.onFork}
+					type="button"
+					variant={ButtonVariant.SECONDARY}
 				/>
-			</PromptDeliveryCard>
+			)}
 		</div>
 	);
 };
