@@ -1,4 +1,4 @@
-import { EntityName } from "~/libs/enums/enums.js";
+import { EntityName, WorkspaceTargets } from "~/libs/enums/enums.js";
 import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
 
@@ -10,6 +10,8 @@ import {
 } from "./libs/types/types.js";
 
 class WorkspaceEntity implements Entity {
+	private datasetTarget: ValueOf<typeof WorkspaceTargets>;
+
 	private description: string;
 
 	private id: null | number;
@@ -23,6 +25,7 @@ class WorkspaceEntity implements Entity {
 	private visibility: ValueOf<typeof WorkspaceVisibility>;
 
 	private constructor({
+		datasetTarget,
 		description,
 		id,
 		name,
@@ -30,6 +33,7 @@ class WorkspaceEntity implements Entity {
 		userId,
 		visibility,
 	}: WorkspaceEntityPayload) {
+		this.datasetTarget = datasetTarget;
 		this.description = description;
 		this.id = id;
 		this.name = name;
@@ -39,6 +43,7 @@ class WorkspaceEntity implements Entity {
 	}
 
 	public static initialize({
+		datasetTarget,
 		description,
 		id,
 		name,
@@ -47,6 +52,7 @@ class WorkspaceEntity implements Entity {
 		visibility,
 	}: WorkspaceDto): WorkspaceEntity {
 		return new WorkspaceEntity({
+			datasetTarget,
 			description,
 			id,
 			name,
@@ -57,6 +63,7 @@ class WorkspaceEntity implements Entity {
 	}
 
 	public static initializeNew({
+		datasetTarget,
 		description = "",
 		name,
 		stackTags = [],
@@ -64,6 +71,7 @@ class WorkspaceEntity implements Entity {
 		visibility = WorkspaceVisibility.PRIVATE,
 	}: WorkspaceEntityInitializeNewPayload): WorkspaceEntity {
 		return new WorkspaceEntity({
+			datasetTarget,
 			description,
 			id: null,
 			name,
@@ -75,6 +83,7 @@ class WorkspaceEntity implements Entity {
 
 	public toNewObject(): Omit<WorkspaceDto, "id"> {
 		return {
+			datasetTarget: this.datasetTarget,
 			description: this.description,
 			name: this.name,
 			stackTags: this.stackTags,
@@ -85,6 +94,7 @@ class WorkspaceEntity implements Entity {
 
 	public toObject(): WorkspaceDto {
 		return {
+			datasetTarget: this.datasetTarget,
 			description: this.description,
 			id: requireEntityId(this.id, EntityName.WORKSPACE),
 			name: this.name,

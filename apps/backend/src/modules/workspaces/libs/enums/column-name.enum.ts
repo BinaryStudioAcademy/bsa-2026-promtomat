@@ -1,5 +1,6 @@
 const ColumnName = {
 	CREATED_AT: "created_at",
+	DATASET_TARGET: "dataset_target",
 	DESCRIPTION: "description",
 	ID: "id",
 	NAME: "name",

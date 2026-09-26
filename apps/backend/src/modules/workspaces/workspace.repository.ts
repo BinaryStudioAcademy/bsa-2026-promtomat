@@ -1,11 +1,12 @@
 import {
 	NotFoundError,
 	type QueryBuilder,
+	raw,
 	type Transaction,
 	UniqueViolationError,
 } from "objection";
 
-import { SortOrder } from "~/libs/enums/enums.js";
+import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
@@ -15,9 +16,14 @@ import { ContributorColumnName } from "../contributors/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import {
 	PROMPTS_RELATION,
+	RECENT_ACTIVITY_DAYS,
 	WORKSPACE_OWNER_COUNT,
 } from "./libs/constants/constants.js";
-import { WorkspaceColumnName, WorkspaceListScope } from "./libs/enums/enums.js";
+import {
+	WorkspaceColumnName,
+	WorkspaceListScope,
+	WorkspaceListSort,
+} from "./libs/enums/enums.js";
 import {
 	type WorkspaceListItemDto,
 	type WorkspaceUpdateRequestDto,
@@ -26,8 +32,10 @@ import { WorkspaceEntity } from "./workspace.entity.js";
 import { type WorkspaceModel } from "./workspace.model.js";
 
 type WorkspaceWithCountsRow = WorkspaceModel & {
+	averageScore: null | string;
 	contributorCount: string;
 	promptCount: string;
+	recentActivity: string;
 };
 
 class WorkspaceRepository {
@@ -37,18 +45,74 @@ class WorkspaceRepository {
 		this.workspaceModel = workspaceModel;
 	}
 
+	private applyListSort(
+		query: QueryBuilder<WorkspaceModel, WorkspaceModel[]>,
+		sort?: ValueOf<typeof WorkspaceListSort>,
+	): void {
+		const workspaceId = `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`;
+
+		if (sort === WorkspaceListSort.RECENT_ACTIVITY) {
+			query
+				.orderBy(SQLAlias.RECENT_ACTIVITY, SortOrder.DESC)
+				.orderBy(workspaceId, SortOrder.ASC);
+
+			return;
+		}
+
+		if (sort === WorkspaceListSort.READINESS) {
+			query
+				.orderByRaw(`(??)::double precision / ?? ${SortOrder.DESC}`, [
+					SQLAlias.PROMPT_COUNT,
+					`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.DATASET_TARGET}`,
+				])
+				.orderBy(workspaceId, SortOrder.ASC);
+
+			return;
+		}
+
+		if (sort === WorkspaceListSort.AVERAGE_SCORE) {
+			query
+				.orderByRaw(`?? ${SortOrder.DESC} NULLS LAST`, [SQLAlias.AVERAGE_SCORE])
+				.orderBy(workspaceId, SortOrder.ASC);
+
+			return;
+		}
+
+		query
+			.orderBy(
+				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
+				SortOrder.DESC,
+			)
+			.orderBy(workspaceId, SortOrder.ASC);
+	}
+
 	private buildWorkspaceWithCountsQuery(): QueryBuilder<
 		WorkspaceModel,
 		WorkspaceModel[]
 	> {
+		const promptId = `${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`;
+		const promptCreatedAt = `${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`;
+
 		return this.workspaceModel
 			.query()
 			.select(`${DatabaseTableName.WORKSPACES}.*`)
 			.countDistinct(
 				`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID} as contributorCount`,
 			)
-			.countDistinct(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID} as promptCount`,
+			.countDistinct(`${promptId} as ${SQLAlias.PROMPT_COUNT}`)
+			.avg(
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE} as ${SQLAlias.AVERAGE_SCORE}`,
+			)
+			.select(
+				raw(
+					"count(distinct case when ?? >= now() - make_interval(days => ?) then ?? end) as ??",
+					[
+						promptCreatedAt,
+						RECENT_ACTIVITY_DAYS,
+						promptId,
+						SQLAlias.RECENT_ACTIVITY,
+					],
+				),
 			)
 			.leftJoin(
 				DatabaseTableName.CONTRIBUTORS,
@@ -132,12 +196,17 @@ class WorkspaceRepository {
 		const contributorCount = Number(row.contributorCount);
 		const memberCount = contributorCount + WORKSPACE_OWNER_COUNT;
 		const promptCount = Number(row.promptCount);
+		const recentActivity = Number(row.recentActivity);
+		const averageScore =
+			row.averageScore === null ? null : Number(row.averageScore);
 		const workspaceDto = WorkspaceEntity.initialize(row).toObject();
 
 		return {
 			...workspaceDto,
+			averageScore,
 			memberCount,
 			promptCount,
+			recentActivity,
 		};
 	}
 
@@ -166,18 +235,21 @@ class WorkspaceRepository {
 
 	public async findAllByUserId(
 		userId: number,
-		scope: ValueOf<typeof WorkspaceListScope>,
-		workspaceName?: string,
+		query: {
+			scope: ValueOf<typeof WorkspaceListScope>;
+			sort?: undefined | ValueOf<typeof WorkspaceListSort>;
+			workspaceName?: string | undefined;
+		},
 	): Promise<WorkspaceListItemDto[]> {
-		const query = this.buildWorkspaceWithCountsQuery().orderBy(
-			`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
-			SortOrder.DESC,
-		);
+		const queryBuilder = this.buildWorkspaceWithCountsQuery();
 
-		this.filterByListScope(query, userId, scope);
-		this.filterByNameOrTag(query, workspaceName);
+		this.applyListSort(queryBuilder, query.sort);
+		this.filterByListScope(queryBuilder, userId, query.scope);
+		this.filterByNameOrTag(queryBuilder, query.workspaceName);
 
-		const workspaces = await query.castTo<WorkspaceWithCountsRow[]>().execute();
+		const workspaces = await queryBuilder
+			.castTo<WorkspaceWithCountsRow[]>()
+			.execute();
 
 		return workspaces.map((workspace) => this.toWorkspaceWithCounts(workspace));
 	}
