@@ -1,39 +1,29 @@
-import React, { useCallback, useRef } from "react";
+import React from "react";
 
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
-import { isValidationError } from "~/libs/modules/api/libs/helpers/is-validation-error.helper.js";
-import {
-	type ComposeRequestDto,
-	useComposeMutation,
-} from "~/modules/composed-prompts/composed-prompts.js";
 
 import { ComposeResult } from "./components/compose-result/compose-result.js";
 import { GenerateForm } from "./components/generate-form/generate-form.js";
 import { GenerationFailedNotice } from "./components/generation-failed-notice/generation-failed-notice.js";
 import { GenerateLabel } from "./libs/enums/enums.js";
+import { useGenerateForm } from "./libs/hooks/use-generate-form/use-generate-form.hook.js";
 import styles from "./styles.module.css";
 
 const Generate: React.FC = () => {
-	const [compose, { data, error, isLoading, reset }] = useComposeMutation();
-	const lastPayloadReference = useRef<ComposeRequestDto | null>(null);
-
-	const handleCompose = useCallback(
-		(payload: ComposeRequestDto): void => {
-			lastPayloadReference.current = payload;
-			void compose(payload);
-		},
-		[compose],
-	);
-
-	const handleRetry = useCallback((): void => {
-		if (lastPayloadReference.current) {
-			void compose(lastPayloadReference.current);
-		}
-	}, [compose]);
-
-	const hasFailure = error !== undefined && !isValidationError(error);
+	const {
+		control,
+		hasFailure,
+		hasWorkspace,
+		isLoading,
+		onDiscard,
+		onRecompose,
+		onRetry,
+		onSubmit,
+		result,
+		workspaces,
+	} = useGenerateForm();
 
 	return (
 		<div className={styles["container"]}>
@@ -44,19 +34,22 @@ const Generate: React.FC = () => {
 					title={GenerateLabel.PAGE_TITLE}
 				/>
 				<GenerateForm
-					error={error}
+					control={control}
+					hasWorkspace={hasWorkspace}
 					isLoading={isLoading}
-					onSubmit={handleCompose}
+					onSubmit={onSubmit}
+					workspaces={workspaces}
 				/>
 				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 				{!isLoading && hasFailure && (
-					<GenerationFailedNotice onRetry={handleRetry} />
+					<GenerationFailedNotice onRetry={onRetry} />
 				)}
-				{!isLoading && data && (
+				{!isLoading && result && (
 					<ComposeResult
-						onDiscard={reset}
-						onTryAgain={handleRetry}
-						result={data}
+						onDiscard={onDiscard}
+						onRecompose={onRecompose}
+						onTryAgain={onRetry}
+						result={result}
 					/>
 				)}
 			</div>

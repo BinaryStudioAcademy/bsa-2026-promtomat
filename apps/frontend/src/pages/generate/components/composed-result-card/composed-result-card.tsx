@@ -2,9 +2,11 @@ import React, { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import { getRelativeTimeLabel } from "~/libs/helpers/helpers.js";
 import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import {
 	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptDto,
@@ -12,8 +14,15 @@ import {
 } from "~/modules/composed-prompts/composed-prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
-import { GenerateLabel, GenerateMessage } from "../../libs/enums/enums.js";
-import { getProvenanceLabel } from "../../libs/helpers/helpers.js";
+import {
+	GenerateLabel,
+	GenerateMessage,
+	PendingCardAction,
+} from "../../libs/enums/enums.js";
+import {
+	getProvenanceLabel,
+	getRecompositionsLeftLabel,
+} from "../../libs/helpers/helpers.js";
 import { AdoptedNotice } from "../adopted-notice/adopted-notice.js";
 import { ComposedBodyEditor } from "../composed-body-editor/composed-body-editor.js";
 import { DiscardConfirmation } from "../discard-confirmation/discard-confirmation.js";
@@ -23,11 +32,15 @@ import styles from "./styles.module.css";
 type Properties = {
 	composedPrompt: ComposedPromptDto;
 	onDiscard: () => void;
+	onRecompose: () => void;
+	remainingRecompositions: number;
 };
 
 const ComposedResultCard: React.FC<Properties> = ({
 	composedPrompt,
 	onDiscard,
+	onRecompose,
+	remainingRecompositions,
 }: Properties) => {
 	const { data: workspacesData } = useGetWorkspacesQuery({});
 	const workspaceName = workspacesData?.items.find(
@@ -38,12 +51,16 @@ const ComposedResultCard: React.FC<Properties> = ({
 		useAdoptMutation();
 	const [appliedBody, setAppliedBody] = useState<string>(composedPrompt.body);
 	const [isEditing, setIsEditing] = useState<boolean>(false);
-	const [isDiscardConfirmationOpen, setIsDiscardConfirmationOpen] =
-		useState<boolean>(false);
+	const [pendingAction, setPendingAction] = useState<null | ValueOf<
+		typeof PendingCardAction
+	>>(null);
 	const [selectedScore, setSelectedScore] = useState<null | number>(null);
 
 	const isEdited = appliedBody !== composedPrompt.body;
 	const hasActions = !isAdopting && !isEditing && adoptedPrompt === undefined;
+	const isRecomposePending = pendingAction === PendingCardAction.RECOMPOSE;
+	const isRecomposeDisabled =
+		isAdopting || isEditing || remainingRecompositions === ZERO_VALUE;
 
 	const handleCopyPrompt = useCopyPrompt({ body: appliedBody });
 
@@ -76,7 +93,7 @@ const ComposedResultCard: React.FC<Properties> = ({
 
 	const handleDiscardRequest = useCallback((): void => {
 		if (isEdited) {
-			setIsDiscardConfirmationOpen(true);
+			setPendingAction(PendingCardAction.DISCARD);
 
 			return;
 		}
@@ -84,9 +101,29 @@ const ComposedResultCard: React.FC<Properties> = ({
 		onDiscard();
 	}, [isEdited, onDiscard]);
 
-	const handleDiscardCancel = useCallback((): void => {
-		setIsDiscardConfirmationOpen(false);
+	const handleRecomposeRequest = useCallback((): void => {
+		if (isEdited) {
+			setPendingAction(PendingCardAction.RECOMPOSE);
+
+			return;
+		}
+
+		onRecompose();
+	}, [isEdited, onRecompose]);
+
+	const handleActionCancel = useCallback((): void => {
+		setPendingAction(null);
 	}, []);
+
+	const handleActionConfirm = useCallback((): void => {
+		if (isRecomposePending) {
+			onRecompose();
+
+			return;
+		}
+
+		onDiscard();
+	}, [isRecomposePending, onDiscard, onRecompose]);
 
 	return (
 		<ResultCard>
@@ -146,6 +183,18 @@ const ComposedResultCard: React.FC<Properties> = ({
 					type="button"
 					variant={ButtonVariant.PRIMARY}
 				/>
+				<div className={styles["recompose"]}>
+					<Button
+						isDisabled={isRecomposeDisabled}
+						label={GenerateLabel.RECOMPOSE}
+						onClick={handleRecomposeRequest}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
+					/>
+					<span className={styles["recompose-hint"]}>
+						{getRecompositionsLeftLabel(remainingRecompositions)}
+					</span>
+				</div>
 				{hasActions && (
 					<Button
 						iconName={IconName.EDIT}
@@ -165,9 +214,17 @@ const ComposedResultCard: React.FC<Properties> = ({
 				)}
 			</ResultCard.Actions>
 			<DiscardConfirmation
-				isOpen={isDiscardConfirmationOpen}
-				onCancel={handleDiscardCancel}
-				onConfirm={onDiscard}
+				confirmLabel={
+					isRecomposePending ? GenerateLabel.RECOMPOSE : GenerateLabel.DISCARD
+				}
+				isOpen={pendingAction !== null}
+				onCancel={handleActionCancel}
+				onConfirm={handleActionConfirm}
+				title={
+					isRecomposePending
+						? GenerateMessage.RECOMPOSE_TITLE
+						: GenerateMessage.DISCARD_TITLE
+				}
 			/>
 		</ResultCard>
 	);

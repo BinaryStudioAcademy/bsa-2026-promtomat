@@ -10,6 +10,7 @@ const GenerateMessage = {
 	NO_MATCHES: "Nothing close enough in this workspace to compose from.",
 	RATE_HINT:
 		"Rate it to save it to your log and make it available to future generations",
+	RECOMPOSE_TITLE: "Recompose this prompt?",
 } as const;
 
 export { GenerateMessage };

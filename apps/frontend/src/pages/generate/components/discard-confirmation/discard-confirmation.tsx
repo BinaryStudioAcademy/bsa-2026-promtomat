@@ -8,23 +8,27 @@ import { GenerateLabel, GenerateMessage } from "../../libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
+	confirmLabel?: string;
 	isOpen: boolean;
 	onCancel: () => void;
 	onConfirm: () => void;
+	title?: string;
 };
 
 const DiscardConfirmation: React.FC<Properties> = ({
+	confirmLabel = GenerateLabel.DISCARD,
 	isOpen,
 	onCancel,
 	onConfirm,
+	title = GenerateMessage.DISCARD_TITLE,
 }: Properties) => (
 	<Confirmation
-		confirmLabel={GenerateLabel.DISCARD}
+		confirmLabel={confirmLabel}
 		confirmVariant={ButtonVariant.DANGER}
 		isOpen={isOpen}
 		onCancel={onCancel}
 		onConfirm={onConfirm}
-		title={GenerateMessage.DISCARD_TITLE}
+		title={title}
 		titleIconName={IconName.ALERT_CIRCLE}
 		tone={ModalTone.DANGER}
 	>

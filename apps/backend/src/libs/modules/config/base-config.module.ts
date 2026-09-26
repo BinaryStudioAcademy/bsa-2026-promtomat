@@ -189,10 +189,28 @@ class BaseConfig implements Config {
 					env: "GENERATION_MAX_TOKENS",
 					format: ConfigFormat.POSITIVE_INTEGER,
 				},
+				RECOMPOSE_LIMIT: {
+					default: null,
+					doc: "Compositions allowed per workspace and task description, the first one included",
+					env: "GENERATION_RECOMPOSE_LIMIT",
+					format: ConfigFormat.POSITIVE_INTEGER,
+				},
+				REQUEST_LIMIT: {
+					default: null,
+					doc: "Compose requests allowed per user per window",
+					env: "GENERATION_REQUEST_LIMIT",
+					format: ConfigFormat.POSITIVE_INTEGER,
+				},
 				SOURCE_BODY_MAX_LENGTH: {
 					default: null,
 					doc: "Characters of one source prompt body sent to the model; longer bodies are truncated",
 					env: "GENERATION_SOURCE_BODY_MAX_LENGTH",
+					format: ConfigFormat.POSITIVE_INTEGER,
+				},
+				WINDOW_MINUTES: {
+					default: null,
+					doc: "Length in minutes of the compose throttle window",
+					env: "GENERATION_WINDOW_MINUTES",
 					format: ConfigFormat.POSITIVE_INTEGER,
 				},
 			},

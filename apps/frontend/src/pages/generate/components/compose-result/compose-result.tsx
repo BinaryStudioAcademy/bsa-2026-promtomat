@@ -11,12 +11,14 @@ import { NoMatchesNotice } from "../no-matches-notice/no-matches-notice.js";
 
 type Properties = {
 	onDiscard: () => void;
+	onRecompose: () => void;
 	onTryAgain: () => void;
 	result: ComposeResponseDto;
 };
 
 const ComposeResult: React.FC<Properties> = ({
 	onDiscard,
+	onRecompose,
 	onTryAgain,
 	result,
 }: Properties) => {
@@ -27,6 +29,8 @@ const ComposeResult: React.FC<Properties> = ({
 					composedPrompt={result.composedPrompt}
 					key={result.composedPrompt.id}
 					onDiscard={onDiscard}
+					onRecompose={onRecompose}
+					remainingRecompositions={result.remainingRecompositions}
 				/>
 			);
 		}
