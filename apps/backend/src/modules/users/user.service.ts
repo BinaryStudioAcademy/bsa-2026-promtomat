@@ -1,4 +1,5 @@
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { WorkspaceTargets } from "~/libs/enums/enums.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
@@ -87,6 +88,7 @@ class UserService {
 
 			await this.workspaceService.create(
 				{
+					datasetTarget: WorkspaceTargets.MEDIUM,
 					name: `${userDto.nickname} workspace`,
 					userId: userDto.id,
 				},

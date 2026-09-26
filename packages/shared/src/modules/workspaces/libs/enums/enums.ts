@@ -1,6 +1,8 @@
 export { ContributorsErrorCode } from "./contributors-error-code.enum.js";
 export { ContributorsErrorMessage } from "./contributors-error-message.enum.js";
 export { WorkspaceListScope } from "./workspace-list-scope.enum.js";
+export { WorkspaceListSort } from "./workspace-list-sort.enum.js";
+export { WorkspaceTargets } from "./workspace-targets.enum.js";
 export { WorkspaceValidationMessage } from "./workspace-validation-message.enum.js";
 export { WorkspaceValidationRule } from "./workspace-validation-rule.enum.js";
 export { WorkspaceVisibility } from "./workspace-visibility.enum.js";
