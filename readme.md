@@ -50,6 +50,7 @@ erDiagram
     users ||--o{ composed_prompts : "requester_id"
     composed_prompts ||--o{ composed_prompt_sources : "composed_prompt_id"
     prompts ||--o{ composed_prompt_sources : "prompt_id"
+    workspaces ||--o{ repository_bindings : "workspace_id"
 
     users {
         int id PK "auto-increment"
@@ -121,6 +122,16 @@ erDiagram
         int composed_prompt_id FK "not null, onDelete CASCADE, unique with prompt_id"
         int prompt_id FK "not null, onDelete CASCADE, unique with composed_prompt_id"
         int rank "not null, check(>= 1), number the source had in the composition request"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+    repository_bindings {
+        int id PK "auto-increment"
+        int workspace_id FK "not null, onDelete CASCADE, unique with host+owner+repo"
+        varchar host "not null"
+        varchar owner "not null"
+        varchar repo "not null"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }

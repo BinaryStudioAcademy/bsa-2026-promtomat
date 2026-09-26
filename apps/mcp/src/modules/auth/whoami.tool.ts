@@ -3,12 +3,10 @@ import { createMCPTextResult } from "~/libs/helpers/helpers.js";
 import { type Tool } from "~/libs/types/types.js";
 
 import { type AuthApi } from "./auth-api.js";
-
-const DESCRIPTION =
-	"Report which Promptomat user this server is authenticated as. Call it to verify the connection and the API token before using other Promptomat tools, or when a Promptomat call fails with an authentication error. Takes no arguments.";
+import { WHOAMI_DESCRIPTION } from "./libs/constants/constants.js";
 
 const createWhoAmITool = (authApi: AuthApi): Tool => ({
-	description: DESCRIPTION,
+	description: WHOAMI_DESCRIPTION,
 	execute: async () => {
 		const user = await authApi.getAuthenticatedUser();
 

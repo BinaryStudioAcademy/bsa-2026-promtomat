@@ -254,6 +254,16 @@ class WorkspaceRepository {
 		return workspaces.map((workspace) => this.toWorkspaceWithCounts(workspace));
 	}
 
+	public async findById(id: number): Promise<null | WorkspaceEntity> {
+		const workspace = await this.workspaceModel.query().findById(id);
+
+		if (!workspace) {
+			return null;
+		}
+
+		return WorkspaceEntity.initialize(workspace);
+	}
+
 	public async findByIdAndContributorUserId(
 		id: number,
 		contributorUserId: number,

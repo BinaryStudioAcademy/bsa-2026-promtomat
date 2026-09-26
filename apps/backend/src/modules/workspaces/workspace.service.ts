@@ -1,10 +1,16 @@
 import { type Transaction } from "objection";
 
-import { ROUND_FACTOR } from "~/libs/constants/constants.js";
+import {
+	FIRST_ELEMENT_INDEX,
+	ROUND_FACTOR,
+} from "~/libs/constants/constants.js";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 
-import { MINIMUM_WORKSPACE_COUNT_FOR_DELETION } from "./libs/constants/constants.js";
+import {
+	MAX_TAGS_COUNT,
+	MINIMUM_WORKSPACE_COUNT_FOR_DELETION,
+} from "./libs/constants/constants.js";
 import { WorkspaceListScope } from "./libs/enums/enums.js";
 import {
 	type WorkspaceDto,
@@ -43,6 +49,25 @@ class WorkspaceService {
 			...workspace,
 			averageScore: this.roundAverageScore(workspace.averageScore),
 		};
+	}
+
+	public async appendStackTags(
+		workspaceId: number,
+		tags: string[],
+	): Promise<void> {
+		const workspace = await this.workspaceRepository.findById(workspaceId);
+
+		if (!workspace) {
+			return;
+		}
+
+		const mergedStackTags = [
+			...new Set([...workspace.toObject().stackTags, ...tags]),
+		].slice(FIRST_ELEMENT_INDEX, MAX_TAGS_COUNT);
+
+		await this.workspaceRepository.update(workspaceId, {
+			stackTags: mergedStackTags,
+		});
 	}
 
 	public async create(

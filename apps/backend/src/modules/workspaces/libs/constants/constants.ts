@@ -4,3 +4,4 @@ export {
 	RECENT_ACTIVITY_DAYS,
 	WORKSPACE_OWNER_COUNT,
 } from "./workspace.constant.js";
+export { MAX_TAGS_COUNT } from "@promptomat/shared";

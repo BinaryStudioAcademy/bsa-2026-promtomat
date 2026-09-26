@@ -1,0 +1,3 @@
+const MINIMUM_PATH_SEGMENTS = 2;
+
+export { MINIMUM_PATH_SEGMENTS };
