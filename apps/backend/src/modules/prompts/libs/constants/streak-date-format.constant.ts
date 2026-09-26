@@ -1,0 +1,3 @@
+const STREAK_DATE_FORMAT = "YYYY-MM-DD";
+
+export { STREAK_DATE_FORMAT };

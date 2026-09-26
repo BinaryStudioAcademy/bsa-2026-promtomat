@@ -4,7 +4,7 @@ import { type TooltipAlignment } from "../enums/enums.js";
 
 type StreakCell = {
 	alignment: ValueOf<typeof TooltipAlignment>;
-	id: number;
+	date: string;
 	intensity: number;
 	label: string;
 };

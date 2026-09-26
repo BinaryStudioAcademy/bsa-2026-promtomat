@@ -16,6 +16,8 @@ import {
 	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
+	type PromptStreakQueryDto,
+	type PromptStreakResponseDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
@@ -69,6 +71,16 @@ const promptApi = baseApi
 				query: ({ pageParam, queryArg }) => ({
 					params: { ...queryArg, page: pageParam },
 					url: APIPath.PROMPTS,
+				}),
+			}),
+			getPromptStreak: builder.query<
+				PromptStreakResponseDto,
+				PromptStreakQueryDto
+			>({
+				providesTags: [PromptsApiTag.PROMPT],
+				query: ({ timeZone }) => ({
+					params: { timeZone },
+					url: `${APIPath.PROMPTS}${PromptsApiPath.STREAK}`,
 				}),
 			}),
 			recordPrompt: builder.mutation<PromptDto, PromptCreateRequestDto>({
@@ -135,6 +147,7 @@ const {
 	useGetPromptByIdQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
+	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdateTaskIntentMutation,
 } = promptApi;
@@ -143,6 +156,7 @@ export {
 	useGetPromptByIdQuery,
 	useGetPromptRecentQuery,
 	useGetPromptsInfiniteQuery,
+	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdateTaskIntentMutation,
 };

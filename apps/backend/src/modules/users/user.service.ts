@@ -1,3 +1,4 @@
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
 import { type Hashing } from "~/libs/modules/hashing/hashing.js";
@@ -133,8 +134,12 @@ class UserService {
 		const { averageScore, totalCount } =
 			await this.promptService.findUserPromptSummary(user.id);
 
+		const streak = await this.userRepository.findStreakByUserId(user.id);
+		const currentStreak = streak?.currentStreak ?? ZERO_VALUE;
+
 		return {
 			averageScore,
+			currentStreak,
 			id: user.id,
 			memberSince: user.createdAt,
 			nickname: user.nickname,
