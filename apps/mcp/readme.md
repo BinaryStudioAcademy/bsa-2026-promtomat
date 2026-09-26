@@ -38,6 +38,12 @@ Ask the agent to call `whoami`. The answer names the running version and the use
 promptomat-mcp <version>: authenticated as <nickname> (<email>), user id <id>
 ```
 
+## Tools
+
+- `whoami`: reports the user and server version the token is authenticated as. Useful for checking the connection is working (see Verify above).
+- `resolve_repository`: checks which workspace the current checkout is bound to, by reading its git remotes. Call it before composing or searching prompts, to know the current workspace. Accepts an optional `remoteName`, needed only when the checkout's remotes point to more than one distinct repository.
+- `bind_repository`: binds the current checkout to a workspace, so future calls resolve to it. Call it after `resolve_repository` reports the checkout as unresolved or ambiguous, passing the `workspaceId` to bind to. Also accepts an optional `remoteName`, for the same multi-repository case. Detects the project's technologies from `package.json` and records them on the workspace.
+
 ## Update
 
 Re-run the install command, then restart the client. Nothing announces a new version; `whoami` tells you which one is running.

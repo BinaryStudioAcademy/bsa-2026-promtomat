@@ -1,0 +1,3 @@
+const SINGLE_IDENTITY_COUNT = 1;
+
+export { SINGLE_IDENTITY_COUNT };

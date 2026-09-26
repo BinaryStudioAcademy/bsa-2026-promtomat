@@ -1,0 +1,3 @@
+const SINGLE_MATCH_COUNT = 1;
+
+export { SINGLE_MATCH_COUNT };
