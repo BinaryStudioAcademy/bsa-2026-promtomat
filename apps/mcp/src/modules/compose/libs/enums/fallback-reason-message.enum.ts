@@ -1,6 +1,6 @@
-import { type ValueOf } from "~/libs/types/types.js";
+import { FallbackReason } from "@promptomat/shared";
 
-import { FallbackReason } from "./enums.js";
+import { type ValueOf } from "~/libs/types/types.js";
 
 const FallbackReasonMessage: Record<ValueOf<typeof FallbackReason>, string> = {
 	[FallbackReason.TIMEOUT]: "the model took too long to answer.",

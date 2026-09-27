@@ -92,7 +92,7 @@ WEB.URL: PROMPTOMAT_WEB_URL must be an absolute http(s) URL: value was "localhos
 The Promptomat API at <url> is unreachable (ECONNREFUSED). Check PROMPTOMAT_API_URL and that the backend is running.
 ```
 
-The brackets hold the cause: a network error code such as `ECONNREFUSED` or `ENOTFOUND`, `the request timed out` after 10 seconds, or `the network request failed` when the runtime reports no code.
+The brackets hold the cause: a network error code such as `ECONNREFUSED` or `ENOTFOUND`, `the request timed out` after 30 seconds, or `the network request failed` when the runtime reports no code.
 
 ### The URL points at the web app
 

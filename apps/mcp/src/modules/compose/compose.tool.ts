@@ -30,11 +30,14 @@ const createComposeTool = (
 		});
 
 		switch (resolution.status) {
-			case WorkspaceResolutionStatus.REMOTE_AMBIGUOUS:
-			case WorkspaceResolutionStatus.REMOTE_NONE: {
+			case WorkspaceResolutionStatus.REMOTE_AMBIGUOUS: {
 				return createMCPTextResult(
-					ComposeRefusalMessage.REPOSITORY_NOT_IDENTIFIED,
+					ComposeRefusalMessage.REMOTE_AMBIGUOUS(resolution.remoteNames),
 				);
+			}
+
+			case WorkspaceResolutionStatus.REMOTE_NONE: {
+				return createMCPTextResult(ComposeRefusalMessage.REMOTE_NONE);
 			}
 
 			case WorkspaceResolutionStatus.RESOLVED: {

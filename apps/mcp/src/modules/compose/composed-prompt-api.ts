@@ -5,7 +5,6 @@ import {
 	parseResponseBody,
 } from "~/libs/modules/http/http.js";
 
-import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
 import {
 	type ComposeRequestDto,
 	type ComposeResponseDto,
@@ -23,17 +22,13 @@ class ComposedPromptApi {
 		description,
 		workspaceId,
 	}: ComposeRequestDto): Promise<ComposeResponseDto> {
-		const response = await this.http.load(
-			`${APIPath.COMPOSED_PROMPTS}${ComposedPromptsApiPath.ROOT}`,
-			{
-				headers: new Headers(),
-				method: HTTPMethod.POST,
-				payload: JSON.stringify({
-					description,
-					workspaceId,
-				}),
-			},
-		);
+		const response = await this.http.load(APIPath.COMPOSED_PROMPTS, {
+			method: HTTPMethod.POST,
+			payload: JSON.stringify({
+				description,
+				workspaceId,
+			}),
+		});
 
 		return await parseResponseBody(response, composeResponseValidationSchema);
 	}
