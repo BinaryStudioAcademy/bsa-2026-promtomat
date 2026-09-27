@@ -35,7 +35,7 @@ const LoggingStreak: React.FC<Properties> = ({
 							return (
 								<li
 									className={styles["day"]}
-									key={cell.id}
+									key={cell.date}
 									tabIndex={STREAK_DAY_TAB_INDEX}
 								>
 									<span

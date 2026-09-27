@@ -8,6 +8,7 @@ export {
 	PromptDeliveryError,
 	PromptError,
 	PromptSearchError,
+	RepositoryBindingError,
 	UserError,
 	ValidationError,
 	WorkspaceError,

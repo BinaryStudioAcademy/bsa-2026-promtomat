@@ -1,5 +1,6 @@
 import { type Database } from "~/libs/modules/database/database.js";
 import { type ComposedPromptService } from "~/modules/composed-prompts/composed-prompt.service.js";
+import { EvaluationTargetType } from "~/modules/evaluations/libs/enums/enums.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
 import { type EvaluationRepository } from "./evaluation.repository.js";
@@ -69,7 +70,7 @@ class EvaluationService {
 					computedScore,
 					score: payload.score,
 					targetId: payload.promptId,
-					targetType: "prompt",
+					targetType: EvaluationTargetType.PROMPT,
 				};
 			}
 
@@ -99,7 +100,7 @@ class EvaluationService {
 				computedScore,
 				score: payload.score,
 				targetId,
-				targetType: "composed-prompt",
+				targetType: EvaluationTargetType.COMPOSED_PROMPT,
 			};
 		});
 	}

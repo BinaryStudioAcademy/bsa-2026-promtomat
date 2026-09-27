@@ -4,13 +4,20 @@ import {
 	UniqueViolationError,
 } from "objection";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { AuthError } from "~/libs/exceptions/exceptions.js";
 import { UserEntity } from "~/modules/users/user.entity.js";
 import { type UserModel } from "~/modules/users/user.model.js";
 
-import { NO_UPDATED_ROWS } from "./libs/constants/constants.js";
+import {
+	NO_UPDATED_ROWS,
+	STREAK_ON_PROMPT_LOG_QUERY,
+	STREAK_READ_QUERY,
+	STREAK_RECOMPUTE_QUERY,
+} from "./libs/constants/constants.js";
 import {
 	type ResetPasswordPayload,
+	type UserStreak,
 	type UserUpdateRequestDto,
 } from "./libs/types/types.js";
 
@@ -40,7 +47,11 @@ class UserRepository {
 	public async findByEmail(email: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ email }).execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
 	}
 
 	public async findByEmailOrNickname(
@@ -54,7 +65,11 @@ class UserRepository {
 			.first()
 			.execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
 	}
 
 	public async findById(id: number): Promise<null | UserEntity> {
@@ -66,7 +81,25 @@ class UserRepository {
 	public async findByNickname(nickname: string): Promise<null | UserEntity> {
 		const user = await this.userModel.query().findOne({ nickname }).execute();
 
-		return user ? UserEntity.initialize(user) : null;
+		if (!user) {
+			return null;
+		}
+
+		return UserEntity.initialize(user);
+	}
+
+	public async findStreakByUserId(userId: number): Promise<null | UserStreak> {
+		const result = await this.userModel
+			.knex()
+			.raw<{ rows: UserStreak[] }>(STREAK_READ_QUERY, [userId]);
+
+		const [row] = result.rows;
+
+		if (!row) {
+			return null;
+		}
+
+		return row;
 	}
 
 	public async update(
@@ -114,6 +147,36 @@ class UserRepository {
 			});
 
 		return updatedRows !== NO_UPDATED_ROWS;
+	}
+	public async updateStreakForTimeZone(
+		userId: number,
+		timeZone: string,
+	): Promise<number> {
+		const result = await this.userModel
+			.knex()
+			.raw<{ rows: { currentStreak: number }[] }>(STREAK_RECOMPUTE_QUERY, {
+				timeZone,
+				userId,
+			});
+
+		const [row] = result.rows;
+
+		if (!row) {
+			return ZERO_VALUE;
+		}
+
+		const { currentStreak } = row;
+
+		return currentStreak;
+	}
+
+	public async updateStreakOnPromptLog(
+		userId: number,
+		trx?: Transaction,
+	): Promise<void> {
+		const queryRunner = trx ?? this.userModel.knex();
+
+		await queryRunner.raw(STREAK_ON_PROMPT_LOG_QUERY, [userId]);
 	}
 }
 

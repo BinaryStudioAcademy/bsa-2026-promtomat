@@ -13,6 +13,7 @@ import { evaluationController } from "~/modules/evaluations/evaluations.js";
 import { healthController } from "~/modules/health/health.js";
 import { labelController } from "~/modules/labels/labels.js";
 import { promptController } from "~/modules/prompts/prompts.js";
+import { repositoryBindingController } from "~/modules/repository-bindings/repository-bindings.js";
 import { userController, userService } from "~/modules/users/users.js";
 import { workspaceController } from "~/modules/workspaces/workspaces.js";
 
@@ -42,6 +43,7 @@ const apiV1 = new BaseServerApplicationApi(
 	...labelController.routes,
 	...promptController.routes,
 	...userController.routes,
+	...repositoryBindingController.routes,
 	...workspaceController.routes,
 );
 const serverApplication = new BaseServerApplication({

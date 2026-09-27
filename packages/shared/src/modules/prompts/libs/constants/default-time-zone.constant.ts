@@ -1,0 +1,3 @@
+const DEFAULT_TIME_ZONE = "UTC";
+
+export { DEFAULT_TIME_ZONE };

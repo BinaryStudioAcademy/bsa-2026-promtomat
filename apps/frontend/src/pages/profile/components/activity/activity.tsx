@@ -11,18 +11,24 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	averageScore: null | number;
+	currentStreak: number;
 	totalPrompts: number;
 };
 
 const Activity: React.FC<Properties> = ({
 	averageScore,
+	currentStreak,
 	totalPrompts,
 }: Properties) => {
 	return (
 		<Section title="YOUR PROMPT ACTIVITY">
 			{totalPrompts ? (
 				<>
-					<StatsGrid averageScore={averageScore} totalPrompts={totalPrompts} />
+					<StatsGrid
+						averageScore={averageScore}
+						currentStreak={currentStreak}
+						totalPrompts={totalPrompts}
+					/>
 					<ButtonLink
 						className={styles["activity-button"]}
 						label="View prompt log history"

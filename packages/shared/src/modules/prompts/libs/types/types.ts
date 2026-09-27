@@ -8,5 +8,8 @@ export { type PromptIdParameterDto } from "./prompt-id-parameter-dto.type.js";
 export { type PromptItemResponseDto } from "./prompt-item-response-dto.type.js";
 export { type PromptRecentDto } from "./prompt-recent-dto.type.js";
 export { type PromptRouteParametersDto } from "./prompt-route-parameters-dto.type.js";
+export { type PromptStreakDayDto } from "./prompt-streak-day-dto.type.js";
+export { type PromptStreakQueryDto } from "./prompt-streak-query-dto.type.js";
+export { type PromptStreakResponseDto } from "./prompt-streak-response-dto.type.js";
 export { type PromptUpdateIntentRequestDto } from "./prompt-update-request-dto.type.js";
 export { type PromptWorkspaceQueryDto } from "./prompt-workspace-query-dto.type.js";
