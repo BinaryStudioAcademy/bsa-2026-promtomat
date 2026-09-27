@@ -302,7 +302,7 @@ class PromptRepository {
 	}
 
 	public async findById(id: number): Promise<null | PromptItemResponseDto> {
-		const rows = await this.promptModel
+		const row = (await this.promptModel
 			.knex()
 			.select(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
@@ -321,9 +321,8 @@ class PromptRepository {
 				PROMPT_WORKSPACE_ID,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 			)
-			.where(PROMPT_ID, "=", id);
-
-		const [row] = rows as PromptRawKnexRow[];
+			.where(PROMPT_ID, "=", id)
+			.first()) as PromptRawKnexRow | undefined;
 
 		if (!row) {
 			return null;

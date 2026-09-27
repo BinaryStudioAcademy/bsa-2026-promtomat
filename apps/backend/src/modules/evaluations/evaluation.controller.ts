@@ -61,6 +61,34 @@ class EvaluationController extends BaseController {
 		});
 	}
 
+	/**
+	 * @swagger
+	 * /evaluations:
+	 *   post:
+	 *     description: Create or update an evaluation for a prompt or composed prompt
+	 *     security:
+	 *       - bearerAuth: []
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             $ref: "#/components/schemas/EvaluationCreateRequest"
+	 *     responses:
+	 *       201:
+	 *         description: Evaluation successfully created or updated
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Evaluation"
+	 *       400:
+	 *         description: Bad request
+	 *       401:
+	 *         description: Unauthorized
+	 *       422:
+	 *         description: Validation failed
+	 */
+
 	private async create(
 		options: APIHandlerOptions<{
 			body: EvaluationCreateRequestDto;
