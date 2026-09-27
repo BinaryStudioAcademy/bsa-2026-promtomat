@@ -60,7 +60,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			}
 		: {};
 
-	const isShowScoreGrid = revision === undefined || revision.isOwner;
+	const shouldShowScoreGrid = revision === undefined || revision.isOwner;
 
 	return (
 		<div className={styles["view"]}>
@@ -77,7 +77,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 
 			<ExplanationSection explanation={explanation} sources={sources} />
 
-			{isShowScoreGrid && (
+			{shouldShowScoreGrid && (
 				<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
 					<ScoreGrid
 						isDisabled={revision?.isSavingScore ?? false}
