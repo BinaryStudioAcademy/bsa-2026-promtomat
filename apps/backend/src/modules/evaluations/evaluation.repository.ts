@@ -19,13 +19,13 @@ class EvaluationRepository {
 	}
 
 	private async findScoresBy(
-		where: Partial<Record<ValueOf<typeof EvaluationColumnName>, number>>,
+		criteria: Partial<Record<ValueOf<typeof EvaluationColumnName>, number>>,
 		trx?: Transaction,
 	): Promise<number[]> {
 		const rows = await this.evaluationModel
 			.query(trx)
 			.select(EvaluationColumnName.SCORE)
-			.where(where)
+			.where(criteria)
 			.execute();
 
 		return rows.map((row) => row.score);
