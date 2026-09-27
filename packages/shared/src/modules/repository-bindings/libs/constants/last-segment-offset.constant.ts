@@ -1,0 +1,3 @@
+const LAST_SEGMENT_OFFSET = -1;
+
+export { LAST_SEGMENT_OFFSET };

@@ -3,6 +3,7 @@ import { AuthErrorCode } from "../../modules/auth/auth.js";
 import { ComposedPromptsErrorCode } from "../../modules/composed-prompts/composed-prompts.js";
 import { LabelsErrorCode } from "../../modules/labels/labels.js";
 import { PromptsErrorCode } from "../../modules/prompts/prompts.js";
+import { RepositoryBindingsErrorCode } from "../../modules/repository-bindings/repository-bindings.js";
 import { UsersErrorCode } from "../../modules/users/users.js";
 import {
 	ContributorsErrorCode,
@@ -22,6 +23,7 @@ const ErrorCode = {
 	...TokenErrorCode,
 	...PromptsErrorCode,
 	...ApiTokenErrorCode,
+	...RepositoryBindingsErrorCode,
 } as const;
 
 export { ErrorCode };

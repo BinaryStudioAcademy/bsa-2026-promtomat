@@ -27,7 +27,7 @@ jobs:
         id: deployment
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          environment-url: http://app-lb-879573406.eu-central-1.elb.amazonaws.com/
+          environment-url: https://drga8t6qf873e.cloudfront.net/
           environment: development-backend
 
       - name: Checkout Source Code

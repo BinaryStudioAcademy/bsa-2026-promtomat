@@ -8,6 +8,7 @@ const DatabaseTableName = {
 	MIGRATIONS: "migrations",
 	PROMPT_EMBEDDINGS: "prompt_embeddings",
 	PROMPTS: "prompts",
+	REPOSITORY_BINDINGS: "repository_bindings",
 	USERS: "users",
 	WORKSPACES: "workspaces",
 } as const;

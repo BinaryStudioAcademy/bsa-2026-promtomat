@@ -53,6 +53,7 @@ erDiagram
     users ||--o{ evaluations : "user_id"
     prompts ||--o{ evaluations : "prompt_id"
     composed_prompts ||--o{ evaluations : "composed_prompt_id"
+    workspaces ||--o{ repository_bindings : "workspace_id"
 
     users {
         int id PK "auto-increment"
@@ -134,6 +135,14 @@ erDiagram
         int prompt_id FK "nullable, onDelete CASCADE, exclusive with composed_prompt_id, unique with user_id"
         int composed_prompt_id FK "nullable, onDelete CASCADE, exclusive with prompt_id, unique with user_id"
         int score "not null, check(1-10)"
+    }
+
+    repository_bindings {
+        int id PK "auto-increment"
+        int workspace_id FK "not null, onDelete CASCADE, unique with host+owner+repo"
+        varchar host "not null"
+        varchar owner "not null"
+        varchar repo "not null"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }

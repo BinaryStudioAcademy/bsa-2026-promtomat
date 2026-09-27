@@ -1,13 +1,15 @@
 import React from "react";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { getBrowserTimeZone } from "~/libs/helpers/helpers.js";
+import { useGetPromptStreakQuery } from "~/modules/prompts/prompts-api.js";
+
 import { mapStreakDaysToCells } from "./components/logging-streak/libs/helpers/helpers.js";
 import { LoggingStreak } from "./components/logging-streak/logging-streak.js";
 import { RecentPrompts } from "./components/recent-prompts/recent-prompts.js";
 import { RecordPromptForm } from "./components/record-prompt-form/record-prompt-form.js";
 import { useRecordPromptForm } from "./libs/hooks/use-record-prompt-form/use-record-prompt-form.hook.js";
 import styles from "./styles.module.css";
-
-const STREAK_COUNT = 0; // TODO : delete when backend is ready -- should be derive from mapStreakDaysToCells data
 
 const Training: React.FC = () => {
 	const {
@@ -22,7 +24,11 @@ const Training: React.FC = () => {
 		workspaceId,
 	} = useRecordPromptForm();
 
-	const streakCells = mapStreakDaysToCells([]); // TODO : fill with data from api
+	const { data: streak } = useGetPromptStreakQuery({
+		timeZone: getBrowserTimeZone(),
+	});
+
+	const streakCells = mapStreakDaysToCells(streak?.days ?? []);
 
 	return (
 		<main className={styles["page"]}>
@@ -39,7 +45,10 @@ const Training: React.FC = () => {
 				/>
 			</section>
 			<aside className={styles["aside"]}>
-				<LoggingStreak cells={streakCells} currentStreak={STREAK_COUNT} />
+				<LoggingStreak
+					cells={streakCells}
+					currentStreak={streak?.currentStreak ?? ZERO_VALUE}
+				/>
 				<RecentPrompts workspaceId={workspaceId} />
 			</aside>
 		</main>

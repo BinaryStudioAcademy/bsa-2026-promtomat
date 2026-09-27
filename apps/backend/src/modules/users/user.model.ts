@@ -6,7 +6,11 @@ import {
 import { type PrimaryAiCodingTool } from "./libs/types/types.js";
 
 class UserModel extends AbstractModel {
+	public currentStreak!: number;
+
 	public email!: string;
+
+	public lastPromptDate!: null | string;
 
 	public nickname!: string;
 
@@ -17,6 +21,8 @@ class UserModel extends AbstractModel {
 	public passwordSalt!: string;
 
 	public primaryAiCodingTool!: null | PrimaryAiCodingTool;
+
+	public timeZone!: string;
 
 	public static override get tableName(): string {
 		return DatabaseTableName.USERS;

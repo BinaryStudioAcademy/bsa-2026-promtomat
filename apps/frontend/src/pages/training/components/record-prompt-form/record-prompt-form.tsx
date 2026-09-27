@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { type Control, useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -39,6 +39,10 @@ const RecordPromptForm: React.FC<Properties> = ({
 	onSubmit,
 	score,
 }: Properties) => {
+	const [hoveredScore, setHoveredScore] = useState<null | number>(null);
+
+	const describedScore = hoveredScore ?? score;
+
 	const { data } = useGetWorkspacesQuery({});
 	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
 
@@ -92,11 +96,12 @@ const RecordPromptForm: React.FC<Properties> = ({
 							isDisabled={isSubmitting}
 							isRadio={true}
 							label={RecordPromptFormMessage.SCORE_LABEL}
+							onScoreHover={setHoveredScore}
 							onScoreSelect={onScoreSelect}
 							selectedScore={score}
 						/>
 						<p aria-live="polite" className={styles["note"]}>
-							{score === null ? (
+							{describedScore === null ? (
 								<>
 									<span className={styles["note-tag"]}>
 										{RecordPromptFormMessage.SCORE_NOTE_TAG}
@@ -104,8 +109,8 @@ const RecordPromptForm: React.FC<Properties> = ({
 									{RecordPromptFormMessage.SCORE_NOTE}
 								</>
 							) : (
-								<span className={styles[getScoreColor(score)]}>
-									{ScoreDescription[score]}
+								<span className={styles[getScoreColor(describedScore)]}>
+									{ScoreDescription[describedScore]}
 								</span>
 							)}
 						</p>
