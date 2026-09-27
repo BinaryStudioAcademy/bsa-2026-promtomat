@@ -10,7 +10,7 @@ type Properties = {
 };
 
 const FeedbackSection: React.FC<Properties> = ({ feedback }: Properties) => {
-	const isRadio = feedback.selectedScore !== undefined;
+	const isRadio = Boolean(feedback.selectedScore);
 
 	return (
 		<>
