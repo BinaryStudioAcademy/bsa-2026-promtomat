@@ -30,37 +30,28 @@ import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
 import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js";
 
 import {
+	BODY_HEIGHT_PX,
+	BODY_VIEW_OPTIONS,
+} from "./libs/constants/constants.js";
+import {
 	PromptDetailBodyView,
 	PromptDetailLabel,
 	PromptDetailMessage,
 } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
-const BODY_HEIGHT_PX = 200;
-
-const BODY_VIEW_OPTIONS = [
-	{
-		label: PromptDetailLabel.PREVIEW,
-		value: PromptDetailBodyView.PREVIEW,
-	},
-	{
-		label: PromptDetailLabel.WRITE,
-		value: PromptDetailBodyView.WRITE,
-	},
-] as const;
-
 type Properties = {
 	isCompact?: boolean;
 	prompt: PromptItemResponseDto;
-	queryPayload: Omit<PromptGetQueryDto, "page">;
-	showOpenFullPageLink?: boolean;
+	queryPayload?: Omit<PromptGetQueryDto, "page">;
+	shouldShowOpenFullPageLink?: boolean;
 };
 
 const PromptDetailPanel: React.FC<Properties> = ({
 	isCompact = true,
 	prompt,
 	queryPayload,
-	showOpenFullPageLink = true,
+	shouldShowOpenFullPageLink = true,
 }: Properties) => {
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
 	const [updateIntent] = useUpdateTaskIntentMutation();
@@ -116,7 +107,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					await updateIntent({
 						id: prompt.id,
 						payload,
-						queryArgs: queryPayload,
+						...(queryPayload && { queryArgs: queryPayload }),
 					}).unwrap();
 					showNotification({
 						message: PromptDetailMessage.UPDATE_INTENT_SUCCESS,
@@ -193,16 +184,14 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					) : (
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
-					{prompt.score === null ? (
-						<span className={styles["unrated"]}>
-							{PromptDetailLabel.UNRATED}
-						</span>
-					) : (
-						<ScoreBadge
-							efficiencyScore={prompt.score}
-							label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-						/>
-					)}
+					<ScoreBadge
+						efficiencyScore={prompt.score}
+						{...(prompt.score === null
+							? {}
+							: {
+									label: `${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`,
+								})}
+					/>
 				</div>
 				<div
 					className={
@@ -240,7 +229,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 						</span>
 					</>
 				)}
-				{showOpenFullPageLink && (
+				{shouldShowOpenFullPageLink && (
 					<Link
 						className={styles["open-link"]}
 						hasDefaultStyles={false}

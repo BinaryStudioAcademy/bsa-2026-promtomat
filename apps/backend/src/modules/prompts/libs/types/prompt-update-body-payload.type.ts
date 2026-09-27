@@ -1,4 +1,4 @@
-import { type PromptUpdateBodyRequestDto } from "@promptomat/shared";
+import { type PromptUpdateBodyRequestDto } from "./types.js";
 
 type PromptUpdateBodyPayload = PromptUpdateBodyRequestDto & { id: number };
 

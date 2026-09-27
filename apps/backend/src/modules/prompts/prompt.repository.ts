@@ -326,16 +326,15 @@ class PromptRepository {
 	}
 
 	public async findLabelNameByPromptId(id: number): Promise<null | string> {
-		const rows = await this.promptModel
+		const row = await this.promptModel
 			.knex()
-			.select<Array<{ label: null | string }>>(
+			.select<{ label: null | string }>(
 				`${DatabaseTableName.LABELS}.${LabelColumnName.NAME} as ${LABEL_ALIAS}`,
 			)
 			.from(DatabaseTableName.PROMPTS)
 			.leftJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
-			.where(PROMPT_ID, id);
-
-		const [row] = rows;
+			.where(PROMPT_ID, id)
+			.first();
 
 		return row?.label ?? null;
 	}

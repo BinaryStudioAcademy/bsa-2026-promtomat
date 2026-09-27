@@ -1,4 +1,4 @@
-import { type PromptUpdateScoreRequestDto } from "@promptomat/shared";
+import { type PromptUpdateScoreRequestDto } from "./types.js";
 
 type PromptUpdateScorePayload = PromptUpdateScoreRequestDto & { id: number };
 

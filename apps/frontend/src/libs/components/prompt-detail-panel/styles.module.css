@@ -179,10 +179,3 @@
 	min-height: 72px;
 	max-height: 200px;
 }
-
-.unrated {
-	flex-shrink: 0;
-	font-size: var(--font-size-body-sm);
-	font-weight: 600;
-	color: var(--text-muted);
-}

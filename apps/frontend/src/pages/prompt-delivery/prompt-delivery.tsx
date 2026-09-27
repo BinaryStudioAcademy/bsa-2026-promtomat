@@ -14,8 +14,6 @@ import { NotFoundPage } from "~/pages/not-found/not-found.js";
 import { PromptDeliveryLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
-const EMPTY_QUERY_PAYLOAD = {};
-
 type ContentProperties = {
 	prompt: PromptItemResponseDto;
 };
@@ -38,8 +36,7 @@ const PromptDeliveryContent: React.FC<ContentProperties> = ({
 		<PromptDetailPanel
 			isCompact={false}
 			prompt={prompt}
-			queryPayload={EMPTY_QUERY_PAYLOAD}
-			showOpenFullPageLink={false}
+			shouldShowOpenFullPageLink={false}
 		/>
 
 		<Link

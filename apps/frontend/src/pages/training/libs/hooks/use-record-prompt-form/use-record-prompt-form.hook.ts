@@ -7,7 +7,7 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-import { isPromptForkDraft } from "~/modules/prompts/libs/helpers/is-prompt-fork-draft.helper.js";
+import { checkIsPromptForkDraft } from "~/modules/prompts/libs/helpers/check-is-prompt-fork-draft.helper.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
 import {
 	type PromptCreateRequestDto,
@@ -49,7 +49,7 @@ const useRecordPromptForm = (): ReturnValue => {
 	const location = useLocation();
 
 	useEffect(() => {
-		if (!isPromptForkDraft(location.state)) {
+		if (!checkIsPromptForkDraft(location.state)) {
 			return;
 		}
 

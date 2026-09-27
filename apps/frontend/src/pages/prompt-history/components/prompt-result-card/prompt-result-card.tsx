@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 
 import { Icon } from "~/libs/components/icon/icon.js";
-import { PromptDetailLabel } from "~/libs/components/prompt-detail-panel/libs/enums/enums.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { IconName } from "~/libs/enums/enums.js";
 import {
@@ -55,14 +54,14 @@ const PromptResultCard: React.FC<Properties> = ({
 					)}
 					iconName={IconName.CHEVRON}
 				/>
-				{prompt.score === null ? (
-					<span className={styles["unrated"]}>{PromptDetailLabel.UNRATED}</span>
-				) : (
-					<ScoreBadge
-						efficiencyScore={prompt.score}
-						label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-					/>
-				)}
+				<ScoreBadge
+					efficiencyScore={prompt.score}
+					{...(prompt.score === null
+						? {}
+						: {
+								label: `${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`,
+							})}
+				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>
 			<span className={styles["meta"]}>

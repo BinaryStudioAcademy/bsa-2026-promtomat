@@ -49,17 +49,16 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 		return (): void => {};
 	}, []);
 
-	const bodyEditor =
-		revision?.isOwner === true
-			? {
-					control: revision.bodyControl,
-					isEditing: revision.isEditingBody,
-					isSaving: revision.isSavingBody,
-					onCancel: revision.onCancelBodyEdit,
-					onSave: revision.onSaveBody,
-					onStart: revision.onStartBodyEdit,
-				}
-			: undefined;
+	const bodyEditorProperties = revision?.isOwner
+		? {
+				bodyControl: revision.bodyControl,
+				isEditingBody: revision.isEditingBody,
+				isSavingBody: revision.isSavingBody,
+				onCancelBodyEdit: revision.onCancelBodyEdit,
+				onSaveBody: revision.onSaveBody,
+				onStartBodyEdit: revision.onStartBodyEdit,
+			}
+		: {};
 
 	const isShowScoreGrid = revision === undefined || revision.isOwner;
 
@@ -73,7 +72,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 			<PromptBodySection
 				body={body}
 				onCopyPrompt={handleCopyPrompt}
-				{...(bodyEditor ? { editor: bodyEditor } : {})}
+				{...bodyEditorProperties}
 			/>
 
 			<ExplanationSection explanation={explanation} sources={sources} />
@@ -82,7 +81,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 				<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
 					<ScoreGrid
 						isDisabled={revision?.isSavingScore ?? false}
-						isRadio={revision !== undefined}
+						isRadio={Boolean(revision)}
 						label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
 						onScoreSelect={revision?.onScoreSelect ?? handleScoreSelect}
 						{...(revision ? { selectedScore: revision.selectedScore } : {})}

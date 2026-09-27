@@ -2,12 +2,13 @@ import React from "react";
 
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
+import { ScoreBadgeLabel } from "./libs/enums/score-badge-label.enum.js";
 import { getScoreVariant } from "./libs/helpers/get-score-variant.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	className?: string | undefined;
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	isFill?: boolean;
 	label?: string;
 };
@@ -27,7 +28,9 @@ const ScoreBadge: React.FC<Properties> = ({
 				className,
 			)}
 		>
-			{label ?? efficiencyScore}
+			{efficiencyScore === null
+				? ScoreBadgeLabel.UNRATED
+				: (label ?? efficiencyScore)}
 		</span>
 	);
 };

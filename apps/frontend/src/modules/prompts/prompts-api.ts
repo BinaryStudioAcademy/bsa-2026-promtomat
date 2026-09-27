@@ -216,30 +216,32 @@ const promptApi = baseApi
 				{
 					id: number;
 					payload: PromptUpdateIntentRequestDto;
-					queryArgs: Omit<PromptGetQueryDto, "page">;
+					queryArgs?: Omit<PromptGetQueryDto, "page">;
 				}
 			>({
 				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
 					try {
 						const { data: updatedPrompt } = await queryFulfilled;
 
-						dispatch(
-							promptApi.util.updateQueryData(
-								"getPrompts",
-								queryArgs,
-								(draft) => {
-									for (const pageData of draft.pages) {
-										const promptToUpdate = pageData.items.find(
-											(prompt) => prompt.id === id,
-										);
-										if (promptToUpdate) {
-											promptToUpdate.intent = updatedPrompt.taskIntent;
-											break;
+						if (queryArgs) {
+							dispatch(
+								promptApi.util.updateQueryData(
+									"getPrompts",
+									queryArgs,
+									(draft) => {
+										for (const pageData of draft.pages) {
+											const promptToUpdate = pageData.items.find(
+												(prompt) => prompt.id === id,
+											);
+											if (promptToUpdate) {
+												promptToUpdate.intent = updatedPrompt.taskIntent;
+												break;
+											}
 										}
-									}
-								},
-							),
-						);
+									},
+								),
+							);
+						}
 
 						dispatch(
 							promptApi.util.updateQueryData("getPromptById", id, (draft) => {

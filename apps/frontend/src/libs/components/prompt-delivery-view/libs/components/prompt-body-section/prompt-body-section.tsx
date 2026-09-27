@@ -12,21 +12,24 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	body: string;
-	editor?: {
-		control: Control<PromptUpdateBodyRequestDto, null>;
-		isEditing: boolean;
-		isSaving: boolean;
-		onCancel: () => void;
-		onSave: () => void;
-		onStart: () => void;
-	};
+	bodyControl?: Control<PromptUpdateBodyRequestDto, null>;
+	isEditingBody?: boolean;
+	isSavingBody?: boolean;
+	onCancelBodyEdit?: () => void;
 	onCopyPrompt: () => void;
+	onSaveBody?: () => void;
+	onStartBodyEdit?: () => void;
 };
 
 const PromptBodySection: React.FC<Properties> = ({
 	body,
-	editor,
+	bodyControl,
+	isEditingBody = false,
+	isSavingBody = false,
+	onCancelBodyEdit,
 	onCopyPrompt,
+	onSaveBody,
+	onStartBodyEdit,
 }: Properties) => (
 	<PromptDeliveryCard>
 		<PromptDeliveryCard.Header>
@@ -40,12 +43,12 @@ const PromptBodySection: React.FC<Properties> = ({
 				type="button"
 				variant={ButtonVariant.PRIMARY}
 			/>
-			{editor && !editor.isEditing && (
+			{onStartBodyEdit && !isEditingBody && (
 				<Button
 					iconName={IconName.EDIT}
-					isDisabled={editor.isSaving}
+					isDisabled={isSavingBody}
 					label={PromptDeliveryViewLabel.EDIT_PROMPT}
-					onClick={editor.onStart}
+					onClick={onStartBodyEdit}
 					size={ControlSize.SM}
 					type="button"
 					variant={ButtonVariant.SECONDARY}
@@ -53,28 +56,28 @@ const PromptBodySection: React.FC<Properties> = ({
 			)}
 		</PromptDeliveryCard.Header>
 		<PromptDeliveryCard.Body>
-			{editor?.isEditing ? (
+			{isEditingBody && bodyControl && onSaveBody && onCancelBodyEdit ? (
 				<div className={styles["editor"]}>
 					<Textarea
-						control={editor.control}
-						isDisabled={editor.isSaving}
+						control={bodyControl}
+						isDisabled={isSavingBody}
 						label={PromptDeliveryViewLabel.EDIT_PROMPT}
 						name="promptBody"
 						rows={8}
 					/>
 					<div className={styles["editor-actions"]}>
 						<Button
-							isDisabled={editor.isSaving}
-							isLoading={editor.isSaving}
+							isDisabled={isSavingBody}
+							isLoading={isSavingBody}
 							label={PromptDeliveryViewLabel.SAVE_PROMPT}
-							onClick={editor.onSave}
+							onClick={onSaveBody}
 							type="button"
 							variant={ButtonVariant.PRIMARY}
 						/>
 						<Button
-							isDisabled={editor.isSaving}
+							isDisabled={isSavingBody}
 							label={PromptDeliveryViewLabel.CANCEL}
-							onClick={editor.onCancel}
+							onClick={onCancelBodyEdit}
 							type="button"
 							variant={ButtonVariant.SECONDARY}
 						/>

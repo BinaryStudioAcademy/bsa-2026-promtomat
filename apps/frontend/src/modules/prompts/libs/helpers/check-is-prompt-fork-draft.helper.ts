@@ -1,6 +1,6 @@
 import { type PromptForkDraft } from "../types/prompt-fork-draft.type.js";
 
-const isPromptForkDraft = (value: unknown): value is PromptForkDraft => {
+const checkIsPromptForkDraft = (value: unknown): value is PromptForkDraft => {
 	if (typeof value !== "object" || value === null) {
 		return false;
 	}
@@ -14,4 +14,4 @@ const isPromptForkDraft = (value: unknown): value is PromptForkDraft => {
 	);
 };
 
-export { isPromptForkDraft };
+export { checkIsPromptForkDraft };

@@ -9,7 +9,6 @@ const ColumnName = {
 } as const;
 
 async function down(knex: Knex): Promise<void> {
-	// Deletes prompts whose score was cleared, plus their embeddings and composed-prompt source rows (ON DELETE CASCADE).
 	await knex(TableName.PROMPTS).whereNull(ColumnName.EFFICIENCY_SCORE).delete();
 
 	await knex.schema.alterTable(TableName.PROMPTS, (table) => {
