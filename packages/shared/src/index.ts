@@ -131,6 +131,7 @@ export {
 	type EvaluationResponseDto,
 	evaluationCreate,
 	EvaluationsApiPath,
+	EvaluationTargetType,
 	EvaluationValidationMessage,
 	EvaluationValidationRule,
 } from "./modules/evaluations/evaluations.js";

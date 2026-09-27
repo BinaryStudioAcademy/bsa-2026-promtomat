@@ -1,4 +1,4 @@
-import { type onRequestAsyncHookHandler } from "fastify";
+import { type preHandlerAsyncHookHandler } from "fastify";
 
 import {
 	AuthError,
@@ -21,7 +21,7 @@ const evaluationAccessHook = ({
 	composedPromptService,
 	promptService,
 	workspaceService,
-}: Parameters): onRequestAsyncHookHandler => {
+}: Parameters): preHandlerAsyncHookHandler => {
 	return async (request) => {
 		if (!request.user) {
 			throw AuthError.unauthorized();

@@ -1,9 +1,15 @@
 import { type Transaction } from "objection";
 
+import { type ValueOf } from "~/libs/types/types.js";
+
 import { EvaluationEntity } from "./evaluation.entity.js";
 import { type EvaluationModel } from "./evaluation.model.js";
 import { EvaluationColumnName } from "./libs/enums/enums.js";
-import { type EvaluationUpsertPayload } from "./libs/types/types.js";
+import {
+	type EvaluationConflictColumn,
+	type EvaluationInsertPayload,
+	type EvaluationUpsertPayload,
+} from "./libs/types/types.js";
 
 class EvaluationRepository {
 	private evaluationModel: typeof EvaluationModel;
@@ -12,87 +18,109 @@ class EvaluationRepository {
 		this.evaluationModel = evaluationModel;
 	}
 
-	public async createOrUpdate(
-		{ composedPromptId, promptId, score, userId }: EvaluationUpsertPayload,
-		trx: Transaction,
-	): Promise<EvaluationEntity> {
+	private async findScoresBy(
+		where: Partial<Record<ValueOf<typeof EvaluationColumnName>, number>>,
+		trx?: Transaction,
+	): Promise<number[]> {
+		const rows = await this.evaluationModel
+			.query(trx)
+			.select(EvaluationColumnName.SCORE)
+			.where(where)
+			.execute();
+
+		return rows.map((row) => row.score);
+	}
+
+	private initializeEntity(model: EvaluationModel): EvaluationEntity {
+		return EvaluationEntity.initialize({
+			composedPromptId: model.composedPromptId,
+			createdAt: model.createdAt,
+			id: model.id,
+			promptId: model.promptId,
+			score: model.score,
+			updatedAt: model.updatedAt,
+			userId: model.userId,
+		});
+	}
+
+	private async upsertEvaluation({
+		conflictColumn,
+		insertPayload,
+		trx,
+	}: {
+		conflictColumn: EvaluationConflictColumn;
+		insertPayload: EvaluationInsertPayload;
+		trx?: Transaction | undefined;
+	}): Promise<EvaluationEntity> {
 		const knex = this.evaluationModel.knex();
-
-		if (promptId) {
-			const evaluation = await this.evaluationModel
-				.query(trx)
-				.insert({
-					composedPromptId: null,
-					promptId,
-					score,
-					userId,
-				})
-				.onConflict(
-					knex.raw("(??, ??) WHERE ?? IS NOT NULL", [
-						EvaluationColumnName.USER_ID,
-						EvaluationColumnName.PROMPT_ID,
-						EvaluationColumnName.PROMPT_ID,
-					]),
-				)
-				.merge({
-					score,
-					updatedAt: knex.fn.now(),
-				})
-				.returning("*");
-
-			return EvaluationEntity.initialize(evaluation);
-		}
 
 		const evaluation = await this.evaluationModel
 			.query(trx)
-			.insert({
-				composedPromptId: composedPromptId as number,
-				promptId: null,
-				score,
-				userId,
-			})
+			.insert(insertPayload)
 			.onConflict(
 				knex.raw("(??, ??) WHERE ?? IS NOT NULL", [
 					EvaluationColumnName.USER_ID,
-					EvaluationColumnName.COMPOSED_PROMPT_ID,
-					EvaluationColumnName.COMPOSED_PROMPT_ID,
+					conflictColumn,
+					conflictColumn,
 				]),
 			)
 			.merge({
-				score,
+				score: insertPayload.score,
 				updatedAt: knex.fn.now(),
 			})
-			.returning("*");
+			.returning("*")
+			.execute();
 
-		return EvaluationEntity.initialize(evaluation);
+		return this.initializeEntity(evaluation);
+	}
+
+	public async createOrUpdate(
+		payload: EvaluationUpsertPayload,
+		trx?: Transaction,
+	): Promise<EvaluationEntity> {
+		if (payload.promptId) {
+			return await this.upsertEvaluation({
+				conflictColumn: EvaluationColumnName.PROMPT_ID,
+				insertPayload: {
+					composedPromptId: null,
+					promptId: payload.promptId,
+					score: payload.score,
+					userId: payload.userId,
+				},
+				trx,
+			});
+		}
+
+		return await this.upsertEvaluation({
+			conflictColumn: EvaluationColumnName.COMPOSED_PROMPT_ID,
+			insertPayload: {
+				composedPromptId: payload.composedPromptId as number,
+				promptId: null,
+				score: payload.score,
+				userId: payload.userId,
+			},
+			trx,
+		});
 	}
 
 	public async findScoresByComposedPromptId(
 		composedPromptId: number,
 		trx?: Transaction,
 	): Promise<number[]> {
-		const rows = await this.evaluationModel
-			.query(trx)
-			.select(EvaluationColumnName.SCORE)
-			.where({
-				[EvaluationColumnName.COMPOSED_PROMPT_ID]: composedPromptId,
-			})
-			.execute();
-
-		return rows.map((row) => row.score);
+		return await this.findScoresBy(
+			{ [EvaluationColumnName.COMPOSED_PROMPT_ID]: composedPromptId },
+			trx,
+		);
 	}
 
 	public async findScoresByPromptId(
 		promptId: number,
 		trx?: Transaction,
 	): Promise<number[]> {
-		const rows = await this.evaluationModel
-			.query(trx)
-			.select(EvaluationColumnName.SCORE)
-			.where({ [EvaluationColumnName.PROMPT_ID]: promptId })
-			.execute();
-
-		return rows.map((row) => row.score);
+		return await this.findScoresBy(
+			{ [EvaluationColumnName.PROMPT_ID]: promptId },
+			trx,
+		);
 	}
 }
 
