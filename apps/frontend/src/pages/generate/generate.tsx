@@ -14,13 +14,13 @@ import styles from "./styles.module.css";
 const Generate: React.FC = () => {
 	const {
 		control,
+		handleDiscard,
+		handleRecompose,
+		handleRetry,
+		handleSubmit,
 		hasFailure,
 		hasWorkspace,
 		isLoading,
-		onDiscard,
-		onRecompose,
-		onRetry,
-		onSubmit,
 		result,
 		workspaces,
 	} = useGenerateForm();
@@ -37,18 +37,18 @@ const Generate: React.FC = () => {
 					control={control}
 					hasWorkspace={hasWorkspace}
 					isLoading={isLoading}
-					onSubmit={onSubmit}
+					onSubmit={handleSubmit}
 					workspaces={workspaces}
 				/>
 				{isLoading && <Loader variant={LoaderVariant.SECTION} />}
 				{!isLoading && hasFailure && (
-					<GenerationFailedNotice onRetry={onRetry} />
+					<GenerationFailedNotice onRetry={handleRetry} />
 				)}
 				{!isLoading && result && (
 					<ComposeResult
-						onDiscard={onDiscard}
-						onRecompose={onRecompose}
-						onTryAgain={onRetry}
+						onDiscard={handleDiscard}
+						onRecompose={handleRecompose}
+						onTryAgain={handleRetry}
 						result={result}
 					/>
 				)}

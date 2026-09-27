@@ -29,13 +29,13 @@ import {
 
 type ReturnValue = {
 	control: Control<ComposeRequestDto, null>;
+	handleDiscard: () => void;
+	handleRecompose: () => void;
+	handleRetry: () => void;
+	handleSubmit: (event: React.BaseSyntheticEvent) => void;
 	hasFailure: boolean;
 	hasWorkspace: boolean;
 	isLoading: boolean;
-	onDiscard: () => void;
-	onRecompose: () => void;
-	onRetry: () => void;
-	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	result: ComposeResponseDto | undefined;
 	workspaces: WorkspaceListItemDto[];
 };
@@ -130,13 +130,13 @@ const useGenerateForm = (): ReturnValue => {
 
 	return {
 		control,
+		handleDiscard: reset,
+		handleRecompose,
+		handleRetry,
+		handleSubmit: handleSubmitCompose,
 		hasFailure,
 		hasWorkspace,
 		isLoading,
-		onDiscard: reset,
-		onRecompose: handleRecompose,
-		onRetry: handleRetry,
-		onSubmit: handleSubmitCompose,
 		result: data,
 		workspaces: workspacesData?.items ?? [],
 	};
