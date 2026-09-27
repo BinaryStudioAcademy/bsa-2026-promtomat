@@ -30,64 +30,71 @@ const PromptBodySection: React.FC<Properties> = ({
 	onCopyPrompt,
 	onSaveBody,
 	onStartBodyEdit,
-}: Properties) => (
-	<PromptDeliveryCard>
-		<PromptDeliveryCard.Header>
-			<PromptDeliveryCard.Title>
-				{PromptDeliveryViewLabel.OPTIMIZED_PROMPT_HEADING}
-			</PromptDeliveryCard.Title>
-			<Button
-				label={PromptDeliveryViewLabel.COPY_PROMPT}
-				onClick={onCopyPrompt}
-				size={ControlSize.SM}
-				type="button"
-				variant={ButtonVariant.PRIMARY}
-			/>
-			{onStartBodyEdit && !isEditingBody && (
+}: Properties) => {
+	const editor =
+		isEditingBody && bodyControl && onSaveBody && onCancelBodyEdit
+			? { bodyControl, onCancelBodyEdit, onSaveBody }
+			: null;
+
+	return (
+		<PromptDeliveryCard>
+			<PromptDeliveryCard.Header>
+				<PromptDeliveryCard.Title>
+					{PromptDeliveryViewLabel.OPTIMIZED_PROMPT_HEADING}
+				</PromptDeliveryCard.Title>
 				<Button
-					iconName={IconName.EDIT}
-					isDisabled={isSavingBody}
-					label={PromptDeliveryViewLabel.EDIT_PROMPT}
-					onClick={onStartBodyEdit}
+					label={PromptDeliveryViewLabel.COPY_PROMPT}
+					onClick={onCopyPrompt}
 					size={ControlSize.SM}
 					type="button"
-					variant={ButtonVariant.SECONDARY}
+					variant={ButtonVariant.PRIMARY}
 				/>
-			)}
-		</PromptDeliveryCard.Header>
-		<PromptDeliveryCard.Body>
-			{isEditingBody && bodyControl && onSaveBody && onCancelBodyEdit ? (
-				<div className={styles["editor"]}>
-					<Textarea
-						control={bodyControl}
+				{onStartBodyEdit && !isEditingBody && (
+					<Button
+						iconName={IconName.EDIT}
 						isDisabled={isSavingBody}
 						label={PromptDeliveryViewLabel.EDIT_PROMPT}
-						name="promptBody"
-						rows={8}
+						onClick={onStartBodyEdit}
+						size={ControlSize.SM}
+						type="button"
+						variant={ButtonVariant.SECONDARY}
 					/>
-					<div className={styles["editor-actions"]}>
-						<Button
+				)}
+			</PromptDeliveryCard.Header>
+			<PromptDeliveryCard.Body>
+				{editor ? (
+					<div className={styles["editor"]}>
+						<Textarea
+							control={editor.bodyControl}
 							isDisabled={isSavingBody}
-							isLoading={isSavingBody}
-							label={PromptDeliveryViewLabel.SAVE_PROMPT}
-							onClick={onSaveBody}
-							type="button"
-							variant={ButtonVariant.PRIMARY}
+							label={PromptDeliveryViewLabel.EDIT_PROMPT}
+							name="promptBody"
+							rows={8}
 						/>
-						<Button
-							isDisabled={isSavingBody}
-							label={PromptDeliveryViewLabel.CANCEL}
-							onClick={onCancelBodyEdit}
-							type="button"
-							variant={ButtonVariant.SECONDARY}
-						/>
+						<div className={styles["editor-actions"]}>
+							<Button
+								isDisabled={isSavingBody}
+								isLoading={isSavingBody}
+								label={PromptDeliveryViewLabel.SAVE_PROMPT}
+								onClick={editor.onSaveBody}
+								type="button"
+								variant={ButtonVariant.PRIMARY}
+							/>
+							<Button
+								isDisabled={isSavingBody}
+								label={PromptDeliveryViewLabel.CANCEL}
+								onClick={editor.onCancelBodyEdit}
+								type="button"
+								variant={ButtonVariant.SECONDARY}
+							/>
+						</div>
 					</div>
-				</div>
-			) : (
-				<pre className={styles["prompt-body"]}>{body}</pre>
-			)}
-		</PromptDeliveryCard.Body>
-	</PromptDeliveryCard>
-);
+				) : (
+					<pre className={styles["prompt-body"]}>{body}</pre>
+				)}
+			</PromptDeliveryCard.Body>
+		</PromptDeliveryCard>
+	);
+};
 
 export { PromptBodySection };

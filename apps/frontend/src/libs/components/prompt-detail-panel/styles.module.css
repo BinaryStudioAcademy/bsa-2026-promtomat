@@ -169,13 +169,13 @@
 	gap: var(--space-8);
 }
 
-.editor textarea {
+.editor-textarea {
 	padding: var(--space-16);
 	font-size: var(--font-size-body-sm);
 	line-height: 1.6;
 }
 
-.editor-compact textarea {
+.editor-textarea-compact {
 	min-height: 72px;
 	max-height: 200px;
 }

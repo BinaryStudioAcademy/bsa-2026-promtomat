@@ -56,11 +56,7 @@ const PromptResultCard: React.FC<Properties> = ({
 				/>
 				<ScoreBadge
 					efficiencyScore={prompt.score}
-					{...(prompt.score === null
-						? {}
-						: {
-								label: `${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`,
-							})}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

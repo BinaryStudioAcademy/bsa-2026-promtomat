@@ -31,6 +31,7 @@ import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js
 
 import {
 	BODY_HEIGHT_PX,
+	BODY_TEXTAREA_ROWS,
 	BODY_VIEW_OPTIONS,
 } from "./libs/constants/constants.js";
 import {
@@ -174,7 +175,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 								className={styles["intent"]}
 								control={control}
 								descriptionId={descriptionId}
-								isLabelHidden={true}
+								isLabelHidden
 								label={PromptDetailLabel.TASK_INTENT}
 								name="taskIntent"
 								onSave={handleSaveUpdatedIntent}
@@ -186,11 +187,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					)}
 					<ScoreBadge
 						efficiencyScore={prompt.score}
-						{...(prompt.score === null
-							? {}
-							: {
-									label: `${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`,
-								})}
+						maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 					/>
 				</div>
 				<div
@@ -245,14 +242,12 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			</div>
 
 			{isOwner && isEditingBody ? (
-				<div
-					className={getValidClasses(
-						styles["editor"],
-						isCompact && styles["editor-compact"],
-					)}
-					ref={editorReference}
-				>
+				<div className={styles["editor"]} ref={editorReference}>
 					<Textarea
+						className={getValidClasses(
+							styles["editor-textarea"],
+							isCompact && styles["editor-textarea-compact"],
+						)}
 						control={bodyControl}
 						isDisabled={isSavingBody}
 						isLabelHidden
@@ -260,7 +255,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 						label={PromptDetailLabel.WRITE}
 						maxHeight={isCompact ? BODY_HEIGHT_PX : null}
 						name="promptBody"
-						rows={4}
+						rows={BODY_TEXTAREA_ROWS}
 					/>
 				</div>
 			) : (

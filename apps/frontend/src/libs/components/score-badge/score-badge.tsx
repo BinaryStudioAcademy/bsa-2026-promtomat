@@ -11,6 +11,7 @@ type Properties = {
 	efficiencyScore: null | number;
 	isFill?: boolean;
 	label?: string;
+	maxScore?: number;
 };
 
 const ScoreBadge: React.FC<Properties> = ({
@@ -18,7 +19,18 @@ const ScoreBadge: React.FC<Properties> = ({
 	efficiencyScore,
 	isFill = true,
 	label,
+	maxScore,
 }) => {
+	let content: React.ReactNode = efficiencyScore;
+
+	if (efficiencyScore === null) {
+		content = ScoreBadgeLabel.UNRATED;
+	} else if (label !== undefined) {
+		content = label;
+	} else if (maxScore !== undefined) {
+		content = `${String(efficiencyScore)}/${String(maxScore)}`;
+	}
+
 	return (
 		<span
 			className={getValidClasses(
@@ -28,9 +40,7 @@ const ScoreBadge: React.FC<Properties> = ({
 				className,
 			)}
 		>
-			{efficiencyScore === null
-				? ScoreBadgeLabel.UNRATED
-				: (label ?? efficiencyScore)}
+			{content}
 		</span>
 	);
 };
