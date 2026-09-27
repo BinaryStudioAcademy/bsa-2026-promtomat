@@ -80,4 +80,10 @@
 	.chevron-open {
 		transform: rotate(0deg);
 	}
+
+	.card-selected {
+		border-bottom: none;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
 }

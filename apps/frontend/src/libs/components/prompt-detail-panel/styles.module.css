@@ -97,6 +97,13 @@
 }
 
 @media (width < 768px) {
+	.panel:has(.open-link) {
+		border-color: var(--border-accent);
+		border-top: none;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
 	.panel:has(.open-link) .heading {
 		display: none;
 	}
