@@ -56,8 +56,10 @@ const ComposedResultCard: React.FC<Properties> = ({
 	>>(null);
 	const [selectedScore, setSelectedScore] = useState<null | number>(null);
 
+	const isAdopted = adoptedPrompt !== undefined;
 	const isEdited = appliedBody !== composedPrompt.body;
-	const hasActions = !isAdopting && !isEditing && adoptedPrompt === undefined;
+	const hasUnsavedEdits = isEdited && !isAdopted;
+	const hasActions = !isAdopting && !isEditing && !isAdopted;
 	const isRecomposePending = pendingAction === PendingCardAction.RECOMPOSE;
 	const isRecomposeDisabled =
 		isAdopting || isEditing || remainingRecompositions === ZERO_VALUE;
@@ -92,24 +94,24 @@ const ComposedResultCard: React.FC<Properties> = ({
 	}, []);
 
 	const handleDiscardRequest = useCallback((): void => {
-		if (isEdited) {
+		if (hasUnsavedEdits) {
 			setPendingAction(PendingCardAction.DISCARD);
 
 			return;
 		}
 
 		onDiscard();
-	}, [isEdited, onDiscard]);
+	}, [hasUnsavedEdits, onDiscard]);
 
 	const handleRecomposeRequest = useCallback((): void => {
-		if (isEdited) {
+		if (hasUnsavedEdits) {
 			setPendingAction(PendingCardAction.RECOMPOSE);
 
 			return;
 		}
 
 		onRecompose();
-	}, [isEdited, onRecompose]);
+	}, [hasUnsavedEdits, onRecompose]);
 
 	const handleActionCancel = useCallback((): void => {
 		setPendingAction(null);
