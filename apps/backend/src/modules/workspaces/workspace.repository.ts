@@ -26,6 +26,7 @@ import {
 } from "./libs/enums/enums.js";
 import {
 	type WorkspaceListItemDto,
+	type WorkspaceListQuery,
 	type WorkspaceUpdateRequestDto,
 } from "./libs/types/types.js";
 import { WorkspaceEntity } from "./workspace.entity.js";
@@ -235,11 +236,7 @@ class WorkspaceRepository {
 
 	public async findAllByUserId(
 		userId: number,
-		query: {
-			scope: ValueOf<typeof WorkspaceListScope>;
-			sort?: undefined | ValueOf<typeof WorkspaceListSort>;
-			workspaceName?: string | undefined;
-		},
+		query: WorkspaceListQuery,
 	): Promise<WorkspaceListItemDto[]> {
 		const queryBuilder = this.buildWorkspaceWithCountsQuery();
 
