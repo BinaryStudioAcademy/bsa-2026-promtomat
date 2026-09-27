@@ -55,14 +55,8 @@
 	letter-spacing: 0.77px;
 }
 
-.control-inset {
-	display: flex;
-	flex-wrap: wrap;
-}
-
 .control-inset .score-button {
-	flex: 0 0 auto;
-	padding: var(--space-8) var(--space-14);
+	padding: var(--space-8) var(--space-4);
 	font-family: var(--font-family-mono);
 	font-size: var(--font-size-body-sm);
 	font-weight: 500;
