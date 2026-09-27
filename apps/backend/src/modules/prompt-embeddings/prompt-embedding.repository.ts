@@ -1,10 +1,12 @@
 import { raw, type Transaction } from "objection";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import {
+	PromptQualityTier,
 	QualityScoreThreshold,
-	ZERO_VALUE,
-} from "~/libs/constants/constants.js";
-import { PromptQualityTier, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
+	SortOrder,
+	SQLAlias,
+} from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";

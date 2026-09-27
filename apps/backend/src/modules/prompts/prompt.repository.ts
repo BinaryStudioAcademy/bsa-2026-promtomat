@@ -1,11 +1,9 @@
 import { raw, type Transaction } from "objection";
 
-import {
-	QualityScoreThreshold,
-	ZERO_VALUE,
-} from "~/libs/constants/constants.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import {
 	PromptQualityTier,
+	QualityScoreThreshold,
 	QueryClearTarget,
 	SortOrder,
 	SQLAlias,
@@ -42,6 +40,7 @@ import {
 	type PromptRepositoryFindAllResponseDto,
 	type PromptRepositoryItem,
 	type PromptUpdatePayload,
+	type PromptWorkspaceRawRow,
 } from "./libs/types/types.js";
 
 class PromptRepository {
@@ -393,11 +392,7 @@ class PromptRepository {
 			query.where(PROMPT_LABEL_ID, "=", labelId);
 		}
 
-		const items = (await query) as Array<
-			Omit<PromptDto, "computedScore"> & {
-				computedScore: null | number | string;
-			}
-		>;
+		const items = (await query) as PromptWorkspaceRawRow[];
 
 		return items.map((item) => ({
 			...item,

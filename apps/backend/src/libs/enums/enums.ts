@@ -10,6 +10,7 @@ export {
 	AuthErrorMessage,
 	ErrorCode,
 	PromptQualityTier,
+	QualityScoreThreshold,
 	ScoreTierMin,
 	SortOrder,
 	TimeUnit,

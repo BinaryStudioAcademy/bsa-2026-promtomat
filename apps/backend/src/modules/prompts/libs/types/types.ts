@@ -11,6 +11,7 @@ export { type PromptRepositoryFindAllResponseDto } from "./prompt-repository-fin
 export { type PromptRepositoryItem } from "./prompt-repository-item.type.js";
 export { type PromptUpdateIntentPayload } from "./prompt-update-intent-payload.type.js";
 export { type PromptUpdatePayload } from "./prompt-update-payload.type.js";
+export { type PromptWorkspaceRawRow } from "./prompt-workspace-raw-row.type.js";
 export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
