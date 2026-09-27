@@ -295,10 +295,7 @@ class ComposedPromptController extends BaseController {
 	private async findAll(
 		options: APIHandlerOptions<{ query: ComposedPromptGetQueryDto }>,
 	): Promise<APIHandlerResponse> {
-		const result = await this.composedPromptService.findAll({
-			...options.query,
-			userId: options.user?.id as number,
-		});
+		const result = await this.composedPromptService.findAll(options.query);
 
 		return {
 			payload: result,

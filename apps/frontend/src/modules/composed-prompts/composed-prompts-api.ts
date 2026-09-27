@@ -1,10 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
-import {
-	ComposedPromptsApiPath,
-	ComposedPromptsApiTag,
-} from "./libs/enums/enums.js";
+import { ComposedPromptsApiTag } from "./libs/enums/enums.js";
 import { getComposedPromptsTags } from "./libs/helpers/helpers.js";
 import {
 	type ComposedPromptDto,
@@ -25,7 +22,7 @@ const composedPromptApi = baseApi
 				query: (payload) => ({
 					body: payload,
 					method: HTTPMethod.POST,
-					url: `${APIPath.COMPOSED_PROMPTS}${ComposedPromptsApiPath.ROOT}`,
+					url: APIPath.COMPOSED_PROMPTS,
 				}),
 			}),
 			getComposedPromptById: builder.query<ComposedPromptDto, number>({
@@ -45,7 +42,7 @@ const composedPromptApi = baseApi
 				query: (parameters) => ({
 					method: HTTPMethod.GET,
 					params: parameters,
-					url: `${APIPath.COMPOSED_PROMPTS}${ComposedPromptsApiPath.ROOT}`,
+					url: APIPath.COMPOSED_PROMPTS,
 				}),
 			}),
 		}),

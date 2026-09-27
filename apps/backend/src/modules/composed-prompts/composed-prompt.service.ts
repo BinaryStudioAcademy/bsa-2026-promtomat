@@ -329,9 +329,7 @@ class ComposedPromptService {
 		});
 	}
 
-	public async findAll(
-		options: ComposedPromptGetQueryDto & { userId: number },
-	): Promise<{
+	public async findAll(options: ComposedPromptGetQueryDto): Promise<{
 		items: ComposedPromptDto[];
 		page: number;
 		pageSize: number;

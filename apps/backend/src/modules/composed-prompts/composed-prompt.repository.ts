@@ -1,11 +1,8 @@
 import { type Transaction, UniqueViolationError } from "objection";
 
 import { SortOrder } from "~/libs/enums/enums.js";
-import { DatabaseTableName } from "~/libs/modules/database/libs/enums/enums.js";
 
-import { ContributorColumnName } from "../contributors/libs/enums/enums.js";
 import { PaginationValue } from "../prompts/libs/enums/enums.js";
-import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
 import { SOURCES_GRAPH } from "./libs/constants/constants.js";
@@ -69,54 +66,15 @@ class ComposedPromptRepository {
 	public async findAll({
 		limit = PaginationValue.DEFAULT_LIMIT,
 		page = PaginationValue.DEFAULT_PAGE,
-		userId,
 		workspaceId,
 	}: {
 		limit?: number | undefined;
 		page?: number | undefined;
-		userId: number;
 		workspaceId: number;
 	}): Promise<{ items: ComposedPromptEntity[]; totalCount: number }> {
 		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
 
-		const baseQuery = this.composedPromptModel
-			.query()
-			.where({ workspaceId })
-			.where((builder) => {
-				builder
-					.whereExists(
-						this.composedPromptModel
-							.query()
-							.select(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-							)
-							.from(DatabaseTableName.WORKSPACES)
-							.whereColumn(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-								`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.WORKSPACE_ID}`,
-							)
-							.where(
-								`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
-								userId,
-							),
-					)
-					.orWhereExists(
-						this.composedPromptModel
-							.query()
-							.select(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
-							)
-							.from(DatabaseTableName.CONTRIBUTORS)
-							.whereColumn(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-								`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.WORKSPACE_ID}`,
-							)
-							.where(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
-								userId,
-							),
-					);
-			});
+		const baseQuery = this.composedPromptModel.query().where({ workspaceId });
 
 		const totalCount = await baseQuery.resultSize();
 		const items = await baseQuery
