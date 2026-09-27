@@ -1,3 +1,4 @@
+import { skipToken } from "@reduxjs/toolkit/query";
 import React, { useCallback, useMemo } from "react";
 import { useWatch } from "react-hook-form";
 
@@ -8,7 +9,7 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { useGetComposedPromptsQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
+import { useGetComposedPromptsInfiniteQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
 import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
@@ -53,6 +54,45 @@ const QUALITY_TIER_OPTIONS = [
 	},
 ];
 
+const resolveAverageScoreLabel = (averageScore: null | number): string => {
+	if (averageScore === null) {
+		return "—";
+	}
+
+	return `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
+};
+
+const resolveResultCountLabel = (count: number): string => {
+	if (count === SINGLE_RESULT_COUNT) {
+		return `${String(count)} ${PromptHistoryLabel.RESULT}`;
+	}
+
+	return `${String(count)} ${PromptHistoryLabel.RESULTS}`;
+};
+
+const resolveLoadMoreLabel = (
+	isFetching: boolean,
+	isError: boolean,
+): string => {
+	if (isFetching) {
+		return PromptHistoryLabel.LOADING;
+	}
+
+	if (isError) {
+		return PromptHistoryLabel.RETRY;
+	}
+
+	return PromptHistoryLabel.LOAD_MORE;
+};
+
+const resolveModeHint = (search: string): string => {
+	if (search) {
+		return PromptHistoryLabel.HINT_SEARCH;
+	}
+
+	return PromptHistoryLabel.HINT_BROWSE;
+};
+
 const PromptHistory: React.FC = () => {
 	const {
 		control,
@@ -75,31 +115,34 @@ const PromptHistory: React.FC = () => {
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
 	const hasWorkspace = typeof workspaceId === "number";
-	const queryPayload = {
-		...filterQueryPayload,
-		workspaceId: hasWorkspace ? workspaceId : undefined,
-	};
+
+	const queryPayload = hasWorkspace
+		? { ...filterQueryPayload, workspaceId }
+		: skipToken;
 
 	const {
 		data,
-		fetchNextPage,
-		hasNextPage,
+		fetchNextPage: fetchNextRegularPage,
+		hasNextPage: hasNextRegularPage,
 		isError: isPromptsError,
 		isFetching: isPromptsFetching,
 		isLoading: isPromptsLoading,
 		refetch: refetchPrompts,
-	} = useGetPromptsInfiniteQuery(queryPayload, { skip: !hasWorkspace });
+	} = useGetPromptsInfiniteQuery(queryPayload);
+
+	const composedQueryArguments = hasWorkspace
+		? { search, workspaceId }
+		: skipToken;
 
 	const {
 		data: composedPromptsData,
+		fetchNextPage: fetchNextComposedPage,
+		hasNextPage: hasNextComposedPage,
 		isError: isComposedError,
 		isFetching: isComposedFetching,
 		isLoading: isComposedLoading,
 		refetch: refetchComposed,
-	} = useGetComposedPromptsQuery(
-		{ search, workspaceId: workspaceId as number },
-		{ skip: !hasWorkspace },
-	);
+	} = useGetComposedPromptsInfiniteQuery(composedQueryArguments);
 
 	const workspaceOptions =
 		workspaces?.map(({ id, name }) => ({
@@ -115,24 +158,31 @@ const PromptHistory: React.FC = () => {
 		[data?.pages],
 	);
 
+	const composedItems = useMemo(
+		() => composedPromptsData?.pages.flatMap((page) => page.items) ?? [],
+		[composedPromptsData?.pages],
+	);
+
 	const items = useUnifiedPromptHistory({
-		composedItems: composedPromptsData?.items ?? [],
-		qualityTier: queryPayload.qualityTier,
+		composedItems,
+		qualityTier: filterQueryPayload.qualityTier,
 		regularItems,
 		workspaceName: activeWorkspaceName,
 	});
 
 	const [firstPage] = data?.pages ?? [];
+	const [firstComposedPage] = composedPromptsData?.pages ?? [];
 	const regularTotalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
-	const composedTotalPrompts = composedPromptsData?.totalCount ?? ZERO_VALUE;
+	const composedTotalPrompts = firstComposedPage?.totalCount ?? ZERO_VALUE;
 	const totalPrompts = regularTotalPrompts + composedTotalPrompts;
 	const averageScore = firstPage?.averageScore ?? null;
 
-	const hasActiveFilters = Boolean(search) || Boolean(queryPayload.qualityTier);
+	const hasActiveFilters =
+		Boolean(search) || Boolean(filterQueryPayload.qualityTier);
 
 	const filterKey = [
-		String(queryPayload.workspaceId ?? ""),
-		queryPayload.qualityTier ?? "",
+		String(workspaceId ?? ""),
+		filterQueryPayload.qualityTier ?? "",
 		search,
 	].join(":");
 
@@ -142,43 +192,47 @@ const PromptHistory: React.FC = () => {
 	const isFetching = isPromptsFetching || isComposedFetching;
 	const isLoading = isPromptsLoading || isComposedLoading;
 	const isError = isPromptsError || isComposedError;
+	const hasNextPage = hasNextRegularPage || hasNextComposedPage;
 
 	const handleLoadMore = useCallback((): void => {
-		void fetchNextPage();
-	}, [fetchNextPage]);
+		if (hasNextRegularPage) {
+			void fetchNextRegularPage();
+		}
+		if (hasNextComposedPage) {
+			void fetchNextComposedPage();
+		}
+	}, [
+		fetchNextComposedPage,
+		fetchNextRegularPage,
+		hasNextComposedPage,
+		hasNextRegularPage,
+	]);
 
 	const handleRetry = useCallback((): void => {
 		void refetchPrompts();
 		void refetchComposed();
 	}, [refetchComposed, refetchPrompts]);
 
-	const resultCountLabel =
-		items.length === SINGLE_RESULT_COUNT
-			? `${String(items.length)} ${PromptHistoryLabel.RESULT}`
-			: `${String(items.length)} ${PromptHistoryLabel.RESULTS}`;
+	const resultCountLabel = resolveResultCountLabel(items.length);
+	const modeHint = resolveModeHint(search);
+	const loadMoreLabel = resolveLoadMoreLabel(isFetching, isError);
+	const averageScoreLabel = resolveAverageScoreLabel(averageScore);
 
-	const modeHint = search
-		? PromptHistoryLabel.HINT_SEARCH
-		: PromptHistoryLabel.HINT_BROWSE;
+	const isSearchLayoutEmpty = !selectedPrompt && items.length === ZERO_VALUE;
+	const isAverageScoreHidden = averageScore === null;
+	const shouldShowLoadMore = hasNextPage && hasWorkspace && !isLoading;
 
-	let loadMoreLabel: string = PromptHistoryLabel.LOAD_MORE;
-
-	if (isFetching) {
-		loadMoreLabel = PromptHistoryLabel.LOADING;
-	} else if (isError) {
-		loadMoreLabel = PromptHistoryLabel.RETRY;
-	}
-
-	const averageScoreLabel =
-		averageScore === null
-			? "—"
-			: `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
+	const detailQueryPayload =
+		queryPayload === skipToken ? { workspaceId: ZERO_VALUE } : queryPayload;
 
 	let detailPane: React.ReactNode = null;
 
 	if (selectedPrompt) {
 		detailPane = (
-			<PromptDetailPanel prompt={selectedPrompt} queryPayload={queryPayload} />
+			<PromptDetailPanel
+				prompt={selectedPrompt}
+				queryPayload={detailQueryPayload}
+			/>
 		);
 	} else if (items.length > ZERO_VALUE) {
 		detailPane = (
@@ -224,7 +278,7 @@ const PromptHistory: React.FC = () => {
 						<span
 							className={getValidClasses(
 								styles["metric-value"],
-								styles["metric-score"],
+								isAverageScoreHidden && styles["list-metric-hidden"],
 							)}
 						>
 							{averageScoreLabel}
@@ -271,9 +325,7 @@ const PromptHistory: React.FC = () => {
 				<div
 					className={getValidClasses(
 						styles["search-layout"],
-						!selectedPrompt &&
-							items.length === ZERO_VALUE &&
-							styles["search-layout-empty"],
+						isSearchLayoutEmpty && styles["search-layout-empty"],
 					)}
 				>
 					<div className={styles["results"]}>
@@ -287,10 +339,10 @@ const PromptHistory: React.FC = () => {
 							items={items}
 							onRetry={handleRetry}
 							onSelectPrompt={handleSelectPrompt}
-							queryPayload={queryPayload}
+							queryPayload={detailQueryPayload}
 							selectedPromptKey={selectedPromptKey}
 						/>
-						{hasNextPage && hasWorkspace && !isLoading ? (
+						{shouldShowLoadMore ? (
 							<div className={styles["load-more-wrapper"]}>
 								<Button
 									isDisabled={isFetching}

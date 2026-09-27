@@ -145,15 +145,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 
 											return { Component: pageModule.PromptDelivery };
 										},
-										path: AppRoute.PROMPTS_$PROMPT_ID,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/prompt-delivery/prompt-delivery.js");
-
-											return { Component: pageModule.PromptDelivery };
-										},
 										path: AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID,
 									},
 								],

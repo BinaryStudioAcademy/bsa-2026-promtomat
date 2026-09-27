@@ -5,4 +5,5 @@ export {
 	PromptQualityTier,
 	PromptsApiPath,
 	PromptValidationRule,
+	QualityScoreThreshold,
 } from "@promptomat/shared";

@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 
+import { PaginationValue } from "../prompts/libs/enums/enums.js";
 import { ComposedPromptsApiTag } from "./libs/enums/enums.js";
 import { getComposedPromptsTags } from "./libs/helpers/helpers.js";
 import {
@@ -34,14 +35,37 @@ const composedPromptApi = baseApi
 					url: `${APIPath.COMPOSED_PROMPTS}/${String(id)}`,
 				}),
 			}),
-			getComposedPrompts: builder.query<
+			getComposedPrompts: builder.infiniteQuery<
 				ComposedPromptGetAllResponseDto,
-				ComposedPromptGetQueryDto
+				Omit<ComposedPromptGetQueryDto, "page">,
+				number
 			>({
-				providesTags: getComposedPromptsTags,
-				query: (parameters) => ({
+				infiniteQueryOptions: {
+					getNextPageParam: (lastPage, _allPages, lastPageParameter) => {
+						const isLastPage =
+							lastPageParameter * PaginationValue.DEFAULT_LIMIT >=
+							lastPage.totalCount;
+
+						return isLastPage
+							? undefined
+							: lastPageParameter + PaginationValue.DEFAULT_OFFSET;
+					},
+					initialPageParam: PaginationValue.DEFAULT_PAGE,
+				},
+				providesTags: (result) => {
+					if (!result) {
+						return getComposedPromptsTags(undefined);
+					}
+
+					const allItems = result.pages.flatMap((page) => page.items);
+
+					return getComposedPromptsTags({
+						items: allItems,
+					});
+				},
+				query: ({ pageParam, queryArg }) => ({
 					method: HTTPMethod.GET,
-					params: parameters,
+					params: { ...queryArg, page: pageParam },
 					url: APIPath.COMPOSED_PROMPTS,
 				}),
 			}),
@@ -51,11 +75,11 @@ const composedPromptApi = baseApi
 const {
 	useComposeMutation,
 	useGetComposedPromptByIdQuery,
-	useGetComposedPromptsQuery,
+	useGetComposedPromptsInfiniteQuery,
 } = composedPromptApi;
 
 export {
 	useComposeMutation,
 	useGetComposedPromptByIdQuery,
-	useGetComposedPromptsQuery,
+	useGetComposedPromptsInfiniteQuery,
 };
