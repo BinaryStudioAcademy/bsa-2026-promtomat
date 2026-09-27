@@ -5,7 +5,6 @@ import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.j
 
 import {
 	checkMatchesQualityTier,
-	checkMatchesSearch,
 	mapComposedToHistoryItem,
 	mapPromptToHistoryItem,
 } from "../../helpers/helpers.js";
@@ -15,7 +14,6 @@ type Parameters = {
 	composedItems: ComposedPromptDto[];
 	qualityTier?: string | undefined;
 	regularItems: PromptItemResponseDto[];
-	search: string;
 	workspaceName: string;
 };
 
@@ -23,7 +21,6 @@ const useUnifiedPromptHistory = ({
 	composedItems,
 	qualityTier,
 	regularItems,
-	search,
 	workspaceName,
 }: Parameters): PromptHistoryItem[] => {
 	return useMemo((): PromptHistoryItem[] => {
@@ -31,11 +28,8 @@ const useUnifiedPromptHistory = ({
 			mapPromptToHistoryItem(item),
 		);
 
-		const filteredComposed = composedItems.filter(
-			(item) =>
-				checkMatchesQualityTier(item.computedScore, qualityTier) &&
-				(checkMatchesSearch(item.description, search) ||
-					checkMatchesSearch(item.body, search)),
+		const filteredComposed = composedItems.filter((item) =>
+			checkMatchesQualityTier(item.computedScore, qualityTier),
 		);
 
 		const mappedComposed = filteredComposed.map((item) =>
@@ -47,7 +41,7 @@ const useUnifiedPromptHistory = ({
 				new Date(second.createdAt).getTime() -
 				new Date(first.createdAt).getTime(),
 		);
-	}, [composedItems, qualityTier, regularItems, search, workspaceName]);
+	}, [composedItems, qualityTier, regularItems, workspaceName]);
 };
 
 export { useUnifiedPromptHistory };

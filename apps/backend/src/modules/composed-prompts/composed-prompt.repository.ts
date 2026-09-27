@@ -1,6 +1,7 @@
 import { type Transaction, UniqueViolationError } from "objection";
 
 import { SortOrder } from "~/libs/enums/enums.js";
+import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 
 import { PaginationValue } from "../prompts/libs/enums/enums.js";
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
@@ -66,15 +67,29 @@ class ComposedPromptRepository {
 	public async findAll({
 		limit = PaginationValue.DEFAULT_LIMIT,
 		page = PaginationValue.DEFAULT_PAGE,
+		search,
 		workspaceId,
 	}: {
 		limit?: number | undefined;
 		page?: number | undefined;
+		search?: string | undefined;
 		workspaceId: number;
 	}): Promise<{ items: ComposedPromptEntity[]; totalCount: number }> {
 		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
 
 		const baseQuery = this.composedPromptModel.query().where({ workspaceId });
+
+		if (search) {
+			const escapedSearch = escapeILikePattern(search);
+			baseQuery.where((builder) => {
+				builder
+					.whereILike(
+						ComposedPromptColumnName.DESCRIPTION,
+						`%${escapedSearch}%`,
+					)
+					.orWhereILike(ComposedPromptColumnName.BODY, `%${escapedSearch}%`);
+			});
+		}
 
 		const totalCount = await baseQuery.resultSize();
 		const items = await baseQuery

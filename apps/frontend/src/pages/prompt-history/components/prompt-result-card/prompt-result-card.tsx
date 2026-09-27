@@ -7,7 +7,6 @@ import {
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
-import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 
 import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
@@ -52,14 +51,7 @@ const PromptResultCard: React.FC<Properties> = ({
 		>
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
-				<ScoreBadge
-					efficiencyScore={formattedScore}
-					label={
-						formattedScore === null
-							? "Unrated"
-							: `${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`
-					}
-				/>
+				<ScoreBadge efficiencyScore={formattedScore} />
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>
 			<span className={styles["meta"]}>

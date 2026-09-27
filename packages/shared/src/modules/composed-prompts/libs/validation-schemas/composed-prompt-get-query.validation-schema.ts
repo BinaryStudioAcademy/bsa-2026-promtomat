@@ -10,6 +10,7 @@ const composedPromptGetQuery = z.object({
 		.max(PromptValidationRule.MAX_LIMIT)
 		.optional(),
 	page: z.coerce.number().int().positive().optional(),
+	search: z.string().optional(),
 	workspaceId: z.coerce.number().int().positive(),
 });
 

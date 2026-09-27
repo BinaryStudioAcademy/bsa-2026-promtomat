@@ -18,7 +18,6 @@ import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type NavigableRoute } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
-import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
 	type PromptUpdateIntentRequestDto,
@@ -156,14 +155,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 						{isComposed && (
 							<span className={styles["badge-generated"]}>GENERATED</span>
 						)}
-						<ScoreBadge
-							efficiencyScore={formattedScore}
-							label={
-								formattedScore === null
-									? "Unrated"
-									: `${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`
-							}
-						/>
+						<ScoreBadge efficiencyScore={formattedScore} />
 					</div>
 				</div>
 				<div

@@ -45,17 +45,8 @@ const checkMatchesQualityTier = (
 	return computedScore !== null;
 };
 
-const checkMatchesSearch = (text: string, searchQuery: string): boolean => {
-	if (!searchQuery) {
-		return true;
-	}
-
-	return text.toLowerCase().includes(searchQuery.toLowerCase());
-};
-
 export {
 	checkMatchesQualityTier,
-	checkMatchesSearch,
 	mapComposedToHistoryItem,
 	mapPromptToHistoryItem,
 };

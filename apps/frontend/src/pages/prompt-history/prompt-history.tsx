@@ -97,7 +97,7 @@ const PromptHistory: React.FC = () => {
 		isLoading: isComposedLoading,
 		refetch: refetchComposed,
 	} = useGetComposedPromptsQuery(
-		{ workspaceId: workspaceId as number },
+		{ search, workspaceId: workspaceId as number },
 		{ skip: !hasWorkspace },
 	);
 
@@ -119,7 +119,6 @@ const PromptHistory: React.FC = () => {
 		composedItems: composedPromptsData?.items ?? [],
 		qualityTier: queryPayload.qualityTier,
 		regularItems,
-		search,
 		workspaceName: activeWorkspaceName,
 	});
 
