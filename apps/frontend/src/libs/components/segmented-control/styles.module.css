@@ -31,6 +31,16 @@
 	border-left: var(--border-width-hairline) solid var(--border-default);
 }
 
+.label:first-of-type {
+	border-top-left-radius: inherit;
+	border-bottom-left-radius: inherit;
+}
+
+.label:last-of-type {
+	border-top-right-radius: inherit;
+	border-bottom-right-radius: inherit;
+}
+
 .label:hover {
 	background-color: var(--state-hover-tint);
 }
