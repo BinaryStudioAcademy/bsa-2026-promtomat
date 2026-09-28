@@ -1,7 +1,7 @@
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
-import { WORKSPACE_CARD_EMPTY_METRIC } from "../../libs/constants/constants.js";
+import { WORKSPACE_EMPTY_METRIC } from "../../../../libs/constants/constants.js";
 import { WorkspaceMetric } from "./libs/components/workspace-metric/workspace-metric.js";
 import styles from "./styles.module.css";
 
@@ -17,7 +17,7 @@ const WorkspaceMetrics: React.FC<Properties> = ({ workspace }: Properties) => {
 		<div className={styles["metrics"]}>
 			<WorkspaceMetric
 				label="Avg score"
-				value={workspace.averageScore ?? WORKSPACE_CARD_EMPTY_METRIC}
+				value={workspace.averageScore ?? WORKSPACE_EMPTY_METRIC}
 			/>
 			<WorkspaceMetric
 				label="7-day"

@@ -22,9 +22,13 @@ import {
 import { WorkspaceCard } from "./components/workspace-card/workspace-card.js";
 import { WorkspaceCreateModal } from "./components/workspace-create-modal/workspace-create-modal.js";
 import { WorkspaceHeader } from "./components/workspace-header/workspace-header.js";
+import { WorkspaceStats } from "./components/workspace-stats/workspace-stats.js";
 import { WORKSPACE_LIST_SCOPE_OPTIONS } from "./libs/constants/constants.js";
 import { WorkspaceListMessage } from "./libs/enums/enums.js";
-import { getWorkspaceOpenDestination } from "./libs/helpers/helpers.js";
+import {
+	getWorkspaceCollectionStats,
+	getWorkspaceOpenDestination,
+} from "./libs/helpers/helpers.js";
 import { type ActiveModal } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
@@ -40,7 +44,9 @@ const Workspaces: React.FC = () => {
 		scope,
 		workspaceName: debouncedSearch,
 	});
+	const { data: collection } = useGetWorkspacesQuery({ scope });
 	const workspaces = data?.items ?? [];
+	const collectionStats = getWorkspaceCollectionStats(collection?.items ?? []);
 	const isListLoading = isLoading || isFetching;
 	const isListEmpty = workspaces.length === EMPTY_LENGTH;
 	const hasActiveFilter =
@@ -88,6 +94,12 @@ const Workspaces: React.FC = () => {
 	return (
 		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
 			<WorkspaceHeader onCreate={handleCreateOpen} />
+
+			<WorkspaceStats
+				averageScore={collectionStats.averageScore}
+				promptCount={collectionStats.promptCount}
+				workspaceCount={collectionStats.workspaceCount}
+			/>
 
 			<div className={styles["filters"]}>
 				<div className={styles["search"]}>
