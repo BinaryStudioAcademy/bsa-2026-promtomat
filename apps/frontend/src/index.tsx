@@ -117,6 +117,16 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												},
 												path: AppRoute.ANALYTICS,
 											},
+											{
+												handle: ShellPageCopy.SMART_SEARCH,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+													return { Component: pageModule.PromptDelivery };
+												},
+												path: AppRoute.PROMPTS_$PROMPT_ID,
+											},
 										],
 										element: <AuthenticatedShell />,
 									},
@@ -128,15 +138,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 											return { Component: pageModule.NoAccessPage };
 										},
 										path: AppRoute.NO_ACCESS,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/prompt-delivery/prompt-delivery.js");
-
-											return { Component: pageModule.PromptDelivery };
-										},
-										path: AppRoute.PROMPTS_$PROMPT_ID,
 									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
