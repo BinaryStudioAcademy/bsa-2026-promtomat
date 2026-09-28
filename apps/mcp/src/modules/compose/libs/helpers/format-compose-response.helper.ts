@@ -2,6 +2,7 @@ import { ComposeResultKind, ComposeResultMessage } from "../enums/enums.js";
 import { type ComposeResponseDto } from "../types/types.js";
 import { formatComposedResult } from "./format-composed-result.helper.js";
 import { formatFallbackResult } from "./format-fallback-result.helper.js";
+import { getComposedPromptUrl } from "./get-composed-prompt-url.helper.js";
 import { getPromptUrl } from "./get-prompt-url.helper.js";
 
 const formatComposeResponse = (
@@ -10,7 +11,10 @@ const formatComposeResponse = (
 ): string => {
 	switch (response.kind) {
 		case ComposeResultKind.COMPOSED: {
-			return formatComposedResult(response.composedPrompt);
+			return formatComposedResult(
+				response.composedPrompt,
+				getComposedPromptUrl(webUrl, response.composedPrompt.id),
+			);
 		}
 
 		case ComposeResultKind.FALLBACK: {

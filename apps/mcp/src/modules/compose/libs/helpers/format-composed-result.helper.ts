@@ -24,18 +24,16 @@ const formatSources = (sources: ComposedPromptSourceDto[]): string[] => {
 	];
 };
 
-const formatComposedResult = ({
-	body,
-	createdAt,
-	explanation,
-	id,
-	sources,
-}: ComposedPromptDto): string => {
+const formatComposedResult = (
+	{ body, createdAt, explanation, id, sources }: ComposedPromptDto,
+	composedPromptUrl: string,
+): string => {
 	return joinBlocks([
 		[
 			ComposeResultMessage.COMPOSED_HEADLINE,
 			`${ComposeResultMessage.COMPOSED_AT_LABEL} ${createdAt}`,
 			`${ComposeResultMessage.COMPOSED_ID_LABEL} ${String(id)}. ${ComposeResultMessage.COMPOSED_ID_NOTE}`,
+			`${ComposeResultMessage.PROMPT_URL_LABEL} ${composedPromptUrl}`,
 		],
 		[
 			ComposeResultMessage.COMPOSED_PROMPT_BEGIN,
