@@ -63,7 +63,7 @@ type Constructor = {
  *           type: string
  *           enum:
  *             - prompt
- *             - composed_prompt
+ *             - composed-prompt
  */
 class EvaluationController extends BaseController {
 	private evaluationService: EvaluationService;
@@ -129,12 +129,6 @@ class EvaluationController extends BaseController {
 	 *               $ref: "#/components/schemas/Error"
 	 *       401:
 	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Error"
-	 *       403:
-	 *         description: Forbidden
 	 *         content:
 	 *           application/json:
 	 *             schema:

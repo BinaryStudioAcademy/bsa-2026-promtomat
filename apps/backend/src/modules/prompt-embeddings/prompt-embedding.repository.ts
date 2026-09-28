@@ -200,7 +200,7 @@ class PromptEmbeddingRepository {
 			.castTo<PromptAggregateRow[]>()
 			.execute();
 
-		const items = await baseQuery
+		const rawItems = await baseQuery
 			.clone()
 			.select(
 				`${PROMPT_RELATION}.${PromptColumnName.ID}`,
@@ -235,6 +235,11 @@ class PromptEmbeddingRepository {
 			.limit(limit)
 			.castTo<PromptRepositoryItem[]>()
 			.execute();
+
+		const items = rawItems.map((item) => ({
+			...item,
+			computedScore: item.computedScore === null ? null : item.computedScore,
+		}));
 
 		return {
 			averageScore: aggregation?.averageScore

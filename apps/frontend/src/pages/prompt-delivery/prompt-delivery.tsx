@@ -22,7 +22,7 @@ const PromptDelivery: React.FC = () => {
 	const parsedPromptId = Number(promptId);
 
 	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
-	const [evaluate] = useEvaluateMutation();
+	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
 
 	const handleScoreSelect = useCallback(
 		(score: number): void => {
@@ -66,6 +66,7 @@ const PromptDelivery: React.FC = () => {
 				body={data.body}
 				computedScore={data.computedScore}
 				efficiencyScore={data.score}
+				isLoading={isEvaluating}
 				onScoreSelect={handleScoreSelect}
 				workspaceName={data.workspaceName}
 			/>

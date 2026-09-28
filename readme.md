@@ -129,12 +129,14 @@ erDiagram
         datetime updated_at "not null, defaults to now()"
     }
 
-    evaluations {
+   evaluations {
         int id PK "auto-increment"
         int user_id FK "not null, onDelete CASCADE"
         int prompt_id FK "nullable, onDelete CASCADE, exclusive with composed_prompt_id, unique with user_id"
         int composed_prompt_id FK "nullable, onDelete CASCADE, exclusive with prompt_id, unique with user_id"
         int score "not null, check(1-10)"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
     }
 
     repository_bindings {
