@@ -64,7 +64,7 @@
         <mxCell id="ecs_frontend" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.container_1;whiteSpace=wrap;" value="ECS: promptomat-frontend&#xa;0.25 vCPU/512MB&#xa;port 80&#xa;SG ecs_frontend" vertex="1">
           <mxGeometry height="230" width="180" x="270" y="740" as="geometry" />
         </mxCell>
-        <mxCell id="ecs_backend" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.container_1;whiteSpace=wrap;" value="ECS: promptomat-backend&#xa;1 vCPU/2GB&#xa;port 3001&#xa;SG ecs_backend" vertex="1">
+        <mxCell id="ecs_backend" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.container_1;whiteSpace=wrap;" value="ECS: promptomat-backend&#xa;1 vCPU/4GB&#xa;port 3001&#xa;SG ecs_backend" vertex="1">
           <mxGeometry height="230" width="180" x="470" y="740" as="geometry" />
         </mxCell>
         <mxCell id="bastion" parent="1" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;strokeWidth=1;align=center;outlineConnect=0;dashed=0;shape=mxgraph.aws3d.application_server;fillColor=#ECECEC;strokeColor=#5E5E5E;aspect=fixed;strokeColor2=#292929;fontSize=9;whiteSpace=wrap;" value="EC2: promptomat-bastion&#xa;t4g.nano · SSM-only, no SSH ingress" vertex="1">
@@ -73,7 +73,7 @@
         <mxCell id="priv_db_a" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_security_group;grStroke=0;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBA;dashed=0;" value="Private subnet (db) 10.0.3.0/24" vertex="1">
           <mxGeometry height="200" width="420" x="247" y="1201" as="geometry" />
         </mxCell>
-        <mxCell id="rds" parent="1" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds_multi_az;whiteSpace=wrap;" value="RDS PostgreSQL 18.4&#xa;db.t3.micro · Multi-AZ · port 5432 · SG rds_sg" vertex="1">
+        <mxCell id="rds" parent="1" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=9;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds_instance;whiteSpace=wrap;" value="RDS PostgreSQL 18.4&#xa;db.t3.micro · single-AZ · port 5432 · SG rds_sg" vertex="1">
           <mxGeometry height="80" width="110" x="505" y="1265" as="geometry" />
         </mxCell>
         <mxCell id="azb" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#545B64;dashed=1;verticalAlign=top;align=left;spacingLeft=10;fontColor=#545B64;fontStyle=1;fontSize=11;" value="Availability Zone: eu-central-1b" vertex="1">
@@ -85,7 +85,7 @@
         <mxCell id="azb_app" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#888888;fontStyle=2;whiteSpace=wrap;rounded=1;strokeColor=#CCCCCC;dashed=1;" value="Private subnet (app)&#xa;reserved for multi-AZ&#xa;ECS task placement" vertex="1">
           <mxGeometry height="90" width="230" x="740" y="850" as="geometry" />
         </mxCell>
-        <mxCell id="azb_db" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#888888;fontStyle=2;whiteSpace=wrap;rounded=1;strokeColor=#CCCCCC;dashed=1;" value="Private subnet (db)&#xa;10.0.4.0/24&#xa;RDS Multi-AZ standby" vertex="1">
+        <mxCell id="azb_db" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#888888;fontStyle=2;whiteSpace=wrap;rounded=1;strokeColor=#CCCCCC;dashed=1;" value="Private subnet (db)&#xa;10.0.4.0/24&#xa;in db subnet group only —&#xa;no standby (multi_az=false)" vertex="1">
           <mxGeometry height="90" width="230" x="740" y="1334" as="geometry" />
         </mxCell>
         <mxCell id="regional_label" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=1;fontColor=#232F3E;" value="Regional AWS Services" vertex="1">
