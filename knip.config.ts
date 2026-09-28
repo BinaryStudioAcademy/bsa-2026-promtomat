@@ -16,19 +16,6 @@ const config: KnipConfig = {
 		"apps/backend/src/modules/prompt-embeddings/prompt-embeddings.ts": [
 			"types",
 		],
-		// Overlay mechanism for later consumer tickets (#14, #22, #68, #70).
-		// Nothing in the app opens a modal or confirmation in this change.
-		"apps/frontend/src/libs/components/confirmation/**": ["files"],
-		"apps/frontend/src/libs/components/modal/**": ["files"],
-		"apps/frontend/src/libs/components/overlay-host/libs/hooks/use-overlay-host.hook.ts":
-			["exports"],
-		"apps/frontend/src/libs/components/overlay-host/overlay-host.tsx": [
-			"exports",
-		],
-		// Delete workspace and contributor add, list, and remove are exported
-		// ahead of the workspace config screen, which does not call them yet.
-		"apps/frontend/src/modules/workspaces/workspaces-api.ts": ["exports"],
-		"apps/frontend/src/modules/workspaces/workspaces.ts": ["exports"],
 		// Public contracts of the shared package. These predate the RTK Query
 		// migration and are published for consumers that do not exist yet.
 		"packages/shared/src/**": ["exports", "types"],
@@ -43,9 +30,7 @@ const config: KnipConfig = {
 			// imports `pg`; removing it makes knex throw on the first connection.
 			ignoreDependencies: ["pg"],
 		},
-		"apps/frontend": {
-			entry: ["src/libs/hooks/**/*.hook.ts"],
-		},
+		"apps/frontend": {},
 		"apps/mcp": {},
 		"packages/shared": {
 			includeEntryExports: true,
