@@ -1,10 +1,8 @@
 import { type Transaction } from "objection";
 
-import {
-	FIRST_ELEMENT_INDEX,
-	ROUND_FACTOR,
-} from "~/libs/constants/constants.js";
+import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { roundScore } from "~/libs/helpers/helpers.js";
 import { type Database } from "~/libs/modules/database/database.js";
 
 import {
@@ -36,18 +34,15 @@ class WorkspaceService {
 		this.database = database;
 	}
 
-	private roundAverageScore(averageScore: null | number): null | number {
-		return averageScore === null
-			? null
-			: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
-	}
-
 	private withRoundedAverageScore(
 		workspace: WorkspaceListItemDto,
 	): WorkspaceListItemDto {
 		return {
 			...workspace,
-			averageScore: this.roundAverageScore(workspace.averageScore),
+			averageScore:
+				workspace.averageScore === null
+					? null
+					: roundScore(workspace.averageScore),
 		};
 	}
 
