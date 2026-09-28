@@ -17,9 +17,9 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import {
 	useDeleteRepositoryBindingMutation,
@@ -112,7 +112,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 
 	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
-		isServerError(error) && error.status === HTTPCode.CONFLICT;
+		checkIsServerError(error) && error.status === HTTPCode.CONFLICT;
 	const generalErrorMessage =
 		hasConflictError || hasFieldErrors || checkIsToastedError(error)
 			? null

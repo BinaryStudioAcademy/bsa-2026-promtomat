@@ -25,10 +25,6 @@ const config: KnipConfig = {
 		"apps/frontend/src/libs/components/overlay-host/overlay-host.tsx": [
 			"exports",
 		],
-		// `isValidationError` is exported ahead of its consumer: routing server
-		// validation details onto form fields lands in a follow-up change.
-		"apps/frontend/src/libs/modules/api/libs/helpers/is-server-error.helper.ts":
-			["exports"],
 		// Delete workspace and contributor add, list, and remove are exported
 		// ahead of the workspace config screen, which does not call them yet.
 		"apps/frontend/src/modules/workspaces/workspaces-api.ts": ["exports"],

@@ -14,7 +14,7 @@ import {
 } from "~/libs/enums/enums.js";
 import { preventLineBreak } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useCreateWorkspaceMutation,
@@ -69,7 +69,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 				}
 
 				if (
-					isServerError(error) &&
+					checkIsServerError(error) &&
 					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
 				) {
 					setError("name", { message: error.message, type: "server" });
