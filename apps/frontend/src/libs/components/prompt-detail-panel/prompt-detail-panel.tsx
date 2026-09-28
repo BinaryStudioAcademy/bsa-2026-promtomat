@@ -22,7 +22,6 @@ import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptRevision } from "~/modules/prompts/libs/hooks/use-prompt-revision/use-prompt-revision.hook.js";
 import {
-	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 	type PromptUpdateIntentRequestDto,
 } from "~/modules/prompts/libs/types/types.js";
@@ -44,14 +43,12 @@ import styles from "./styles.module.css";
 type Properties = {
 	isCompact?: boolean;
 	prompt: PromptItemResponseDto;
-	queryPayload?: Omit<PromptGetQueryDto, "page">;
 	shouldShowOpenFullPageLink?: boolean;
 };
 
 const PromptDetailPanel: React.FC<Properties> = ({
 	isCompact = true,
 	prompt,
-	queryPayload,
 	shouldShowOpenFullPageLink = true,
 }: Properties) => {
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
@@ -108,7 +105,6 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					await updateIntent({
 						id: prompt.id,
 						payload,
-						...(queryPayload && { queryArgs: queryPayload }),
 					}).unwrap();
 					showNotification({
 						message: PromptDetailMessage.UPDATE_INTENT_SUCCESS,
@@ -126,7 +122,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				);
 			},
 		)();
-	}, [handleSubmit, prompt.id, queryPayload, reset, updateIntent]);
+	}, [handleSubmit, prompt.id, reset, updateIntent]);
 
 	const handleBodyViewChange = useCallback(
 		(view: ValueOf<typeof PromptDetailBodyView>): void => {
