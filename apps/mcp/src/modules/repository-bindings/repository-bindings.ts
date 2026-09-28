@@ -8,4 +8,8 @@ const repositoryBindingApi = new RepositoryBindingApi(http);
 const bindRepositoryTool = createBindRepositoryTool(repositoryBindingApi);
 const resolveRepositoryTool = createResolveRepositoryTool(repositoryBindingApi);
 
-export { bindRepositoryTool, resolveRepositoryTool };
+export { bindRepositoryTool, repositoryBindingApi, resolveRepositoryTool };
+
+export { WorkspaceResolutionStatus } from "./libs/enums/enums.js";
+export { resolveWorkspace } from "./libs/helpers/helpers.js";
+export { RepositoryBindingApi } from "./repository-binding-api.js";
