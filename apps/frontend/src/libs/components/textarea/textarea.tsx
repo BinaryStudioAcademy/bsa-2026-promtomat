@@ -23,6 +23,7 @@ type Properties<T extends FieldValues> =
 		label: string;
 		maxHeight?: number;
 		name: FieldPath<T>;
+		onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 		rows?: number;
 		size?: ValueOf<typeof ControlSize>;
 	};
@@ -36,6 +37,7 @@ const Textarea = <T extends FieldValues>({
 	label,
 	maxHeight = MAX_HEIGHT,
 	name,
+	onBlur,
 	rows,
 	size = ControlSize.MD,
 	...rest
@@ -81,6 +83,14 @@ const Textarea = <T extends FieldValues>({
 		[field],
 	);
 
+	const handleBlur = useCallback(
+		(event: React.FocusEvent<HTMLTextAreaElement>): void => {
+			field.onBlur();
+			onBlur?.(event);
+		},
+		[field, onBlur],
+	);
+
 	useLayoutEffect(() => {
 		adjustHeight();
 	}, [field.value, adjustHeight]);
@@ -109,6 +119,7 @@ const Textarea = <T extends FieldValues>({
 						className,
 					)}
 					id={textareaId}
+					onBlur={handleBlur}
 					onChange={field.onChange}
 					ref={handleReference}
 					rows={rows}
