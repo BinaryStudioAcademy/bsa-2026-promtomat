@@ -68,7 +68,7 @@ const Workspaces: React.FC = () => {
 
 	const handleOpen = useCallback(
 		(workspace: WorkspaceListItemDto): void => {
-			const destination = getWorkspaceOpenDestination(workspace.promptCount);
+			const destination = getWorkspaceOpenDestination(workspace);
 			const searchParameters = new URLSearchParams({
 				[WORKSPACE_ID_SEARCH_PARAMETER]: String(workspace.id),
 			});

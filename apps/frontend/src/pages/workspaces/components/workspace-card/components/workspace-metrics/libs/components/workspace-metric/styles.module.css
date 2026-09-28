@@ -21,6 +21,10 @@
 	color: var(--text-strong);
 }
 
+.active {
+	color: var(--fg-success);
+}
+
 @container (width <= 480px) {
 	.value {
 		font-weight: 500;
