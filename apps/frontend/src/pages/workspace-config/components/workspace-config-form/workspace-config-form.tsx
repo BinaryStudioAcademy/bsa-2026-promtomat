@@ -61,6 +61,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		handleSubmit,
 		reset,
 		setError,
+		setValue,
 		trigger,
 	} = useAppForm<WorkspaceEditableFields>({
 		defaultValues: {
@@ -71,7 +72,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 				TECH_STACK_TAG_VALUES,
 			),
 		},
-		mode: FormValidationMode.ON_CHANGE,
+		mode: FormValidationMode.ON_TOUCHED,
 		validationSchema: workspaceUpdateValidationSchema,
 	});
 
@@ -125,6 +126,22 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		}
 	}, [errorMessage, hasConflictError, setError]);
 
+	const handleNameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("name", event.target.value.trim(), { shouldDirty: true });
+		},
+		[setValue],
+	);
+
+	const handleDescriptionBlur = useCallback(
+		(event: React.FocusEvent<HTMLTextAreaElement>): void => {
+			setValue("description", event.target.value.trim(), {
+				shouldDirty: true,
+			});
+		},
+		[setValue],
+	);
+
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (values: WorkspaceEditableFields) => {
@@ -167,6 +184,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					isDisabled={isEditingDisabled}
 					label="Workspace name"
 					name="name"
+					onBlur={handleNameBlur}
 					placeholder="Enter name"
 				/>
 				<Textarea
@@ -175,6 +193,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 					label="Description"
 					maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
 					name="description"
+					onBlur={handleDescriptionBlur}
 					onKeyDown={preventLineBreak}
 					placeholder="Enter description"
 					rows={2}
