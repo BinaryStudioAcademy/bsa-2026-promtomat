@@ -157,6 +157,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 								name="taskIntent"
 								onSave={handleSaveUpdatedIntent}
 								size="sm"
+								variant="textarea"
 							/>
 						</div>
 					) : (

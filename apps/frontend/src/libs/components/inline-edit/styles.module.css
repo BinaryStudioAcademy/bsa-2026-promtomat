@@ -1,10 +1,10 @@
 .preview {
-	display: flex;
-	align-items: center;
-	width: max-content;
+	box-sizing: border-box;
+	display: inline-block;
 	padding: 0;
 	margin: 0;
 	font-family: inherit;
+	line-height: 24px;
 	color: inherit;
 	text-align: inherit;
 	appearance: none;
@@ -17,4 +17,16 @@
 .preview:focus-visible {
 	outline: var(--border-width-focus) solid var(--border-focus);
 	outline-offset: var(--border-width-focus);
+}
+
+.wrap {
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: break-word;
+}
+
+.edit {
+	padding: 0;
+	margin: 0;
+	line-height: 24px;
 }
