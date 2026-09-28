@@ -25,6 +25,46 @@ type Constructor = {
 	workspaceService: WorkspaceService;
 };
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     EvaluationCreateRequest:
+ *       type: object
+ *       required:
+ *         - score
+ *       properties:
+ *         composedPromptId:
+ *           type: integer
+ *           minimum: 1
+ *         promptId:
+ *           type: integer
+ *           minimum: 1
+ *         score:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 10
+ *     EvaluationResponse:
+ *       type: object
+ *       required:
+ *         - computedScore
+ *         - score
+ *         - targetId
+ *         - targetType
+ *       properties:
+ *         computedScore:
+ *           type: number
+ *           nullable: true
+ *         score:
+ *           type: integer
+ *         targetId:
+ *           type: integer
+ *         targetType:
+ *           type: string
+ *           enum:
+ *             - prompt
+ *             - composed_prompt
+ */
 class EvaluationController extends BaseController {
 	private evaluationService: EvaluationService;
 
@@ -80,15 +120,38 @@ class EvaluationController extends BaseController {
 	 *         content:
 	 *           application/json:
 	 *             schema:
-	 *               $ref: "#/components/schemas/Evaluation"
+	 *               $ref: "#/components/schemas/EvaluationResponse"
 	 *       400:
 	 *         description: Bad request
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       401:
 	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       403:
+	 *         description: Forbidden
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       404:
+	 *         description: Resource not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
 	 *       422:
 	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
-
 	private async create(
 		options: APIHandlerOptions<{
 			body: EvaluationCreateRequestDto;
