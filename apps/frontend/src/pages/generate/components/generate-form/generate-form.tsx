@@ -1,86 +1,39 @@
-import React, { useCallback, useEffect, useId } from "react";
-import { useWatch } from "react-hook-form";
+import React, { useId } from "react";
+import { type Control } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ControlSize } from "~/libs/enums/enums.js";
-import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
-import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
-import {
-	type ComposeRequestDto,
-	composeValidationSchema,
-} from "~/modules/composed-prompts/composed-prompts.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
+import { type ComposeRequestDto } from "~/modules/composed-prompts/composed-prompts.js";
+import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
-import {
-	DEFAULT_GENERATE_PAYLOAD,
-	GENERATE_FIELDS,
-} from "../../libs/constants/constants.js";
 import { GenerateLabel } from "../../libs/enums/enums.js";
 import styles from "../../styles.module.css";
 
 type Properties = {
-	error: unknown;
+	control: Control<ComposeRequestDto, null>;
+	hasWorkspace: boolean;
 	isLoading: boolean;
-	onSubmit: (payload: ComposeRequestDto) => void;
+	onSubmit: (event: React.BaseSyntheticEvent) => void;
+	workspaces: WorkspaceListItemDto[];
 };
 
 const GenerateForm: React.FC<Properties> = ({
-	error,
+	control,
+	hasWorkspace,
 	isLoading,
 	onSubmit,
+	workspaces,
 }: Properties) => {
 	const workspaceCaptionId = useId();
-	const { data: workspacesData } = useGetWorkspacesQuery({});
-
-	const options = workspacesData?.items.map(({ id, name }) => ({
+	const options = workspaces.map(({ id, name }) => ({
 		label: name,
 		value: id,
 	}));
 
-	const { clearErrors, control, handleSubmit, setError, setValue } =
-		useAppForm<ComposeRequestDto>({
-			defaultValues: DEFAULT_GENERATE_PAYLOAD,
-			validationSchema: composeValidationSchema,
-		});
-
-	useServerFormErrors({
-		clearErrors,
-		error,
-		fields: GENERATE_FIELDS,
-		setError,
-	});
-
-	const workspaceId = useWatch({ control, name: "workspaceId" });
-	const hasWorkspace = Boolean(workspaceId);
-	const requestedWorkspaceId = useWorkspaceSearchParameter({
-		selectWorkspace: (workspaceId): void => {
-			setValue("workspaceId", workspaceId);
-		},
-		workspaces: workspacesData?.items,
-	});
-
-	useEffect(() => {
-		const [firstWorkspace] = workspacesData?.items ?? [];
-
-		if (requestedWorkspaceId !== null || !firstWorkspace || hasWorkspace) {
-			return;
-		}
-
-		setValue("workspaceId", firstWorkspace.id);
-	}, [hasWorkspace, requestedWorkspaceId, setValue, workspacesData?.items]);
-
-	const handleFormSubmit = useCallback(
-		(event: React.BaseSyntheticEvent): void => {
-			void handleSubmit(onSubmit)(event);
-		},
-		[handleSubmit, onSubmit],
-	);
-
 	return (
-		<form className={styles["form"]} noValidate onSubmit={handleFormSubmit}>
+		<form className={styles["form"]} noValidate onSubmit={onSubmit}>
 			<div className={styles["workspace-row"]}>
 				<span className={styles["workspace-caption"]} id={workspaceCaptionId}>
 					{GenerateLabel.WORKSPACE_CAPTION}
@@ -93,9 +46,9 @@ const GenerateForm: React.FC<Properties> = ({
 						isLabelHidden
 						label={GenerateLabel.WORKSPACE_FIELD}
 						name="workspaceId"
-						options={options ?? []}
+						options={options}
 						placeholder={GenerateLabel.WORKSPACE_PLACEHOLDER}
-						size={ControlSize.LG}
+						size={ControlSize.MD}
 					/>
 				</div>
 			</div>
@@ -113,6 +66,7 @@ const GenerateForm: React.FC<Properties> = ({
 				</div>
 				<Button
 					className={styles["submit"]}
+					iconName={IconName.SPARKLES}
 					isDisabled={!hasWorkspace}
 					isLoading={isLoading}
 					label={isLoading ? GenerateLabel.SUBMITTING : GenerateLabel.SUBMIT}

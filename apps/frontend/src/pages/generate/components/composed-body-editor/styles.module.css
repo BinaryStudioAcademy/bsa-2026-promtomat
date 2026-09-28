@@ -1,0 +1,16 @@
+.editor {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-12);
+	min-width: 0;
+}
+
+.editor:focus {
+	outline: none;
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-10);
+}

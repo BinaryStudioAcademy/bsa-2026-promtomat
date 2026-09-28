@@ -1,0 +1,30 @@
+.header {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+	justify-content: space-between;
+	line-height: 1.2;
+}
+
+.provenance {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-8);
+	align-items: center;
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}
+
+.recompose {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-8);
+	align-items: center;
+}
+
+.recompose-hint {
+	font-size: var(--font-size-body-sm);
+	color: var(--text-muted);
+}

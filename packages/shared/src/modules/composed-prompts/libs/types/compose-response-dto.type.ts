@@ -7,6 +7,7 @@ import { type PromptCandidateDto } from "./prompt-candidate-dto.type.js";
 type ComposedResultDto = {
 	composedPrompt: ComposedPromptDto;
 	kind: typeof ComposeResultKind.COMPOSED;
+	remainingRecompositions: number;
 };
 
 type ComposeResponseDto =

@@ -158,6 +158,21 @@ variable "generation_source_body_max_length" {
   default = 8000
 }
 
+variable "generation_recompose_limit" {
+  type    = number
+  default = 3
+}
+
+variable "generation_request_limit" {
+  type    = number
+  default = 10
+}
+
+variable "generation_window_minutes" {
+  type    = number
+  default = 1
+}
+
 variable "aws_secret_mail_arn" {
   type      = string
   sensitive = true
