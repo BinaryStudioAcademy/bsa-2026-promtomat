@@ -256,7 +256,7 @@ class PromptRepository {
 
 		const [row] = rows as Array<{
 			createdAt: string;
-			efficiencyScore: number;
+			efficiencyScore: null | number;
 			id: number;
 			promptBody: string;
 			taskIntent: string;
@@ -319,6 +319,24 @@ class PromptRepository {
 		}
 
 		return await query;
+	}
+
+	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
+		return await this.promptModel.query().where({ workspaceId }).resultSize();
+	}
+
+	public async findLabelNameByPromptId(id: number): Promise<null | string> {
+		const row = await this.promptModel
+			.knex()
+			.select<{ label: null | string }>(
+				`${DatabaseTableName.LABELS}.${LabelColumnName.NAME} as ${LABEL_ALIAS}`,
+			)
+			.from(DatabaseTableName.PROMPTS)
+			.leftJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
+			.where(PROMPT_ID, id)
+			.first();
+
+		return row?.label ?? null;
 	}
 
 	public async findPromptsWithoutLabels(

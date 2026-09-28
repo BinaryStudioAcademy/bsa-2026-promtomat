@@ -15,7 +15,9 @@ export {
 	type PromptItemResponseDto,
 	type PromptRouteParametersDto,
 	type PromptStreakDayDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
+	type PromptUpdateScoreRequestDto,
 } from "./libs/types/types.js";
 export {
 	type PromptGetRecentResponseDto,
@@ -31,6 +33,8 @@ export {
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptStreakQueryValidationSchema,
+	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
+	promptUpdateScoreValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

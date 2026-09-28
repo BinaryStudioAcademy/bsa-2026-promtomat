@@ -47,16 +47,16 @@ const PromptResultCard: React.FC<Properties> = ({
 		>
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
-				<ScoreBadge
-					efficiencyScore={prompt.score}
-					label={`${String(prompt.score)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-				/>
 				<Icon
 					className={getValidClasses(
 						styles["chevron"],
 						isSelected && styles["chevron-open"],
 					)}
 					iconName={IconName.CHEVRON}
+				/>
+				<ScoreBadge
+					efficiencyScore={prompt.score}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

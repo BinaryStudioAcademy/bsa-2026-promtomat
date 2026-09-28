@@ -139,6 +139,8 @@ erDiagram
 
 ## 5. Architecture
 
+![Infrastructure diagram](docs/infra-diagram.png)
+
 TODO: add application schema
 
 ### 5.1 Global
