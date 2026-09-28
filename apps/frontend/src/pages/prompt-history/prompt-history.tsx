@@ -17,19 +17,22 @@ import {
 	useActiveWorkspace,
 	useGetWorkspacesQuery,
 } from "~/modules/workspaces/workspaces.js";
-import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
 import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
 import {
+	calculateAverageScore,
+	resolveAverageScoreLabel,
+	resolveLoadMoreLabel,
+	resolveModeHint,
+	resolveResultCountLabel,
+} from "./libs/helpers/helpers.js";
+import {
 	usePromptSelection,
 	useUnifiedPromptHistory,
 } from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
-
-const FRACTION_DIGITS = 1;
-const SINGLE_RESULT_COUNT = 1;
 
 const QUALITY_TIER_OPTIONS = [
 	{
@@ -53,45 +56,6 @@ const QUALITY_TIER_OPTIONS = [
 		value: PromptQualityTier.UNRATED,
 	},
 ];
-
-const resolveAverageScoreLabel = (averageScore: null | number): string => {
-	if (averageScore === null) {
-		return "—";
-	}
-
-	return `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
-};
-
-const resolveResultCountLabel = (count: number): string => {
-	if (count === SINGLE_RESULT_COUNT) {
-		return `${String(count)} ${PromptHistoryLabel.RESULT}`;
-	}
-
-	return `${String(count)} ${PromptHistoryLabel.RESULTS}`;
-};
-
-const resolveLoadMoreLabel = (
-	isFetching: boolean,
-	isError: boolean,
-): string => {
-	if (isFetching) {
-		return PromptHistoryLabel.LOADING;
-	}
-
-	if (isError) {
-		return PromptHistoryLabel.RETRY;
-	}
-
-	return PromptHistoryLabel.LOAD_MORE;
-};
-
-const resolveModeHint = (search: string): string => {
-	if (search) {
-		return PromptHistoryLabel.HINT_SEARCH;
-	}
-
-	return PromptHistoryLabel.HINT_BROWSE;
-};
 
 const PromptHistory: React.FC = () => {
 	const {
@@ -175,7 +139,7 @@ const PromptHistory: React.FC = () => {
 	const regularTotalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
 	const composedTotalPrompts = firstComposedPage?.totalCount ?? ZERO_VALUE;
 	const totalPrompts = regularTotalPrompts + composedTotalPrompts;
-	const averageScore = firstPage?.averageScore ?? null;
+	const averageScore = useMemo(() => calculateAverageScore(items), [items]);
 
 	const hasActiveFilters =
 		Boolean(search) || Boolean(filterQueryPayload.qualityTier);
