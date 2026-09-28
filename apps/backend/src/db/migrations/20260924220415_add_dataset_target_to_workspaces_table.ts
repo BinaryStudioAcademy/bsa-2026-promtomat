@@ -3,6 +3,7 @@ import { type Knex } from "knex";
 const TABLE_NAME = "workspaces";
 const DEFAULT_TARGET = 1000;
 const MINIMAL_TARGET = 1;
+const DATASET_TARGET_CHECK_NAME = "workspaces_dataset_target_check";
 
 const ColumnName = {
 	DATASET_TARGET: "dataset_target",
@@ -23,7 +24,7 @@ async function up(knex: Knex): Promise<void> {
 		table.check(
 			`"${ColumnName.DATASET_TARGET}" >= ${String(MINIMAL_TARGET)}`,
 			[],
-			"workspaces_dataset_target_check",
+			DATASET_TARGET_CHECK_NAME,
 		);
 	});
 }
