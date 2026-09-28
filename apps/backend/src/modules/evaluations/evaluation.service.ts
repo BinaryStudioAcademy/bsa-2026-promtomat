@@ -1,9 +1,11 @@
+import { ErrorCode } from "~/libs/enums/enums.js";
 import { type Database } from "~/libs/modules/database/database.js";
+import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
 import { type ComposedPromptService } from "~/modules/composed-prompts/composed-prompt.service.js";
-import { EvaluationTargetType } from "~/modules/evaluations/libs/enums/enums.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
 import { type EvaluationRepository } from "./evaluation.repository.js";
+import { EvaluationTargetType } from "./libs/enums/enums.js";
 import { computeDampedMean } from "./libs/helpers/helpers.js";
 import {
 	type EvaluationResponseDto,
@@ -48,6 +50,14 @@ class EvaluationService {
 					trx,
 				);
 
+				if (!prompt) {
+					throw new HTTPError({
+						code: ErrorCode.NOT_FOUND,
+						message: "Prompt not found",
+						status: HTTPCode.NOT_FOUND,
+					});
+				}
+
 				await this.evaluationRepository.createOrUpdate(payload, trx);
 
 				const scores = await this.evaluationRepository.findScoresByPromptId(
@@ -57,7 +67,7 @@ class EvaluationService {
 
 				const computedScore = computeDampedMean({
 					evaluationScores: scores,
-					priorScore: prompt ? prompt.toObject().efficiencyScore : null,
+					priorScore: prompt.toObject().efficiencyScore,
 				});
 
 				await this.promptService.updateComputedScore(
@@ -76,7 +86,19 @@ class EvaluationService {
 
 			const targetId = payload.composedPromptId as number;
 
-			await this.composedPromptService.findByIdForUpdate(targetId, trx);
+			const composedPrompt = await this.composedPromptService.findByIdForUpdate(
+				targetId,
+				trx,
+			);
+
+			if (!composedPrompt) {
+				throw new HTTPError({
+					code: ErrorCode.NOT_FOUND,
+					message: "Composed prompt not found",
+					status: HTTPCode.NOT_FOUND,
+				});
+			}
+
 			await this.evaluationRepository.createOrUpdate(payload, trx);
 
 			const scores =

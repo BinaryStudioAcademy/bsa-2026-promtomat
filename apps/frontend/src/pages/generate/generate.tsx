@@ -23,7 +23,7 @@ import styles from "./styles.module.css";
 const Generate: React.FC = () => {
 	const navigate = useNavigate();
 	const [compose, { data, error, isLoading }] = useComposeMutation();
-	const [evaluate] = useEvaluateMutation();
+	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
 
 	const handleCompose = useCallback(
 		(payload: ComposeRequestDto): void => {
@@ -82,6 +82,7 @@ const Generate: React.FC = () => {
 					body={composedPrompt.body}
 					computedScore={composedPrompt.computedScore}
 					explanation={composedPrompt.explanation.trim()}
+					isLoading={isEvaluating}
 					onScoreSelect={handleScoreSelect}
 					sources={composedPrompt.sources}
 				/>

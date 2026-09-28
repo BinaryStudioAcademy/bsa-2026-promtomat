@@ -13,6 +13,7 @@ export {
 	AppEnvironment,
 	DateFormat,
 	ErrorCode,
+	EvaluationTargetType,
 	HTTPCode,
 	HTTPHeader,
 	HTTPMethod,

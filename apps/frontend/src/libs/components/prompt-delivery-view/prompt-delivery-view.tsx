@@ -22,6 +22,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	computedScore,
 	efficiencyScore,
 	explanation = "",
+	isLoading = false,
 	onScoreSelect = NOOP,
 	sources = [],
 	workspaceName,
@@ -69,6 +70,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 
 			<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
 				<ScoreGrid
+					isDisabled={isLoading}
 					label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
 					onScoreSelect={handleScoreSelect}
 				/>

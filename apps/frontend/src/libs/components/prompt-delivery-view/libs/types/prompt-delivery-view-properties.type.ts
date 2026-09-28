@@ -5,6 +5,7 @@ type PromptDeliveryViewProperties = {
 	computedScore: null | number;
 	efficiencyScore?: number;
 	explanation?: string;
+	isLoading?: boolean | undefined;
 	onScoreSelect?: (score: number) => void;
 	sources?: PromptDeliverySource[];
 	workspaceName?: string;

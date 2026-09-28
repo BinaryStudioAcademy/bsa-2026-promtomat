@@ -1,4 +1,8 @@
-import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
+import {
+	APIPath,
+	EvaluationTargetType,
+	HTTPMethod,
+} from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { ComposedPromptsApiTag } from "~/modules/composed-prompts/libs/enums/enums.js";
 import { PromptsApiTag } from "~/modules/prompts/libs/enums/enums.js";
@@ -24,7 +28,7 @@ const evaluationApi = baseApi
 						return [];
 					}
 
-					if (result.targetType === "prompt") {
+					if (result.targetType === EvaluationTargetType.PROMPT) {
 						return [PromptsApiTag.PROMPT];
 					}
 

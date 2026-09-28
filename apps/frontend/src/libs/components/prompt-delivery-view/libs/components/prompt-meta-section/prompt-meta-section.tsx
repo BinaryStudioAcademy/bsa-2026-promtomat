@@ -30,7 +30,9 @@ const PromptMetaSection: React.FC<Properties> = ({
 	return (
 		<div className={styles["meta-row"]}>
 			{formattedScore === null ? (
-				<span className={styles["badge"]}>Unrated</span>
+				<span className={styles["badge"]}>
+					{PromptDeliveryViewLabel.UNRATED}
+				</span>
 			) : (
 				<span className={styles["badge"]}>
 					{`${PromptDeliveryViewLabel.SCORE} ${String(formattedScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}

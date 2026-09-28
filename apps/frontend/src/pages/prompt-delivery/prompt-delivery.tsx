@@ -37,7 +37,7 @@ const PromptDelivery: React.FC = () => {
 			skip: !isComposed || !targetId,
 		});
 
-	const [evaluate] = useEvaluateMutation();
+	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
 
 	const isLoading = isComposed ? isLoadingComposed : isLoadingRegular;
 	const data = isComposed ? composedData : regularData;
@@ -86,6 +86,7 @@ const PromptDelivery: React.FC = () => {
 			<PromptDeliveryView
 				body={data.body}
 				computedScore={data.computedScore}
+				isLoading={isEvaluating}
 				onScoreSelect={handleScoreSelect}
 				{...(isRegularPrompt && {
 					efficiencyScore: data.score,
