@@ -3,7 +3,10 @@ import React, { useCallback, useId, useState } from "react";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { Button } from "../button/button.js";
-import { SCORE_RANGE } from "./libs/constants/constants.js";
+import {
+	INSET_SOLID_CLASS_NAME,
+	SCORE_RANGE,
+} from "./libs/constants/constants.js";
 import { ScoreDescription } from "./libs/enums/enums.js";
 import { getScoreColor } from "./libs/helpers/get-score-color.helper.js";
 import styles from "./styles.module.css";
@@ -16,6 +19,7 @@ type Properties = {
 	onScoreHover?: (score: null | number) => void;
 	onScoreSelect: (score: number) => () => void;
 	selectedScore?: null | number;
+	variant?: "default" | "inset";
 };
 
 const ScoreGrid: React.FC<Properties> = ({
@@ -26,11 +30,13 @@ const ScoreGrid: React.FC<Properties> = ({
 	onScoreHover,
 	onScoreSelect,
 	selectedScore,
+	variant = "default",
 }) => {
 	const [hoveredScore, setHoveredScore] = useState<null | number>(null);
 	const [internalScore, setInternalScore] = useState<null | number>(null);
 
 	const inputId = useId();
+	const isInset = variant === "inset";
 
 	const currentSelectedScore =
 		selectedScore === undefined ? internalScore : selectedScore;
@@ -74,25 +80,40 @@ const ScoreGrid: React.FC<Properties> = ({
 		: "";
 
 	return (
-		<div className={styles["field"]}>
-			<label className={styles["label"]} htmlFor={inputId}>
+		<div
+			className={getValidClasses(styles["field"], isInset && styles["inset"])}
+		>
+			<label
+				className={getValidClasses(
+					styles["label"],
+					isInset && styles["label-eyebrow"],
+				)}
+				htmlFor={inputId}
+			>
 				{label}
 			</label>
-			<div className={styles["control"]}>
+			<div
+				className={getValidClasses(
+					styles["control"],
+					isInset && styles["control-inset"],
+				)}
+			>
 				{SCORE_RANGE.map((score) => {
 					const isHovered = hoveredScore === score;
 					const isSelected = isRadio && currentSelectedScore === score;
 					const isActive = isHovered || isSelected;
-
-					const buttonColorClass = isActive
-						? getScoreColor(score)
-						: "secondary";
+					const scoreColorVariant = getScoreColor(score);
+					const buttonColorClass =
+						isActive && !isInset ? scoreColorVariant : "secondary";
 
 					return (
 						<Button
 							className={getValidClasses(
 								styles["score-button"],
 								isSelected && styles["score-button--selected"],
+								isInset &&
+									isActive &&
+									styles[INSET_SOLID_CLASS_NAME[scoreColorVariant] ?? ""],
 							)}
 							isDisabled={isDisabled}
 							key={score}

@@ -18,6 +18,10 @@ type Properties = {
 
 const AdoptedNotice: React.FC<Properties> = ({ prompt }: Properties) => {
 	const lineReference = useRef<HTMLParagraphElement>(null);
+	const scoreLabel =
+		prompt.efficiencyScore === null
+			? GenerateLabel.UNRATED
+			: getScoreLabel(prompt.efficiencyScore);
 
 	useEffect(() => {
 		lineReference.current?.focus();
@@ -32,7 +36,7 @@ const AdoptedNotice: React.FC<Properties> = ({ prompt }: Properties) => {
 				tabIndex={-1}
 			>
 				<Icon className={styles["icon"]} iconName={IconName.CHECK_CIRCLE} />
-				<span>{`${GenerateLabel.SAVED_TO_LOG} · ${getScoreLabel(prompt.efficiencyScore)}`}</span>
+				<span>{`${GenerateLabel.SAVED_TO_LOG} · ${scoreLabel}`}</span>
 			</p>
 			<ButtonLink
 				label={GenerateLabel.OPEN_IN_LOG}

@@ -5,7 +5,10 @@ import { Link } from "~/libs/components/link/link.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { IconName } from "~/libs/enums/enums.js";
-import { getPromptRoute, getScoreLabel } from "~/modules/prompts/prompts.js";
+import {
+	getPromptRoute,
+	PromptValidationRule,
+} from "~/modules/prompts/prompts.js";
 
 import { PromptDeliveryViewLabel } from "../../enums/enums.js";
 import { type PromptDeliverySource } from "../../types/types.js";
@@ -57,7 +60,7 @@ const ExplanationSection: React.FC<Properties> = ({
 										</span>
 										<ScoreBadge
 											efficiencyScore={source.efficiencyScore}
-											label={getScoreLabel(source.efficiencyScore)}
+											maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 										/>
 										<Icon
 											className={styles["source-icon"]}

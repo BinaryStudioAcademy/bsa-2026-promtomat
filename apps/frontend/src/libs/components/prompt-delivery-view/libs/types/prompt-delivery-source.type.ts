@@ -1,5 +1,5 @@
 type PromptDeliverySource = {
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	promptId: number;
 	rank: number;
 	taskIntent: string;

@@ -31,6 +31,7 @@ const GenerateLabel = {
 	SUBMIT: "Generate",
 	SUBMITTING: "Generating",
 	TRY_AGAIN: "Try again",
+	UNRATED: "Unrated",
 	WORKSPACE_CAPTION: "Generating in",
 	WORKSPACE_FIELD: "Workspace",
 	WORKSPACE_PLACEHOLDER: "Select workspace",

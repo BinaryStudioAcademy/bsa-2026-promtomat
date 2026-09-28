@@ -4,6 +4,7 @@ const PromptDeliveryViewLabel = {
 	OPTIMIZED_PROMPT_HEADING: "Optimized Prompt",
 	SCORE: "Score",
 	SOURCES_HEADING: "Sources",
+	UNRATED: "Unrated",
 } as const;
 
 export { PromptDeliveryViewLabel };

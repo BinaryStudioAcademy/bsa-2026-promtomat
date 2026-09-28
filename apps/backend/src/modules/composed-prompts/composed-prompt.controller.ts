@@ -40,6 +40,7 @@ import {
  *            type: string
  *          efficiencyScore:
  *            type: number
+ *            nullable: true
  *            minimum: 1
  *            maximum: 10
  *      ComposedPrompt:

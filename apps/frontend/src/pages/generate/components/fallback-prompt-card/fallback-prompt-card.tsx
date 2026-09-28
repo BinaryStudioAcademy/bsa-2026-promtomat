@@ -11,7 +11,10 @@ import {
 	type FallbackReason,
 	type PromptCandidateDto,
 } from "~/modules/composed-prompts/composed-prompts.js";
-import { getPromptRoute, getScoreLabel } from "~/modules/prompts/prompts.js";
+import {
+	getPromptRoute,
+	PromptValidationRule,
+} from "~/modules/prompts/prompts.js";
 
 import {
 	FallbackReasonMessage,
@@ -45,7 +48,7 @@ const FallbackPromptCard: React.FC<Properties> = ({
 				<h2 className={styles["heading"]}>{prompt.taskIntent}</h2>
 				<ScoreBadge
 					efficiencyScore={prompt.efficiencyScore}
-					label={getScoreLabel(prompt.efficiencyScore)}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 			</div>
 			<PromptDeliveryView body={prompt.promptBody} isBodyHeaderHidden />

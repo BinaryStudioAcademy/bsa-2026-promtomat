@@ -5,7 +5,7 @@ import { Entity } from "~/libs/types/entity.type.js";
 class PromptEntity implements Entity {
 	private createdAt: string;
 
-	private efficiencyScore: number;
+	private efficiencyScore: null | number;
 
 	private id: null | number;
 
@@ -33,7 +33,7 @@ class PromptEntity implements Entity {
 		workspaceId,
 	}: {
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: null | number;
 		labelId: number;
 		promptBody: string;
@@ -65,7 +65,7 @@ class PromptEntity implements Entity {
 		workspaceId,
 	}: {
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: number;
 		labelId: number;
 		promptBody: string;
@@ -95,7 +95,7 @@ class PromptEntity implements Entity {
 		userId,
 		workspaceId,
 	}: {
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		labelId: number;
 		promptBody: string;
 		taskIntent: string;
@@ -120,7 +120,7 @@ class PromptEntity implements Entity {
 		createdAt: string;
 		id: number;
 		intent: string;
-		score: number;
+		score: null | number;
 		userId: number;
 		workspaceId: number;
 		workspaceName: string;
@@ -138,7 +138,7 @@ class PromptEntity implements Entity {
 	}
 
 	public toNewObject(): {
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		labelId: number;
 		promptBody: string;
 		taskIntent: string;
@@ -157,7 +157,7 @@ class PromptEntity implements Entity {
 
 	public toObject(): {
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: number;
 		labelId: number;
 		promptBody: string;
