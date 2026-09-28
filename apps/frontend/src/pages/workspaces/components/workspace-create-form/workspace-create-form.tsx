@@ -34,10 +34,10 @@ const STACK_TAGS = "stackTags";
 
 const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
-	const { control, handleSubmit, setError } =
+	const { control, handleSubmit, setError, setValue } =
 		useAppForm<WorkspaceCreateRequestDto>({
 			defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
-			mode: FormValidationMode.ON_CHANGE,
+			mode: FormValidationMode.ON_TOUCHED,
 			validationSchema: workspaceCreationValidationSchema,
 		});
 
@@ -45,6 +45,20 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		control,
 		name: STACK_TAGS,
 	});
+
+	const handleNameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("name", event.target.value.trim());
+		},
+		[setValue],
+	);
+
+	const handleDescriptionBlur = useCallback(
+		(event: React.FocusEvent<HTMLTextAreaElement>): void => {
+			setValue("description", event.target.value.trim());
+		},
+		[setValue],
+	);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -73,6 +87,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						control={control}
 						label="Workspace name"
 						name="name"
+						onBlur={handleNameBlur}
 						placeholder="Enter name"
 					/>
 					<Textarea
@@ -80,6 +95,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						label="Description"
 						maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
 						name="description"
+						onBlur={handleDescriptionBlur}
 						onKeyDown={preventLineBreak}
 						placeholder="Enter description"
 						rows={2}
