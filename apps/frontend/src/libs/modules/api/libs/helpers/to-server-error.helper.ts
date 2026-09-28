@@ -10,6 +10,7 @@ import {
 import { UNKNOWN_ERROR_MESSAGE } from "../constants/constants.js";
 import { FetchErrorMessage } from "../enums/enums.js";
 import { type ServerError } from "../types/server-error.type.js";
+import { getRetryAfterSeconds } from "./get-retry-after-seconds.helper.js";
 
 const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
 	return typeof value === "object" && value !== null;
@@ -50,7 +51,10 @@ const checkIsServerErrorResponse = (
 	return true;
 };
 
-const toServerError = (error: FetchBaseQueryError): ServerError => {
+const toServerError = (
+	error: FetchBaseQueryError,
+	headers?: Headers,
+): ServerError => {
 	if (checkIsServerErrorResponse(error.data)) {
 		if (
 			error.data.code === ErrorCode.VALIDATION_FAILED &&
@@ -60,6 +64,15 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 				code: ErrorCode.VALIDATION_FAILED,
 				details: error.data.details,
 				message: error.data.message,
+				status: error.status,
+			};
+		}
+
+		if (error.data.code === ErrorCode.TOO_MANY_REQUESTS) {
+			return {
+				code: ErrorCode.TOO_MANY_REQUESTS,
+				message: error.data.message,
+				retryAfterSeconds: getRetryAfterSeconds(headers),
 				status: error.status,
 			};
 		}
