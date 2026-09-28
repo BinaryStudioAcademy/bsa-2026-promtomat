@@ -28,7 +28,6 @@ import {
 import { type WorkspaceDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useUpdateWorkspaceMutation,
-	workspaceUpdateValidationSchema,
 	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
@@ -36,6 +35,7 @@ import {
 	WorkspaceConfigMessage,
 	WorkspaceRepositoryBindingsMessage,
 } from "../../libs/enums/enums.js";
+import { workspaceEditableFieldsValidationSchema } from "../../libs/validation-schemas/validation-schemas.js";
 import styles from "../../styles.module.css";
 import { RepositoryBindingList } from "./components/repository-binding-list/repository-binding-list.js";
 import {
@@ -73,7 +73,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 			),
 		},
 		mode: FormValidationMode.ON_TOUCHED,
-		validationSchema: workspaceUpdateValidationSchema,
+		validationSchema: workspaceEditableFieldsValidationSchema,
 	});
 
 	useEffect(() => {
