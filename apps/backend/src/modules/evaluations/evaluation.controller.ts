@@ -34,43 +34,36 @@ type Constructor = {
  *       required:
  *         - score
  *       properties:
- *         promptId:
- *           type: number
- *           nullable: true
  *         composedPromptId:
- *           type: number
- *           nullable: true
+ *           type: integer
+ *           minimum: 1
+ *         promptId:
+ *           type: integer
+ *           minimum: 1
  *         score:
- *           type: number
+ *           type: integer
  *           minimum: 1
  *           maximum: 10
- *     Evaluation:
+ *     EvaluationResponse:
  *       type: object
  *       required:
- *         - id
- *         - userId
+ *         - computedScore
  *         - score
- *         - createdAt
- *         - updatedAt
+ *         - targetId
+ *         - targetType
  *       properties:
- *         id:
- *           type: number
- *         userId:
- *           type: number
- *         promptId:
- *           type: number
- *           nullable: true
- *         composedPromptId:
+ *         computedScore:
  *           type: number
  *           nullable: true
  *         score:
- *           type: number
- *         createdAt:
+ *           type: integer
+ *         targetId:
+ *           type: integer
+ *         targetType:
  *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
+ *           enum:
+ *             - prompt
+ *             - composed_prompt
  */
 class EvaluationController extends BaseController {
 	private evaluationService: EvaluationService;
@@ -127,7 +120,7 @@ class EvaluationController extends BaseController {
 	 *         content:
 	 *           application/json:
 	 *             schema:
-	 *               $ref: "#/components/schemas/Evaluation"
+	 *               $ref: "#/components/schemas/EvaluationResponse"
 	 *       400:
 	 *         description: Bad request
 	 *         content:
