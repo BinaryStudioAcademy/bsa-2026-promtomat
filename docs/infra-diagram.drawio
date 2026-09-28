@@ -7,7 +7,7 @@
         <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;" value="User" vertex="1">
           <mxGeometry height="60" width="30" x="40" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="cloudfront" parent="1" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;whiteSpace=wrap;" value="CloudFront&#xa;distribution&#xa;origin: ALB (HTTPS)" vertex="1">
+        <mxCell id="cloudfront" parent="1" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;whiteSpace=wrap;" value="CloudFront&#xa;distribution&#xa;origin: ALB (HTTP only)" vertex="1">
           <mxGeometry height="90" width="90" x="40" y="-90" as="geometry" />
         </mxCell>
         <mxCell id="qa" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;" value="QA / Engineer" vertex="1">
@@ -142,7 +142,7 @@
         <mxCell id="cd_frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;" value="cd-frontend.yml&#xa;push to main: build w/ VITE_APP_API_ORIGIN_URL,&#xa;push to ECR, deploy" vertex="1">
           <mxGeometry height="90" width="280" x="1700" y="770" as="geometry" />
         </mxCell>
-        <mxCell id="oidc" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;whiteSpace=wrap;" value="AWS auth via GitHub OIDC (no static keys)" vertex="1">
+        <mxCell id="oidc" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;whiteSpace=wrap;" value="AWS auth: static IAM user keys&#xa;(AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY secrets)" vertex="1">
           <mxGeometry height="40" width="280" x="1700" y="890" as="geometry" />
         </mxCell>
         <mxCell id="cicd_note" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=9;fontColor=#888888;whiteSpace=wrap;" value="Path triggers: apps/backend|frontend, packages/shared, infra/**, workflow file" vertex="1">
@@ -154,7 +154,7 @@
         <mxCell id="e_user_cf" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=10;" target="cloudfront" value="Access to web (HTTPS)">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_cf_alb" edge="1" parent="1" source="cloudfront" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=9;" target="alb" value="origin fetch, HTTPS :443">
+        <mxCell id="e_cf_alb" edge="1" parent="1" source="cloudfront" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=9;" target="alb" value="origin fetch, HTTP :80">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="e_igw_pub" edge="1" parent="1" source="igw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;dashed=1;" target="pub_a" value="">
