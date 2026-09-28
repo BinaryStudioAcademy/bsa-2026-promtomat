@@ -20,3 +20,6 @@ indent_style = space
 
 [*.conf]
 indent_style = space
+
+[*.drawio]
+indent_style = space
