@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
+import { type MutationOnQueryStarted } from "~/libs/modules/api/libs/types/mutation-on-query-started.type.js";
 import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
@@ -23,6 +24,48 @@ import {
 	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
+
+const createPatchCachedPrompt = (
+	patch: (prompt: PromptItemResponseDto, updatedPrompt: PromptDto) => void,
+): MutationOnQueryStarted<PromptDto, { id: number }> => {
+	return async ({ id }, queryLifecycle) => {
+		try {
+			const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
+			const cachedArguments = promptApi.util.selectCachedArgsForQuery(
+				queryLifecycle.getState(),
+				"getPrompts",
+			);
+
+			for (const queryArguments of cachedArguments) {
+				queryLifecycle.dispatch(
+					promptApi.util.updateQueryData(
+						"getPrompts",
+						queryArguments,
+						(draft) => {
+							for (const pageData of draft.pages) {
+								const cachedPrompt = pageData.items.find(
+									(item) => item.id === id,
+								);
+
+								if (cachedPrompt) {
+									patch(cachedPrompt, updatedPrompt);
+								}
+							}
+						},
+					),
+				);
+			}
+
+			queryLifecycle.dispatch(
+				promptApi.util.updateQueryData("getPromptById", id, (draft) => {
+					patch(draft, updatedPrompt);
+				}),
+			);
+		} catch {
+			// The control that issued the mutation keeps the last persisted value.
+		}
+	};
+};
 
 const promptApi = baseApi
 	.enhanceEndpoints({
@@ -105,43 +148,9 @@ const promptApi = baseApi
 					payload: PromptUpdateBodyRequestDto;
 				}
 			>({
-				async onQueryStarted({ id }, queryLifecycle) {
-					try {
-						const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
-						const cachedArguments = promptApi.util.selectCachedArgsForQuery(
-							queryLifecycle.getState(),
-							"getPrompts",
-						);
-
-						for (const queryArguments of cachedArguments) {
-							queryLifecycle.dispatch(
-								promptApi.util.updateQueryData(
-									"getPrompts",
-									queryArguments,
-									(draft) => {
-										for (const pageData of draft.pages) {
-											const promptToUpdate = pageData.items.find((prompt) => {
-												return prompt.id === id;
-											});
-
-											if (promptToUpdate) {
-												promptToUpdate.body = updatedPrompt.promptBody;
-											}
-										}
-									},
-								),
-							);
-						}
-
-						queryLifecycle.dispatch(
-							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
-								draft.body = updatedPrompt.promptBody;
-							}),
-						);
-					} catch {
-						// The form restores the last persisted body.
-					}
-				},
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.body = updatedPrompt.promptBody;
+				}),
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
@@ -162,43 +171,9 @@ const promptApi = baseApi
 				}
 			>({
 				invalidatesTags: [AnalyticsApiTag.ANALYTIC, PromptsApiTag.PROMPT],
-				async onQueryStarted({ id }, queryLifecycle) {
-					try {
-						const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
-						const cachedArguments = promptApi.util.selectCachedArgsForQuery(
-							queryLifecycle.getState(),
-							"getPrompts",
-						);
-
-						for (const queryArguments of cachedArguments) {
-							queryLifecycle.dispatch(
-								promptApi.util.updateQueryData(
-									"getPrompts",
-									queryArguments,
-									(draft) => {
-										for (const pageData of draft.pages) {
-											const promptToUpdate = pageData.items.find((prompt) => {
-												return prompt.id === id;
-											});
-
-											if (promptToUpdate) {
-												promptToUpdate.score = updatedPrompt.efficiencyScore;
-											}
-										}
-									},
-								),
-							);
-						}
-
-						queryLifecycle.dispatch(
-							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
-								draft.score = updatedPrompt.efficiencyScore;
-							}),
-						);
-					} catch {
-						// The score control keeps the last persisted value.
-					}
-				},
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.score = updatedPrompt.efficiencyScore;
+				}),
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
@@ -216,42 +191,11 @@ const promptApi = baseApi
 				{
 					id: number;
 					payload: PromptUpdateIntentRequestDto;
-					queryArgs?: Omit<PromptGetQueryDto, "page">;
 				}
 			>({
-				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
-					try {
-						const { data: updatedPrompt } = await queryFulfilled;
-
-						if (queryArgs) {
-							dispatch(
-								promptApi.util.updateQueryData(
-									"getPrompts",
-									queryArgs,
-									(draft) => {
-										for (const pageData of draft.pages) {
-											const promptToUpdate = pageData.items.find(
-												(prompt) => prompt.id === id,
-											);
-											if (promptToUpdate) {
-												promptToUpdate.intent = updatedPrompt.taskIntent;
-												break;
-											}
-										}
-									},
-								),
-							);
-						}
-
-						dispatch(
-							promptApi.util.updateQueryData("getPromptById", id, (draft) => {
-								draft.intent = updatedPrompt.taskIntent;
-							}),
-						);
-					} catch {
-						// The UI will naturally handle the error
-					}
-				},
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.intent = updatedPrompt.taskIntent;
+				}),
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,

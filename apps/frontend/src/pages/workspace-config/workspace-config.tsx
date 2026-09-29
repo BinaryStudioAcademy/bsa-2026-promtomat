@@ -10,7 +10,7 @@ import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
@@ -36,7 +36,7 @@ const WorkspaceConfig: React.FC = () => {
 	} = useGetWorkspaceByIdQuery(parsedWorkspaceId);
 
 	const isWorkspaceMissing =
-		isServerError(error) && error.status === HTTPCode.NOT_FOUND;
+		checkIsServerError(error) && error.status === HTTPCode.NOT_FOUND;
 
 	const handleRetry = useCallback((): void => {
 		void refetch();

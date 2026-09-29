@@ -5,7 +5,7 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
-import { isValidationError } from "~/libs/modules/api/libs/helpers/is-validation-error.helper.js";
+import { checkIsValidationError } from "~/libs/modules/api/libs/helpers/check-is-validation-error.helper.js";
 import {
 	type ComposeRequestDto,
 	type ComposeResponseDto,
@@ -125,7 +125,7 @@ const useGenerateForm = (): ReturnValue => {
 
 	const hasFailure =
 		error !== undefined &&
-		!isValidationError(error) &&
+		!checkIsValidationError(error) &&
 		!checkIsRecomposeLimitError(error);
 
 	return {
