@@ -11,5 +11,7 @@ export { type PromptRouteParametersDto } from "./prompt-route-parameters-dto.typ
 export { type PromptStreakDayDto } from "./prompt-streak-day-dto.type.js";
 export { type PromptStreakQueryDto } from "./prompt-streak-query-dto.type.js";
 export { type PromptStreakResponseDto } from "./prompt-streak-response-dto.type.js";
+export { type PromptUpdateBodyRequestDto } from "./prompt-update-body-request-dto.type.js";
 export { type PromptUpdateIntentRequestDto } from "./prompt-update-request-dto.type.js";
+export { type PromptUpdateScoreRequestDto } from "./prompt-update-score-request-dto.type.js";
 export { type PromptWorkspaceQueryDto } from "./prompt-workspace-query-dto.type.js";

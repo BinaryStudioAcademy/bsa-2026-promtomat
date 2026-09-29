@@ -216,9 +216,13 @@ class PromptEmbeddingRepository {
 					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
 					SQLAlias.WORKSPACE_NAME,
 				]),
+				raw(
+					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${PROMPT_RELATION}.${PromptColumnName.ID} AND user_id = ? LIMIT 1) as "myScore"`,
+					[userId],
+				),
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -228,6 +232,7 @@ class PromptEmbeddingRepository {
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					ZERO_VALUE,
 					MAX_EFFICIENCY_SCORE,
 				],
 			)
@@ -239,6 +244,7 @@ class PromptEmbeddingRepository {
 		const items = rawItems.map((item) => ({
 			...item,
 			computedScore: item.computedScore === null ? null : item.computedScore,
+			myScore: item.myScore ?? null,
 		}));
 
 		return {
@@ -298,6 +304,7 @@ class PromptEmbeddingRepository {
 			)
 			.joinRelated(PROMPT_RELATION)
 			.where(`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`, workspaceId)
+			.whereNotNull(`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`)
 			.where(
 				raw("?? <=> ?::vector", [
 					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
@@ -307,7 +314,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -317,6 +324,7 @@ class PromptEmbeddingRepository {
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					ZERO_VALUE,
 					MAX_EFFICIENCY_SCORE,
 				],
 			)

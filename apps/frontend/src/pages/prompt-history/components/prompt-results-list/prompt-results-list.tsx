@@ -3,14 +3,14 @@ import React from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import {
 	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 } from "~/modules/prompts/libs/types/types.js";
 
-import { PromptHistoryLabel } from "../../libs/enums/prompt-history-label.enum.js";
-import { PromptDetailPanel } from "../prompt-detail-panel/prompt-detail-panel.js";
+import { PromptHistoryLabel } from "../../libs/enums/enum.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";
 

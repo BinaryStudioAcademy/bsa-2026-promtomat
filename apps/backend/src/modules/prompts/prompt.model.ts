@@ -16,9 +16,11 @@ import { PromptColumnName } from "./libs/enums/enums.js";
 class PromptModel extends AbstractModel {
 	public computedScore!: null | number;
 
-	public efficiencyScore!: number;
+	public efficiencyScore!: null | number;
 
 	public labelId!: null | number;
+
+	public myScore?: null | number;
 
 	public promptBody!: string;
 

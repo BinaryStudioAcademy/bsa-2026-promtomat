@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	computedScore: null | number;
-	efficiencyScore?: number | undefined;
+	efficiencyScore?: null | number | undefined;
 	workspaceName?: string | undefined;
 };
 

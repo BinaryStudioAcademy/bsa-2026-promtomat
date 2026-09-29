@@ -1,7 +1,9 @@
 import React, { useCallback } from "react";
 
+import { Icon } from "~/libs/components/icon/icon.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { IconName } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
@@ -56,6 +58,13 @@ const PromptResultCard: React.FC<Properties> = ({
 				<ScoreBadge
 					efficiencyScore={formattedScore}
 					label={`${String(formattedScore)}/${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
+				/>
+				<Icon
+					className={getValidClasses(
+						styles["chevron"],
+						isSelected && styles["chevron-open"],
+					)}
+					iconName={IconName.CHEVRON}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

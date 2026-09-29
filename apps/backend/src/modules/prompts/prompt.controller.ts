@@ -17,6 +17,7 @@ import {
 	type PromptIdParameterDto,
 	type PromptRouteParametersDto,
 	type PromptStreakQueryDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
@@ -26,6 +27,7 @@ import {
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptStreakQueryValidationSchema,
+	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -72,6 +74,7 @@ import { type PromptService } from "./prompt.service.js";
  *           type: number
  *           minimum: 1
  *           maximum: 10
+ *           nullable: true
  *         promptBody:
  *           type: string
  *         taskIntent:
@@ -93,6 +96,9 @@ import { type PromptService } from "./prompt.service.js";
  *           type: string
  *         score:
  *           type: number
+ *           minimum: 1
+ *           maximum: 10
+ *           nullable: true
  *         workspaceId:
  *           type: number
  *         workspaceName:
@@ -118,6 +124,9 @@ import { type PromptService } from "./prompt.service.js";
  *       properties:
  *         efficiencyScore:
  *           type: number
+ *           minimum: 1
+ *           maximum: 10
+ *           nullable: true
  *         id:
  *           type: number
  *           minimum: 1
@@ -224,6 +233,23 @@ class PromptController extends BaseController {
 			path: PromptsApiPath.$ID,
 			validation: {
 				params: promptIdParameterValidationSchema,
+			},
+		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.updateBody(
+					options as APIHandlerOptions<{
+						body: PromptUpdateBodyRequestDto;
+						params: PromptRouteParametersDto;
+					}>,
+				),
+			method: HTTPMethod.PATCH,
+			path: PromptsApiPath.$PROMPT_ID_BODY,
+			preHandler: promptAccessHook(this.promptService),
+			validation: {
+				body: promptUpdateBodyValidationSchema,
+				params: promptRouteParametersValidationSchema,
 			},
 		});
 
@@ -385,42 +411,42 @@ class PromptController extends BaseController {
 	/**
 	 * @swagger
 	 * /prompts/{id}:
-	 *    get:
-	 *      description: Returns a prompt of a workspace the caller may read
-	 *      security:
-	 *        - bearerAuth: []
-	 *      parameters:
-	 *        - in: path
-	 *          name: id
-	 *          required: true
-	 *          schema:
-	 *            type: number
-	 *            minimum: 1
-	 *      responses:
-	 *        200:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/PromptItem"
-	 *        401:
-	 *          description: Unauthorized
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Error"
-	 *        404:
-	 *          description: Prompt not found
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Error"
-	 *        422:
-	 *          description: Validation failed
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/ValidationError"
+	 *   get:
+	 *     description: Returns a prompt of a workspace the caller may read
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: id
+	 *         required: true
+	 *         schema:
+	 *           type: number
+	 *           minimum: 1
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/PromptItem"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 	private async findById(
 		options: APIHandlerOptions<{ params: PromptIdParameterDto }>,
@@ -526,6 +552,81 @@ class PromptController extends BaseController {
 				options.user?.id as number,
 				options.query.timeZone,
 			),
+			status: HTTPCode.OK,
+		};
+	}
+
+	/**
+	 * @swagger
+	 * /prompts/{promptId}/body:
+	 *   patch:
+	 *     description: Updates the stored body of a prompt the caller owns
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: promptId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *           minimum: 1
+	 *     requestBody:
+	 *       description: New prompt body
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               promptBody:
+	 *                 type: string
+	 *                 minLength: 1
+	 *                 maxLength: 50000
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Prompt"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationErrorResponse"
+	 *       503:
+	 *         description: Derived data could not be regenerated
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ErrorResponse"
+	 */
+	private async updateBody(
+		options: APIHandlerOptions<{
+			body: PromptUpdateBodyRequestDto;
+			params: PromptRouteParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		const payload = {
+			...options.body,
+			id: options.params.promptId,
+		};
+
+		return {
+			payload: await this.promptService.updateBody(payload),
 			status: HTTPCode.OK,
 		};
 	}

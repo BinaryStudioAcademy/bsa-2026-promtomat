@@ -1,56 +1,59 @@
-import React, { useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 
+import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
-import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
-import { AppRoute } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
-import {
-	EvaluationMessage,
-	useEvaluateMutation,
-} from "~/modules/evaluations/evaluations.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
+import { AppRoute, IconName } from "~/libs/enums/enums.js";
+import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
+import { PromptDeliveryLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
+type ContentProperties = {
+	prompt: PromptItemResponseDto;
+};
+
+const PromptDeliveryContent: React.FC<ContentProperties> = ({
+	prompt,
+}: ContentProperties) => (
+	<div className={styles["page"]}>
+		<Link
+			className={styles["back-link"]}
+			hasDefaultStyles={false}
+			to={AppRoute.SMART_SEARCH}
+		>
+			<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+			{PromptDeliveryLabel.BACK_TO_SEARCH}
+		</Link>
+
+		<p className={styles["eyebrow"]}>{PromptDeliveryLabel.EYEBROW}</p>
+
+		<PromptDetailPanel
+			isCompact={false}
+			prompt={prompt}
+			queryPayload={{ workspaceId: prompt.workspaceId }}
+			shouldShowOpenFullPageLink={false}
+		/>
+
+		<Link
+			className={styles["show-in-search"]}
+			hasDefaultStyles={false}
+			to={AppRoute.SMART_SEARCH}
+		>
+			{PromptDeliveryLabel.SHOW_IN_SEARCH}
+		</Link>
+	</div>
+);
+
 const PromptDelivery: React.FC = () => {
-	const navigate = useNavigate();
 	const { promptId } = useParams<{ promptId?: string }>();
 	const parsedPromptId = Number(promptId);
-
 	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
-	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
-
-	const handleScoreSelect = useCallback(
-		(score: number): void => {
-			const recordEvaluation = async (): Promise<void> => {
-				try {
-					await evaluate({
-						promptId: parsedPromptId,
-						score,
-					}).unwrap();
-
-					showNotification({
-						message: EvaluationMessage.EVALUATION_SUCCESS,
-						type: "success",
-					});
-
-					void navigate(AppRoute.ROOT);
-				} catch {
-					showNotification({
-						message: EvaluationMessage.EVALUATION_FAILED,
-						type: "danger",
-					});
-				}
-			};
-
-			void recordEvaluation();
-		},
-		[evaluate, navigate, parsedPromptId],
-	);
 
 	if (isLoading) {
 		return <Loader variant={LoaderVariant.SECTION} />;
@@ -60,18 +63,7 @@ const PromptDelivery: React.FC = () => {
 		return <NotFoundPage />;
 	}
 
-	return (
-		<div className={getValidClasses("page-container", styles["page"])}>
-			<PromptDeliveryView
-				body={data.body}
-				computedScore={data.computedScore}
-				efficiencyScore={data.score}
-				isLoading={isEvaluating}
-				onScoreSelect={handleScoreSelect}
-				workspaceName={data.workspaceName}
-			/>
-		</div>
-	);
+	return <PromptDeliveryContent prompt={data} />;
 };
 
 export { PromptDelivery };

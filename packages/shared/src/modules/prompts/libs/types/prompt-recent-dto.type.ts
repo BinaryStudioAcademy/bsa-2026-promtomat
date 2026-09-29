@@ -1,6 +1,6 @@
 type PromptRecentDto = {
 	computedScore: null | number;
-	efficiencyScore: number;
+	efficiencyScore: null | number;
 	id: number;
 	taskIntent: string;
 };

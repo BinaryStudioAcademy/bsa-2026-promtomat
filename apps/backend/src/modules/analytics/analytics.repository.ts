@@ -14,7 +14,11 @@ import { LabelColumnName } from "../labels/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import { PromptModel } from "../prompts/prompt.model.js";
 import { WorkspaceColumnName } from "../workspaces/libs/enums/enums.js";
-import { LABEL_RELATION, LOOKBACK_OFFSET } from "./libs/constants/constants.js";
+import {
+	KEYWORD_WEIGHT_RELATION,
+	LABEL_RELATION,
+	LOOKBACK_OFFSET,
+} from "./libs/constants/constants.js";
 import {
 	AnalyticsDistributionAlias,
 	AnalyticsRepositoryConfig,
@@ -26,6 +30,7 @@ import {
 	type PromptDistributionCountRow,
 	type PromptGrowthRow,
 	type PromptKeywordRow,
+	type PromptKeywordWeightRow,
 	type PromptSummaryRow,
 } from "./libs/types/types.js";
 
@@ -74,6 +79,30 @@ class AnalyticsRepository {
 					)
 					.orWhereExists(contributorAccessQuery);
 			});
+	}
+
+	private mergeKeywordWeightsByLabel(
+		perLabelWeights: QueryBuilder<PromptModel, PromptKeywordWeightRow[]>,
+	): QueryBuilder<PromptModel, PromptKeywordWeightRow[]> {
+		return this.promptModel
+			.query()
+			.with(KEYWORD_WEIGHT_RELATION, perLabelWeights)
+			.from(KEYWORD_WEIGHT_RELATION)
+			.select(
+				SQLAlias.LABEL,
+				raw("SUM(??::numeric * ??) / SUM(??) as ??", [
+					SQLAlias.AVERAGE_SCORE,
+					SQLAlias.COUNT,
+					SQLAlias.COUNT,
+					SQLAlias.AVERAGE_SCORE,
+				]),
+			)
+			.sum(`${SQLAlias.COUNT} as ${SQLAlias.COUNT}`)
+			.groupBy(SQLAlias.LABEL)
+			.orderBy(SQLAlias.AVERAGE_SCORE, SortOrder.DESC)
+			.orderBy(SQLAlias.LABEL, SortOrder.ASC)
+			.limit(AnalyticsRepositoryConfig.KEYWORD_LIMIT)
+			.castTo<PromptKeywordWeightRow[]>();
 	}
 
 	public async findDistribution({
@@ -193,7 +222,7 @@ class AnalyticsRepository {
 		userId,
 		workspaceId,
 	}: AnalyticsScopeQuery): Promise<PromptKeywordRow[]> {
-		const query = this.promptModel
+		const perLabelWeights = this.promptModel
 			.query()
 			.joinRelated(LABEL_RELATION)
 			.select(`${LABEL_RELATION}.${LabelColumnName.NAME} as ${SQLAlias.LABEL}`)
@@ -213,12 +242,16 @@ class AnalyticsRepository {
 				`${LABEL_RELATION}.${LabelColumnName.ID}`,
 				`${LABEL_RELATION}.${LabelColumnName.NAME}`,
 			)
-			.orderBy(SQLAlias.AVERAGE_SCORE, SortOrder.DESC)
-			.orderBy(SQLAlias.LABEL, SortOrder.ASC)
-			.limit(AnalyticsRepositoryConfig.KEYWORD_LIMIT)
-			.castTo<{ averageScore: string; count: string; label: string }[]>();
+			.castTo<PromptKeywordWeightRow[]>();
 
-		this.findScope(query, userId, workspaceId);
+		this.findScope(perLabelWeights, userId, workspaceId);
+
+		const query = workspaceId
+			? perLabelWeights
+					.orderBy(SQLAlias.AVERAGE_SCORE, SortOrder.DESC)
+					.orderBy(SQLAlias.LABEL, SortOrder.ASC)
+					.limit(AnalyticsRepositoryConfig.KEYWORD_LIMIT)
+			: this.mergeKeywordWeightsByLabel(perLabelWeights);
 
 		const rows = await query.execute();
 

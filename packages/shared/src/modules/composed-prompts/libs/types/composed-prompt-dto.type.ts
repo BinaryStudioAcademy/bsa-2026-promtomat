@@ -8,6 +8,7 @@ type ComposedPromptDto = {
 	explanation: string;
 	id: number;
 	modelId: string;
+	myScore?: null | number;
 	sources: ComposedPromptSourceDto[];
 	workspaceId: number;
 };

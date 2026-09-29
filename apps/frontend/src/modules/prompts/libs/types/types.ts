@@ -9,6 +9,7 @@ export {
 	type PromptStreakDayDto,
 	type PromptStreakQueryDto,
 	type PromptStreakResponseDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";
