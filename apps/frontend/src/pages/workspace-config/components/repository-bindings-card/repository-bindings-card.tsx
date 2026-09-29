@@ -43,9 +43,7 @@ const RepositoryBindingsCard: React.FC<Properties> = ({
 			<h3 className={pageStyles["section-title"]}>Bound repositories</h3>
 			<RepositoryBindingList
 				bindings={bindingList}
-				emptyMessage={
-					WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS
-				}
+				emptyMessage={WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS}
 				errorMessage={
 					WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
 				}
