@@ -15,6 +15,9 @@ const compose = z.object({
 			PromptValidationRule.INTENT_MAXIMUM_LENGTH,
 			ComposedPromptValidationMessage.DESCRIPTION_TOO_LONG,
 		),
+	shouldRecompose: z
+		.boolean(ComposedPromptValidationMessage.INVALID_RECOMPOSE_FLAG)
+		.optional(),
 	workspaceId: z
 		.number(ComposedPromptValidationMessage.INVALID_WORKSPACE)
 		.int(ComposedPromptValidationMessage.INVALID_WORKSPACE)

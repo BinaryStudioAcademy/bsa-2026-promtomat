@@ -1,66 +1,36 @@
 import React, { useCallback, useRef } from "react";
 
-import { Button } from "~/libs/components/button/button.js";
-import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
-import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
-import { ButtonVariant } from "~/libs/enums/enums.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
+import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
 
 import { ExplanationSection } from "./libs/components/explanation-section/explanation-section.js";
+import { FeedbackSection } from "./libs/components/feedback-section/feedback-section.js";
 import { PromptBodySection } from "./libs/components/prompt-body-section/prompt-body-section.js";
 import { PromptDeliveryCard } from "./libs/components/prompt-delivery-card/prompt-delivery-card.js";
 import { PromptMetaSection } from "./libs/components/prompt-meta-section/prompt-meta-section.js";
-import {
-	PromptDeliveryViewLabel,
-	PromptDeliveryViewMessage,
-} from "./libs/enums/enums.js";
 import { type PromptDeliveryViewProperties } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
+	bodySlot,
 	efficiencyScore,
 	explanation = "",
-	revision,
+	feedback,
+	feedbackSlot,
+	isBodyHeaderHidden = false,
 	sources = [],
 	workspaceName,
 }: PromptDeliveryViewProperties) => {
 	const feedbackReference = useRef<HTMLDivElement>(null);
 
-	const handleCopyPrompt = useCallback((): void => {
-		void navigator.clipboard
-			.writeText(body)
-			.then(() => {
-				showNotification({
-					message: PromptDeliveryViewMessage.COPY_SUCCESS,
-					type: NotificationType.SUCCESS,
-				});
-				feedbackReference.current?.focus();
-			})
-			.catch(() => {
-				showNotification({
-					message: PromptDeliveryViewMessage.COPY_FAILURE,
-					type: NotificationType.DANGER,
-				});
-			});
-	}, [body]);
-
-	const handleScoreSelect = useCallback(() => {
-		return (): void => {};
+	const handleCopied = useCallback((): void => {
+		feedbackReference.current?.focus();
 	}, []);
 
-	const bodyEditorProperties = revision?.isOwner
-		? {
-				bodyControl: revision.bodyControl,
-				isEditingBody: revision.isEditingBody,
-				isSavingBody: revision.isSavingBody,
-				onCancelBodyEdit: revision.onCancelBodyEdit,
-				onSaveBody: revision.onSaveBody,
-				onStartBodyEdit: revision.onStartBodyEdit,
-			}
-		: {};
+	const handleCopyPrompt = useCopyPrompt({ body, onCopied: handleCopied });
 
-	const shouldShowScoreGrid = revision === undefined || revision.isOwner;
+	const feedbackContent =
+		feedbackSlot ?? (feedback && <FeedbackSection feedback={feedback} />);
 
 	return (
 		<div className={styles["view"]}>
@@ -71,32 +41,18 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 
 			<PromptBodySection
 				body={body}
+				bodySlot={bodySlot}
+				isHeaderHidden={isBodyHeaderHidden}
 				onCopyPrompt={handleCopyPrompt}
-				{...bodyEditorProperties}
 			/>
 
-			<ExplanationSection explanation={explanation} sources={sources} />
-
-			{shouldShowScoreGrid && (
+			{feedbackContent && (
 				<PromptDeliveryCard cardReference={feedbackReference} tabIndex={-1}>
-					<ScoreGrid
-						isDisabled={revision?.isSavingScore ?? false}
-						isRadio={Boolean(revision)}
-						label={PromptDeliveryViewLabel.FEEDBACK_HEADING}
-						onScoreSelect={revision?.onScoreSelect ?? handleScoreSelect}
-						{...(revision ? { selectedScore: revision.selectedScore } : {})}
-					/>
+					{feedbackContent}
 				</PromptDeliveryCard>
 			)}
 
-			{revision && (
-				<Button
-					label={PromptDeliveryViewLabel.FORK_INTO_TRAINING}
-					onClick={revision.onFork}
-					type="button"
-					variant={ButtonVariant.SECONDARY}
-				/>
-			)}
+			<ExplanationSection explanation={explanation} sources={sources} />
 		</div>
 	);
 };
