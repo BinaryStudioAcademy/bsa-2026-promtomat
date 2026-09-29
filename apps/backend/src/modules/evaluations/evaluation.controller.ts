@@ -33,17 +33,21 @@ type Constructor = {
  *       type: object
  *       required:
  *         - score
+ *         - targetId
+ *         - targetType
  *       properties:
- *         composedPromptId:
- *           type: integer
- *           minimum: 1
- *         promptId:
- *           type: integer
- *           minimum: 1
  *         score:
  *           type: integer
  *           minimum: 1
  *           maximum: 10
+ *         targetId:
+ *           type: integer
+ *           minimum: 1
+ *         targetType:
+ *           type: string
+ *           enum:
+ *             - prompt
+ *             - composed-prompt
  *     EvaluationResponse:
  *       type: object
  *       required:
@@ -154,7 +158,7 @@ class EvaluationController extends BaseController {
 	): Promise<APIHandlerResponse> {
 		const { id: userId } = options.user as UserDto;
 
-		const evaluation = await this.evaluationService.create({
+		const evaluation = await this.evaluationService.upsert({
 			...options.body,
 			userId,
 		});

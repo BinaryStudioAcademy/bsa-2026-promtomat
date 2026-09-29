@@ -1,6 +1,11 @@
-import { ErrorCode } from "~/libs/enums/enums.js";
+import { type Transaction } from "objection";
+
+import {
+	ComposedPromptError,
+	PromptError,
+} from "~/libs/exceptions/exceptions.js";
 import { type Database } from "~/libs/modules/database/database.js";
-import { HTTPCode, HTTPError } from "~/libs/modules/http/http.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import { type ComposedPromptService } from "~/modules/composed-prompts/composed-prompt.service.js";
 import { type PromptService } from "~/modules/prompts/prompt.service.js";
 
@@ -19,6 +24,16 @@ type Constructor = {
 	promptService: PromptService;
 };
 
+type TargetHandler = {
+	findScores: (targetId: number, trx: Transaction) => Promise<number[]>;
+	getPriorScore: (targetId: number, trx: Transaction) => Promise<null | number>;
+	updateComputedScore: (
+		targetId: number,
+		computedScore: null | number,
+		trx: Transaction,
+	) => Promise<void>;
+};
+
 class EvaluationService {
 	private composedPromptService: ComposedPromptService;
 
@@ -27,6 +42,11 @@ class EvaluationService {
 	private evaluationRepository: EvaluationRepository;
 
 	private promptService: PromptService;
+
+	private targetHandlers: Record<
+		ValueOf<typeof EvaluationTargetType>,
+		TargetHandler
+	>;
 
 	public constructor({
 		composedPromptService,
@@ -38,91 +58,80 @@ class EvaluationService {
 		this.database = database;
 		this.evaluationRepository = evaluationRepository;
 		this.promptService = promptService;
+
+		this.targetHandlers = {
+			[EvaluationTargetType.COMPOSED_PROMPT]: {
+				findScores: (targetId, trx) =>
+					this.evaluationRepository.findScoresByComposedPromptId(targetId, trx),
+				getPriorScore: async (targetId, trx) => {
+					const composedPrompt =
+						await this.composedPromptService.findByIdForUpdate(targetId, trx);
+
+					if (!composedPrompt) {
+						throw ComposedPromptError.notFound();
+					}
+
+					return null;
+				},
+				updateComputedScore: (targetId, computedScore, trx) =>
+					this.composedPromptService.updateComputedScore(
+						targetId,
+						computedScore,
+						trx,
+					),
+			},
+			[EvaluationTargetType.PROMPT]: {
+				findScores: (targetId, trx) =>
+					this.evaluationRepository.findScoresByPromptId(targetId, trx),
+				getPriorScore: async (targetId, trx) => {
+					const prompt = await this.promptService.findByIdForUpdate(
+						targetId,
+						trx,
+					);
+
+					if (!prompt) {
+						throw PromptError.notFound();
+					}
+
+					return prompt.toObject().efficiencyScore;
+				},
+				updateComputedScore: (targetId, computedScore, trx) =>
+					this.promptService.updateComputedScore(targetId, computedScore, trx),
+			},
+		};
 	}
 
 	public async create(
 		payload: EvaluationUpsertPayload,
 	): Promise<EvaluationResponseDto> {
+		return await this.upsert(payload);
+	}
+
+	public async upsert(
+		payload: EvaluationUpsertPayload,
+	): Promise<EvaluationResponseDto> {
+		const { score, targetId, targetType } = payload;
+		const handler = this.targetHandlers[targetType];
+
 		return await this.database.transaction(async (trx) => {
-			if (payload.promptId) {
-				const prompt = await this.promptService.findByIdForUpdate(
-					payload.promptId,
-					trx,
-				);
-
-				if (!prompt) {
-					throw new HTTPError({
-						code: ErrorCode.NOT_FOUND,
-						message: "Prompt not found",
-						status: HTTPCode.NOT_FOUND,
-					});
-				}
-
-				await this.evaluationRepository.createOrUpdate(payload, trx);
-
-				const scores = await this.evaluationRepository.findScoresByPromptId(
-					payload.promptId,
-					trx,
-				);
-
-				const computedScore = computeDampedMean({
-					evaluationScores: scores,
-					priorScore: prompt.toObject().efficiencyScore,
-				});
-
-				await this.promptService.updateComputedScore(
-					payload.promptId,
-					computedScore,
-					trx,
-				);
-
-				return {
-					computedScore,
-					score: payload.score,
-					targetId: payload.promptId,
-					targetType: EvaluationTargetType.PROMPT,
-				};
-			}
-
-			const targetId = payload.composedPromptId as number;
-
-			const composedPrompt = await this.composedPromptService.findByIdForUpdate(
-				targetId,
-				trx,
-			);
-
-			if (!composedPrompt) {
-				throw new HTTPError({
-					code: ErrorCode.NOT_FOUND,
-					message: "Composed prompt not found",
-					status: HTTPCode.NOT_FOUND,
-				});
-			}
+			const priorScore = await handler.getPriorScore(targetId, trx);
 
 			await this.evaluationRepository.createOrUpdate(payload, trx);
 
-			const scores =
-				await this.evaluationRepository.findScoresByComposedPromptId(
-					targetId,
-					trx,
-				);
+			const scores = await handler.findScores(targetId, trx);
 
 			const computedScore = computeDampedMean({
 				evaluationScores: scores,
-				priorScore: null,
+				priorScore,
 			});
 
-			await this.composedPromptService.updateComputedScore(
-				targetId,
-				computedScore,
-				trx,
-			);
+			await handler.updateComputedScore(targetId, computedScore, trx);
 
 			return {
 				computedScore,
-				score: payload.score,
+				score,
 				targetId,
-				targetType: EvaluationTargetType.COMPOSED_PROMPT,
+				targetType,
 			};
 		});
 	}

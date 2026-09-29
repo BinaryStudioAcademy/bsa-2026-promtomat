@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { WORKSPACE_ID_SEARCH_PARAMETER } from "~/libs/constants/constants.js";
-import { AppRoute } from "~/libs/enums/enums.js";
+import { AppRoute, EvaluationTargetType } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import {
@@ -97,8 +97,9 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 				}
 
 				void evaluate({
-					promptId: prompt.id,
 					score,
+					targetId: prompt.id,
+					targetType: EvaluationTargetType.PROMPT,
 				})
 					.unwrap()
 					.then(() => {

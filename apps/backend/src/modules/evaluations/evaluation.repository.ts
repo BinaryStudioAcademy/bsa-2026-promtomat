@@ -4,7 +4,10 @@ import { type ValueOf } from "~/libs/types/types.js";
 
 import { EvaluationEntity } from "./evaluation.entity.js";
 import { type EvaluationModel } from "./evaluation.model.js";
-import { EvaluationColumnName } from "./libs/enums/enums.js";
+import {
+	EvaluationColumnName,
+	EvaluationTargetType,
+} from "./libs/enums/enums.js";
 import {
 	type EvaluationConflictColumn,
 	type EvaluationInsertPayload,
@@ -78,12 +81,12 @@ class EvaluationRepository {
 		payload: EvaluationUpsertPayload,
 		trx?: Transaction,
 	): Promise<EvaluationEntity> {
-		if (payload.promptId) {
+		if (payload.targetType === EvaluationTargetType.PROMPT) {
 			return await this.upsertEvaluation({
 				conflictColumn: EvaluationColumnName.PROMPT_ID,
 				insertPayload: {
 					composedPromptId: null,
-					promptId: payload.promptId,
+					promptId: payload.targetId,
 					score: payload.score,
 					userId: payload.userId,
 				},
@@ -94,7 +97,7 @@ class EvaluationRepository {
 		return await this.upsertEvaluation({
 			conflictColumn: EvaluationColumnName.COMPOSED_PROMPT_ID,
 			insertPayload: {
-				composedPromptId: payload.composedPromptId as number,
+				composedPromptId: payload.targetId,
 				promptId: null,
 				score: payload.score,
 				userId: payload.userId,
