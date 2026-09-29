@@ -1,4 +1,4 @@
-export { PromptProgress, PromptValidationRule } from "./libs/enums/enums.js";
+export { PromptValidationRule } from "./libs/enums/enums.js";
 export {
 	type PromptCreateRequestDto,
 	type PromptRecentDto,
