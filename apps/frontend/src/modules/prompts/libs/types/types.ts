@@ -11,5 +11,6 @@ export {
 	type PromptStreakResponseDto,
 	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
+	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "@promptomat/shared";

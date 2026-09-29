@@ -1,0 +1,3 @@
+const BODY_EDITOR_ROWS = 10;
+
+export { BODY_EDITOR_ROWS };

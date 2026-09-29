@@ -141,9 +141,7 @@ const PromptHistory: React.FC = () => {
 	let detailPane: React.ReactNode = null;
 
 	if (selectedPrompt) {
-		detailPane = (
-			<PromptDetailPanel prompt={selectedPrompt} queryPayload={queryPayload} />
-		);
+		detailPane = <PromptDetailPanel prompt={selectedPrompt} />;
 	} else if (items.length > ZERO_VALUE) {
 		detailPane = (
 			<div className={styles["empty-selection"]}>
@@ -251,7 +249,6 @@ const PromptHistory: React.FC = () => {
 							items={items}
 							onRetry={handleRetry}
 							onSelectPrompt={handleSelectPrompt}
-							queryPayload={queryPayload}
 							selectedPromptId={selectedPromptId}
 						/>
 						{hasNextPage && hasWorkspace && !isLoading ? (

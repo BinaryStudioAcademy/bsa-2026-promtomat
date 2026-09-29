@@ -1,0 +1,3 @@
+const BODY_EDITOR_MAX_HEIGHT = 600;
+
+export { BODY_EDITOR_MAX_HEIGHT };

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -110,7 +111,7 @@ const useRecordPromptForm = (): ReturnValue => {
 					});
 					showNotification({
 						message: RecordPromptMessage.SUCCESS,
-						type: "success",
+						type: NotificationType.SUCCESS,
 					});
 				}
 			})(event);

@@ -108,10 +108,10 @@ erDiagram
 
     composed_prompts {
         int id PK "auto-increment"
-        int workspace_id FK "not null, onDelete CASCADE, unique with description_hash"
+        int workspace_id FK "not null, onDelete CASCADE, indexed with description_hash"
         int requester_id FK "not null, references users, onDelete CASCADE"
         text description "not null"
-        varchar description_hash "not null, varchar(64), sha256 of the normalized description, unique with workspace_id"
+        varchar description_hash "not null, varchar(64), sha256 of the normalized description, indexed with workspace_id"
         text body "not null"
         text explanation "not null"
         varchar model_id "not null"

@@ -36,7 +36,6 @@ const PromptDeliveryContent: React.FC<ContentProperties> = ({
 		<PromptDetailPanel
 			isCompact={false}
 			prompt={prompt}
-			queryPayload={{ workspaceId: prompt.workspaceId }}
 			shouldShowOpenFullPageLink={false}
 		/>
 

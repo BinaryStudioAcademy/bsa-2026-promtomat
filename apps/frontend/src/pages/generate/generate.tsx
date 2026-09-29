@@ -1,95 +1,47 @@
-import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
-import { Loader } from "~/libs/components/loader/loader.js";
-import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
-import { AppRoute } from "~/libs/enums/enums.js";
-import { showNotification } from "~/libs/modules/notification/notification.js";
-import {
-	type ComposeRequestDto,
-	ComposeResultKind,
-	useComposeMutation,
-} from "~/modules/composed-prompts/composed-prompts.js";
-import {
-	EvaluationMessage,
-	useEvaluateMutation,
-} from "~/modules/evaluations/evaluations.js";
+import React from "react";
 
 import { ComposeResult } from "./components/compose-result/compose-result.js";
 import { GenerateForm } from "./components/generate-form/generate-form.js";
+import { GenerationFailedNotice } from "./components/generation-failed-notice/generation-failed-notice.js";
+import { useGenerateForm } from "./libs/hooks/use-generate-form/use-generate-form.hook.js";
 import styles from "./styles.module.css";
 
 const Generate: React.FC = () => {
-	const navigate = useNavigate();
-	const [compose, { data, error, isLoading }] = useComposeMutation();
-	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
-
-	const handleCompose = useCallback(
-		(payload: ComposeRequestDto): void => {
-			void compose(payload);
-		},
-		[compose],
-	);
-
-	const composedPrompt =
-		data?.kind === ComposeResultKind.COMPOSED ? data.composedPrompt : null;
-	const shouldShowFallbackResult =
-		data !== undefined && data.kind !== ComposeResultKind.COMPOSED;
-
-	const handleScoreSelect = useCallback(
-		(score: number): void => {
-			const recordEvaluation = async (): Promise<void> => {
-				if (!composedPrompt?.id) {
-					return;
-				}
-
-				try {
-					await evaluate({
-						composedPromptId: composedPrompt.id,
-						score,
-					}).unwrap();
-
-					showNotification({
-						message: EvaluationMessage.EVALUATION_SUCCESS,
-						type: "success",
-					});
-
-					void navigate(AppRoute.ROOT);
-				} catch {
-					showNotification({
-						message: EvaluationMessage.EVALUATION_FAILED,
-						type: "danger",
-					});
-				}
-			};
-
-			void recordEvaluation();
-		},
-		[composedPrompt, evaluate, navigate],
-	);
+	const {
+		control,
+		handleDiscard,
+		handleRecompose,
+		handleRetry,
+		handleSubmit,
+		hasFailure,
+		hasWorkspace,
+		isLoading,
+		result,
+		workspaces,
+	} = useGenerateForm();
 
 	return (
-		<div className={styles["content-column"]}>
-			<GenerateForm
-				error={error}
-				isLoading={isLoading}
-				onSubmit={handleCompose}
-			/>
-			{isLoading && <Loader variant={LoaderVariant.SECTION} />}
-			{!isLoading && composedPrompt && (
-				<PromptDeliveryView
-					body={composedPrompt.body}
-					computedScore={composedPrompt.computedScore}
-					explanation={composedPrompt.explanation.trim()}
-					isLoading={isEvaluating}
-					onScoreSelect={handleScoreSelect}
-					sources={composedPrompt.sources}
+		<div className={styles["container"]}>
+			<div className={styles["page-wrapper"]}>
+				<GenerateForm
+					control={control}
+					hasWorkspace={hasWorkspace}
+					isLoading={isLoading}
+					onSubmit={handleSubmit}
+					workspaces={workspaces}
 				/>
-			)}
-			{!isLoading && shouldShowFallbackResult && (
-				<ComposeResult result={data} />
-			)}
+				{!isLoading && hasFailure && (
+					<GenerationFailedNotice onRetry={handleRetry} />
+				)}
+				{!isLoading && result && (
+					<ComposeResult
+						onDiscard={handleDiscard}
+						onRecompose={handleRecompose}
+						onTryAgain={handleRetry}
+						result={result}
+					/>
+				)}
+			</div>
 		</div>
 	);
 };

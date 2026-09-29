@@ -25,12 +25,21 @@ const composedPromptAccessHook = (
 			throw ComposedPromptError.notFound();
 		}
 
-		const workspace = await workspaceService.findByIdAndOwner(
+		const ownedWorkspace = await workspaceService.findByIdAndOwner(
 			workspaceId,
 			request.user.id,
 		);
 
-		if (!workspace) {
+		if (ownedWorkspace) {
+			return;
+		}
+
+		const contributedWorkspace = await workspaceService.findByIdAndContributor(
+			workspaceId,
+			request.user.id,
+		);
+
+		if (!contributedWorkspace) {
 			throw ComposedPromptError.notFound();
 		}
 	};

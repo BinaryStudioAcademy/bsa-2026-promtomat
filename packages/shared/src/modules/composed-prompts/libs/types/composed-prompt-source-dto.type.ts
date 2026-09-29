@@ -1,4 +1,5 @@
 type ComposedPromptSourceDto = {
+	efficiencyScore: null | number;
 	promptId: number;
 	rank: number;
 	taskIntent: string;
