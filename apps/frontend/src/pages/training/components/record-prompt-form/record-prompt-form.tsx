@@ -9,9 +9,11 @@ import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-sco
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
+import { type PromptBodyMode } from "../../libs/enums/enums.js";
 import { PromptBodyField } from "../prompt-body-field/prompt-body-field.js";
 import { PromptLabels } from "../prompt-labels/prompt-labels.js";
 import { WorkspaceChip } from "../workspace-chip/workspace-chip.js";
@@ -24,6 +26,8 @@ type Properties = {
 	error: unknown;
 	isSubmitting: boolean;
 	loggedLabel: string | undefined;
+	mode: ValueOf<typeof PromptBodyMode>;
+	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
@@ -35,6 +39,8 @@ const RecordPromptForm: React.FC<Properties> = ({
 	error,
 	isSubmitting,
 	loggedLabel,
+	mode,
+	onModeChange,
 	onScoreSelect,
 	onSubmit,
 	score,
@@ -88,7 +94,12 @@ const RecordPromptForm: React.FC<Properties> = ({
 						placeholder={RecordPromptFormMessage.INTENT_PLACEHOLDER}
 						size={ControlSize.LG}
 					/>
-					<PromptBodyField control={control} isDisabled={isSubmitting} />
+					<PromptBodyField
+						control={control}
+						isDisabled={isSubmitting}
+						mode={mode}
+						onModeChange={onModeChange}
+					/>
 					<PromptLabels label={loggedLabel} />
 					<div className={styles["score-field"]}>
 						<ScoreGrid

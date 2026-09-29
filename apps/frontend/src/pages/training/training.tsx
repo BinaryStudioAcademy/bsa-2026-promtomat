@@ -18,6 +18,8 @@ const Training: React.FC = () => {
 		error,
 		isSubmitting,
 		loggedLabel,
+		mode,
+		onModeChange,
 		onScoreSelect,
 		onSubmit,
 		score,
@@ -39,6 +41,8 @@ const Training: React.FC = () => {
 					error={error}
 					isSubmitting={isSubmitting}
 					loggedLabel={loggedLabel}
+					mode={mode}
+					onModeChange={onModeChange}
 					onScoreSelect={onScoreSelect}
 					onSubmit={onSubmit}
 					score={score}
