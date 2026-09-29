@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Button } from "~/libs/components/button/button.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
@@ -24,7 +25,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 			.then(() => {
 				showNotification({
 					message: SettingsMessage.RESET_PASSWORD_SENT,
-					type: "success",
+					type: NotificationType.SUCCESS,
 				});
 			});
 	}, [email, forgotPassword]);

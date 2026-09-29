@@ -3,6 +3,9 @@ type EnvironmentSchema = {
 		TOKEN: string;
 		URL: string;
 	};
+	WEB: {
+		URL: string;
+	};
 };
 
 export { type EnvironmentSchema };

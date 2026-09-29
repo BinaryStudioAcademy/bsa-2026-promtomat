@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
@@ -16,13 +16,13 @@ import {
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptRevision } from "~/modules/prompts/libs/hooks/use-prompt-revision/use-prompt-revision.hook.js";
 import {
-	type PromptGetQueryDto,
 	type PromptItemResponseDto,
 	type PromptUpdateIntentRequestDto,
 } from "~/modules/prompts/libs/types/types.js";
@@ -44,14 +44,12 @@ import styles from "./styles.module.css";
 type Properties = {
 	isCompact?: boolean;
 	prompt: PromptItemResponseDto;
-	queryPayload?: Omit<PromptGetQueryDto, "page">;
 	shouldShowOpenFullPageLink?: boolean;
 };
 
 const PromptDetailPanel: React.FC<Properties> = ({
 	isCompact = true,
 	prompt,
-	queryPayload,
 	shouldShowOpenFullPageLink = true,
 }: Properties) => {
 	const { data: user } = useGetAuthenticatedUserQuery(undefined);
@@ -76,7 +74,6 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	const descriptionId = useId();
 	const lastValidIntentReference = useRef(prompt.intent);
 	const editorReference = useRef<HTMLDivElement>(null);
-	const [isCopyPending, setIsCopyPending] = useState(false);
 
 	const errorMessage = errors.taskIntent?.message;
 	const isOwner = user?.id === prompt.userId;
@@ -108,7 +105,6 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					await updateIntent({
 						id: prompt.id,
 						payload,
-						...(queryPayload && { queryArgs: queryPayload }),
 					}).unwrap();
 					showNotification({
 						message: PromptDetailMessage.UPDATE_INTENT_SUCCESS,
@@ -126,7 +122,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				);
 			},
 		)();
-	}, [handleSubmit, prompt.id, queryPayload, reset, updateIntent]);
+	}, [handleSubmit, prompt.id, reset, updateIntent]);
 
 	const handleBodyViewChange = useCallback(
 		(view: ValueOf<typeof PromptDetailBodyView>): void => {
@@ -144,26 +140,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 		[handleCancelBodyEdit, handleStartBodyEdit, isSavingBody],
 	);
 
-	const handleCopyPrompt = useCallback((): void => {
-		setIsCopyPending(true);
-		void navigator.clipboard
-			.writeText(prompt.body)
-			.then(() => {
-				showNotification({
-					message: PromptDetailMessage.COPY_SUCCESS,
-					type: NotificationType.SUCCESS,
-				});
-			})
-			.catch(() => {
-				showNotification({
-					message: PromptDetailMessage.COPY_FAILURE,
-					type: NotificationType.DANGER,
-				});
-			})
-			.finally(() => {
-				setIsCopyPending(false);
-			});
-	}, [prompt.body]);
+	const handleCopyPrompt = useCopyPrompt({ body: prompt.body });
 
 	return (
 		<article className={styles["panel"]}>
@@ -308,8 +285,6 @@ const PromptDetailPanel: React.FC<Properties> = ({
 						<Button
 							className={styles["copy-button"]}
 							iconName={IconName.COPY}
-							isDisabled={isCopyPending}
-							isLoading={isCopyPending}
 							label={PromptDetailLabel.COPY_PROMPT}
 							onClick={handleCopyPrompt}
 							type="button"

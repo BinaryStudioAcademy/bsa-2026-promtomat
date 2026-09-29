@@ -25,6 +25,7 @@ const selectUsedSources = (
 			return candidate
 				? [
 						{
+							efficiencyScore: candidate.efficiencyScore,
 							promptId: candidate.promptId,
 							rank: sourceNumber,
 							taskIntent: candidate.taskIntent,

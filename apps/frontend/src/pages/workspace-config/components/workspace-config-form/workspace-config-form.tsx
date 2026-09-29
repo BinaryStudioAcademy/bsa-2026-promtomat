@@ -21,30 +21,24 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useServerFormErrors } from "~/libs/hooks/use-server-form-errors/use-server-form-errors.hook.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
 import { getErrorMessage } from "~/libs/modules/api/libs/helpers/get-error-message.helper.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type ValueOf } from "~/libs/types/types.js";
-import {
-	useDeleteRepositoryBindingMutation,
-	useGetRepositoryBindingsQuery,
-} from "~/modules/repository-bindings/repository-bindings.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useUpdateWorkspaceMutation,
 	WorkspaceTargets,
-	workspaceUpdateValidationSchema,
 	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import {
 	WorkspaceConfigLabel,
 	WorkspaceConfigMessage,
-	WorkspaceRepositoryBindingsMessage,
 } from "../../libs/enums/enums.js";
+import { workspaceEditableFieldsValidationSchema } from "../../libs/validation-schemas/validation-schemas.js";
 import styles from "../../styles.module.css";
-import { RepositoryBindingList } from "./components/repository-binding-list/repository-binding-list.js";
 import {
 	TECH_STACK_TAG_VALUES,
 	WORKSPACE_CONFIG_FIELDS,
@@ -82,7 +76,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 			),
 		},
 		mode: FormValidationMode.ON_TOUCHED,
-		validationSchema: workspaceUpdateValidationSchema,
+		validationSchema: workspaceEditableFieldsValidationSchema,
 	});
 
 	useEffect(() => {
@@ -102,31 +96,9 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 		setError,
 	});
 
-	const {
-		data: bindings,
-		isError: isBindingsError,
-		isLoading: isBindingsLoading,
-		refetch: refetchBindings,
-	} = useGetRepositoryBindingsQuery(workspace.id);
-	const [removeRepositoryBinding, { isLoading: isRemovingBinding }] =
-		useDeleteRepositoryBindingMutation();
-
-	const handleRemoveBinding = useCallback(
-		(repositoryBindingId: number): void => {
-			void removeRepositoryBinding(repositoryBindingId);
-		},
-		[removeRepositoryBinding],
-	);
-
-	const handleRetryBindings = useCallback((): void => {
-		void refetchBindings();
-	}, [refetchBindings]);
-
-	const bindingList = bindings ?? [];
-
 	const errorMessage = getErrorMessage(error);
 	const hasConflictError =
-		isServerError(error) && error.status === HTTPCode.CONFLICT;
+		checkIsServerError(error) && error.status === HTTPCode.CONFLICT;
 	const generalErrorMessage =
 		hasConflictError || hasFieldErrors || checkIsToastedError(error)
 			? null
@@ -242,23 +214,6 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						placeholder="Enter tags"
 						size={ControlSize.MD}
 						valuesDictionary={TECH_STACK_TAG_VALUES}
-					/>
-				</div>
-				<div className={styles["section"]}>
-					<h3 className={styles["section-label"]}>Bound repositories</h3>
-					<RepositoryBindingList
-						bindings={bindingList}
-						emptyMessage={
-							WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS
-						}
-						errorMessage={
-							WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
-						}
-						isError={isBindingsError}
-						isLoading={isBindingsLoading}
-						isRemoving={isRemovingBinding}
-						onRemove={handleRemoveBinding}
-						onRetry={handleRetryBindings}
 					/>
 				</div>
 			</section>

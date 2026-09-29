@@ -9,7 +9,7 @@ import {
 	IconName,
 } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { type WorkspaceAddContributorRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useAddWorkspaceContributorMutation,
@@ -48,7 +48,7 @@ const AddContributorForm: React.FC<Properties> = ({
 				}
 
 				if (
-					isServerError(result.error) &&
+					checkIsServerError(result.error) &&
 					EMAIL_OR_NICKNAME_ERROR_CODES.has(result.error.code)
 				) {
 					setError("emailOrNickname", {

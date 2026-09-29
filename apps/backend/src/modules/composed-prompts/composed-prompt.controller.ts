@@ -1,4 +1,5 @@
 import { APIPath } from "~/libs/enums/enums.js";
+import { config } from "~/libs/modules/config/config.js";
 import {
 	type APIHandlerOptions,
 	type APIHandlerResponse,
@@ -11,12 +12,15 @@ import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js
 
 import { type ComposedPromptService } from "./composed-prompt.service.js";
 import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
+import { resolveGenerationThrottleKey } from "./libs/helpers/helpers.js";
 import { composedPromptAccessHook } from "./libs/hooks/composed-prompt-access.hook.js";
 import {
+	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptIdParametersDto,
 	type ComposeRequestDto,
 } from "./libs/types/types.js";
 import {
+	composedPromptAdoptValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	composeValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
@@ -34,6 +38,11 @@ import {
  *            minimum: 1
  *          taskIntent:
  *            type: string
+ *          efficiencyScore:
+ *            type: number
+ *            nullable: true
+ *            minimum: 1
+ *            maximum: 10
  *      ComposedPrompt:
  *        type: object
  *        properties:
@@ -78,6 +87,10 @@ import {
  *                enum: [composed]
  *              composedPrompt:
  *                $ref: "#/components/schemas/ComposedPrompt"
+ *              remainingRecompositions:
+ *                type: number
+ *                minimum: 0
+ *                description: Compositions still allowed for this description in the workspace
  *          - type: object
  *            properties:
  *              kind:
@@ -110,6 +123,13 @@ class ComposedPromptController extends BaseController {
 		this.workspaceService = workspaceService;
 
 		this.addRoute({
+			config: {
+				rateLimit: {
+					keyGenerator: resolveGenerationThrottleKey,
+					max: config.ENV.GENERATION.REQUEST_LIMIT,
+					timeWindow: `${config.ENV.GENERATION.WINDOW_MINUTES.toString()} minutes`,
+				},
+			},
 			handler: (options) =>
 				this.compose(options as APIHandlerOptions<{ body: ComposeRequestDto }>),
 			method: HTTPMethod.POST,
@@ -137,17 +157,116 @@ class ComposedPromptController extends BaseController {
 				params: composedPromptIdParametersValidationSchema,
 			},
 		});
+
+		this.addRoute({
+			handler: (options) =>
+				this.adopt(
+					options as APIHandlerOptions<{
+						body: ComposedPromptAdoptRequestDto;
+						params: ComposedPromptIdParametersDto;
+					}>,
+				),
+			method: HTTPMethod.POST,
+			path: ComposedPromptsApiPath.$ID_ADOPT,
+			preHandler: composedPromptAccessHook(
+				this.composedPromptService,
+				this.workspaceService,
+			),
+			validation: {
+				body: composedPromptAdoptValidationSchema,
+				params: composedPromptIdParametersValidationSchema,
+			},
+		});
+	}
+
+	/**
+	 * @swagger
+	 * /composed-prompts/{id}/adopt:
+	 *    post:
+	 *      description: Records a prompt owned by the caller from a composed prompt of a workspace the caller may read, with the task description as intent and the given or composed body; the composed prompt is left unchanged
+	 *      security:
+	 *        - bearerAuth: []
+	 *      parameters:
+	 *        - in: path
+	 *          name: id
+	 *          required: true
+	 *          schema:
+	 *            type: number
+	 *            minimum: 1
+	 *      requestBody:
+	 *        description: The efficiency score and, when edited, the prompt body
+	 *        required: true
+	 *        content:
+	 *          application/json:
+	 *            schema:
+	 *              type: object
+	 *              required: [score]
+	 *              properties:
+	 *                score:
+	 *                  type: number
+	 *                  minimum: 1
+	 *                  maximum: 10
+	 *                promptBody:
+	 *                  type: string
+	 *                  minLength: 1
+	 *                  maxLength: 50000
+	 *      responses:
+	 *        201:
+	 *          description: A prompt was recorded
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Prompt"
+	 *        401:
+	 *          description: Unauthorized
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        404:
+	 *          description: Composed prompt not found, or its workspace is not readable by the caller
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 *        422:
+	 *          description: Validation failed
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/ValidationError"
+	 *        503:
+	 *          description: The prompt label could not be generated; nothing was recorded
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
+	 */
+	private async adopt(
+		options: APIHandlerOptions<{
+			body: ComposedPromptAdoptRequestDto;
+			params: ComposedPromptIdParametersDto;
+		}>,
+	): Promise<APIHandlerResponse> {
+		return {
+			payload: await this.composedPromptService.adopt({
+				...options.body,
+				id: options.params.id,
+				userId: options.user?.id as number,
+			}),
+			status: HTTPCode.CREATED,
+		};
 	}
 
 	/**
 	 * @swagger
 	 * /composed-prompts:
 	 *    post:
-	 *      description: Composes one prompt for a task description from the closest prompts of the workspace
+	 *      description: Composes one prompt for a task description from the closest prompts of the workspace. Without the recompose flag an existing composition for the same description is returned; with it the model is asked again, within the per-description limit
 	 *      security:
 	 *        - bearerAuth: []
 	 *      requestBody:
-	 *        description: Task description and the workspace to draw on
+	 *        description: Task description, the workspace to draw on and whether to bypass the stored composition
 	 *        required: true
 	 *        content:
 	 *          application/json:
@@ -161,6 +280,9 @@ class ComposedPromptController extends BaseController {
 	 *                workspaceId:
 	 *                  type: number
 	 *                  minimum: 1
+	 *                shouldRecompose:
+	 *                  type: boolean
+	 *                  description: Skip the stored composition and ask the model again
 	 *      responses:
 	 *        201:
 	 *          description: A composed prompt was created
@@ -192,6 +314,12 @@ class ComposedPromptController extends BaseController {
 	 *            application/json:
 	 *              schema:
 	 *                $ref: "#/components/schemas/ValidationError"
+	 *        429:
+	 *          description: The description has reached the recompose limit (RECOMPOSE_LIMIT_REACHED), or the caller sent too many compose requests in the window (TOO_MANY_REQUESTS)
+	 *          content:
+	 *            application/json:
+	 *              schema:
+	 *                $ref: "#/components/schemas/Error"
 	 */
 	private async compose(
 		options: APIHandlerOptions<{ body: ComposeRequestDto }>,
