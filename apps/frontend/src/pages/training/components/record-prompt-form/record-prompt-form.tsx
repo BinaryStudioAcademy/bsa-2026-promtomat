@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { type Control, useWatch } from "react-hook-form";
+import { type Control } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { ScoreDescription } from "~/libs/components/score-grid/libs/enums/enums.js";
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
@@ -14,7 +15,6 @@ import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
 import { PromptBodyField } from "../prompt-body-field/prompt-body-field.js";
 import { PromptLabels } from "../prompt-labels/prompt-labels.js";
-import { WorkspaceChip } from "../workspace-chip/workspace-chip.js";
 import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -44,14 +44,6 @@ const RecordPromptForm: React.FC<Properties> = ({
 	const describedScore = hoveredScore ?? score;
 
 	const { data } = useGetWorkspacesQuery({});
-	const selectedWorkspaceId = useWatch({ control, name: "workspaceId" });
-
-	const selectedWorkspace = data?.items.find(
-		({ id }) => id === selectedWorkspaceId,
-	);
-	const workspaceChip = selectedWorkspace ? (
-		<WorkspaceChip name={selectedWorkspace.name} />
-	) : null;
 
 	const options =
 		data?.items.map(({ id, name }) => {
@@ -63,18 +55,18 @@ const RecordPromptForm: React.FC<Properties> = ({
 
 	return (
 		<>
-			<header className={styles["header"]}>
-				<p className={styles["eyebrow"]}>{RecordPromptFormMessage.EYEBROW}</p>
-				<h1 className={styles["title"]}>{RecordPromptFormMessage.TITLE}</h1>
-				<p className={styles["subtitle"]}>{RecordPromptFormMessage.SUBTITLE}</p>
-			</header>
+			<PageIntro
+				description={RecordPromptFormMessage.SUBTITLE}
+				label={RecordPromptFormMessage.EYEBROW}
+				title={RecordPromptFormMessage.TITLE}
+			/>
 			<form className={styles["form"]} noValidate onSubmit={onSubmit}>
 				<div className={styles["fields"]}>
 					<Select
-						adornment={workspaceChip}
 						control={control}
 						isDisabled={isSubmitting}
 						label={RecordPromptFormMessage.WORKSPACE_LABEL}
+						leadingIconName={IconName.FOLDER}
 						name="workspaceId"
 						options={options}
 						placeholder={RecordPromptFormMessage.WORKSPACE_PLACEHOLDER}

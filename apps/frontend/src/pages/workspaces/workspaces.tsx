@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import {
 	EMPTY_LENGTH,
 	WORKSPACE_ID_SEARCH_PARAMETER,
 } from "~/libs/constants/constants.js";
 import { AppRoute, IconName } from "~/libs/enums/enums.js";
-import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
@@ -86,7 +87,7 @@ const Workspaces: React.FC = () => {
 	}, []);
 
 	return (
-		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
+		<PageContainer>
 			<WorkspaceHeader onCreate={handleCreateOpen} />
 
 			<div className={styles["filters"]}>
@@ -136,7 +137,7 @@ const Workspaces: React.FC = () => {
 			{activeModal?.type === "create" && (
 				<WorkspaceCreateModal onClose={handleModalClose} />
 			)}
-		</div>
+		</PageContainer>
 	);
 };
 

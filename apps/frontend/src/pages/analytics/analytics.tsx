@@ -3,6 +3,8 @@ import React, { useCallback, useState } from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useGetAnalyticsQuery } from "~/modules/analytics/analytics-api.js";
@@ -83,21 +85,22 @@ const Analytics: React.FC = () => {
 	}
 
 	return (
-		<div className={styles["container"]}>
+		<PageContainer>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["header"]}>
-					<div className={styles["heading"]}>
-						<p className={styles["kicker"]}>{AnalyticLabel.KICKER}</p>
-						<h1 className={styles["title"]}>{AnalyticLabel.TITLE}</h1>
-						<p className={styles["description"]}>{AnalyticLabel.DESCRIPTION}</p>
-					</div>
+					<PageIntro
+						className={styles["heading"]}
+						description={AnalyticLabel.DESCRIPTION}
+						label={AnalyticLabel.KICKER}
+						title={AnalyticLabel.TITLE}
+					/>
 					<div className={styles["scope"]}>
 						<ScopeSelect control={control} />
 					</div>
 				</header>
 				{content}
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 
