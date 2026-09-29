@@ -1,0 +1,26 @@
+.notice {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+	justify-content: space-between;
+}
+
+.line {
+	display: flex;
+	gap: var(--space-8);
+	align-items: center;
+	margin: 0;
+	font-weight: 600;
+	color: var(--text-strong);
+}
+
+.line:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.icon {
+	flex-shrink: 0;
+	color: var(--fg-success);
+}

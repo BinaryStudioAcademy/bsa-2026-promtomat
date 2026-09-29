@@ -31,18 +31,13 @@ const getResponseFailure = (error: ResponseError): ToolFailure => {
 		};
 	}
 
-	const text = configureString(ToolErrorMessage.BACKEND_ERROR, {
-		code: error.code,
-		message: error.message,
-		status: String(error.status),
-	});
-
 	return {
 		outcome: ToolOutcome.BACKEND_ERROR,
-		text:
-			error.status === HTTPCode.NOT_FOUND
-				? `${text} ${ToolErrorHint.API_URL}`
-				: text,
+		text: configureString(ToolErrorMessage.BACKEND_ERROR, {
+			code: error.code,
+			message: error.message,
+			status: String(error.status),
+		}),
 	};
 };
 

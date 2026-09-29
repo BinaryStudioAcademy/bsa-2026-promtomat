@@ -1,6 +1,11 @@
-export { useComposeMutation } from "./composed-prompts-api.js";
+export {
+	useAdoptMutation,
+	useComposeMutation,
+} from "./composed-prompts-api.js";
 export { ComposeResultKind, FallbackReason } from "./libs/enums/enums.js";
 export {
+	type ComposedPromptAdoptRequestDto,
+	type ComposedPromptDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,

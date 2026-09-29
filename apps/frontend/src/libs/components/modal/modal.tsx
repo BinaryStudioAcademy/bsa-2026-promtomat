@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { Button } from "~/libs/components/button/button.js";
 import { Icon } from "~/libs/components/icon/icon.js";
 import { useOverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
-import { type IconName, KeyboardKey } from "~/libs/enums/enums.js";
+import { EventType, type IconName, KeyboardKey } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
@@ -150,10 +150,10 @@ const Modal = ({
 			return;
 		}
 
-		document.addEventListener("keydown", handleKeyDown);
+		document.addEventListener(EventType.KEYDOWN, handleKeyDown);
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
+			document.removeEventListener(EventType.KEYDOWN, handleKeyDown);
 		};
 	}, [handleKeyDown, isOpen, isTopBlocking]);
 

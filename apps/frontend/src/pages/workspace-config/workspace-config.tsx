@@ -10,7 +10,7 @@ import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
@@ -18,6 +18,7 @@ import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 import { AccessCard } from "./components/access-card/access-card.js";
 import { DangerZone } from "./components/danger-zone/danger-zone.js";
+import { RepositoryBindingsCard } from "./components/repository-bindings-card/repository-bindings-card.js";
 import { WorkspaceConfigForm } from "./components/workspace-config-form/workspace-config-form.js";
 import { WorkspaceConfigMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -36,7 +37,7 @@ const WorkspaceConfig: React.FC = () => {
 	} = useGetWorkspaceByIdQuery(parsedWorkspaceId);
 
 	const isWorkspaceMissing =
-		isServerError(error) && error.status === HTTPCode.NOT_FOUND;
+		checkIsServerError(error) && error.status === HTTPCode.NOT_FOUND;
 
 	const handleRetry = useCallback((): void => {
 		void refetch();
@@ -88,6 +89,7 @@ const WorkspaceConfig: React.FC = () => {
 					<h3 className={styles["section-title"]}>General</h3>
 					<WorkspaceConfigForm isOwner={isOwner} workspace={workspace} />
 				</section>
+				<RepositoryBindingsCard workspaceId={workspace.id} />
 				<section className={styles["card"]}>
 					<h3 className={styles["section-title"]}>Dataset target</h3>
 					<ProgressBar

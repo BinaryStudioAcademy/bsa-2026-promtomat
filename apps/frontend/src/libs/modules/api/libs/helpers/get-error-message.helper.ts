@@ -1,10 +1,10 @@
-import { isServerError } from "./is-server-error.helper.js";
+import { checkIsServerError } from "./check-is-server-error.helper.js";
 
 const getErrorMessage = (
 	error: unknown,
 	fallback: null | string = null,
 ): null | string => {
-	return isServerError(error) ? error.message : fallback;
+	return checkIsServerError(error) ? error.message : fallback;
 };
 
 export { getErrorMessage };

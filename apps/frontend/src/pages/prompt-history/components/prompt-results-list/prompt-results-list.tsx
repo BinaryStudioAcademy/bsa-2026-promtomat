@@ -3,14 +3,11 @@ import React from "react";
 import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
-import {
-	type PromptGetQueryDto,
-	type PromptItemResponseDto,
-} from "~/modules/prompts/libs/types/types.js";
+import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
 import { PromptHistoryLabel } from "../../libs/enums/enum.js";
-import { PromptDetailPanel } from "../prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";
 
@@ -27,7 +24,6 @@ type Properties = {
 	items: PromptItemResponseDto[];
 	onRetry: () => void;
 	onSelectPrompt: (promptId: number) => void;
-	queryPayload: Omit<PromptGetQueryDto, "page">;
 	selectedPromptId: null | number;
 };
 
@@ -41,7 +37,6 @@ const PromptResultsList: React.FC<Properties> = ({
 	items,
 	onRetry,
 	onSelectPrompt,
-	queryPayload,
 	selectedPromptId,
 }: Properties) => {
 	if (isLoadingWorkspaces || (hasWorkspace && isLoadingPrompts)) {
@@ -98,7 +93,7 @@ const PromptResultsList: React.FC<Properties> = ({
 						/>
 						{isSelected ? (
 							<div className={styles["mobile-detail"]} id={detailId}>
-								<PromptDetailPanel prompt={item} queryPayload={queryPayload} />
+								<PromptDetailPanel prompt={item} />
 							</div>
 						) : null}
 					</div>

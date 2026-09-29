@@ -7,6 +7,7 @@ export {
 	FallbackReason,
 } from "./libs/enums/enums.js";
 export {
+	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
@@ -15,6 +16,7 @@ export {
 	type PromptCandidateDto,
 } from "./libs/types/types.js";
 export {
+	composedPromptAdoptValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	composeValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";

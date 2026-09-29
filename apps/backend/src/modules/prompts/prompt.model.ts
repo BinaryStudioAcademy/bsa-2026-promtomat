@@ -14,7 +14,7 @@ import { WorkspaceModel } from "../workspaces/workspace.model.js";
 import { PromptColumnName } from "./libs/enums/enums.js";
 
 class PromptModel extends AbstractModel {
-	public efficiencyScore!: number;
+	public efficiencyScore!: null | number;
 
 	public labelId!: number;
 

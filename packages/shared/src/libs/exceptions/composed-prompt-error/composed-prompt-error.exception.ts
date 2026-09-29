@@ -31,6 +31,14 @@ class ComposedPromptError extends HTTPError {
 			status: HTTPCode.NOT_FOUND,
 		});
 	}
+
+	public static recomposeLimitReached(): ComposedPromptError {
+		return new ComposedPromptError({
+			code: ComposedPromptsErrorCode.RECOMPOSE_LIMIT_REACHED,
+			message: ComposedPromptsErrorMessage.RECOMPOSE_LIMIT_REACHED,
+			status: HTTPCode.TOO_MANY_REQUESTS,
+		});
+	}
 }
 
 export { ComposedPromptError };
