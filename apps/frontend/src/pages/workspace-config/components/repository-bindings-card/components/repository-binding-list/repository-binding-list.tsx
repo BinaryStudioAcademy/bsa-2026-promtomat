@@ -12,6 +12,7 @@ import styles from "./styles.module.css";
 type Properties = {
 	bindings: RepositoryBindingDto[];
 	emptyMessage: string;
+	emptySubtitle?: string;
 	errorMessage?: string;
 	isError?: boolean;
 	isLoading: boolean;
@@ -23,6 +24,7 @@ type Properties = {
 const RepositoryBindingList: React.FC<Properties> = ({
 	bindings,
 	emptyMessage,
+	emptySubtitle,
 	errorMessage,
 	isError = false,
 	isLoading,
@@ -60,7 +62,12 @@ const RepositoryBindingList: React.FC<Properties> = ({
 
 			{hasEmptyMessage && (
 				<li className={getValidClasses(styles["state"], styles["empty"])}>
-					{emptyMessage}
+					<div className={styles["empty-state"]}>
+						<p className={styles["empty-state-text"]}>{emptyMessage}</p>
+						{emptySubtitle && (
+							<p className={styles["empty-state-subtext"]}>{emptySubtitle}</p>
+						)}
+					</div>
 				</li>
 			)}
 

@@ -1,4 +1,8 @@
-import { Outlet as RouterOutlet, useLocation } from "react-router-dom";
+import {
+	Outlet as RouterOutlet,
+	ScrollRestoration,
+	useLocation,
+} from "react-router-dom";
 
 import { OverlayHost } from "~/libs/components/overlay-host/overlay-host.js";
 import { checkIsAuthPath } from "~/libs/helpers/helpers.js";
@@ -15,6 +19,7 @@ const App: React.FC = () => {
 
 	return (
 		<OverlayHost>
+			<ScrollRestoration />
 			<RouterOutlet />
 		</OverlayHost>
 	);

@@ -18,6 +18,7 @@ import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
 import { AccessCard } from "./components/access-card/access-card.js";
 import { DangerZone } from "./components/danger-zone/danger-zone.js";
+import { RepositoryBindingsCard } from "./components/repository-bindings-card/repository-bindings-card.js";
 import { WorkspaceConfigForm } from "./components/workspace-config-form/workspace-config-form.js";
 import { WorkspaceConfigMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
@@ -88,6 +89,7 @@ const WorkspaceConfig: React.FC = () => {
 					<h3 className={styles["section-title"]}>General</h3>
 					<WorkspaceConfigForm isOwner={isOwner} workspace={workspace} />
 				</section>
+				<RepositoryBindingsCard workspaceId={workspace.id} />
 				<section className={styles["card"]}>
 					<h3 className={styles["section-title"]}>Dataset target</h3>
 					<ProgressBar
