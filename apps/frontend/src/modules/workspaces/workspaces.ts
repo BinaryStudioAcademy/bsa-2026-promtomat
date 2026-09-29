@@ -1,5 +1,6 @@
 export {
 	WorkspaceListScope,
+	WorkspaceListSort,
 	WorkspacesApiTag,
 	WorkspaceValidationRule,
 } from "./libs/enums/enums.js";

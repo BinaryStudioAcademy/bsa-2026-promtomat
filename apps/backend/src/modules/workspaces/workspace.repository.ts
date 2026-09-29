@@ -62,10 +62,13 @@ class WorkspaceRepository {
 
 		if (sort === WorkspaceListSort.READINESS) {
 			query
-				.orderByRaw(`(??)::double precision / ?? ${SortOrder.DESC}`, [
-					SQLAlias.PROMPT_COUNT,
-					`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.DATASET_TARGET}`,
-				])
+				.orderByRaw(
+					`count(distinct ??)::double precision / ?? ${SortOrder.DESC}`,
+					[
+						`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.DATASET_TARGET}`,
+					],
+				)
 				.orderBy(workspaceId, SortOrder.ASC);
 
 			return;

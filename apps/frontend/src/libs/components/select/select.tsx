@@ -16,10 +16,13 @@ import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
 	adornment?: React.ReactNode;
+	className?: string | undefined;
 	control: Control<T, null>;
 	descriptionId?: string;
+	fieldClassName?: string | undefined;
 	isDisabled?: boolean;
 	isLabelHidden?: boolean;
+	isMessageHidden?: boolean;
 	isRequired?: boolean;
 	label: string;
 	leadingIconName?: ValueOf<typeof IconName>;
@@ -31,10 +34,13 @@ type Properties<T extends FieldValues> = {
 
 const Select = <T extends FieldValues>({
 	adornment,
+	className,
 	control,
 	descriptionId,
+	fieldClassName,
 	isDisabled = false,
 	isLabelHidden = false,
+	isMessageHidden = false,
 	isRequired = false,
 	label,
 	leadingIconName,
@@ -57,7 +63,8 @@ const Select = <T extends FieldValues>({
 
 	const hasError = Boolean(error);
 	const errorMessage = error?.message;
-	const describedById = descriptionId ?? errorMessage ?? errorMessageId;
+	const describedById =
+		descriptionId ?? (errorMessage === undefined ? undefined : errorMessageId);
 
 	const handleChange = useCallback(
 		(event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -73,7 +80,7 @@ const Select = <T extends FieldValues>({
 	);
 
 	return (
-		<div className={styles["field"]}>
+		<div className={getValidClasses(styles["field"], fieldClassName)}>
 			<label
 				className={getValidClasses(
 					styles["label"],
@@ -108,6 +115,7 @@ const Select = <T extends FieldValues>({
 						Boolean(adornment) && styles["adorned"],
 						hasError && styles["error"],
 						leadingIconName && styles["with-leading-icon"],
+						className,
 					)}
 					id={selectId}
 					onChange={handleChange}
@@ -126,7 +134,7 @@ const Select = <T extends FieldValues>({
 				</select>
 				<Icon className={styles["chevron"]} iconName={IconName.CHEVRON} />
 			</div>
-			{!descriptionId && (
+			{!descriptionId && (!isMessageHidden || errorMessage !== undefined) && (
 				<span className={styles["message"]} id={errorMessageId}>
 					{errorMessage}
 				</span>
