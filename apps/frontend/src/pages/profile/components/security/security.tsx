@@ -6,7 +6,7 @@ import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useResetOnCooldownEnd } from "~/libs/hooks/use-reset-on-cooldown-end/use-reset-on-cooldown-end.hook.js";
-import { isRateLimitError } from "~/libs/modules/api/libs/helpers/is-rate-limit-error.helper.js";
+import { checkIsRateLimitError } from "~/libs/modules/api/libs/helpers/check-is-rate-limit-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 
@@ -25,7 +25,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 	useResetOnCooldownEnd(error, reset);
 
 	const isCoolingDown =
-		isRateLimitError(error) && error.retryAfterSeconds !== null;
+		checkIsRateLimitError(error) && error.retryAfterSeconds !== null;
 
 	const handleResetClick = useCallback((): void => {
 		void forgotPassword({ email }).then((result) => {
@@ -62,7 +62,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 					variant={ButtonVariant.SECONDARY}
 				/>
 			</div>
-			{isRateLimitError(error) && <FormAlert error={error} />}
+			{checkIsRateLimitError(error) && <FormAlert error={error} />}
 		</Section>
 	);
 };

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
 import { TimeUnit } from "~/libs/enums/enums.js";
-import { isRateLimitError } from "~/libs/modules/api/libs/helpers/is-rate-limit-error.helper.js";
+import { checkIsRateLimitError } from "~/libs/modules/api/libs/helpers/check-is-rate-limit-error.helper.js";
 
 const useResetOnCooldownEnd = (error: unknown, reset: () => void): void => {
 	useEffect(() => {
-		if (!isRateLimitError(error) || error.retryAfterSeconds === null) {
+		if (!checkIsRateLimitError(error) || error.retryAfterSeconds === null) {
 			return;
 		}
 
