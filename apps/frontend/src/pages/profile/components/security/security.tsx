@@ -3,6 +3,7 @@ import React, { useCallback } from "react";
 import { ButtonLink } from "~/libs/components/button-link/button-link.js";
 import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { AppRoute, ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 import { useResetOnCooldownEnd } from "~/libs/hooks/use-reset-on-cooldown-end/use-reset-on-cooldown-end.hook.js";
 import { isRateLimitError } from "~/libs/modules/api/libs/helpers/is-rate-limit-error.helper.js";
@@ -31,7 +32,7 @@ const Security: React.FC<Properties> = ({ email }: Properties) => {
 			if (!result.error) {
 				showNotification({
 					message: SettingsMessage.RESET_PASSWORD_SENT,
-					type: "success",
+					type: NotificationType.SUCCESS,
 				});
 			}
 		});

@@ -6,7 +6,7 @@ import {
 	type UseFormSetError,
 } from "react-hook-form";
 
-import { isValidationError } from "~/libs/modules/api/libs/helpers/is-validation-error.helper.js";
+import { checkIsValidationError } from "~/libs/modules/api/libs/helpers/check-is-validation-error.helper.js";
 
 type Parameters<T extends FieldValues> = {
 	clearErrors: UseFormClearErrors<T>;
@@ -26,7 +26,7 @@ const useServerFormErrors = <T extends FieldValues>({
 	setError,
 }: Parameters<T>): ServerFormErrorsResult => {
 	const details = useMemo(
-		() => (isValidationError(error) ? error.details : []),
+		() => (checkIsValidationError(error) ? error.details : []),
 		[error],
 	);
 

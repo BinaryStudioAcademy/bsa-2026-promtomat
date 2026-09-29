@@ -1,4 +1,4 @@
-import { getValidClasses } from "~/libs/helpers/get-valid-classes.helper.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { LoaderColor, LoaderSize, LoaderVariant } from "./libs/enums/enums.js";

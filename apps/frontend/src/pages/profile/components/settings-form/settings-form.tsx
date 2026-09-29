@@ -7,7 +7,7 @@ import { Select } from "~/libs/components/select/select.js";
 import { UNEXPECTED_ERROR } from "~/libs/constants/constants.js";
 import { ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { ValueOf } from "~/libs/types/types.js";
 import { AuthValidationRule } from "~/modules/auth/auth.js";
@@ -97,7 +97,7 @@ const SettingsForm: React.FC<Properties> = ({
 				})
 				.catch((caughtError: unknown) => {
 					if (
-						isServerError(caughtError) &&
+						checkIsServerError(caughtError) &&
 						caughtError.code === ErrorCode.AUTH_NICKNAME_ALREADY_EXISTS
 					) {
 						setError("nickname", {
@@ -106,7 +106,7 @@ const SettingsForm: React.FC<Properties> = ({
 						});
 					} else {
 						showNotification({
-							message: isServerError(caughtError)
+							message: checkIsServerError(caughtError)
 								? caughtError.message
 								: UNEXPECTED_ERROR,
 							type: NotificationType.DANGER,

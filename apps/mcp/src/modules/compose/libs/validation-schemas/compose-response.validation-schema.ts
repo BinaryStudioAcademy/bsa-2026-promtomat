@@ -11,6 +11,7 @@ const composeResponse: z.ZodType<ComposeResponseDto> = z.discriminatedUnion(
 		z.object({
 			composedPrompt,
 			kind: z.literal(ComposeResultKind.COMPOSED),
+			remainingRecompositions: z.number(),
 		}),
 		z.object({
 			kind: z.literal(ComposeResultKind.FALLBACK),
