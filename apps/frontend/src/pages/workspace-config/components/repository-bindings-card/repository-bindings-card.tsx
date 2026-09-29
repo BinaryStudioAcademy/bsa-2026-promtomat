@@ -44,6 +44,9 @@ const RepositoryBindingsCard: React.FC<Properties> = ({
 			<RepositoryBindingList
 				bindings={bindingList}
 				emptyMessage={WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS}
+				emptySubtitle={
+					WorkspaceRepositoryBindingsMessage.NO_REPOSITORY_BINDINGS_HINT
+				}
 				errorMessage={
 					WorkspaceRepositoryBindingsMessage.REPOSITORY_BINDINGS_LOAD_FAILED
 				}
