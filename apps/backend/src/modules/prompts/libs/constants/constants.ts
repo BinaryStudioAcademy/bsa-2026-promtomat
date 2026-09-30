@@ -12,5 +12,4 @@ export { PROMPT_LABEL_ID } from "./prompt-label-id.constant.js";
 export { PROMPT_WORKSPACE_ID } from "./prompt-workspace-id.constant.js";
 export { STREAK_DATE_FORMAT } from "./streak-date-format.constant.js";
 export { UNEXPECTED_ERROR } from "./unexpected-error.constant.js";
-export { WORKSPACE_RELATION } from "./workspace-relation.constant.js";
 export { DEFAULT_TIME_ZONE } from "@promptomat/shared";

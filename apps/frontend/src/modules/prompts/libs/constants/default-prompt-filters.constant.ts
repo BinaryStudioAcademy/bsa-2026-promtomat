@@ -1,7 +1,7 @@
-import { PromptQualityTier } from "../enums/enums.js";
+import { PromptHistoryScoreTier } from "~/modules/prompt-history/libs/enums/enums.js";
 
 const DEFAULT_PROMPT_FILTERS = {
-	qualityTier: PromptQualityTier.ALL,
+	qualityTier: PromptHistoryScoreTier.ALL,
 	search: "",
 	workspaceId: null,
 } as const;

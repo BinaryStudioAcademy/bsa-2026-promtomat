@@ -6,6 +6,7 @@ const APIPath = {
 	EVALUATIONS: "/evaluations",
 	HEALTH: "/health",
 	LABELS: "/labels",
+	PROMPT_HISTORY: "/prompt-history",
 	PROMPTS: "/prompts",
 	REPOSITORY_BINDINGS: "/repository-bindings",
 	USERS: "/users",

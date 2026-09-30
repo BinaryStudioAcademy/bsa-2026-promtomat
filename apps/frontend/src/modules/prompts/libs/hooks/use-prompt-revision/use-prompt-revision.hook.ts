@@ -22,7 +22,7 @@ import {
 import { promptUpdateBodyValidationSchema } from "../../validation-schemas/validation-schemas.js";
 
 type Parameters = {
-	prompt: PromptItemResponseDto;
+	prompt: PromptItemResponseDto & { isComposed?: boolean };
 };
 
 type ReturnValue = {
@@ -39,6 +39,7 @@ type ReturnValue = {
 
 const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 	const navigate = useNavigate();
+	const isComposed = Boolean(prompt.isComposed);
 	const [updateBody, { isLoading: isSavingBody }] =
 		useUpdatePromptBodyMutation();
 	const [evaluate, { isLoading: isSavingScore }] = useEvaluateMutation();
@@ -66,6 +67,10 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 	}, [reset]);
 
 	const handleSaveBody = useCallback((): void => {
+		if (isComposed) {
+			return;
+		}
+
 		void handleSubmit(async (payload: PromptUpdateBodyRequestDto) => {
 			if (payload.promptBody === lastBodyReference.current) {
 				setIsEditingBody(false);
@@ -87,7 +92,7 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 				reset({ promptBody: previousBody });
 			}
 		})();
-	}, [handleSubmit, prompt.id, reset, updateBody]);
+	}, [handleSubmit, isComposed, prompt.id, reset, updateBody]);
 
 	const handleScoreSelect = useCallback(
 		(score: number) => {
@@ -99,7 +104,9 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 				void evaluate({
 					score,
 					targetId: prompt.id,
-					targetType: EvaluationTargetType.PROMPT,
+					targetType: isComposed
+						? EvaluationTargetType.COMPOSED_PROMPT
+						: EvaluationTargetType.PROMPT,
 				})
 					.unwrap()
 					.then(() => {
@@ -116,7 +123,7 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 					});
 			};
 		},
-		[evaluate, isSavingScore, prompt.id],
+		[evaluate, isComposed, isSavingScore, prompt.id],
 	);
 
 	const handleFork = useCallback((): void => {

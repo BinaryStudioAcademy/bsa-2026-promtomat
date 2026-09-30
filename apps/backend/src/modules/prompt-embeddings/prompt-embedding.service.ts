@@ -34,8 +34,6 @@ import {
 	type NearestPromptLabelsQuery,
 	type NearestPromptQuery,
 	type PromptEmbeddingSource,
-	type PromptSemanticSearchResult,
-	type PromptSemanticSearchTextQuery,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingRepository } from "./prompt-embedding.repository.js";
@@ -307,16 +305,9 @@ class PromptEmbeddingService {
 		}
 	}
 
-	public async findAllByQuery({
-		limit,
-		offset,
-		qualityTier,
-		search,
-		userId,
-		workspaceId,
-	}: PromptSemanticSearchTextQuery): Promise<PromptSemanticSearchResult> {
+	public async embedQuery(query: string): Promise<Embedding> {
 		try {
-			const [embedding] = await this.embeddingService.embed([search]);
+			const [embedding] = await this.embeddingService.embed([query]);
 
 			if (!embedding) {
 				throw new PromptEmbeddingError(
@@ -324,14 +315,7 @@ class PromptEmbeddingService {
 				);
 			}
 
-			return await this.promptEmbeddingRepository.findAll({
-				embedding,
-				limit,
-				offset,
-				qualityTier,
-				userId,
-				workspaceId,
-			});
+			return embedding;
 		} catch (error) {
 			if (
 				error instanceof EmbeddingNotReadyError ||

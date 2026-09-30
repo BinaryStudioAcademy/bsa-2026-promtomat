@@ -1,8 +1,7 @@
 export { PromptProgress, PromptValidationRule } from "./libs/enums/enums.js";
-export { getPromptRoute, getScoreLabel } from "./libs/helpers/helpers.js";
+export { getPromptRoute } from "./libs/helpers/helpers.js";
 export {
 	type PromptCreateRequestDto,
-	type PromptDto,
 	type PromptRecentDto,
 } from "./libs/types/types.js";
 export {

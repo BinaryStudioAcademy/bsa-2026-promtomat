@@ -13,7 +13,6 @@ import { PromptsApiPath } from "./libs/enums/enums.js";
 import { promptAccessHook } from "./libs/hooks/prompt-access.hook.js";
 import {
 	type PromptCreateRequestDto,
-	type PromptGetQueryDto,
 	type PromptIdParameterDto,
 	type PromptRouteParametersDto,
 	type PromptStreakQueryDto,
@@ -23,7 +22,6 @@ import {
 } from "./libs/types/types.js";
 import {
 	promptCreateValidationSchema,
-	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptStreakQueryValidationSchema,
@@ -103,22 +101,6 @@ import { type PromptService } from "./prompt.service.js";
  *           type: number
  *         workspaceName:
  *           type: string
- *     PromptGetAllResponse:
- *       type: object
- *       properties:
- *         averageScore:
- *           type: number
- *           nullable: true
- *         items:
- *           type: array
- *           items:
- *             $ref: "#/components/schemas/PromptItem"
- *         page:
- *           type: number
- *         pageSize:
- *           type: number
- *         totalCount:
- *           type: number
  *     PromptRecent:
  *       type: object
  *       properties:
@@ -202,23 +184,6 @@ class PromptController extends BaseController {
 			preHandler: workspaceAccessHook(this.workspaceService),
 			validation: {
 				body: promptCreateValidationSchema,
-			},
-		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.findAll(
-					options as APIHandlerOptions<{
-						query: PromptGetQueryDto;
-					}>,
-				),
-			method: HTTPMethod.GET,
-			path: PromptsApiPath.ROOT,
-			preHandler: workspaceAccessHook(this.workspaceService, {
-				isWorkspaceOptional: true,
-			}),
-			validation: {
-				query: promptGetQueryValidationSchema,
 			},
 		});
 
@@ -338,73 +303,6 @@ class PromptController extends BaseController {
 		return {
 			payload: await this.promptService.create(payload),
 			status: HTTPCode.CREATED,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /prompts:
-	 *   get:
-	 *     description: Returns paginated prompts list with metrics
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: query
-	 *         name: page
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *       - in: query
-	 *         name: limit
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *           maximum: 100
-	 *       - in: query
-	 *         name: search
-	 *         schema:
-	 *           type: string
-	 *       - in: query
-	 *         name: score
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *           maximum: 10
-	 *       - in: query
-	 *         name: workspaceId
-	 *         schema:
-	 *           type: integer
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/PromptGetAllResponse"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	private async findAll(
-		options: APIHandlerOptions<{
-			query: PromptGetQueryDto;
-		}>,
-	): Promise<APIHandlerResponse> {
-		return {
-			payload: await this.promptService.findAll({
-				query: options.query,
-				userId: options.user?.id as number,
-			}),
-			status: HTTPCode.OK,
 		};
 	}
 

@@ -4,6 +4,7 @@ import {
 	HTTPMethod,
 } from "~/libs/enums/enums.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
+import { ComposedPromptsApiTag } from "~/modules/composed-prompts/libs/enums/enums.js";
 import { PromptsApiTag } from "~/modules/prompts/libs/enums/enums.js";
 
 import { EvaluationsApiPath } from "./libs/enums/enums.js";
@@ -14,7 +15,11 @@ import {
 
 const evaluationApi = baseApi
 	.enhanceEndpoints({
-		addTagTypes: [PromptsApiTag.PROMPT],
+		addTagTypes: [
+			PromptsApiTag.PROMPT,
+			PromptsApiTag.PROMPT_HISTORY,
+			ComposedPromptsApiTag.COMPOSED_PROMPT,
+		],
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
@@ -28,10 +33,20 @@ const evaluationApi = baseApi
 					}
 
 					if (result.targetType === EvaluationTargetType.PROMPT) {
-						return [PromptsApiTag.PROMPT];
+						return [PromptsApiTag.PROMPT, PromptsApiTag.PROMPT_HISTORY];
 					}
 
-					return [];
+					return [
+						{
+							id: result.targetId,
+							type: ComposedPromptsApiTag.COMPOSED_PROMPT,
+						},
+						{
+							id: "LIST",
+							type: ComposedPromptsApiTag.COMPOSED_PROMPT,
+						},
+						PromptsApiTag.PROMPT_HISTORY,
+					];
 				},
 				query: (payload) => ({
 					body: payload,

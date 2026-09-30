@@ -3,6 +3,7 @@ import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
 import { type MutationOnQueryStarted } from "~/libs/modules/api/libs/types/mutation-on-query-started.type.js";
 import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
+import { type PromptHistoryGetQueryDto } from "~/modules/prompt-history/libs/types/types.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
 import {
@@ -14,7 +15,6 @@ import {
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetAllResponseDto,
-	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptStreakQueryDto,
@@ -72,6 +72,7 @@ const promptApi = baseApi
 		addTagTypes: [
 			AnalyticsApiTag.ANALYTIC,
 			PromptsApiTag.PROMPT,
+			PromptsApiTag.PROMPT_HISTORY,
 			WorkspacesApiTag.WORKSPACE,
 		],
 	})
@@ -98,7 +99,7 @@ const promptApi = baseApi
 			}),
 			getPrompts: builder.infiniteQuery<
 				PromptGetAllResponseDto,
-				Omit<PromptGetQueryDto, "page">,
+				Omit<PromptHistoryGetQueryDto, "page">,
 				number
 			>({
 				infiniteQueryOptions: {
@@ -113,10 +114,10 @@ const promptApi = baseApi
 					},
 					initialPageParam: PaginationValue.DEFAULT_PAGE,
 				},
-				providesTags: [PromptsApiTag.PROMPT],
+				providesTags: [PromptsApiTag.PROMPT_HISTORY],
 				query: ({ pageParam, queryArg }) => ({
 					params: { ...queryArg, page: pageParam },
-					url: APIPath.PROMPTS,
+					url: APIPath.PROMPT_HISTORY,
 				}),
 			}),
 			getPromptStreak: builder.query<

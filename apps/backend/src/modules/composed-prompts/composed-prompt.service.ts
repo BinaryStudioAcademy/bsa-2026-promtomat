@@ -32,14 +32,12 @@ import {
 	selectUsedSources,
 } from "./libs/helpers/helpers.js";
 import {
-	type ComposedPromptAdoptPayload,
 	type ComposedPromptDto,
 	type ComposePayload,
 	type ComposeResult,
 	type GenerationOutcome,
 	type ModelCallLog,
 	type PromptCandidateDto,
-	type PromptDto,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -284,25 +282,6 @@ class ComposedPromptService {
 			sources,
 			workspaceId,
 		};
-	}
-
-	public async adopt(payload: ComposedPromptAdoptPayload): Promise<PromptDto> {
-		const { id, promptBody, score, userId } = payload;
-		const composedPrompt = await this.composedPromptRepository.findById(id);
-
-		if (!composedPrompt) {
-			throw ComposedPromptError.notFound();
-		}
-
-		const { body, description, workspaceId } = composedPrompt.toObject();
-
-		return await this.promptService.create({
-			efficiencyScore: score,
-			promptBody: promptBody ?? body,
-			taskIntent: description,
-			userId,
-			workspaceId,
-		});
 	}
 
 	public async compose(payload: ComposePayload): Promise<ComposeResult> {
