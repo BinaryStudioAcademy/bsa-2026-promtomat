@@ -1,17 +1,15 @@
-import {
-	PromptQualityTier,
-	QualityScoreThreshold,
-} from "~/modules/prompts/libs/enums/enums.js";
+import { ScoreTierMin } from "~/libs/enums/enums.js";
+import { PromptHistoryScoreTier } from "~/modules/prompt-history/libs/enums/enums.js";
 
 const checkMatchesQualityTier = (
 	computedScore: null | number,
 	qualityTier?: string,
 ): boolean => {
-	if (!qualityTier || qualityTier === PromptQualityTier.ALL) {
+	if (!qualityTier || qualityTier === PromptHistoryScoreTier.ALL) {
 		return true;
 	}
 
-	if (qualityTier === PromptQualityTier.UNRATED) {
+	if (qualityTier === PromptHistoryScoreTier.UNRATED) {
 		return computedScore === null;
 	}
 
@@ -20,19 +18,15 @@ const checkMatchesQualityTier = (
 	}
 
 	switch (qualityTier) {
-		case PromptQualityTier.NEEDS_IMPROVEMENT: {
-			return (
-				computedScore >= QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT &&
-				computedScore < QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT
-			);
+		case PromptHistoryScoreTier.HIGH: {
+			return computedScore >= ScoreTierMin.HIGH;
 		}
-		case PromptQualityTier.PROVEN: {
-			return computedScore >= QualityScoreThreshold.PROVEN;
+		case PromptHistoryScoreTier.LOW: {
+			return computedScore < ScoreTierMin.MID;
 		}
-		case PromptQualityTier.USABLE: {
+		case PromptHistoryScoreTier.MID: {
 			return (
-				computedScore >= QualityScoreThreshold.USABLE &&
-				computedScore < QualityScoreThreshold.PROVEN
+				computedScore >= ScoreTierMin.MID && computedScore < ScoreTierMin.HIGH
 			);
 		}
 		default: {

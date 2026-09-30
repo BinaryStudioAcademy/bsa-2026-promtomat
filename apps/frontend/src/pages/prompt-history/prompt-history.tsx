@@ -9,8 +9,7 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { useGetComposedPromptsInfiniteQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
-import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
+import { PromptHistoryScoreTier } from "~/modules/prompt-history/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import {
@@ -22,7 +21,6 @@ import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detai
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
 import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
 import {
-	calculateAverageScore,
 	resolveAverageScoreLabel,
 	resolveLoadMoreLabel,
 	resolveModeHint,
@@ -34,26 +32,28 @@ import {
 } from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
 
+const NO_COMPOSED_ITEMS: never[] = [];
+
 const QUALITY_TIER_OPTIONS = [
 	{
 		label: PromptHistoryLabel.QUALITY_TIER_ALL,
-		value: PromptQualityTier.ALL,
+		value: PromptHistoryScoreTier.ALL,
 	},
 	{
-		label: PromptHistoryLabel.QUALITY_TIER_PROVEN,
-		value: PromptQualityTier.PROVEN,
+		label: PromptHistoryLabel.QUALITY_TIER_HIGH,
+		value: PromptHistoryScoreTier.HIGH,
 	},
 	{
-		label: PromptHistoryLabel.QUALITY_TIER_USABLE,
-		value: PromptQualityTier.USABLE,
+		label: PromptHistoryLabel.QUALITY_TIER_MID,
+		value: PromptHistoryScoreTier.MID,
 	},
 	{
-		label: PromptHistoryLabel.QUALITY_TIER_NEEDS_IMPROVEMENT,
-		value: PromptQualityTier.NEEDS_IMPROVEMENT,
+		label: PromptHistoryLabel.QUALITY_TIER_LOW,
+		value: PromptHistoryScoreTier.LOW,
 	},
 	{
 		label: PromptHistoryLabel.QUALITY_TIER_UNRATED,
-		value: PromptQualityTier.UNRATED,
+		value: PromptHistoryScoreTier.UNRATED,
 	},
 ];
 
@@ -81,32 +81,23 @@ const PromptHistory: React.FC = () => {
 	const hasWorkspace = typeof workspaceId === "number";
 
 	const queryPayload = hasWorkspace
-		? { ...filterQueryPayload, workspaceId }
+		? {
+				limit: filterQueryPayload.limit,
+				qualityTier: filterQueryPayload.qualityTier,
+				search: filterQueryPayload.search,
+				workspaceId,
+			}
 		: skipToken;
 
 	const {
 		data,
-		fetchNextPage: fetchNextRegularPage,
-		hasNextPage: hasNextRegularPage,
-		isError: isPromptsError,
-		isFetching: isPromptsFetching,
-		isLoading: isPromptsLoading,
-		refetch: refetchPrompts,
+		fetchNextPage,
+		hasNextPage,
+		isError,
+		isFetching,
+		isLoading,
+		refetch,
 	} = useGetPromptsInfiniteQuery(queryPayload);
-
-	const composedQueryArguments = hasWorkspace
-		? { search, workspaceId }
-		: skipToken;
-
-	const {
-		data: composedPromptsData,
-		fetchNextPage: fetchNextComposedPage,
-		hasNextPage: hasNextComposedPage,
-		isError: isComposedError,
-		isFetching: isComposedFetching,
-		isLoading: isComposedLoading,
-		refetch: refetchComposed,
-	} = useGetComposedPromptsInfiniteQuery(composedQueryArguments);
 
 	const workspaceOptions =
 		workspaces?.map(({ id, name }) => ({
@@ -122,24 +113,16 @@ const PromptHistory: React.FC = () => {
 		[data?.pages],
 	);
 
-	const composedItems = useMemo(
-		() => composedPromptsData?.pages.flatMap((page) => page.items) ?? [],
-		[composedPromptsData?.pages],
-	);
-
 	const items = useUnifiedPromptHistory({
-		composedItems,
+		composedItems: NO_COMPOSED_ITEMS,
 		qualityTier: filterQueryPayload.qualityTier,
 		regularItems,
 		workspaceName: activeWorkspaceName,
 	});
 
 	const [firstPage] = data?.pages ?? [];
-	const [firstComposedPage] = composedPromptsData?.pages ?? [];
-	const regularTotalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
-	const composedTotalPrompts = firstComposedPage?.totalCount ?? ZERO_VALUE;
-	const totalPrompts = regularTotalPrompts + composedTotalPrompts;
-	const averageScore = useMemo(() => calculateAverageScore(items), [items]);
+	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
+	const averageScore = firstPage?.averageScore ?? null;
 
 	const hasActiveFilters =
 		Boolean(search) || Boolean(filterQueryPayload.qualityTier);
@@ -153,29 +136,13 @@ const PromptHistory: React.FC = () => {
 	const { handleSelectPrompt, selectedPrompt, selectedPromptKey } =
 		usePromptSelection({ filterKey, items });
 
-	const isFetching = isPromptsFetching || isComposedFetching;
-	const isLoading = isPromptsLoading || isComposedLoading;
-	const isError = isPromptsError || isComposedError;
-	const hasNextPage = hasNextRegularPage || hasNextComposedPage;
-
 	const handleLoadMore = useCallback((): void => {
-		if (hasNextRegularPage) {
-			void fetchNextRegularPage();
-		}
-		if (hasNextComposedPage) {
-			void fetchNextComposedPage();
-		}
-	}, [
-		fetchNextComposedPage,
-		fetchNextRegularPage,
-		hasNextComposedPage,
-		hasNextRegularPage,
-	]);
+		void fetchNextPage();
+	}, [fetchNextPage]);
 
 	const handleRetry = useCallback((): void => {
-		void refetchPrompts();
-		void refetchComposed();
-	}, [refetchComposed, refetchPrompts]);
+		void refetch();
+	}, [refetch]);
 
 	const resultCountLabel = resolveResultCountLabel(items.length);
 	const modeHint = resolveModeHint(search);

@@ -4,7 +4,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
-import { type PromptGetQueryDto } from "~/modules/prompts/libs/types/types.js";
+import { type PromptHistoryGetQueryDto } from "~/modules/prompt-history/libs/types/types.js";
 
 import { PromptHistoryLabel } from "../../libs/enums/prompt-history-label.enum.js";
 import { type PromptHistoryItem } from "../../libs/types/types.js";
@@ -25,7 +25,7 @@ type Properties = {
 	items: PromptHistoryItem[];
 	onRetry: () => void;
 	onSelectPrompt: (uniqueKey: string) => void;
-	queryPayload: Omit<PromptGetQueryDto, "page">;
+	queryPayload: Omit<PromptHistoryGetQueryDto, "page">;
 	selectedPromptKey: null | string;
 };
 

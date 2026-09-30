@@ -17,11 +17,9 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type NavigableRoute } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
+import { type PromptHistoryGetQueryDto } from "~/modules/prompt-history/libs/types/types.js";
 import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
-import {
-	type PromptGetQueryDto,
-	type PromptUpdateIntentRequestDto,
-} from "~/modules/prompts/libs/types/types.js";
+import { type PromptUpdateIntentRequestDto } from "~/modules/prompts/libs/types/types.js";
 import { useUpdateTaskIntentMutation } from "~/modules/prompts/prompts-api.js";
 import { promptUpdateIntentValidationSchema } from "~/modules/prompts/prompts.js";
 
@@ -34,7 +32,7 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	prompt: PromptHistoryItem;
-	queryPayload: Omit<PromptGetQueryDto, "page">;
+	queryPayload: Omit<PromptHistoryGetQueryDto, "page">;
 };
 
 const PromptDetailPanel: React.FC<Properties> = ({

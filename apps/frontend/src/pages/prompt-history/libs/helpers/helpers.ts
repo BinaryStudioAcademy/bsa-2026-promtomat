@@ -1,4 +1,3 @@
-export { calculateAverageScore } from "./calculate-average-score.helper.js";
 export { checkMatchesQualityTier } from "./check-matches-quality-tier.helper.js";
 export { mapComposedToHistoryItem } from "./map-composed-to-history-item.helper.js";
 export { mapPromptToHistoryItem } from "./map-prompt-to-history-item.helper.js";

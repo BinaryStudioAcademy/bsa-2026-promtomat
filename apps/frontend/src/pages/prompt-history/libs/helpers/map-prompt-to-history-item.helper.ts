@@ -3,11 +3,11 @@ import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.j
 import { type PromptHistoryItem } from "../types/types.js";
 
 const mapPromptToHistoryItem = (
-	prompt: PromptItemResponseDto,
+	prompt: PromptItemResponseDto & { isComposed?: boolean },
 ): PromptHistoryItem => ({
 	...prompt,
-	isComposed: false,
-	uniqueKey: `training-${String(prompt.id)}`,
+	isComposed: Boolean(prompt.isComposed),
+	uniqueKey: `${prompt.isComposed ? "composed" : "training"}-${String(prompt.id)}`,
 });
 
 export { mapPromptToHistoryItem };
