@@ -6,7 +6,6 @@ export { type GenerationOutcome } from "./generation-outcome.type.js";
 export { type ModelCallLog } from "./model-call-log.type.js";
 export {
 	type ComposedPromptDto,
-	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,

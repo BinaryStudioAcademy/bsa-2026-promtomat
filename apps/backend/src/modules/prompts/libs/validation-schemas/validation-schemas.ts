@@ -1,6 +1,5 @@
 export {
 	promptCreateValidationSchema,
-	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	promptRouteParametersValidationSchema,
 	promptStreakQueryValidationSchema,

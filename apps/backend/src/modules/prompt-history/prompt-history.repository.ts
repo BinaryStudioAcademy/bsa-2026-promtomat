@@ -1,4 +1,4 @@
-import { type QueryBuilder, raw } from "objection";
+import { type Model, type QueryBuilder, raw } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ScoreTierMin } from "~/libs/enums/enums.js";
@@ -29,18 +29,11 @@ import {
 	PromptHistorySqlAlias,
 } from "./libs/enums/enums.js";
 import {
+	type BranchFilters,
 	type PromptHistoryFindAllResult,
 	type PromptHistoryGetQueryDto,
 	type PromptHistoryRawRow,
 } from "./libs/types/types.js";
-
-type BranchFilters = {
-	embedding: Embedding | null;
-	qualityTier?: string | undefined;
-	search?: string | undefined;
-	userId: number;
-	workspaceId: number;
-};
 
 class PromptHistoryRepository {
 	private composedPromptModel: typeof ComposedPromptModel;
@@ -55,9 +48,8 @@ class PromptHistoryRepository {
 		this.composedPromptModel = composedPromptModel;
 	}
 
-	private applyQualityTierCondition(
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		builder: QueryBuilder<any>,
+	private applyQualityTierCondition<M extends Model>(
+		builder: QueryBuilder<M>,
 		scoreReference: ReturnType<typeof raw> | string,
 		qualityTier?: string,
 	): void {

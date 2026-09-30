@@ -1,15 +1,8 @@
 import { raw, type Transaction } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import {
-	PromptQualityTier,
-	QualityScoreThreshold,
-	QueryClearTarget,
-	SortOrder,
-	SQLAlias,
-} from "~/libs/enums/enums.js";
+import { QueryClearTarget, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
-import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import {
 	FIRST_PAGE,
@@ -19,10 +12,8 @@ import {
 	PROMPT_LABEL_ID,
 	PROMPT_WORKSPACE_ID,
 	STREAK_DATE_FORMAT,
-	WORKSPACE_RELATION,
 } from "~/modules/prompts/libs/constants/constants.js";
 import {
-	PaginationValue,
 	PromptColumnName,
 	PromptProgress,
 } from "~/modules/prompts/libs/enums/enums.js";
@@ -33,14 +24,10 @@ import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 import {
 	type PromptAggregateResult,
 	type PromptDto,
-	type PromptFilterByQueryParameters,
-	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
 	type PromptItemResponseDto,
 	type PromptRawKnexRow,
 	type PromptRecentDto,
-	type PromptRepositoryFindAllResponseDto,
-	type PromptRepositoryItem,
 	type PromptStreakDayDto,
 	type PromptUpdatePayload,
 	type PromptWorkspaceRawRow,
@@ -51,54 +38,6 @@ class PromptRepository {
 
 	public constructor(promptModel: typeof PromptModel) {
 		this.promptModel = promptModel;
-	}
-
-	private applyFilters(
-		query: ReturnType<typeof this.promptModel.query>,
-		{ userId, workspaceId }: PromptFilterByQueryParameters,
-	): ReturnType<typeof this.promptModel.query> {
-		if (workspaceId) {
-			query.where(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-				workspaceId,
-			);
-		}
-
-		query.where((builder) => {
-			builder
-				.whereExists(
-					this.promptModel
-						.query()
-						.select(`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`)
-						.from(DatabaseTableName.WORKSPACES)
-						.whereColumn(
-							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-						)
-						.where(
-							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.USER_ID}`,
-							userId,
-						),
-				)
-				.orWhereExists(
-					this.promptModel
-						.query()
-						.select(
-							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
-						)
-						.from(DatabaseTableName.CONTRIBUTORS)
-						.whereColumn(
-							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-						)
-						.where(
-							`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
-							userId,
-						),
-				);
-		});
-
-		return query;
 	}
 
 	private async findAggregate(
@@ -196,120 +135,6 @@ class PromptRepository {
 			date: row.date,
 			promptCount: Number(row.promptCount),
 		}));
-	}
-
-	public async findAll({
-		query,
-		userId,
-	}: PromptFindAllOptions): Promise<PromptRepositoryFindAllResponseDto> {
-		const {
-			limit = PaginationValue.DEFAULT_LIMIT,
-			page = PaginationValue.DEFAULT_PAGE,
-			qualityTier,
-			workspaceId,
-		} = query;
-
-		const baseQuery = this.promptModel.query();
-		this.applyFilters(baseQuery, {
-			userId,
-			workspaceId: workspaceId ?? undefined,
-		});
-
-		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
-			switch (qualityTier) {
-				case PromptQualityTier.NEEDS_IMPROVEMENT: {
-					baseQuery
-						.whereRaw("COALESCE(??, ??) >= ?", [
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT,
-						])
-						.andWhereRaw("COALESCE(??, ??) < ?", [
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT,
-						]);
-					break;
-				}
-				case PromptQualityTier.PROVEN: {
-					baseQuery.whereRaw("COALESCE(??, ??) >= ?", [
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-						QualityScoreThreshold.PROVEN,
-					]);
-					break;
-				}
-				case PromptQualityTier.UNRATED: {
-					baseQuery.whereNull(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-					);
-					break;
-				}
-				case PromptQualityTier.USABLE: {
-					baseQuery
-						.whereRaw("COALESCE(??, ??) >= ?", [
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.USABLE,
-						])
-						.andWhereRaw("COALESCE(??, ??) < ?", [
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.PROVEN,
-						]);
-					break;
-				}
-			}
-		}
-
-		const { averageScore, totalCount } = await this.findAggregate(baseQuery);
-
-		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
-
-		const rawItems = await baseQuery
-			.clone()
-			.select(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.UPDATED_AT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
-				raw("?? AS ??", [
-					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,
-					SQLAlias.WORKSPACE_NAME,
-				]),
-				raw(
-					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${DatabaseTableName.PROMPTS}.id AND user_id = ? LIMIT 1) as "myScore"`,
-					[userId],
-				),
-			)
-			.joinRelated(WORKSPACE_RELATION)
-			.orderBy(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
-				SortOrder.DESC,
-			)
-			.offset(offset)
-			.limit(limit)
-			.castTo<PromptRepositoryItem[]>()
-			.execute();
-
-		const items = rawItems.map((item) => ({
-			...item,
-			computedScore: item.computedScore === null ? null : item.computedScore,
-			myScore: item.myScore ?? null,
-		}));
-
-		return {
-			averageScore,
-			items,
-			page,
-			pageSize: limit,
-			totalCount,
-		};
 	}
 
 	public async findById(
