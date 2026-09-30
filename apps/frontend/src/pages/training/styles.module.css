@@ -1,3 +1,20 @@
+.layout {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-20);
+	width: 100%;
+}
+
+.intro {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-16);
+}
+
+.workspace {
+	width: 100%;
+}
+
 .page {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
@@ -17,6 +34,25 @@
 	border-radius: var(--radius-xl);
 }
 
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-10);
+	padding: var(--space-20);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.card-title {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
 .aside {
 	display: flex;
 	flex-direction: column;
@@ -25,6 +61,16 @@
 }
 
 @media (width >= 768px) {
+	.intro {
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+	}
+
+	.workspace {
+		max-width: 300px;
+	}
+
 	.panel {
 		padding: var(--space-28);
 	}

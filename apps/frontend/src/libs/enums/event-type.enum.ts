@@ -4,6 +4,7 @@ const EventType = {
 	KEYDOWN: "keydown",
 	POINTER_DOWN: "pointerdown",
 	RESIZE: "resize",
+	SCROLL: "scroll",
 } as const;
 
 export { EventType };

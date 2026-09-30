@@ -5,6 +5,7 @@ import { composedPromptSource } from "./composed-prompt-source.validation-schema
 
 const composedPrompt: z.ZodType<ComposedPromptDto> = z.object({
 	body: z.string(),
+	computedScore: z.number().nullable(),
 	createdAt: z.string(),
 	description: z.string(),
 	explanation: z.string(),

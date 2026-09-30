@@ -50,6 +50,9 @@ erDiagram
     users ||--o{ composed_prompts : "requester_id"
     composed_prompts ||--o{ composed_prompt_sources : "composed_prompt_id"
     prompts ||--o{ composed_prompt_sources : "prompt_id"
+    users ||--o{ evaluations : "user_id"
+    prompts ||--o{ evaluations : "prompt_id"
+    composed_prompts ||--o{ evaluations : "composed_prompt_id"
     workspaces ||--o{ repository_bindings : "workspace_id"
 
     users {
@@ -66,6 +69,8 @@ erDiagram
         int id PK "auto-increment"
         int user_id FK "not null, onDelete CASCADE, unique with name"
         varchar name "not null, unique with user_id"
+        varchar description "not null, default ''"
+        smallint dataset_target "not null, default 1000, check(>= 1)"
         text[] stack_tags "not null, default {}"
         varchar visibility "not null, default 'private'"
         datetime created_at "not null, defaults to now()"
@@ -88,6 +93,7 @@ erDiagram
         varchar task_intent "not null"
         text prompt_body "not null"
         int efficiency_score "not null, check(1-10)"
+        decimal computed_score "nullable, check(1-10)"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }
@@ -111,6 +117,7 @@ erDiagram
         text body "not null"
         text explanation "not null"
         varchar model_id "not null"
+        decimal computed_score "nullable, check(1-10)"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }
@@ -120,6 +127,16 @@ erDiagram
         int composed_prompt_id FK "not null, onDelete CASCADE, unique with prompt_id"
         int prompt_id FK "not null, onDelete CASCADE, unique with composed_prompt_id"
         int rank "not null, check(>= 1), number the source had in the composition request"
+        datetime created_at "not null, defaults to now()"
+        datetime updated_at "not null, defaults to now()"
+    }
+
+   evaluations {
+        int id PK "auto-increment"
+        int user_id FK "not null, onDelete CASCADE"
+        int prompt_id FK "nullable, onDelete CASCADE, exclusive with composed_prompt_id, unique with user_id"
+        int composed_prompt_id FK "nullable, onDelete CASCADE, exclusive with prompt_id, unique with user_id"
+        int score "not null, check(1-10)"
         datetime created_at "not null, defaults to now()"
         datetime updated_at "not null, defaults to now()"
     }

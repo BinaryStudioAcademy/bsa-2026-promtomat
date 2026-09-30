@@ -34,6 +34,8 @@ const PromptResultCard: React.FC<Properties> = ({
 		onSelect(prompt.id);
 	}, [onSelect, prompt.id]);
 
+	const score = prompt.computedScore ?? prompt.score;
+
 	return (
 		<button
 			aria-controls={detailId}
@@ -47,16 +49,16 @@ const PromptResultCard: React.FC<Properties> = ({
 		>
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
+				<ScoreBadge
+					efficiencyScore={score}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
+				/>
 				<Icon
 					className={getValidClasses(
 						styles["chevron"],
 						isSelected && styles["chevron-open"],
 					)}
 					iconName={IconName.CHEVRON}
-				/>
-				<ScoreBadge
-					efficiencyScore={prompt.score}
-					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>

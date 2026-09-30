@@ -10,6 +10,8 @@ import {
 class ComposedPromptEntity implements Entity {
 	private body: string;
 
+	private computedScore: null | number;
+
 	private createdAt: string;
 
 	private description: string;
@@ -32,6 +34,7 @@ class ComposedPromptEntity implements Entity {
 
 	private constructor({
 		body,
+		computedScore,
 		createdAt,
 		description,
 		descriptionHash,
@@ -44,6 +47,7 @@ class ComposedPromptEntity implements Entity {
 		workspaceId,
 	}: {
 		body: string;
+		computedScore: null | number;
 		createdAt: string;
 		description: string;
 		descriptionHash: string;
@@ -64,12 +68,14 @@ class ComposedPromptEntity implements Entity {
 		this.explanation = explanation;
 		this.modelId = modelId;
 		this.sources = sources;
+		this.computedScore = computedScore;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
 
 	public static initialize({
 		body,
+		computedScore,
 		createdAt,
 		description,
 		descriptionHash,
@@ -82,6 +88,7 @@ class ComposedPromptEntity implements Entity {
 		workspaceId,
 	}: {
 		body: string;
+		computedScore: null | number;
 		createdAt: string;
 		description: string;
 		descriptionHash: string;
@@ -95,6 +102,7 @@ class ComposedPromptEntity implements Entity {
 	}): ComposedPromptEntity {
 		return new ComposedPromptEntity({
 			body,
+			computedScore,
 			createdAt,
 			description,
 			descriptionHash,
@@ -110,6 +118,7 @@ class ComposedPromptEntity implements Entity {
 
 	public static initializeNew({
 		body,
+		computedScore = null,
 		description,
 		descriptionHash,
 		explanation,
@@ -119,6 +128,7 @@ class ComposedPromptEntity implements Entity {
 		workspaceId,
 	}: {
 		body: string;
+		computedScore?: null | number;
 		description: string;
 		descriptionHash: string;
 		explanation: string;
@@ -129,6 +139,7 @@ class ComposedPromptEntity implements Entity {
 	}): ComposedPromptEntity {
 		return new ComposedPromptEntity({
 			body,
+			computedScore,
 			createdAt: new Date().toISOString(),
 			description,
 			descriptionHash,
@@ -144,6 +155,7 @@ class ComposedPromptEntity implements Entity {
 
 	public toNewObject(): {
 		body: string;
+		computedScore: null | number;
 		description: string;
 		descriptionHash: string;
 		explanation: string;
@@ -154,6 +166,7 @@ class ComposedPromptEntity implements Entity {
 	} {
 		return {
 			body: this.body,
+			computedScore: this.computedScore,
 			description: this.description,
 			descriptionHash: this.descriptionHash,
 			explanation: this.explanation,
@@ -166,6 +179,7 @@ class ComposedPromptEntity implements Entity {
 
 	public toObject(): {
 		body: string;
+		computedScore: null | number;
 		createdAt: string;
 		description: string;
 		descriptionHash: string;
@@ -179,6 +193,7 @@ class ComposedPromptEntity implements Entity {
 	} {
 		return {
 			body: this.body,
+			computedScore: this.computedScore,
 			createdAt: this.createdAt,
 			description: this.description,
 			descriptionHash: this.descriptionHash,

@@ -2,9 +2,11 @@ export {
 	ContributorsErrorCode,
 	ContributorsErrorMessage,
 	WorkspaceListScope,
+	WorkspaceListSort,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	WorkspaceTarget,
 	WorkspaceValidationRule,
 	WorkspaceVisibility,
 } from "./libs/enums/enums.js";

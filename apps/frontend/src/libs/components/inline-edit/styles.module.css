@@ -1,10 +1,19 @@
-.preview {
-	display: flex;
-	align-items: center;
-	width: max-content;
+.wrap {
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: break-word;
+}
+
+.base-text {
 	padding: 0;
 	margin: 0;
 	font-family: inherit;
+	line-height: var(--space-24);
+}
+
+.preview {
+	box-sizing: border-box;
+	display: inline-block;
 	color: inherit;
 	text-align: inherit;
 	appearance: none;

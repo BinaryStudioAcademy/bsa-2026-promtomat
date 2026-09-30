@@ -1,5 +1,5 @@
 import { AnalyticsGrowthBucket } from "~/libs/enums/enums.js";
-import { countPercentage, roundScore } from "~/libs/helpers/helpers.js";
+import { roundScore } from "~/libs/helpers/helpers.js";
 import {
 	type AnalyticsDistributionResponseDto,
 	type AnalyticsGrowthResponseDto,
@@ -10,6 +10,7 @@ import {
 
 import { AnalyticsRepository } from "./analytics.repository.js";
 import { fillGrowthGaps } from "./libs/helpers/fill-growth-gaps.helper.js";
+import { getDistributionPercentages } from "./libs/helpers/get-distribution-percentages.helper.js";
 import { getWeeklyChange } from "./libs/helpers/get-weekly-change.helper.js";
 import { type AnalyticsScopeQuery } from "./libs/types/types.js";
 
@@ -24,24 +25,25 @@ class AnalyticsService {
 		userId,
 		workspaceId,
 	}: AnalyticsScopeQuery): Promise<AnalyticsDistributionResponseDto> {
-		const { high, low, mid } = await this.analyticsRepository.findDistribution({
+		const counts = await this.analyticsRepository.findDistribution({
 			userId,
 			workspaceId,
 		});
 
-		const total = high + mid + low;
+		const percentages = getDistributionPercentages(counts);
+
 		return {
 			high: {
-				count: high,
-				percentage: countPercentage(high, total),
+				count: counts.high,
+				percentage: percentages.high,
 			},
 			low: {
-				count: low,
-				percentage: countPercentage(low, total),
+				count: counts.low,
+				percentage: percentages.low,
 			},
 			mid: {
-				count: mid,
-				percentage: countPercentage(mid, total),
+				count: counts.mid,
+				percentage: percentages.mid,
 			},
 		};
 	}

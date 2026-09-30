@@ -22,6 +22,7 @@ const IconName = {
 	SEARCH: "search",
 	SETTINGS: "settings",
 	SHIELD_CHECK: "shield-check",
+	SORT: "sort",
 	SPARKLES: "sparkles",
 	STATS_BAR: "stats-bars",
 	TRASH_2: "trash-2",

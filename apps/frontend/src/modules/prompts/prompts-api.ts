@@ -163,6 +163,7 @@ const promptApi = baseApi
 					),
 				}),
 			}),
+
 			updatePromptScore: builder.mutation<
 				PromptDto,
 				{
@@ -218,7 +219,6 @@ const {
 	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdatePromptBodyMutation,
-	useUpdatePromptScoreMutation,
 	useUpdateTaskIntentMutation,
 } = promptApi;
 
@@ -229,6 +229,5 @@ export {
 	useGetPromptStreakQuery,
 	useRecordPromptMutation,
 	useUpdatePromptBodyMutation,
-	useUpdatePromptScoreMutation,
 	useUpdateTaskIntentMutation,
 };

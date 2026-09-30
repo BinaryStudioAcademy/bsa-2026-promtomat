@@ -7,7 +7,7 @@ import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-
 import { ButtonVariant } from "~/libs/enums/enums.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
-import { PromptHistoryLabel } from "../../libs/enums/enum.js";
+import { PromptHistoryLabel } from "../../libs/enums/enums.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";
 

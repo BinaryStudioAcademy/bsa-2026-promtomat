@@ -10,6 +10,10 @@ const getWorkspaceUpdatePayload = (
 ): null | WorkspaceUpdateRequestDto => {
 	const payload: WorkspaceUpdateRequestDto = {};
 
+	if (values.datasetTarget !== workspace.datasetTarget) {
+		payload.datasetTarget = values.datasetTarget;
+	}
+
 	if (values.description !== workspace.description) {
 		payload.description = values.description;
 	}

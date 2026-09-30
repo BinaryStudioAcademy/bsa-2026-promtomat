@@ -6,12 +6,17 @@ import {
 	useController,
 } from "react-hook-form";
 
-import { ControlSize, KeyboardKey } from "~/libs/enums/enums.js";
+import {
+	ControlSize,
+	InlineEditVariant,
+	KeyboardKey,
+} from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
 import { Input } from "../input/input.js";
 import inputStyles from "../input/styles.module.css";
+import { Textarea } from "../textarea/textarea.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
@@ -25,6 +30,7 @@ type Properties<T extends FieldValues> = {
 	onSave?: () => void;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
+	variant?: ValueOf<typeof InlineEditVariant>;
 };
 
 const ZERO_VALUE = 0;
@@ -40,11 +46,14 @@ const InlineEdit = <T extends FieldValues>({
 	onSave,
 	placeholder = "",
 	size = ControlSize.MD,
+	variant = InlineEditVariant.INPUT,
 }: Properties<T>): React.JSX.Element => {
 	const [isEditing, setIsEditing] = useState(false);
-	const inputReference = useRef<HTMLInputElement>(null);
+	const containerReference = useRef<HTMLDivElement>(null);
 	const previewButtonReference = useRef<HTMLButtonElement>(null);
 	const originalValueReference = useRef<unknown>(null);
+
+	const editClassName = getValidClasses(className, styles["base-text"]);
 
 	const { field } = useController({
 		control,
@@ -53,9 +62,14 @@ const InlineEdit = <T extends FieldValues>({
 	});
 
 	useEffect(() => {
-		if (isEditing) {
-			inputReference.current?.focus();
+		if (!isEditing || !containerReference.current) {
+			return;
 		}
+
+		const inputElement =
+			containerReference.current.querySelector<HTMLElement>("input, textarea");
+
+		inputElement?.focus();
 	}, [isEditing]);
 
 	const handleCancelEditing = useCallback((): void => {
@@ -90,7 +104,7 @@ const InlineEdit = <T extends FieldValues>({
 	);
 
 	const handleKeyDown = useCallback(
-		(event: React.KeyboardEvent<HTMLDivElement>) => {
+		(event: React.KeyboardEvent<HTMLDivElement | HTMLTextAreaElement>) => {
 			event.stopPropagation();
 			if (event.key === KeyboardKey.ENTER) {
 				event.preventDefault();
@@ -104,7 +118,7 @@ const InlineEdit = <T extends FieldValues>({
 	);
 
 	const handleBlur = useCallback(
-		(event: React.FocusEvent<HTMLDivElement>) => {
+		(event: React.FocusEvent<HTMLDivElement | HTMLTextAreaElement>) => {
 			if (!event.currentTarget.contains(event.relatedTarget)) {
 				handleSaveEditing();
 			}
@@ -112,35 +126,55 @@ const InlineEdit = <T extends FieldValues>({
 		[handleSaveEditing],
 	);
 
-	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-		event.preventDefault();
-		event.stopPropagation();
-	}, []);
+	const handleClick = useCallback(
+		(event: React.MouseEvent<HTMLDivElement | HTMLTextAreaElement>) => {
+			event.preventDefault();
+			event.stopPropagation();
+		},
+		[],
+	);
 
 	if (isEditing) {
 		return (
-			<div>
-				<Input
-					className={className}
-					control={control}
-					descriptionId={descriptionId}
-					isDisabled={isDisabled}
-					isLabelHidden={isLabelHidden}
-					label={label}
-					name={name}
-					onBlur={handleBlur}
-					onClick={handleClick}
-					onKeyDown={handleKeyDown}
-					placeholder={placeholder}
-					ref={inputReference}
-					size={size}
-				/>
+			<div className={styles["wrap"]} ref={containerReference}>
+				{variant === InlineEditVariant.INPUT ? (
+					<Input
+						className={editClassName}
+						control={control}
+						descriptionId={descriptionId}
+						isDisabled={isDisabled}
+						isLabelHidden={isLabelHidden}
+						label={label}
+						name={name}
+						onBlur={handleBlur}
+						onClick={handleClick}
+						onKeyDown={handleKeyDown}
+						placeholder={placeholder}
+						size={size}
+					/>
+				) : (
+					<Textarea
+						className={editClassName}
+						control={control}
+						descriptionId={descriptionId}
+						isDisabled={isDisabled}
+						isLabelHidden={isLabelHidden}
+						label={label}
+						name={name}
+						onBlur={handleBlur}
+						onClick={handleClick}
+						onKeyDown={handleKeyDown}
+						placeholder={placeholder}
+						rows={1}
+						size={size}
+					/>
+				)}
 			</div>
 		);
 	}
 
 	return (
-		<div className={inputStyles["field"]}>
+		<div className={getValidClasses(inputStyles["field"], styles["wrap"])}>
 			<label
 				className={getValidClasses(
 					inputStyles["label"],
@@ -152,8 +186,8 @@ const InlineEdit = <T extends FieldValues>({
 			<div className={inputStyles["control"]}>
 				<button
 					className={getValidClasses(
+						styles["base-text"],
 						styles["preview"],
-						inputStyles[size],
 						className,
 					)}
 					onClick={handleStartEditing}

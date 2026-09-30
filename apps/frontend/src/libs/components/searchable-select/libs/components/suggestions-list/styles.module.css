@@ -1,8 +1,4 @@
 .suggestions {
-	position: absolute;
-	top: 100%;
-	right: 0;
-	left: 0;
 	z-index: 9999;
 	max-height: 240px;
 	padding: var(--space-4);
