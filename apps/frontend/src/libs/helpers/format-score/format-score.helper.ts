@@ -1,7 +1,7 @@
 const FRACTION_DIGITS = 1;
 
 const formatScore = (score: null | number | undefined): null | number => {
-	if (score === null || score === undefined) {
+	if (!score) {
 		return null;
 	}
 

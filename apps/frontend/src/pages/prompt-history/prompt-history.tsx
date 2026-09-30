@@ -11,7 +11,6 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { PromptQualityTier } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import {
@@ -21,35 +20,13 @@ import {
 import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
-import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
+import { QUALITY_TIER_OPTIONS } from "./libs/constants/constants.js";
+import { PromptHistoryLabel } from "./libs/enums/enums.js";
 import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
 import styles from "./styles.module.css";
 
 const FRACTION_DIGITS = 1;
 const SINGLE_RESULT_COUNT = 1;
-
-const QUALITY_TIER_OPTIONS = [
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_ALL,
-		value: PromptQualityTier.ALL,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_PROVEN,
-		value: PromptQualityTier.PROVEN,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_USABLE,
-		value: PromptQualityTier.USABLE,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_NEEDS_IMPROVEMENT,
-		value: PromptQualityTier.NEEDS_IMPROVEMENT,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_UNRATED,
-		value: PromptQualityTier.UNRATED,
-	},
-];
 
 const PromptHistory: React.FC = () => {
 	const {

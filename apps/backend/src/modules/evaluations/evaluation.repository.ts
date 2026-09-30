@@ -9,8 +9,7 @@ import {
 	EvaluationTargetType,
 } from "./libs/enums/enums.js";
 import {
-	type EvaluationConflictColumn,
-	type EvaluationInsertPayload,
+	type EvaluationUpsertOptions,
 	type EvaluationUpsertPayload,
 } from "./libs/types/types.js";
 
@@ -50,11 +49,7 @@ class EvaluationRepository {
 		conflictColumn,
 		insertPayload,
 		trx,
-	}: {
-		conflictColumn: EvaluationConflictColumn;
-		insertPayload: EvaluationInsertPayload;
-		trx?: Transaction | undefined;
-	}): Promise<EvaluationEntity> {
+	}: EvaluationUpsertOptions): Promise<EvaluationEntity> {
 		const knex = this.evaluationModel.knex();
 
 		const evaluation = await this.evaluationModel

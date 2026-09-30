@@ -63,16 +63,8 @@ class EvaluationService {
 			[EvaluationTargetType.COMPOSED_PROMPT]: {
 				findScores: (targetId, trx) =>
 					this.evaluationRepository.findScoresByComposedPromptId(targetId, trx),
-				getPriorScore: async (targetId, trx) => {
-					const composedPrompt =
-						await this.composedPromptService.findByIdForUpdate(targetId, trx);
-
-					if (!composedPrompt) {
-						throw ComposedPromptError.notFound();
-					}
-
-					return null;
-				},
+				getPriorScore: (targetId, trx) =>
+					this.getComposedPromptPriorScore(targetId, trx),
 				updateComputedScore: (targetId, computedScore, trx) =>
 					this.composedPromptService.updateComputedScore(
 						targetId,
@@ -83,28 +75,41 @@ class EvaluationService {
 			[EvaluationTargetType.PROMPT]: {
 				findScores: (targetId, trx) =>
 					this.evaluationRepository.findScoresByPromptId(targetId, trx),
-				getPriorScore: async (targetId, trx) => {
-					const prompt = await this.promptService.findByIdForUpdate(
-						targetId,
-						trx,
-					);
-
-					if (!prompt) {
-						throw PromptError.notFound();
-					}
-
-					return prompt.toObject().efficiencyScore;
-				},
+				getPriorScore: (targetId, trx) =>
+					this.getPromptPriorScore(targetId, trx),
 				updateComputedScore: (targetId, computedScore, trx) =>
 					this.promptService.updateComputedScore(targetId, computedScore, trx),
 			},
 		};
 	}
 
-	public async create(
-		payload: EvaluationUpsertPayload,
-	): Promise<EvaluationResponseDto> {
-		return await this.upsert(payload);
+	private async getComposedPromptPriorScore(
+		targetId: number,
+		trx: Transaction,
+	): Promise<null> {
+		const composedPrompt = await this.composedPromptService.findByIdForUpdate(
+			targetId,
+			trx,
+		);
+
+		if (!composedPrompt) {
+			throw ComposedPromptError.notFound();
+		}
+
+		return null;
+	}
+
+	private async getPromptPriorScore(
+		targetId: number,
+		trx: Transaction,
+	): Promise<null | number> {
+		const prompt = await this.promptService.findByIdForUpdate(targetId, trx);
+
+		if (!prompt) {
+			throw PromptError.notFound();
+		}
+
+		return prompt.toObject().efficiencyScore;
 	}
 
 	public async upsert(

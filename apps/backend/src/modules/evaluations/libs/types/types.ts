@@ -4,8 +4,7 @@ type EvaluationUpsertPayload = EvaluationCreateRequestDto & {
 	userId: number;
 };
 
-export { type EvaluationConflictColumn } from "./evaluation-conflict-column.type.js";
-export { type EvaluationInsertPayload } from "./evaluation-insert-payload.type.js";
+export { type EvaluationUpsertOptions } from "./evaluation-upsert-options.type.js";
 export {
 	type EvaluationCreateRequestDto,
 	type EvaluationResponseDto,

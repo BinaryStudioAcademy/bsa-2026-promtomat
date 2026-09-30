@@ -1,13 +1,13 @@
 import React from "react";
 
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
+import { formatScore } from "~/libs/helpers/helpers.js";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
-import { PromptDeliveryViewLabel } from "../../enums/enums.js";
-import { formatScore } from "../../helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	computedScore: null | number;
+	computedScore?: null | number | undefined;
 	efficiencyScore?: null | number | undefined;
 	workspaceName?: string | undefined;
 };
@@ -29,15 +29,10 @@ const PromptMetaSection: React.FC<Properties> = ({
 
 	return (
 		<div className={styles["meta-row"]}>
-			{formattedScore === null ? (
-				<span className={styles["badge"]}>
-					{PromptDeliveryViewLabel.UNRATED}
-				</span>
-			) : (
-				<span className={styles["badge"]}>
-					{`${PromptDeliveryViewLabel.SCORE} ${String(formattedScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-				</span>
-			)}
+			<ScoreBadge
+				efficiencyScore={formattedScore}
+				maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
+			/>
 			{workspaceName && (
 				<span className={styles["badge"]}>{workspaceName}</span>
 			)}
