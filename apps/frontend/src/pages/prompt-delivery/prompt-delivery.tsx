@@ -1,24 +1,145 @@
 import React, { useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
+import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
-import { AppRoute } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
+import {
+	AppRoute,
+	EvaluationTargetType,
+	IconName,
+} from "~/libs/enums/enums.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
 import { useGetComposedPromptByIdQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
+import { type ComposedPromptDto } from "~/modules/composed-prompts/composed-prompts.js";
 import {
 	EvaluationMessage,
 	useEvaluateMutation,
 } from "~/modules/evaluations/evaluations.js";
+import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
+import { PromptDeliveryLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
+type ContentProperties = {
+	prompt: PromptItemResponseDto;
+};
+
+const PromptDeliveryContent: React.FC<ContentProperties> = ({
+	prompt,
+}: ContentProperties) => (
+	<PageContainer>
+		<div className={styles["page"]}>
+			<Link
+				className={styles["back-link"]}
+				hasDefaultStyles={false}
+				to={AppRoute.SMART_SEARCH}
+			>
+				<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+				{PromptDeliveryLabel.BACK_TO_SEARCH}
+			</Link>
+
+			<p className={styles["eyebrow"]}>{PromptDeliveryLabel.EYEBROW}</p>
+
+			<PromptDetailPanel
+				isCompact={false}
+				prompt={prompt}
+				shouldShowOpenFullPageLink={false}
+			/>
+
+			<Link
+				className={styles["show-in-search"]}
+				hasDefaultStyles={false}
+				to={AppRoute.SMART_SEARCH}
+			>
+				{PromptDeliveryLabel.SHOW_IN_SEARCH}
+			</Link>
+		</div>
+	</PageContainer>
+);
+
+type ComposedContentProperties = {
+	composedPrompt: ComposedPromptDto;
+};
+
+const ComposedPromptDeliveryContent: React.FC<ComposedContentProperties> = ({
+	composedPrompt,
+}: ComposedContentProperties) => {
+	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
+
+	const handleScoreSelect = useCallback(
+		(score: number) => {
+			return (): void => {
+				void evaluate({
+					score,
+					targetId: composedPrompt.id,
+					targetType: EvaluationTargetType.COMPOSED_PROMPT,
+				})
+					.unwrap()
+					.then(() => {
+						showNotification({
+							message: EvaluationMessage.EVALUATION_SUCCESS,
+							type: NotificationType.SUCCESS,
+						});
+					})
+					.catch(() => {
+						showNotification({
+							message: EvaluationMessage.EVALUATION_FAILED,
+							type: NotificationType.DANGER,
+						});
+					});
+			};
+		},
+		[composedPrompt.id, evaluate],
+	);
+
+	return (
+		<PageContainer>
+			<div className={styles["page"]}>
+				<Link
+					className={styles["back-link"]}
+					hasDefaultStyles={false}
+					to={AppRoute.SMART_SEARCH}
+				>
+					<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+					{PromptDeliveryLabel.BACK_TO_SEARCH}
+				</Link>
+
+				<p className={styles["eyebrow"]}>{PromptDeliveryLabel.EYEBROW}</p>
+
+				<PromptDeliveryView
+					body={composedPrompt.body}
+					computedScore={composedPrompt.computedScore}
+					explanation={composedPrompt.explanation}
+					feedback={{
+						isDisabled: isEvaluating,
+						label: PromptDeliveryLabel.YOUR_RATING,
+						onScoreSelect: handleScoreSelect,
+						selectedScore: composedPrompt.myScore ?? null,
+					}}
+					sources={composedPrompt.sources}
+				/>
+
+				<Link
+					className={styles["show-in-search"]}
+					hasDefaultStyles={false}
+					to={AppRoute.SMART_SEARCH}
+				>
+					{PromptDeliveryLabel.SHOW_IN_SEARCH}
+				</Link>
+			</div>
+		</PageContainer>
+	);
+};
+
 const PromptDelivery: React.FC = () => {
-	const navigate = useNavigate();
 	const { composedPromptId, promptId } = useParams<{
 		composedPromptId?: string;
 		promptId?: string;
@@ -37,64 +158,27 @@ const PromptDelivery: React.FC = () => {
 			skip: !isComposed || !targetId,
 		});
 
-	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
+	if (isComposed) {
+		if (isLoadingComposed) {
+			return <Loader variant={LoaderVariant.SECTION} />;
+		}
 
-	const isLoading = isComposed ? isLoadingComposed : isLoadingRegular;
-	const data = isComposed ? composedData : regularData;
+		if (!composedData) {
+			return <NotFoundPage />;
+		}
 
-	const handleScoreSelect = useCallback(
-		(score: number): void => {
-			const recordEvaluation = async (): Promise<void> => {
-				try {
-					await evaluate(
-						isComposed
-							? { composedPromptId: targetId, score }
-							: { promptId: targetId, score },
-					).unwrap();
+		return <ComposedPromptDeliveryContent composedPrompt={composedData} />;
+	}
 
-					showNotification({
-						message: EvaluationMessage.EVALUATION_SUCCESS,
-						type: "success",
-					});
-
-					void navigate(AppRoute.ROOT);
-				} catch {
-					showNotification({
-						message: EvaluationMessage.EVALUATION_FAILED,
-						type: "danger",
-					});
-				}
-			};
-
-			void recordEvaluation();
-		},
-		[evaluate, isComposed, navigate, targetId],
-	);
-
-	if (isLoading) {
+	if (isLoadingRegular) {
 		return <Loader variant={LoaderVariant.SECTION} />;
 	}
 
-	if (!data) {
+	if (!regularData) {
 		return <NotFoundPage />;
 	}
 
-	const isRegularPrompt = "score" in data;
-
-	return (
-		<div className={getValidClasses("page-container", styles["page"])}>
-			<PromptDeliveryView
-				body={data.body}
-				computedScore={data.computedScore}
-				isLoading={isEvaluating}
-				onScoreSelect={handleScoreSelect}
-				{...(isRegularPrompt && {
-					efficiencyScore: data.score,
-					workspaceName: data.workspaceName,
-				})}
-			/>
-		</div>
-	);
+	return <PromptDeliveryContent prompt={regularData} />;
 };
 
 export { PromptDelivery };

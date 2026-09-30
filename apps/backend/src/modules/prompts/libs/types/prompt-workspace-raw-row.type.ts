@@ -1,7 +1,13 @@
-import { type PromptDto } from "./types.js";
-
-type PromptWorkspaceRawRow = Omit<PromptDto, "computedScore"> & {
-	computedScore: null | number | string;
+type PromptWorkspaceRawRow = {
+	computedScore: null | string;
+	efficiencyScore: number;
+	id: number;
+	label: string;
+	myScore?: null | number;
+	promptBody: string;
+	taskIntent: string;
+	userId: number;
+	workspaceId: number;
 };
 
 export { type PromptWorkspaceRawRow };

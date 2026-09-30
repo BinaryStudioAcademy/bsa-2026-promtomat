@@ -69,7 +69,23 @@
 }
 
 .chevron-open {
-	transform: rotate(180deg);
+	transform: rotate(-90deg);
+}
+
+@media (width < 768px) {
+	.chevron {
+		transform: rotate(-90deg);
+	}
+
+	.chevron-open {
+		transform: rotate(0deg);
+	}
+
+	.card-selected {
+		border-bottom: none;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
 }
 
 .badges {

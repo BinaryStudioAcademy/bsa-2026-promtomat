@@ -1,5 +1,7 @@
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { useGetProfileSummaryQuery } from "~/modules/users/users-api.js";
 
@@ -16,26 +18,27 @@ const Profile: React.FC = () => {
 
 	if (isLoadingUser || isLoadingSummary || !user || !summary) {
 		return (
-			<main className={styles["page"]}>
-				<Loader label="Loading profile" variant={LoaderVariant.SECTION} />
-			</main>
+			<PageContainer>
+				<div className={styles["page"]}>
+					<Loader label="Loading profile" variant={LoaderVariant.SECTION} />
+				</div>
+			</PageContainer>
 		);
 	}
 
 	return (
-		<main className={styles["page"]}>
-			<div>
-				<span className={styles["kicker"]}>ACCOUNT</span>
-				<h1 className={styles["title"]}>Profile</h1>
+		<PageContainer>
+			<div className={styles["page"]}>
+				<PageIntro label="Account" title="Profile" />
+				<SettingsForm totalPrompts={summary.totalPrompts} user={user} />
+				<Activity
+					averageScore={summary.averageScore}
+					currentStreak={summary.currentStreak}
+					totalPrompts={summary.totalPrompts}
+				/>
+				<Security email={user.email} />
 			</div>
-			<SettingsForm totalPrompts={summary.totalPrompts} user={user} />
-			<Activity
-				averageScore={summary.averageScore}
-				currentStreak={summary.currentStreak}
-				totalPrompts={summary.totalPrompts}
-			/>
-			<Security email={user.email} />
-		</main>
+		</PageContainer>
 	);
 };
 

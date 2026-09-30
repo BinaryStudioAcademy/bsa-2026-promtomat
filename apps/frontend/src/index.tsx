@@ -13,7 +13,7 @@ import { RouterProvider } from "~/libs/components/router-provider/router-provide
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { ErrorPage } from "~/pages/error/error.js";
-import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { NotFoundRoute } from "~/pages/not-found/not-found.js";
 import { PasswordReset } from "~/pages/password-reset/password-reset.js";
 
 const loadAuthPage = async (): Promise<{ Component: ComponentType }> => {
@@ -117,6 +117,26 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 												},
 												path: AppRoute.ANALYTICS,
 											},
+											{
+												handle: ShellPageCopy.SMART_SEARCH,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+													return { Component: pageModule.PromptDelivery };
+												},
+												path: AppRoute.PROMPTS_$PROMPT_ID,
+											},
+											{
+												handle: ShellPageCopy.SMART_SEARCH,
+												lazy: async () => {
+													const pageModule =
+														await import("~/pages/prompt-delivery/prompt-delivery.js");
+
+													return { Component: pageModule.PromptDelivery };
+												},
+												path: AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID,
+											},
 										],
 										element: <AuthenticatedShell />,
 									},
@@ -128,24 +148,6 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 											return { Component: pageModule.NoAccessPage };
 										},
 										path: AppRoute.NO_ACCESS,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/prompt-delivery/prompt-delivery.js");
-
-											return { Component: pageModule.PromptDelivery };
-										},
-										path: AppRoute.PROMPTS_$PROMPT_ID,
-									},
-									{
-										lazy: async () => {
-											const pageModule =
-												await import("~/pages/prompt-delivery/prompt-delivery.js");
-
-											return { Component: pageModule.PromptDelivery };
-										},
-										path: AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID,
 									},
 								],
 								element: <PrivateRoute redirectTo={AppRoute.SIGN_IN} />,
@@ -170,7 +172,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.RESET_PASSWORD,
 							},
 							{
-								element: <NotFoundPage />,
+								element: <NotFoundRoute />,
 								path: AppRoute.ANY,
 							},
 						],

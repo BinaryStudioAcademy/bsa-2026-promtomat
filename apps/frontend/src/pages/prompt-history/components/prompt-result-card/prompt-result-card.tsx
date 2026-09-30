@@ -1,12 +1,14 @@
 import React, { useCallback } from "react";
 
+import { Icon } from "~/libs/components/icon/icon.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { IconName } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
-import { FRACTION_DIGITS } from "~/modules/prompts/libs/constants/constants.js";
+import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 
 import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
@@ -33,10 +35,9 @@ const PromptResultCard: React.FC<Properties> = ({
 		onSelect(prompt.uniqueKey);
 	}, [onSelect, prompt.uniqueKey]);
 
-	const rawScore =
-		prompt.computedScore ?? (prompt.score > ZERO_VALUE ? prompt.score : null);
-	const formattedScore =
-		typeof rawScore === "number" ? +rawScore.toFixed(FRACTION_DIGITS) : null;
+	const score =
+		prompt.computedScore ??
+		(prompt.score !== null && prompt.score > ZERO_VALUE ? prompt.score : null);
 
 	return (
 		<button
@@ -51,7 +52,17 @@ const PromptResultCard: React.FC<Properties> = ({
 		>
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
-				<ScoreBadge efficiencyScore={formattedScore} />
+				<ScoreBadge
+					efficiencyScore={score}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
+				/>
+				<Icon
+					className={getValidClasses(
+						styles["chevron"],
+						isSelected && styles["chevron-open"],
+					)}
+					iconName={IconName.CHEVRON}
+				/>
 			</span>
 			<span className={styles["snippet"]}>{snippet}</span>
 			<span className={styles["meta"]}>

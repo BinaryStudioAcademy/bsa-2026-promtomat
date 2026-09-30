@@ -7,11 +7,13 @@ class PromptEntity implements Entity {
 
 	private createdAt: string;
 
-	private efficiencyScore: number;
+	private efficiencyScore: null | number;
 
 	private id: null | number;
 
 	private labelId: number;
+
+	private myScore: null | number;
 
 	private promptBody: string;
 
@@ -29,6 +31,7 @@ class PromptEntity implements Entity {
 		efficiencyScore,
 		id,
 		labelId,
+		myScore,
 		promptBody,
 		taskIntent,
 		updatedAt,
@@ -37,9 +40,10 @@ class PromptEntity implements Entity {
 	}: {
 		computedScore: null | number;
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: null | number;
 		labelId: number;
+		myScore?: null | number | undefined;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -49,6 +53,7 @@ class PromptEntity implements Entity {
 		this.id = id;
 		this.computedScore = computedScore;
 		this.efficiencyScore = efficiencyScore;
+		this.myScore = myScore ?? null;
 		this.promptBody = promptBody;
 		this.taskIntent = taskIntent;
 		this.userId = userId;
@@ -64,6 +69,7 @@ class PromptEntity implements Entity {
 		efficiencyScore,
 		id,
 		labelId,
+		myScore,
 		promptBody,
 		taskIntent,
 		updatedAt,
@@ -72,9 +78,10 @@ class PromptEntity implements Entity {
 	}: {
 		computedScore: null | number;
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: number;
 		labelId: number;
+		myScore?: null | number | undefined;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -87,6 +94,7 @@ class PromptEntity implements Entity {
 			efficiencyScore,
 			id,
 			labelId,
+			myScore,
 			promptBody,
 			taskIntent,
 			updatedAt,
@@ -103,7 +111,7 @@ class PromptEntity implements Entity {
 		userId,
 		workspaceId,
 	}: {
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		labelId: number;
 		promptBody: string;
 		taskIntent: string;
@@ -130,7 +138,8 @@ class PromptEntity implements Entity {
 		createdAt: string;
 		id: number;
 		intent: string;
-		score: number;
+		myScore: null | number;
+		score: null | number;
 		userId: number;
 		workspaceId: number;
 		workspaceName: string;
@@ -141,6 +150,7 @@ class PromptEntity implements Entity {
 			createdAt: this.createdAt,
 			id: requireEntityId(this.id, EntityName.PROMPT),
 			intent: this.taskIntent,
+			myScore: this.myScore,
 			score: this.efficiencyScore,
 			userId: this.userId,
 			workspaceId: this.workspaceId,
@@ -149,7 +159,7 @@ class PromptEntity implements Entity {
 	}
 
 	public toNewObject(): {
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		labelId: number;
 		promptBody: string;
 		taskIntent: string;
@@ -169,9 +179,10 @@ class PromptEntity implements Entity {
 	public toObject(): {
 		computedScore: null | number;
 		createdAt: string;
-		efficiencyScore: number;
+		efficiencyScore: null | number;
 		id: number;
 		labelId: number;
+		myScore: null | number;
 		promptBody: string;
 		taskIntent: string;
 		updatedAt: string;
@@ -184,6 +195,7 @@ class PromptEntity implements Entity {
 			efficiencyScore: this.efficiencyScore,
 			id: requireEntityId(this.id, EntityName.PROMPT),
 			labelId: this.labelId,
+			myScore: this.myScore,
 			promptBody: this.promptBody,
 			taskIntent: this.taskIntent,
 			updatedAt: this.updatedAt,

@@ -1,0 +1,6 @@
+.hint {
+	margin: 0;
+	font-size: var(--font-size-body-sm);
+	line-height: 1.5;
+	color: var(--text-muted);
+}

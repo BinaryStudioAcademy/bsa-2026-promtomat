@@ -1,6 +1,7 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
 import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
+import { type MutationOnQueryStarted } from "~/libs/modules/api/libs/types/mutation-on-query-started.type.js";
 import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
 import { type PromptHistoryGetQueryDto } from "~/modules/prompt-history/libs/types/types.js";
 import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
@@ -18,9 +19,53 @@ import {
 	type PromptItemResponseDto,
 	type PromptStreakQueryDto,
 	type PromptStreakResponseDto,
+	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
+	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
+
+const createPatchCachedPrompt = (
+	patch: (prompt: PromptItemResponseDto, updatedPrompt: PromptDto) => void,
+): MutationOnQueryStarted<PromptDto, { id: number }> => {
+	return async ({ id }, queryLifecycle) => {
+		try {
+			const { data: updatedPrompt } = await queryLifecycle.queryFulfilled;
+			const cachedArguments = promptApi.util.selectCachedArgsForQuery(
+				queryLifecycle.getState(),
+				"getPrompts",
+			);
+
+			for (const queryArguments of cachedArguments) {
+				queryLifecycle.dispatch(
+					promptApi.util.updateQueryData(
+						"getPrompts",
+						queryArguments,
+						(draft) => {
+							for (const pageData of draft.pages) {
+								const cachedPrompt = pageData.items.find(
+									(item) => item.id === id,
+								);
+
+								if (cachedPrompt) {
+									patch(cachedPrompt, updatedPrompt);
+								}
+							}
+						},
+					),
+				);
+			}
+
+			queryLifecycle.dispatch(
+				promptApi.util.updateQueryData("getPromptById", id, (draft) => {
+					patch(draft, updatedPrompt);
+				}),
+			);
+		} catch {
+			// The control that issued the mutation keeps the last persisted value.
+		}
+	};
+};
 
 const promptApi = baseApi
 	.enhanceEndpoints({
@@ -96,39 +141,62 @@ const promptApi = baseApi
 					url: `${APIPath.PROMPTS}${PromptsApiPath.ROOT}`,
 				}),
 			}),
+			updatePromptBody: builder.mutation<
+				PromptDto,
+				{
+					id: number;
+					payload: PromptUpdateBodyRequestDto;
+				}
+			>({
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.body = updatedPrompt.promptBody;
+				}),
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_BODY,
+						{
+							promptId: String(id),
+						},
+					),
+				}),
+			}),
+
+			updatePromptScore: builder.mutation<
+				PromptDto,
+				{
+					id: number;
+					payload: PromptUpdateScoreRequestDto;
+				}
+			>({
+				invalidatesTags: [AnalyticsApiTag.ANALYTIC, PromptsApiTag.PROMPT],
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.score = updatedPrompt.efficiencyScore;
+				}),
+				query: ({ id, payload }) => ({
+					body: payload,
+					method: HTTPMethod.PATCH,
+					url: configureString(
+						APIPath.PROMPTS,
+						PromptsApiPath.$PROMPT_ID_SCORE,
+						{
+							promptId: String(id),
+						},
+					),
+				}),
+			}),
 			updateTaskIntent: builder.mutation<
 				PromptDto,
 				{
 					id: number;
 					payload: PromptUpdateIntentRequestDto;
-					queryArgs: Omit<PromptHistoryGetQueryDto, "page">;
 				}
 			>({
-				async onQueryStarted({ id, queryArgs }, { dispatch, queryFulfilled }) {
-					try {
-						const { data: updatedPrompt } = await queryFulfilled;
-
-						dispatch(
-							promptApi.util.updateQueryData(
-								"getPrompts",
-								queryArgs,
-								(draft) => {
-									for (const pageData of draft.pages) {
-										const promptToUpdate = pageData.items.find(
-											(prompt) => prompt.id === id,
-										);
-										if (promptToUpdate) {
-											promptToUpdate.intent = updatedPrompt.taskIntent;
-											break;
-										}
-									}
-								},
-							),
-						);
-					} catch {
-						// The UI will naturally handle the error
-					}
-				},
+				onQueryStarted: createPatchCachedPrompt((prompt, updatedPrompt) => {
+					prompt.intent = updatedPrompt.taskIntent;
+				}),
 				query: ({ id, payload }) => ({
 					body: payload,
 					method: HTTPMethod.PATCH,
@@ -150,6 +218,7 @@ const {
 	useGetPromptsInfiniteQuery,
 	useGetPromptStreakQuery,
 	useRecordPromptMutation,
+	useUpdatePromptBodyMutation,
 	useUpdateTaskIntentMutation,
 } = promptApi;
 
@@ -159,5 +228,6 @@ export {
 	useGetPromptsInfiniteQuery,
 	useGetPromptStreakQuery,
 	useRecordPromptMutation,
+	useUpdatePromptBodyMutation,
 	useUpdateTaskIntentMutation,
 };

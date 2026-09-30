@@ -23,7 +23,7 @@ type Parameters<T extends FieldValues = FieldValues> = {
 	defaultValues: DefaultValues<T>;
 	isDisabled?: boolean;
 	mode?: keyof ValidationMode;
-	validationSchema?: ValidationSchema;
+	validationSchema?: ValidationSchema<T, T>;
 };
 
 type ReturnValue<T extends FieldValues = FieldValues> = {
@@ -44,19 +44,12 @@ const useAppForm = <T extends FieldValues = FieldValues>({
 	mode = FormValidationMode.ON_SUBMIT,
 	validationSchema,
 }: Parameters<T>): ReturnValue<T> => {
-	let parameters: UseFormProps<T> = {
+	const parameters: UseFormProps<T> = {
 		defaultValues,
 		disabled: isDisabled,
 		mode,
+		...(validationSchema && { resolver: zodResolver(validationSchema) }),
 	};
-
-	if (validationSchema) {
-		parameters = {
-			...parameters,
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any -- ValidationSchema is intentionally untyped generic shared type
-			resolver: zodResolver(validationSchema as any),
-		};
-	}
 
 	const {
 		clearErrors,

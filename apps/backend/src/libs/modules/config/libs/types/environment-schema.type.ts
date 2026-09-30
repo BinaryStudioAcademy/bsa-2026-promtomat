@@ -40,7 +40,10 @@ type EnvironmentSchema = {
 	GENERATION: {
 		CANDIDATE_LIMIT: number;
 		MAX_TOKENS: number;
+		RECOMPOSE_LIMIT: number;
+		REQUEST_LIMIT: number;
 		SOURCE_BODY_MAX_LENGTH: number;
+		WINDOW_MINUTES: number;
 	};
 	HASHING: {
 		SALT_LENGTH: number;

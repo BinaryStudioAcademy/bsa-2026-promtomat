@@ -138,6 +138,7 @@ class PromptRepository {
 			efficiencyScore: model.efficiencyScore,
 			id: model.id,
 			labelId: model.labelId as number,
+			myScore: model.myScore ?? null,
 			promptBody: model.promptBody,
 			taskIntent: model.taskIntent,
 			updatedAt: model.updatedAt,
@@ -281,6 +282,10 @@ class PromptRepository {
 					`${WORKSPACE_RELATION}.${WorkspaceColumnName.NAME}`,
 					SQLAlias.WORKSPACE_NAME,
 				]),
+				raw(
+					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${DatabaseTableName.PROMPTS}.id AND user_id = ? LIMIT 1) as "myScore"`,
+					[userId],
+				),
 			)
 			.joinRelated(WORKSPACE_RELATION)
 			.orderBy(
@@ -295,6 +300,7 @@ class PromptRepository {
 		const items = rawItems.map((item) => ({
 			...item,
 			computedScore: item.computedScore === null ? null : item.computedScore,
+			myScore: item.myScore ?? null,
 		}));
 
 		return {
@@ -306,28 +312,44 @@ class PromptRepository {
 		};
 	}
 
-	public async findById(id: number): Promise<null | PromptItemResponseDto> {
-		const row = (await this.promptModel
-			.knex()
-			.select(
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
-				PROMPT_ID,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-				PROMPT_WORKSPACE_ID,
-				`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
-			)
+	public async findById(
+		id: number,
+		userId?: number,
+	): Promise<null | PromptItemResponseDto> {
+		const knex = this.promptModel.knex();
+		const selectColumns = [
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
+			PROMPT_ID,
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
+			PROMPT_WORKSPACE_ID,
+			`${DatabaseTableName.PROMPTS}.${PromptColumnName.USER_ID}`,
+			`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
+		];
+
+		const query = knex
+			.select(selectColumns)
 			.from(DatabaseTableName.PROMPTS)
 			.innerJoin(
 				DatabaseTableName.WORKSPACES,
 				PROMPT_WORKSPACE_ID,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 			)
-			.where(PROMPT_ID, "=", id)
-			.first()) as PromptRawKnexRow | undefined;
+			.where(PROMPT_ID, "=", id);
+
+		if (userId !== undefined) {
+			query.select(
+				knex.raw(
+					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${DatabaseTableName.PROMPTS}.id AND user_id = ? LIMIT 1) as "myScore"`,
+					[userId],
+				),
+			);
+		}
+
+		const row = (await query.first()) as
+			(PromptRawKnexRow & { myScore?: null | number }) | undefined;
 
 		if (!row) {
 			return null;
@@ -342,6 +364,7 @@ class PromptRepository {
 			createdAt: row.createdAt,
 			id: row.id,
 			intent: row.taskIntent,
+			myScore: row.myScore ?? null,
 			score: row.efficiencyScore,
 			userId: row.userId,
 			workspaceId: row.workspaceId,
@@ -407,6 +430,24 @@ class PromptRepository {
 			computedScore:
 				item.computedScore === null ? null : Number(item.computedScore),
 		}));
+	}
+
+	public async findCountByWorkspaceId(workspaceId: number): Promise<number> {
+		return await this.promptModel.query().where({ workspaceId }).resultSize();
+	}
+
+	public async findLabelNameByPromptId(id: number): Promise<null | string> {
+		const row = await this.promptModel
+			.knex()
+			.select<{ label: null | string }>(
+				`${DatabaseTableName.LABELS}.${LabelColumnName.NAME} as ${LABEL_ALIAS}`,
+			)
+			.from(DatabaseTableName.PROMPTS)
+			.leftJoin(DatabaseTableName.LABELS, PROMPT_LABEL_ID, LABEL_ID)
+			.where(PROMPT_ID, id)
+			.first();
+
+		return row?.label ?? null;
 	}
 
 	public async findPromptsWithoutLabels(

@@ -7,6 +7,7 @@ import { Link } from "~/libs/components/link/link.js";
 import { Logo } from "~/libs/components/logo/logo.js";
 import { AppRoute, ControlSize } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { useResetOnCooldownEnd } from "~/libs/hooks/use-reset-on-cooldown-end/use-reset-on-cooldown-end.hook.js";
 import { useForgotPasswordMutation } from "~/modules/auth/auth-api.js";
 import {
 	type ForgotPasswordRequestDto,
@@ -20,8 +21,10 @@ import {
 } from "./libs/constants.js";
 
 const ForgotPasswordForm: React.FC = () => {
-	const [forgotPassword, { error, isLoading, isSuccess }] =
+	const [forgotPassword, { error, isLoading, isSuccess, reset }] =
 		useForgotPasswordMutation();
+
+	useResetOnCooldownEnd(error, reset);
 
 	const { control, handleSubmit } = useAppForm<ForgotPasswordRequestDto>({
 		defaultValues: DEFAULT_FORGOT_PASSWORD_PAYLOAD,

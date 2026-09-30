@@ -2,7 +2,6 @@ const PromptHistoryLabel = {
 	ANY_SCORE: "Any score",
 	AVERAGE_SCORE: "Average score",
 	CLEAR: "Clear",
-	COPY_PROMPT: "Copy prompt",
 	EFFICIENCY_SCORE: "Efficiency score",
 	EMPTY_FILTERS: "No prompts match the current filters.",
 	EMPTY_NO_WORKSPACES: "Create a workspace to browse prompts.",
@@ -15,7 +14,7 @@ const PromptHistoryLabel = {
 	LOAD_ERROR: "Failed to load prompts. Please try again.",
 	LOAD_MORE: "Load More",
 	LOADING: "Loading...",
-	OPEN_FULL_PAGE: "Open full page",
+	OPEN_COMPOSED_PROMPT: "Open composed prompt",
 	PROMPTS_LOGGED: "Prompts logged",
 	QUALITY_TIER: "Quality Tier",
 	QUALITY_TIER_ALL: "Any quality",
@@ -30,7 +29,6 @@ const PromptHistoryLabel = {
 	SEARCH_PLACEHOLDER:
 		"Describe the task: “rate limit middleware”, “stripe webhook”…",
 	SUBTITLE: "Find the prompt that already worked",
-	TASK_INTENT: "Task Intent",
 	WORKSPACE: "Workspace",
 } as const;
 

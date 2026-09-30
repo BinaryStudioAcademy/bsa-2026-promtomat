@@ -14,15 +14,15 @@ import {
 } from "~/libs/enums/enums.js";
 import { preventLineBreak } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useCreateWorkspaceMutation,
-	workspaceCreationValidationSchema,
 	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import { workspaceCreateFormValidationSchema } from "../../libs/validation-schemas/validation-schemas.js";
 import styles from "../../styles.module.css";
 import { DEFAULT_WORKSPACE_CREATE_PAYLOAD } from "./libs/constants/constants.js";
 
@@ -38,7 +38,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 		useAppForm<WorkspaceCreateRequestDto>({
 			defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
 			mode: FormValidationMode.ON_TOUCHED,
-			validationSchema: workspaceCreationValidationSchema,
+			validationSchema: workspaceCreateFormValidationSchema,
 		});
 
 	const { field: stackTagsField } = useController({
@@ -69,7 +69,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 				}
 
 				if (
-					isServerError(error) &&
+					checkIsServerError(error) &&
 					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
 				) {
 					setError("name", { message: error.message, type: "server" });

@@ -1,29 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import { type Control, useFormState, useWatch } from "react-hook-form";
 
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 
+import { PromptBodyMode } from "../../libs/enums/enums.js";
 import { PromptBodyContent } from "./components/prompt-body-content/prompt-body-content.js";
 import { PROMPT_BODY_MODE_OPTIONS } from "./libs/constants/constants.js";
-import { PromptBodyFieldMessage, PromptBodyMode } from "./libs/enums/enums.js";
+import { PromptBodyFieldMessage } from "./libs/enums/enums.js";
 import { getPromptBodyState } from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	control: Control<PromptCreateRequestDto, null>;
 	isDisabled: boolean;
+	mode: ValueOf<typeof PromptBodyMode>;
+	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 };
 
 const PromptBodyField: React.FC<Properties> = ({
 	control,
 	isDisabled,
+	mode,
+	onModeChange,
 }: Properties) => {
-	const [mode, setMode] = useState<ValueOf<typeof PromptBodyMode>>(
-		PromptBodyMode.WRITE,
-	);
-
 	const promptBody = useWatch({ control, name: "promptBody" });
 	const { errors } = useFormState({ control, name: "promptBody" });
 	const characterCount = promptBody.length;
@@ -41,7 +42,7 @@ const PromptBodyField: React.FC<Properties> = ({
 				<div className={styles["mode"]}>
 					<SegmentedControl
 						label={PromptBodyFieldMessage.MODE_LABEL}
-						onChange={setMode}
+						onChange={onModeChange}
 						options={PROMPT_BODY_MODE_OPTIONS}
 						value={mode}
 					/>

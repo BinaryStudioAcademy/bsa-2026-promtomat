@@ -24,10 +24,10 @@
 	--badge-background: var(--bg-danger);
 }
 
-.unrated {
+.neutral {
 	color: var(--text-muted);
 
-	--badge-background: var(--surface-inset);
+	--badge-background: var(--surface-raised);
 }
 
 .filled {

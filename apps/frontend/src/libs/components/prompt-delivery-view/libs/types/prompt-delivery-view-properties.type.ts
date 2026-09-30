@@ -1,12 +1,15 @@
+import { type PromptDeliveryFeedback } from "./prompt-delivery-feedback.type.js";
 import { type PromptDeliverySource } from "./prompt-delivery-source.type.js";
 
 type PromptDeliveryViewProperties = {
 	body: string;
-	computedScore: null | number;
-	efficiencyScore?: number;
+	bodySlot?: React.ReactNode;
+	computedScore?: null | number | undefined;
+	efficiencyScore?: null | number;
 	explanation?: string;
-	isLoading?: boolean | undefined;
-	onScoreSelect?: (score: number) => void;
+	feedback?: PromptDeliveryFeedback | undefined;
+	feedbackSlot?: React.ReactNode;
+	isBodyHeaderHidden?: boolean;
 	sources?: PromptDeliverySource[];
 	workspaceName?: string;
 };

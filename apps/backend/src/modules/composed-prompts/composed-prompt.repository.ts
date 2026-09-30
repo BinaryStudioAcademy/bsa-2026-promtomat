@@ -1,4 +1,4 @@
-import { type Transaction, UniqueViolationError } from "objection";
+import { type Transaction } from "objection";
 
 import { SortOrder } from "~/libs/enums/enums.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
@@ -6,9 +6,11 @@ import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { PaginationValue } from "../prompts/libs/enums/enums.js";
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
-import { SOURCES_GRAPH } from "./libs/constants/constants.js";
+import {
+	LATEST_COMPOSITION_LIMIT,
+	SOURCES_GRAPH,
+} from "./libs/constants/constants.js";
 import { ComposedPromptColumnName } from "./libs/enums/enums.js";
-import { ComposedPromptDuplicateError } from "./libs/exceptions/exceptions.js";
 
 class ComposedPromptRepository {
 	private composedPromptModel: typeof ComposedPromptModel;
@@ -31,6 +33,7 @@ class ComposedPromptRepository {
 			modelId: composedPrompt.modelId,
 			requesterId: composedPrompt.requesterId,
 			sources: composedPrompt.sources.map((source) => ({
+				efficiencyScore: source.prompt.efficiencyScore,
 				promptId: source.promptId,
 				rank: source.rank,
 				taskIntent: source.prompt.taskIntent,
@@ -43,25 +46,17 @@ class ComposedPromptRepository {
 	public async create(
 		entity: ComposedPromptEntity,
 	): Promise<ComposedPromptEntity> {
-		try {
-			return await this.composedPromptModel.transaction(async (trx) => {
-				const inserted = await this.composedPromptModel
-					.query(trx)
-					.insertGraph(entity.toNewObject())
-					.execute();
-				const composedPrompt = await inserted.$fetchGraph(SOURCES_GRAPH, {
-					transaction: trx,
-				});
-
-				return this.initializeEntity(composedPrompt);
+		return await this.composedPromptModel.transaction(async (trx) => {
+			const inserted = await this.composedPromptModel
+				.query(trx)
+				.insertGraph(entity.toNewObject())
+				.execute();
+			const composedPrompt = await inserted.$fetchGraph(SOURCES_GRAPH, {
+				transaction: trx,
 			});
-		} catch (error) {
-			if (error instanceof UniqueViolationError) {
-				throw new ComposedPromptDuplicateError(error);
-			}
 
-			throw error;
-		}
+			return this.initializeEntity(composedPrompt);
+		});
 	}
 
 	public async findAll({
@@ -130,13 +125,26 @@ class ComposedPromptRepository {
 		return model ?? null;
 	}
 
-	public async findByWorkspaceAndHash(
+	public async findCountByWorkspaceAndHash(
+		workspaceId: number,
+		descriptionHash: string,
+	): Promise<number> {
+		return await this.composedPromptModel
+			.query()
+			.where({ descriptionHash, workspaceId })
+			.resultSize();
+	}
+
+	public async findLatestByWorkspaceAndHash(
 		workspaceId: number,
 		descriptionHash: string,
 	): Promise<ComposedPromptEntity | null> {
 		const composedPrompt = await this.composedPromptModel
 			.query()
 			.findOne({ descriptionHash, workspaceId })
+			.orderBy(ComposedPromptColumnName.CREATED_AT, SortOrder.DESC)
+			.orderBy(ComposedPromptColumnName.ID, SortOrder.DESC)
+			.limit(LATEST_COMPOSITION_LIMIT)
 			.withGraphFetched(SOURCES_GRAPH)
 			.execute();
 

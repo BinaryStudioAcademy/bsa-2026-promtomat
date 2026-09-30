@@ -4,12 +4,21 @@ import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { Link } from "~/libs/components/link/link.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
+import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import {
+	AppRoute,
+	ButtonVariant,
+	ControlSize,
+	IconName,
+} from "~/libs/enums/enums.js";
+import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { PromptHistoryScoreTier } from "~/modules/prompt-history/libs/enums/enums.js";
+import { type NavigableRoute } from "~/libs/types/types.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import {
@@ -17,9 +26,9 @@ import {
 	useGetWorkspacesQuery,
 } from "~/modules/workspaces/workspaces.js";
 
-import { PromptDetailPanel } from "./components/prompt-detail-panel/prompt-detail-panel.js";
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
-import { PromptHistoryLabel } from "./libs/enums/prompt-history-label.enum.js";
+import { QUALITY_TIER_OPTIONS } from "./libs/constants/constants.js";
+import { PromptHistoryLabel } from "./libs/enums/enums.js";
 import {
 	resolveAverageScoreLabel,
 	resolveLoadMoreLabel,
@@ -33,29 +42,6 @@ import {
 import styles from "./styles.module.css";
 
 const NO_COMPOSED_ITEMS: never[] = [];
-
-const QUALITY_TIER_OPTIONS = [
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_ALL,
-		value: PromptHistoryScoreTier.ALL,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_HIGH,
-		value: PromptHistoryScoreTier.HIGH,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_MID,
-		value: PromptHistoryScoreTier.MID,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_LOW,
-		value: PromptHistoryScoreTier.LOW,
-	},
-	{
-		label: PromptHistoryLabel.QUALITY_TIER_UNRATED,
-		value: PromptHistoryScoreTier.UNRATED,
-	},
-];
 
 const PromptHistory: React.FC = () => {
 	const {
@@ -153,17 +139,24 @@ const PromptHistory: React.FC = () => {
 	const isAverageScoreHidden = averageScore === null;
 	const shouldShowLoadMore = hasNextPage && hasWorkspace && !isLoading;
 
-	const detailQueryPayload =
-		queryPayload === skipToken ? { workspaceId: ZERO_VALUE } : queryPayload;
-
 	let detailPane: React.ReactNode = null;
 
-	if (selectedPrompt) {
+	if (selectedPrompt && !selectedPrompt.isComposed) {
+		detailPane = <PromptDetailPanel prompt={selectedPrompt} />;
+	} else if (selectedPrompt?.isComposed) {
 		detailPane = (
-			<PromptDetailPanel
-				prompt={selectedPrompt}
-				queryPayload={detailQueryPayload}
-			/>
+			<div className={styles["empty-selection"]}>
+				<Link
+					hasDefaultStyles={false}
+					to={
+						configureString(AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID, {
+							composedPromptId: String(selectedPrompt.id),
+						}) as NavigableRoute
+					}
+				>
+					{PromptHistoryLabel.OPEN_COMPOSED_PROMPT}
+				</Link>
+			</div>
 		);
 	} else if (items.length > ZERO_VALUE) {
 		detailPane = (
@@ -174,13 +167,13 @@ const PromptHistory: React.FC = () => {
 	}
 
 	return (
-		<div className={styles["container"]}>
+		<PageContainer>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["intro"]}>
-					<div className={styles["copy"]}>
-						<p className={styles["eyebrow"]}>{PromptHistoryLabel.EYEBROW}</p>
-						<h2 className={styles["title"]}>{PromptHistoryLabel.SUBTITLE}</h2>
-					</div>
+					<PageIntro
+						label={PromptHistoryLabel.EYEBROW}
+						title={PromptHistoryLabel.SUBTITLE}
+					/>
 					<div className={styles["workspace"]}>
 						<Select
 							control={control}
@@ -270,7 +263,6 @@ const PromptHistory: React.FC = () => {
 							items={items}
 							onRetry={handleRetry}
 							onSelectPrompt={handleSelectPrompt}
-							queryPayload={detailQueryPayload}
 							selectedPromptKey={selectedPromptKey}
 						/>
 						{shouldShowLoadMore ? (
@@ -292,7 +284,7 @@ const PromptHistory: React.FC = () => {
 					) : null}
 				</div>
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 

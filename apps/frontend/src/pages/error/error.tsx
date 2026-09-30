@@ -28,17 +28,19 @@ const ErrorPage: React.FC = () => {
 	const shouldShowDetails = checkIsDebugEnvironment(config.ENV.APP.ENVIRONMENT);
 
 	return (
-		<FallbackScreen
-			action={errorAction}
-			className={styles["screen"]}
-			illustrationUrl={errorIllustration}
-			message="An unexpected error occurred."
-			title="Something went wrong"
-		>
-			{shouldShowDetails ? (
-				<pre className={styles["details"]}>{getErrorDetails(error)}</pre>
-			) : null}
-		</FallbackScreen>
+		<main>
+			<FallbackScreen
+				action={errorAction}
+				className={styles["screen"]}
+				illustrationUrl={errorIllustration}
+				message="An unexpected error occurred."
+				title="Something went wrong"
+			>
+				{shouldShowDetails ? (
+					<pre className={styles["details"]}>{getErrorDetails(error)}</pre>
+				) : null}
+			</FallbackScreen>
+		</main>
 	);
 };
 

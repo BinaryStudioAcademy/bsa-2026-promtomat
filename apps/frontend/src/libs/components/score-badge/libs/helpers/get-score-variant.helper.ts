@@ -7,17 +7,14 @@ const getScoreVariant = (
 	score: null | number,
 ): ValueOf<typeof BadgeVariant> => {
 	if (score === null) {
-		return BadgeVariant.UNRATED;
+		return BadgeVariant.NEUTRAL;
 	}
-
 	if (score >= ScoreTierMin.HIGH) {
 		return BadgeVariant.SUCCESS;
 	}
-
 	if (score >= ScoreTierMin.MID) {
 		return BadgeVariant.WARNING;
 	}
-
 	return BadgeVariant.DANGER;
 };
 

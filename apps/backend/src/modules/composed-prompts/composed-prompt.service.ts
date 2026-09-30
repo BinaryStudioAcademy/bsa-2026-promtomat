@@ -1,6 +1,6 @@
 import { type Transaction } from "objection";
 
-import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
+import { FIRST_ELEMENT_INDEX, ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ComposedPromptError } from "~/libs/exceptions/exceptions.js";
 import {
 	checkIsNonEmptyString,
@@ -24,7 +24,6 @@ import {
 	GenerationParameter,
 	ModelCallOutcome,
 } from "./libs/enums/enums.js";
-import { ComposedPromptDuplicateError } from "./libs/exceptions/exceptions.js";
 import {
 	computeDescriptionHash,
 	mapFallbackReasonToOutcome,
@@ -41,7 +40,6 @@ import {
 	type GenerationOutcome,
 	type ModelCallLog,
 	type PromptCandidateDto,
-	type StoreResult,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -52,6 +50,7 @@ type Constructor = {
 	maxTokens: number;
 	modelId: string;
 	promptService: PromptService;
+	recomposeLimit: number;
 	sourceBodyMaxLength: number;
 };
 
@@ -77,6 +76,8 @@ class ComposedPromptService {
 
 	private promptService: PromptService;
 
+	private recomposeLimit: number;
+
 	private sourceBodyMaxLength: number;
 
 	public constructor({
@@ -87,6 +88,7 @@ class ComposedPromptService {
 		maxTokens,
 		modelId,
 		promptService,
+		recomposeLimit,
 		sourceBodyMaxLength,
 	}: Constructor) {
 		this.candidateLimit = candidateLimit;
@@ -96,6 +98,7 @@ class ComposedPromptService {
 		this.maxTokens = maxTokens;
 		this.modelId = modelId;
 		this.promptService = promptService;
+		this.recomposeLimit = recomposeLimit;
 		this.sourceBodyMaxLength = sourceBodyMaxLength;
 	}
 
@@ -131,7 +134,7 @@ class ComposedPromptService {
 			};
 		}
 
-		const { entity, isCreated } = await this.store(
+		const entity = await this.composedPromptRepository.create(
 			ComposedPromptEntity.initializeNew({
 				body: output.body,
 				description,
@@ -142,18 +145,43 @@ class ComposedPromptService {
 				sources: output.sources,
 				workspaceId,
 			}),
-			workspaceId,
-			descriptionHash,
 		);
 
-		this.logModelCall({
-			...log,
-			outcome: isCreated
-				? ModelCallOutcome.COMPOSED
-				: ModelCallOutcome.DEDUPLICATED,
-		});
+		this.logModelCall(log);
 
-		return this.toComposedResult(entity, isCreated);
+		return this.toComposedResult(
+			entity,
+			true,
+			await this.countRemainingRecompositions(workspaceId, descriptionHash),
+		);
+	}
+
+	private async countRemainingRecompositions(
+		workspaceId: number,
+		descriptionHash: string,
+	): Promise<number> {
+		const compositionCount =
+			await this.composedPromptRepository.findCountByWorkspaceAndHash(
+				workspaceId,
+				descriptionHash,
+			);
+
+		return Math.max(ZERO_VALUE, this.recomposeLimit - compositionCount);
+	}
+
+	private async ensureRecomposeAllowed(
+		workspaceId: number,
+		descriptionHash: string,
+	): Promise<void> {
+		const compositionCount =
+			await this.composedPromptRepository.findCountByWorkspaceAndHash(
+				workspaceId,
+				descriptionHash,
+			);
+
+		if (compositionCount >= this.recomposeLimit) {
+			throw ComposedPromptError.recomposeLimitReached();
+		}
 	}
 
 	private async generate(
@@ -217,43 +245,17 @@ class ComposedPromptService {
 		this.logger.info("Composed prompt model call.", parameters);
 	}
 
-	private async store(
-		entity: ComposedPromptEntity,
-		workspaceId: number,
-		descriptionHash: string,
-	): Promise<StoreResult> {
-		try {
-			return {
-				entity: await this.composedPromptRepository.create(entity),
-				isCreated: true,
-			};
-		} catch (error) {
-			if (!(error instanceof ComposedPromptDuplicateError)) {
-				throw error;
-			}
-
-			const winner = await this.composedPromptRepository.findByWorkspaceAndHash(
-				workspaceId,
-				descriptionHash,
-			);
-
-			if (!winner) {
-				throw error;
-			}
-
-			return { entity: winner, isCreated: false };
-		}
-	}
-
 	private toComposedResult(
 		entity: ComposedPromptEntity,
 		isCreated: boolean,
+		remainingRecompositions: number,
 	): ComposeResult {
 		return {
 			isCreated,
 			response: {
 				composedPrompt: this.toDto(entity),
 				kind: ComposeResultKind.COMPOSED,
+				remainingRecompositions,
 			},
 		};
 	}
@@ -285,22 +287,37 @@ class ComposedPromptService {
 	}
 
 	public async compose(payload: ComposePayload): Promise<ComposeResult> {
-		const { description, userId, workspaceId } = payload;
-		const descriptionHash = computeDescriptionHash(description);
-		const existing = await this.composedPromptRepository.findByWorkspaceAndHash(
+		const {
+			description,
+			shouldRecompose = false,
+			userId,
 			workspaceId,
-			descriptionHash,
-		);
+		} = payload;
+		const descriptionHash = computeDescriptionHash(description);
 
-		if (existing) {
-			this.logModelCall({
-				durationMs: 0,
-				outcome: ModelCallOutcome.DEDUPLICATED,
-				sourceCount: 0,
-				workspaceId,
-			});
+		if (shouldRecompose) {
+			await this.ensureRecomposeAllowed(workspaceId, descriptionHash);
+		} else {
+			const latest =
+				await this.composedPromptRepository.findLatestByWorkspaceAndHash(
+					workspaceId,
+					descriptionHash,
+				);
 
-			return this.toComposedResult(existing, false);
+			if (latest) {
+				this.logModelCall({
+					durationMs: 0,
+					outcome: ModelCallOutcome.DEDUPLICATED,
+					sourceCount: 0,
+					workspaceId,
+				});
+
+				return this.toComposedResult(
+					latest,
+					false,
+					await this.countRemainingRecompositions(workspaceId, descriptionHash),
+				);
+			}
 		}
 
 		const retrieved = await this.promptService.findCandidates({

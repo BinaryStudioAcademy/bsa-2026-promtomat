@@ -17,4 +17,10 @@ const NotFoundPage: React.FC = () => (
 	/>
 );
 
-export { NotFoundPage };
+const NotFoundRoute: React.FC = () => (
+	<main>
+		<NotFoundPage />
+	</main>
+);
+
+export { NotFoundPage, NotFoundRoute };
