@@ -329,16 +329,7 @@ class PromptRepository {
 			`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.NAME} as ${SQLAlias.WORKSPACE_NAME}`,
 		];
 
-		if (userId !== undefined) {
-			selectColumns.push(
-				knex.raw(
-					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${DatabaseTableName.PROMPTS}.id AND user_id = ? LIMIT 1) as "myScore"`,
-					[userId],
-				) as unknown as string,
-			);
-		}
-
-		const row = (await knex
+		const query = knex
 			.select(selectColumns)
 			.from(DatabaseTableName.PROMPTS)
 			.innerJoin(
@@ -346,8 +337,19 @@ class PromptRepository {
 				PROMPT_WORKSPACE_ID,
 				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`,
 			)
-			.where(PROMPT_ID, "=", id)
-			.first()) as (PromptRawKnexRow & { myScore?: null | number }) | undefined;
+			.where(PROMPT_ID, "=", id);
+
+		if (userId !== undefined) {
+			query.select(
+				knex.raw(
+					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${DatabaseTableName.PROMPTS}.id AND user_id = ? LIMIT 1) as "myScore"`,
+					[userId],
+				),
+			);
+		}
+
+		const row = (await query.first()) as
+			(PromptRawKnexRow & { myScore?: null | number }) | undefined;
 
 		if (!row) {
 			return null;

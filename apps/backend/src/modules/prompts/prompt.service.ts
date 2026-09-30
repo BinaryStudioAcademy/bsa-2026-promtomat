@@ -129,11 +129,7 @@ class PromptService {
 
 		void this.promptEmbeddingService.embedForPrompt(savedPrompt);
 
-		return {
-			...savedPrompt,
-			efficiencyScore: savedPrompt.efficiencyScore ?? ZERO_VALUE,
-			label: generatedLabel,
-		};
+		return { ...savedPrompt, label: generatedLabel };
 	}
 
 	private async generateLabel({
@@ -197,7 +193,7 @@ class PromptService {
 
 			return {
 				computedScore: null,
-				efficiencyScore: createdPrompt.efficiencyScore ?? ZERO_VALUE,
+				efficiencyScore: createdPrompt.efficiencyScore,
 				id: createdPrompt.id,
 				label: label.name,
 				promptBody: createdPrompt.promptBody,
@@ -290,12 +286,7 @@ class PromptService {
 			return null;
 		}
 
-		const promptObject = prompt.toObject();
-
-		return {
-			...promptObject,
-			efficiencyScore: promptObject.efficiencyScore ?? ZERO_VALUE,
-		};
+		return prompt.toObject();
 	}
 
 	public async findByIdForUpdate(
@@ -484,7 +475,7 @@ class PromptService {
 
 		return {
 			computedScore: savedPrompt.computedScore,
-			efficiencyScore: savedPrompt.efficiencyScore ?? ZERO_VALUE,
+			efficiencyScore: savedPrompt.efficiencyScore,
 			id: savedPrompt.id,
 			label: label ?? "",
 			promptBody: savedPrompt.promptBody,
