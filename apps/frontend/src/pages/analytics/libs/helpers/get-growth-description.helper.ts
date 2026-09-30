@@ -1,8 +1,8 @@
+import { formatScore } from "~/libs/helpers/helpers.js";
 import { type AnalyticsGranularity } from "~/modules/analytics/libs/types/types.js";
 
 import { AnalyticLabel, GrowthUnits } from "../enums/enums.js";
 import { type GrowthSummary } from "../types/types.js";
-import { formatScore } from "./format-score.helper.js";
 
 const getGrowthDescription = (
 	summary: GrowthSummary,

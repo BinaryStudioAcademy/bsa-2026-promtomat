@@ -1,11 +1,10 @@
 const FRACTION_DIGITS = 1;
+const EMPTY_SCORE = "-";
 
-const formatScore = (score: null | number | undefined): null | number => {
-	if (!score) {
-		return null;
-	}
-
-	return +score.toFixed(FRACTION_DIGITS);
+const formatScore = (score: null | number | undefined): string => {
+	return score === null || score === undefined
+		? EMPTY_SCORE
+		: score.toFixed(FRACTION_DIGITS);
 };
 
 export { formatScore };

@@ -4,7 +4,6 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { IconName } from "~/libs/enums/enums.js";
 import {
-	formatScore,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
@@ -35,8 +34,7 @@ const PromptResultCard: React.FC<Properties> = ({
 		onSelect(prompt.id);
 	}, [onSelect, prompt.id]);
 
-	const rawScore = prompt.computedScore ?? prompt.score;
-	const formattedScore = formatScore(rawScore);
+	const score = prompt.computedScore ?? prompt.score;
 
 	return (
 		<button
@@ -52,7 +50,7 @@ const PromptResultCard: React.FC<Properties> = ({
 			<span className={styles["header"]}>
 				<span className={styles["intent"]}>{prompt.intent}</span>
 				<ScoreBadge
-					efficiencyScore={formattedScore}
+					efficiencyScore={score}
 					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 				<Icon

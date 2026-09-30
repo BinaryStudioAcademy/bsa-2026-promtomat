@@ -12,7 +12,6 @@ import { Textarea } from "~/libs/components/textarea/textarea.js";
 import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import {
 	configureString,
-	formatScore,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
@@ -79,10 +78,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	const errorMessage = errors.taskIntent?.message;
 	const isOwner = user?.id === prompt.userId;
 	const selectedScore = prompt.myScore ?? (isOwner ? prompt.score : null);
-	const displayScore =
-		prompt.computedScore === null
-			? prompt.score
-			: formatScore(prompt.computedScore);
+	const displayScore = prompt.computedScore ?? prompt.score;
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
 		promptId: String(prompt.id),
