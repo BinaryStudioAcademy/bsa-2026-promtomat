@@ -14,7 +14,6 @@ import styles from "./styles.module.css";
 
 const Training: React.FC = () => {
 	const {
-		canSubmit,
 		control,
 		error,
 		isSubmitting,
@@ -22,7 +21,6 @@ const Training: React.FC = () => {
 		mode,
 		onModeChange,
 		onScoreSelect,
-		onSubmit,
 		score,
 		workspaceId,
 	} = useRecordPromptForm();
@@ -38,7 +36,6 @@ const Training: React.FC = () => {
 			<div className={styles["page"]}>
 				<section className={styles["panel"]}>
 					<RecordPromptForm
-						canSubmit={canSubmit}
 						control={control}
 						error={error}
 						isSubmitting={isSubmitting}
@@ -46,7 +43,6 @@ const Training: React.FC = () => {
 						mode={mode}
 						onModeChange={onModeChange}
 						onScoreSelect={onScoreSelect}
-						onSubmit={onSubmit}
 						score={score}
 					/>
 				</section>

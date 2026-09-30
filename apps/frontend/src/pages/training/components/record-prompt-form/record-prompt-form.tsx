@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { type Control } from "react-hook-form";
 
-import { Button } from "~/libs/components/button/button.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
@@ -9,7 +8,7 @@ import { ScoreDescription } from "~/libs/components/score-grid/libs/enums/enums.
 import { getScoreColor } from "~/libs/components/score-grid/libs/helpers/get-score-color.helper.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
 import { type PromptCreateRequestDto } from "~/modules/prompts/prompts.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
@@ -21,7 +20,6 @@ import { RecordPromptFormMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	canSubmit: boolean;
 	control: Control<PromptCreateRequestDto, null>;
 	error: unknown;
 	isSubmitting: boolean;
@@ -29,12 +27,10 @@ type Properties = {
 	mode: ValueOf<typeof PromptBodyMode>;
 	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
-	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
 };
 
 const RecordPromptForm: React.FC<Properties> = ({
-	canSubmit,
 	control,
 	error,
 	isSubmitting,
@@ -42,7 +38,6 @@ const RecordPromptForm: React.FC<Properties> = ({
 	mode,
 	onModeChange,
 	onScoreSelect,
-	onSubmit,
 	score,
 }: Properties) => {
 	const [hoveredScore, setHoveredScore] = useState<null | number>(null);
@@ -66,7 +61,7 @@ const RecordPromptForm: React.FC<Properties> = ({
 				label={RecordPromptFormMessage.EYEBROW}
 				title={RecordPromptFormMessage.TITLE}
 			/>
-			<form className={styles["form"]} noValidate onSubmit={onSubmit}>
+			<form className={styles["form"]} noValidate>
 				<div className={styles["fields"]}>
 					<Select
 						control={control}
@@ -120,22 +115,6 @@ const RecordPromptForm: React.FC<Properties> = ({
 					</div>
 				</div>
 				<FormAlert error={error} />
-				<div className={styles["actions"]}>
-					<Button
-						iconName={IconName.CLIPBOARD_CHECK}
-						isDisabled={!canSubmit}
-						isLoading={isSubmitting}
-						label={RecordPromptFormMessage.SUBMIT}
-						size={ControlSize.LG}
-						type="submit"
-						variant={ButtonVariant.ACCENT}
-					/>
-					<span className={styles["hint"]}>
-						{canSubmit
-							? RecordPromptFormMessage.SUBMIT_HINT_READY
-							: RecordPromptFormMessage.SUBMIT_HINT_INCOMPLETE}
-					</span>
-				</div>
 			</form>
 		</>
 	);
