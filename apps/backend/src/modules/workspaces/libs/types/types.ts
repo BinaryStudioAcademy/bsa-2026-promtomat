@@ -1,5 +1,6 @@
 export { type WorkspaceEntityInitializeNewPayload } from "./workspace-entity-initialize-new-payload.type.js";
 export { type WorkspaceEntityPayload } from "./workspace-entity-payload.type.js";
+export { type WorkspaceListQuery } from "./workspace-list-query.type.js";
 export {
 	type WorkspaceAddContributorRequestDto,
 	type WorkspaceContributorRouteParametersDto,

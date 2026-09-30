@@ -1,0 +1,18 @@
+import { WorkspaceListSort } from "~/modules/workspaces/workspaces.js";
+
+const WORKSPACE_LIST_SORT_OPTIONS = [
+	{
+		label: "Recent activity",
+		value: WorkspaceListSort.RECENT_ACTIVITY,
+	},
+	{
+		label: "Dataset readiness",
+		value: WorkspaceListSort.READINESS,
+	},
+	{
+		label: "Average score",
+		value: WorkspaceListSort.AVERAGE_SCORE,
+	},
+] as const;
+
+export { WORKSPACE_LIST_SORT_OPTIONS };
