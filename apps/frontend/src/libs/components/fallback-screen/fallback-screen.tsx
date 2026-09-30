@@ -29,7 +29,7 @@ const FallbackScreen: React.FC<Properties> = ({
 	message,
 	title,
 }: Properties) => (
-	<main
+	<div
 		className={getValidClasses(
 			styles["screen"],
 			!illustrationUrl && styles["screen-glow"],
@@ -59,7 +59,7 @@ const FallbackScreen: React.FC<Properties> = ({
 				{action.label}
 			</Link>
 		</div>
-	</main>
+	</div>
 );
 
 export { FallbackScreen };

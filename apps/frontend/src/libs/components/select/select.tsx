@@ -15,7 +15,6 @@ import { type SelectOption } from "./libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties<T extends FieldValues> = {
-	adornment?: React.ReactNode;
 	control: Control<T, null>;
 	descriptionId?: string;
 	isDisabled?: boolean;
@@ -30,7 +29,6 @@ type Properties<T extends FieldValues> = {
 };
 
 const Select = <T extends FieldValues>({
-	adornment,
 	control,
 	descriptionId,
 	isDisabled = false,
@@ -92,11 +90,6 @@ const Select = <T extends FieldValues>({
 				{leadingIconName ? (
 					<Icon className={styles["leading-icon"]} iconName={leadingIconName} />
 				) : null}
-				{adornment ? (
-					<span aria-hidden="true" className={styles["adornment"]}>
-						{adornment}
-					</span>
-				) : null}
 				<select
 					{...restField}
 					aria-describedby={describedById}
@@ -105,7 +98,6 @@ const Select = <T extends FieldValues>({
 					className={getValidClasses(
 						styles["select"],
 						styles[size],
-						Boolean(adornment) && styles["adorned"],
 						hasError && styles["error"],
 						leadingIconName && styles["with-leading-icon"],
 					)}

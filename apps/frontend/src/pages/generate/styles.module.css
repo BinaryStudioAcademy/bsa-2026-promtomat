@@ -1,17 +1,9 @@
-.container {
-	display: flex;
-	justify-content: center;
-	width: 100%;
-	padding: var(--space-28) var(--space-16) var(--space-48);
-}
-
 .page-wrapper {
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-20);
 	width: 100%;
 	min-width: 0;
-	max-width: 900px;
 }
 
 .form {
@@ -78,10 +70,6 @@
 }
 
 @container (width <= 480px) {
-	.container {
-		padding-top: var(--space-16);
-	}
-
 	.form {
 		padding: var(--space-16);
 	}
