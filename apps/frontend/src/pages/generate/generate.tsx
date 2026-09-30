@@ -2,6 +2,7 @@ import React from "react";
 
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 
 import { ComposeResult } from "./components/compose-result/compose-result.js";
@@ -26,7 +27,7 @@ const Generate: React.FC = () => {
 	} = useGenerateForm();
 
 	return (
-		<div className={styles["container"]}>
+		<PageContainer>
 			<div className={styles["page-wrapper"]}>
 				<PageIntro
 					description={GenerateLabel.PAGE_DESCRIPTION}
@@ -53,7 +54,7 @@ const Generate: React.FC = () => {
 					/>
 				)}
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 

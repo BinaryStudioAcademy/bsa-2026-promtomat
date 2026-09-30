@@ -7,9 +7,9 @@ import {
 	ServerValidationErrorResponse,
 } from "~/libs/types/types.js";
 
-import { UNKNOWN_ERROR_MESSAGE } from "../constants/constants.js";
-import { FetchErrorMessage } from "../enums/enums.js";
 import { type ServerError } from "../types/server-error.type.js";
+import { getFetchErrorMessage } from "./get-fetch-error-message.helper.js";
+import { getRetryAfterSeconds } from "./get-retry-after-seconds.helper.js";
 
 const checkIsRecord = (value: unknown): value is Record<string, unknown> => {
 	return typeof value === "object" && value !== null;
@@ -50,7 +50,10 @@ const checkIsServerErrorResponse = (
 	return true;
 };
 
-const toServerError = (error: FetchBaseQueryError): ServerError => {
+const toServerError = (
+	error: FetchBaseQueryError,
+	headers?: Headers,
+): ServerError => {
 	if (checkIsServerErrorResponse(error.data)) {
 		if (
 			error.data.code === ErrorCode.VALIDATION_FAILED &&
@@ -64,6 +67,15 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 			};
 		}
 
+		if (error.data.code === ErrorCode.TOO_MANY_REQUESTS) {
+			return {
+				code: ErrorCode.TOO_MANY_REQUESTS,
+				message: error.data.message,
+				retryAfterSeconds: getRetryAfterSeconds(headers),
+				status: error.status,
+			};
+		}
+
 		return {
 			code: error.data.code,
 			message: error.data.message,
@@ -71,17 +83,9 @@ const toServerError = (error: FetchBaseQueryError): ServerError => {
 		};
 	}
 
-	if (typeof error.status === "string") {
-		return {
-			code: ErrorCode.INTERNAL_SERVER_ERROR,
-			message: FetchErrorMessage[error.status],
-			status: error.status,
-		};
-	}
-
 	return {
 		code: ErrorCode.INTERNAL_SERVER_ERROR,
-		message: UNKNOWN_ERROR_MESSAGE,
+		message: getFetchErrorMessage(error.status),
 		status: error.status,
 	};
 };

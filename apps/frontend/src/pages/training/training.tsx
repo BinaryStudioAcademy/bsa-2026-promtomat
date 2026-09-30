@@ -1,5 +1,6 @@
 import React from "react";
 
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { getBrowserTimeZone } from "~/libs/helpers/helpers.js";
 import { useGetPromptStreakQuery } from "~/modules/prompts/prompts-api.js";
@@ -33,29 +34,31 @@ const Training: React.FC = () => {
 	const streakCells = mapStreakDaysToCells(streak?.days ?? []);
 
 	return (
-		<main className={styles["page"]}>
-			<section className={styles["panel"]}>
-				<RecordPromptForm
-					canSubmit={canSubmit}
-					control={control}
-					error={error}
-					isSubmitting={isSubmitting}
-					loggedLabel={loggedLabel}
-					mode={mode}
-					onModeChange={onModeChange}
-					onScoreSelect={onScoreSelect}
-					onSubmit={onSubmit}
-					score={score}
-				/>
-			</section>
-			<aside className={styles["aside"]}>
-				<LoggingStreak
-					cells={streakCells}
-					currentStreak={streak?.currentStreak ?? ZERO_VALUE}
-				/>
-				<RecentPrompts workspaceId={workspaceId} />
-			</aside>
-		</main>
+		<PageContainer>
+			<div className={styles["page"]}>
+				<section className={styles["panel"]}>
+					<RecordPromptForm
+						canSubmit={canSubmit}
+						control={control}
+						error={error}
+						isSubmitting={isSubmitting}
+						loggedLabel={loggedLabel}
+						mode={mode}
+						onModeChange={onModeChange}
+						onScoreSelect={onScoreSelect}
+						onSubmit={onSubmit}
+						score={score}
+					/>
+				</section>
+				<aside className={styles["aside"]}>
+					<LoggingStreak
+						cells={streakCells}
+						currentStreak={streak?.currentStreak ?? ZERO_VALUE}
+					/>
+					<RecentPrompts workspaceId={workspaceId} />
+				</aside>
+			</div>
+		</PageContainer>
 	);
 };
 
