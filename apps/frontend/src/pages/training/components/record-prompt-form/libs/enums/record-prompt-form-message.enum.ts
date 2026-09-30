@@ -1,5 +1,4 @@
 const RecordPromptFormMessage = {
-	EYEBROW: "Training",
 	INTENT_LABEL: "Task intent",
 	INTENT_PLACEHOLDER: "e.g. JWT authentication on FastAPI",
 	SCORE_LABEL: "Efficiency score",
@@ -9,11 +8,6 @@ const RecordPromptFormMessage = {
 	SUBMIT: "Log prompt",
 	SUBMIT_HINT_INCOMPLETE: "All four fields are required.",
 	SUBMIT_HINT_READY: "Indexed and available to generation.",
-	SUBTITLE:
-		"Every submission trains the retrieval index. Four fields, fifteen seconds.",
-	TITLE: "Log this prompt",
-	WORKSPACE_LABEL: "Workspace",
-	WORKSPACE_PLACEHOLDER: "Select a workspace",
 } as const;
 
 export { RecordPromptFormMessage };
