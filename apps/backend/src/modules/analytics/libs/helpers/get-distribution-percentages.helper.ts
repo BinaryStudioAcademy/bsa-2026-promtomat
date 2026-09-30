@@ -1,49 +1,53 @@
-import { FIRST_ELEMENT_INDEX, ZERO_VALUE } from "~/libs/constants/constants.js";
-import { type AnalyticsDistributionResponseDto } from "~/modules/analytics/libs/types/types.js";
+import {
+	FIRST_ELEMENT_INDEX,
+	PERCENTAGE_MULTIPLIER,
+	ZERO_VALUE,
+} from "~/libs/constants/constants.js";
 
 import {
-	DISTRIBUTION_TIERS,
-	PERCENTAGE_MAX,
+	DISTRIBUTION_BANDS,
 	PERCENTAGE_POINT,
 } from "../constants/constants.js";
-import { type DistributionPercentages } from "../types/types.js";
-import { getScoredCount } from "./get-scored-count.helper.js";
+import {
+	type DistributionPercentages,
+	type PromptDistributionCountRow,
+} from "../types/types.js";
 
 type BandShare = {
-	key: keyof DistributionPercentages;
+	band: keyof DistributionPercentages;
 	remainder: number;
 	wholePercentage: number;
 };
 
 const getDistributionPercentages = (
-	distribution: AnalyticsDistributionResponseDto,
+	counts: PromptDistributionCountRow,
 ): DistributionPercentages => {
 	const percentages: DistributionPercentages = {
 		high: ZERO_VALUE,
 		low: ZERO_VALUE,
 		mid: ZERO_VALUE,
 	};
-	const total = getScoredCount(distribution);
+	const total = counts.high + counts.mid + counts.low;
 
 	if (total === ZERO_VALUE) {
 		return percentages;
 	}
 
-	const shares = DISTRIBUTION_TIERS.map(({ key }): BandShare => {
-		const exactPercentage = (distribution[key].count / total) * PERCENTAGE_MAX;
+	const shares = DISTRIBUTION_BANDS.map((band): BandShare => {
+		const exactPercentage = (counts[band] / total) * PERCENTAGE_MULTIPLIER;
 		const wholePercentage = Math.floor(exactPercentage);
 
 		return {
-			key,
+			band,
 			remainder: exactPercentage - wholePercentage,
 			wholePercentage,
 		};
 	});
 
-	let missingPoints = PERCENTAGE_MAX;
+	let missingPoints = PERCENTAGE_MULTIPLIER;
 
 	for (const share of shares) {
-		percentages[share.key] = share.wholePercentage;
+		percentages[share.band] = share.wholePercentage;
 		missingPoints -= share.wholePercentage;
 	}
 
@@ -55,7 +59,7 @@ const getDistributionPercentages = (
 		FIRST_ELEMENT_INDEX,
 		missingPoints,
 	)) {
-		percentages[share.key] += PERCENTAGE_POINT;
+		percentages[share.band] += PERCENTAGE_POINT;
 	}
 
 	return percentages;

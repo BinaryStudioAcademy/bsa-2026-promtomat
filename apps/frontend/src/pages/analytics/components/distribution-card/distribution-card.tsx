@@ -7,7 +7,6 @@ import {
 	SINGLE_SCORED_COUNT,
 } from "../../libs/constants/constants.js";
 import { AnalyticLabel } from "../../libs/enums/enums.js";
-import { getDistributionPercentages } from "../../libs/helpers/get-distribution-percentages.helper.js";
 import { getScoredCount } from "../../libs/helpers/get-scored-count.helper.js";
 import { DashboardCard } from "../dashboard-card/dashboard-card.js";
 import { DistributionBar } from "../distribution-bar/distribution-bar.js";
@@ -21,7 +20,6 @@ const DistributionCard: React.FC<Properties> = ({
 	distribution,
 }: Properties) => {
 	const scoredCount = getScoredCount(distribution);
-	const percentages = getDistributionPercentages(distribution);
 	const totalCaption =
 		scoredCount === SINGLE_SCORED_COUNT
 			? AnalyticLabel.DISTRIBUTION_TOTAL_ONE
@@ -43,7 +41,7 @@ const DistributionCard: React.FC<Properties> = ({
 						description={description}
 						key={key}
 						label={label}
-						percentage={percentages[key]}
+						percentage={distribution[key].percentage}
 						range={range}
 						tone={tone}
 					/>

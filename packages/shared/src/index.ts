@@ -40,7 +40,6 @@ export {
 } from "./libs/exceptions/exceptions.js";
 export {
 	configureString,
-	countPercentage,
 	formatDate,
 	formatDateInTimeZone,
 	getPreviousUtcDate,
