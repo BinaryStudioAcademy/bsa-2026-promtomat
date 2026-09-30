@@ -3,6 +3,7 @@ import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { type SelectOption } from "~/libs/components/select/libs/types/types.js";
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -32,12 +33,7 @@ type ReturnValue = {
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
 	workspaceId: number | undefined;
-	workspaceOptions: WorkspaceOption[];
-};
-
-type WorkspaceOption = {
-	label: string;
-	value: number;
+	workspaceOptions: SelectOption[];
 };
 
 const useRecordPromptForm = (): ReturnValue => {
