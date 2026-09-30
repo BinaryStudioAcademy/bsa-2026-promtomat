@@ -1,7 +1,7 @@
 import { type Model, type QueryBuilder, raw } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { ScoreTierMin } from "~/libs/enums/enums.js";
+import { ScoreTierMin, SortOrder } from "~/libs/enums/enums.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { type Embedding } from "~/libs/modules/embedding/embedding.js";
@@ -296,13 +296,13 @@ class PromptHistoryRepository {
 
 		if (embedding) {
 			unifiedQuery
-				.orderBy(PromptHistorySqlAlias.IS_COMPOSED, "asc")
-				.orderBy(PromptHistorySqlAlias.SORT_SCORE, "desc");
+				.orderBy(PromptHistorySqlAlias.IS_COMPOSED, SortOrder.ASC)
+				.orderBy(PromptHistorySqlAlias.SORT_SCORE, SortOrder.DESC);
 		}
 
 		const [rows, [aggregate]] = await Promise.all([
 			unifiedQuery
-				.orderBy(PromptHistorySqlAlias.CREATED_AT, "desc")
+				.orderBy(PromptHistorySqlAlias.CREATED_AT, SortOrder.DESC)
 				.limit(limit)
 				.offset(offset)
 				.castTo<PromptHistoryRawRow[]>()
@@ -311,7 +311,10 @@ class PromptHistoryRepository {
 				.query()
 				.from(this.buildFilteredUnion(filters).as("unified_prompt_history"))
 				.select(
-					raw("COUNT(??) as ??", ["id", PromptHistorySqlAlias.TOTAL_COUNT]),
+					raw("COUNT(??) as ??", [
+						PromptColumnName.ID,
+						PromptHistorySqlAlias.TOTAL_COUNT,
+					]),
 					raw("AVG(COALESCE(??, NULLIF(??, 0))) as ??", [
 						PromptHistorySqlAlias.COMPUTED_SCORE,
 						"score",
