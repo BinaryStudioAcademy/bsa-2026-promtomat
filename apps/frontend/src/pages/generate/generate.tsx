@@ -1,5 +1,7 @@
 import React from "react";
 
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
+
 import { ComposeResult } from "./components/compose-result/compose-result.js";
 import { GenerateForm } from "./components/generate-form/generate-form.js";
 import { GenerationFailedNotice } from "./components/generation-failed-notice/generation-failed-notice.js";
@@ -21,7 +23,7 @@ const Generate: React.FC = () => {
 	} = useGenerateForm();
 
 	return (
-		<div className={styles["container"]}>
+		<PageContainer>
 			<div className={styles["page-wrapper"]}>
 				<GenerateForm
 					control={control}
@@ -42,7 +44,7 @@ const Generate: React.FC = () => {
 					/>
 				)}
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 

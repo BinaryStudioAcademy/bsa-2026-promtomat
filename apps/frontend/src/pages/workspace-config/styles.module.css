@@ -1,15 +1,8 @@
-.page {
-	padding-top: var(--space-28);
-	padding-bottom: var(--space-48);
-}
-
 .container {
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-16);
 	width: 100%;
-	max-width: 860px;
-	margin-inline: auto;
 }
 
 .back-link {
@@ -98,10 +91,6 @@
 }
 
 @container (width <= 640px) {
-	.page {
-		padding-top: var(--space-16);
-	}
-
 	.container {
 		gap: var(--space-12);
 	}
