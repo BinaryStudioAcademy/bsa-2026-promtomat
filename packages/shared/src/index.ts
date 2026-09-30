@@ -157,6 +157,12 @@ export {
 	MCPSetup,
 } from "./modules/mcp/mcp.js";
 export {
+	type PromptHistoryGetQueryDto,
+	PromptHistoryApiPath,
+	promptHistoryGetQueryValidationSchema,
+	PromptHistoryScoreTier,
+} from "./modules/prompt-history/prompt-history.js";
+export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,
 	type PromptDto,
