@@ -53,7 +53,7 @@ const InlineEdit = <T extends FieldValues>({
 	const previewButtonReference = useRef<HTMLButtonElement>(null);
 	const originalValueReference = useRef<unknown>(null);
 
-	const editClassName = getValidClasses(className, styles["edit"]);
+	const editClassName = getValidClasses(className, styles["base-text"]);
 
 	const { field } = useController({
 		control,
@@ -185,7 +185,11 @@ const InlineEdit = <T extends FieldValues>({
 			</label>
 			<div className={inputStyles["control"]}>
 				<button
-					className={getValidClasses(styles["preview"], className)}
+					className={getValidClasses(
+						styles["base-text"],
+						styles["preview"],
+						className,
+					)}
 					onClick={handleStartEditing}
 					ref={previewButtonReference}
 					type="button"
