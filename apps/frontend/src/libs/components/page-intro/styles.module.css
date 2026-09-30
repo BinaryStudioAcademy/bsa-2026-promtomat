@@ -16,7 +16,7 @@
 
 .title {
 	margin: 0;
-	font-size: var(--font-size-display-1);
+	font-size: var(--font-size-display-2);
 	font-weight: 700;
 	line-height: 1.15;
 	color: var(--text-strong);

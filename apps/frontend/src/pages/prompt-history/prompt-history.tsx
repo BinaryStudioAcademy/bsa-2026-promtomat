@@ -3,6 +3,8 @@ import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
+import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
@@ -147,13 +149,13 @@ const PromptHistory: React.FC = () => {
 	}
 
 	return (
-		<div className={styles["container"]}>
+		<PageContainer>
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["intro"]}>
-					<div className={styles["copy"]}>
-						<p className={styles["eyebrow"]}>{PromptHistoryLabel.EYEBROW}</p>
-						<h2 className={styles["title"]}>{PromptHistoryLabel.SUBTITLE}</h2>
-					</div>
+					<PageIntro
+						label={PromptHistoryLabel.EYEBROW}
+						title={PromptHistoryLabel.SUBTITLE}
+					/>
 					<div className={styles["workspace"]}>
 						<Select
 							control={control}
@@ -266,7 +268,7 @@ const PromptHistory: React.FC = () => {
 					) : null}
 				</div>
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 

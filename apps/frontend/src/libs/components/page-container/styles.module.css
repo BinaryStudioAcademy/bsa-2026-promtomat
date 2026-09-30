@@ -1,0 +1,10 @@
+.container {
+	padding-top: var(--space-28);
+	padding-bottom: var(--space-48);
+}
+
+@container (width <= 640px) {
+	.container {
+		padding-top: var(--space-16);
+	}
+}

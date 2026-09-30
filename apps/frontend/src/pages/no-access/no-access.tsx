@@ -3,13 +3,15 @@ import { FallbackScreen } from "~/libs/components/fallback-screen/fallback-scree
 import { AppRoute, HTTPCode } from "~/libs/enums/enums.js";
 
 const NoAccessPage: React.FC = () => (
-	<FallbackScreen
-		action={{ label: "Back Home", url: AppRoute.WORKSPACES }}
-		code={HTTPCode.FORBIDDEN}
-		illustrationUrl={noAccessIllustration}
-		message="Sorry, you are not allowed to access this page."
-		title="Forbidden"
-	/>
+	<main>
+		<FallbackScreen
+			action={{ label: "Back Home", url: AppRoute.WORKSPACES }}
+			code={HTTPCode.FORBIDDEN}
+			illustrationUrl={noAccessIllustration}
+			message="Sorry, you are not allowed to access this page."
+			title="Forbidden"
+		/>
+	</main>
 );
 
 export { NoAccessPage };

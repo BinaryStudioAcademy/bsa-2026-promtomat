@@ -5,6 +5,7 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { AppRoute, IconName } from "~/libs/enums/enums.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
@@ -21,32 +22,34 @@ type ContentProperties = {
 const PromptDeliveryContent: React.FC<ContentProperties> = ({
 	prompt,
 }: ContentProperties) => (
-	<div className={styles["page"]}>
-		<Link
-			className={styles["back-link"]}
-			hasDefaultStyles={false}
-			to={AppRoute.SMART_SEARCH}
-		>
-			<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
-			{PromptDeliveryLabel.BACK_TO_SEARCH}
-		</Link>
+	<PageContainer>
+		<div className={styles["page"]}>
+			<Link
+				className={styles["back-link"]}
+				hasDefaultStyles={false}
+				to={AppRoute.SMART_SEARCH}
+			>
+				<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+				{PromptDeliveryLabel.BACK_TO_SEARCH}
+			</Link>
 
-		<p className={styles["eyebrow"]}>{PromptDeliveryLabel.EYEBROW}</p>
+			<p className={styles["eyebrow"]}>{PromptDeliveryLabel.EYEBROW}</p>
 
-		<PromptDetailPanel
-			isCompact={false}
-			prompt={prompt}
-			shouldShowOpenFullPageLink={false}
-		/>
+			<PromptDetailPanel
+				isCompact={false}
+				prompt={prompt}
+				shouldShowOpenFullPageLink={false}
+			/>
 
-		<Link
-			className={styles["show-in-search"]}
-			hasDefaultStyles={false}
-			to={AppRoute.SMART_SEARCH}
-		>
-			{PromptDeliveryLabel.SHOW_IN_SEARCH}
-		</Link>
-	</div>
+			<Link
+				className={styles["show-in-search"]}
+				hasDefaultStyles={false}
+				to={AppRoute.SMART_SEARCH}
+			>
+				{PromptDeliveryLabel.SHOW_IN_SEARCH}
+			</Link>
+		</div>
+	</PageContainer>
 );
 
 const PromptDelivery: React.FC = () => {

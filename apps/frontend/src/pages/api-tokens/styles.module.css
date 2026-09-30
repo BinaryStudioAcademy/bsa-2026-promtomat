@@ -2,7 +2,6 @@
 	display: flex;
 	flex-grow: 1;
 	width: 100%;
-	padding-block: 56px;
 	background-color: var(--surface-canvas);
 }
 
@@ -12,23 +11,6 @@
 	gap: var(--space-16);
 	align-items: stretch;
 	width: 100%;
-	max-width: 960px;
-}
-
-.kicker {
-	margin: 0;
-	font-family: var(--font-family-mono);
-	font-size: var(--font-size-label-sm);
-	font-weight: 500;
-	color: var(--text-accent);
-}
-
-.title {
-	margin: 0;
-	font-size: var(--font-size-display-2);
-	font-weight: 700;
-	line-height: 1.15;
-	color: var(--text-strong);
 }
 
 .card {
