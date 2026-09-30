@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { WORKSPACE_ID_SEARCH_PARAMETER } from "~/libs/constants/constants.js";
-import { AppRoute } from "~/libs/enums/enums.js";
+import { AppRoute, EvaluationTargetType } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-
 import {
-	useUpdatePromptBodyMutation,
-	useUpdatePromptScoreMutation,
-} from "../../../prompts-api.js";
+	EvaluationMessage,
+	useEvaluateMutation,
+} from "~/modules/evaluations/evaluations.js";
+
+import { useUpdatePromptBodyMutation } from "../../../prompts-api.js";
 import { PromptRevisionMessage } from "../../enums/enums.js";
 import { type PromptForkDraft } from "../../types/prompt-fork-draft.type.js";
 import {
@@ -40,8 +41,7 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 	const navigate = useNavigate();
 	const [updateBody, { isLoading: isSavingBody }] =
 		useUpdatePromptBodyMutation();
-	const [updateScore, { isLoading: isSavingScore }] =
-		useUpdatePromptScoreMutation();
+	const [evaluate, { isLoading: isSavingScore }] = useEvaluateMutation();
 	const [isEditingBody, setIsEditingBody] = useState(false);
 	const lastBodyReference = useRef(prompt.body);
 	const { control, handleSubmit, reset } =
@@ -96,25 +96,27 @@ const usePromptRevision = ({ prompt }: Parameters): ReturnValue => {
 					return;
 				}
 
-				const efficiencyScore = prompt.score === score ? null : score;
-
-				void updateScore({
-					id: prompt.id,
-					payload: { efficiencyScore },
+				void evaluate({
+					score,
+					targetId: prompt.id,
+					targetType: EvaluationTargetType.PROMPT,
 				})
 					.unwrap()
 					.then(() => {
 						showNotification({
-							message: PromptRevisionMessage.UPDATE_SCORE_SUCCESS,
+							message: EvaluationMessage.EVALUATION_SUCCESS,
 							type: NotificationType.SUCCESS,
 						});
 					})
 					.catch(() => {
-						// The score control keeps the last persisted value.
+						showNotification({
+							message: EvaluationMessage.EVALUATION_FAILED,
+							type: NotificationType.DANGER,
+						});
 					});
 			};
 		},
-		[isSavingScore, prompt.id, prompt.score, updateScore],
+		[evaluate, isSavingScore, prompt.id],
 	);
 
 	const handleFork = useCallback((): void => {

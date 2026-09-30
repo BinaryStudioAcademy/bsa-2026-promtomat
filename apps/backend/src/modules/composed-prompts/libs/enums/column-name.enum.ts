@@ -1,5 +1,6 @@
 const ColumnName = {
 	BODY: "body",
+	COMPUTED_SCORE: "computedScore",
 	CREATED_AT: "createdAt",
 	DESCRIPTION: "description",
 	DESCRIPTION_HASH: "descriptionHash",

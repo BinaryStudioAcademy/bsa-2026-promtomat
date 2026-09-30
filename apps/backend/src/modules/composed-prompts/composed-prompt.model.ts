@@ -15,6 +15,8 @@ import {
 class ComposedPromptModel extends AbstractModel {
 	public body!: string;
 
+	public computedScore!: null | number;
+
 	public description!: string;
 
 	public descriptionHash!: string;
@@ -44,6 +46,21 @@ class ComposedPromptModel extends AbstractModel {
 
 	public static override get tableName(): string {
 		return DatabaseTableName.COMPOSED_PROMPTS;
+	}
+
+	public override $parseDatabaseJson(
+		json: Record<string, unknown>,
+	): Record<string, unknown> {
+		const parsed = super.$parseDatabaseJson(json);
+
+		if (
+			parsed["computedScore"] !== null &&
+			parsed["computedScore"] !== undefined
+		) {
+			parsed["computedScore"] = Number(parsed["computedScore"]);
+		}
+
+		return parsed;
 	}
 }
 

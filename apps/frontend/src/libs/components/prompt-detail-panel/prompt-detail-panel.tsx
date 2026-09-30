@@ -77,6 +77,8 @@ const PromptDetailPanel: React.FC<Properties> = ({
 
 	const errorMessage = errors.taskIntent?.message;
 	const isOwner = user?.id === prompt.userId;
+	const selectedScore = prompt.myScore ?? (isOwner ? prompt.score : null);
+	const displayScore = prompt.computedScore ?? prompt.score;
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
 	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
 		promptId: String(prompt.id),
@@ -157,13 +159,14 @@ const PromptDetailPanel: React.FC<Properties> = ({
 								name="taskIntent"
 								onSave={handleSaveUpdatedIntent}
 								size="sm"
+								variant="textarea"
 							/>
 						</div>
 					) : (
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
 					<ScoreBadge
-						efficiencyScore={prompt.score}
+						efficiencyScore={displayScore}
 						maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 					/>
 				</div>
@@ -246,18 +249,16 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				</div>
 			)}
 
-			{isOwner && (
-				<div className={styles["rating"]}>
-					<ScoreGrid
-						isDisabled={isSavingScore}
-						isRadio
-						label={PromptDetailLabel.YOUR_RATING}
-						onScoreSelect={handleScoreSelect}
-						selectedScore={prompt.score}
-						variant="inset"
-					/>
-				</div>
-			)}
+			<div className={styles["rating"]}>
+				<ScoreGrid
+					isDisabled={isSavingScore}
+					isRadio
+					label={PromptDetailLabel.YOUR_RATING}
+					onScoreSelect={handleScoreSelect}
+					selectedScore={selectedScore}
+					variant="inset"
+				/>
+			</div>
 
 			<div className={styles["actions"]}>
 				{isOwner && isEditingBody ? (

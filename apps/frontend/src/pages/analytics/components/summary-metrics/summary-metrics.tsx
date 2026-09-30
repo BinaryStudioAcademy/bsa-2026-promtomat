@@ -1,10 +1,10 @@
 import React from "react";
 
+import { formatScore } from "~/libs/helpers/helpers.js";
 import { type AnalyticsDashboardResponseDto } from "~/modules/analytics/libs/types/types.js";
 
 import { AnalyticLabel, MetricTone } from "../../libs/enums/enums.js";
 import { formatScoreChange } from "../../libs/helpers/format-score-change.helper.js";
-import { formatScore } from "../../libs/helpers/format-score.helper.js";
 import { getScoredCount } from "../../libs/helpers/get-scored-count.helper.js";
 import { MetricCard } from "../metric-card/metric-card.js";
 import styles from "./styles.module.css";

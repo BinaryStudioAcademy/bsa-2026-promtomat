@@ -110,9 +110,13 @@ const SearchableSelect = <T extends FieldValues>({
 		}
 
 		addEventListener(EventType.RESIZE, handleUpdateControlRect);
+		addEventListener(EventType.SCROLL, handleUpdateControlRect, {
+			capture: true,
+		});
 
 		return () => {
 			removeEventListener(EventType.RESIZE, handleUpdateControlRect);
+			removeEventListener(EventType.SCROLL, handleUpdateControlRect, true);
 		};
 	}, [isSuggestionsOpen, handleUpdateControlRect]);
 

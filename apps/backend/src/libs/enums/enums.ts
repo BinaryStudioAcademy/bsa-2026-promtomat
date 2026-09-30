@@ -11,6 +11,8 @@ export {
 	DateFormat,
 	ErrorCode,
 	Locale,
+	PromptQualityTier,
+	QualityScoreThreshold,
 	ScoreTierMin,
 	SortOrder,
 	TimeUnit,
