@@ -4,6 +4,7 @@ export { ControlSize } from "./control-size.enum.js";
 export { EventType } from "./event-type.enum.js";
 export { FormValidationMode } from "./form-validation-mode.enum.js";
 export { IconName } from "./icon-name.enum.js";
+export { InlineEditVariant } from "./inline-edit-variant.enum.js";
 export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
 export { Locale } from "./locale.enum.js";

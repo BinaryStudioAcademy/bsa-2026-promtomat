@@ -5,7 +5,6 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { capitalizeFirstLetter } from "~/libs/helpers/helpers.js";
-import { PromptProgress } from "~/modules/prompts/prompts.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
 import { WorkspaceMetrics } from "./components/workspace-metrics/workspace-metrics.js";
@@ -72,11 +71,11 @@ const WorkspaceCard: React.FC<Properties> = ({
 						<ProgressBar
 							count={workspace.promptCount}
 							label="Dataset readiness"
-							target={PromptProgress.TARGET_COUNT}
+							target={workspace.datasetTarget}
 						/>
 					</div>
 
-					<WorkspaceMetrics memberCount={workspace.memberCount} />
+					<WorkspaceMetrics workspace={workspace} />
 				</div>
 			</div>
 		</div>

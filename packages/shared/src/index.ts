@@ -40,7 +40,6 @@ export {
 } from "./libs/exceptions/exceptions.js";
 export {
 	configureString,
-	countPercentage,
 	formatDate,
 	formatDateInTimeZone,
 	getPreviousUtcDate,
@@ -265,10 +264,12 @@ export {
 	workspaceCreationValidationSchema,
 	workspaceGetByQueryValidationSchema,
 	WorkspaceListScope,
+	WorkspaceListSort,
 	workspaceRouteParametersValidationSchema,
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
+	WorkspaceTarget,
 	workspaceUpdateValidationSchema,
 	WorkspaceValidationRule,
 	WorkspaceVisibility,

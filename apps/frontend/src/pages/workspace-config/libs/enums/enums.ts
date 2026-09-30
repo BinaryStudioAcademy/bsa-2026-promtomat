@@ -1,3 +1,4 @@
+export { WorkspaceConfigLabel } from "./workspace-config-label.enum.js";
 export { WorkspaceConfigMessage } from "./workspace-config-message.enum.js";
 export { WorkspaceContributorsMessage } from "./workspace-contributors-message.enum.js";
 export { WorkspaceDeleteMessage } from "./workspace-delete-message.enum.js";

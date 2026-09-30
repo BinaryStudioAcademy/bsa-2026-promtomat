@@ -31,6 +31,9 @@ import { type WorkspaceService } from "./workspace.service.js";
  *     Workspace:
  *       type: object
  *       properties:
+ *         datasetTarget:
+ *           type: integer
+ *           enum: [500, 1000, 2500, 5000]
  *         description:
  *           type: string
  *         id:
@@ -51,13 +54,21 @@ import { type WorkspaceService } from "./workspace.service.js";
  *         - $ref: "#/components/schemas/Workspace"
  *         - type: object
  *           required:
+ *             - averageScore
  *             - memberCount
  *             - promptCount
+ *             - recentActivity
  *           properties:
+ *             averageScore:
+ *               type: number
+ *               nullable: true
  *             memberCount:
  *               type: integer
  *               minimum: 1
  *             promptCount:
+ *               type: integer
+ *               minimum: 0
+ *             recentActivity:
  *               type: integer
  *               minimum: 0
  */
@@ -159,6 +170,10 @@ class WorkspaceController extends BaseController {
 	 *            schema:
 	 *              type: object
 	 *              properties:
+	 *                datasetTarget:
+	 *                  type: integer
+	 *                  enum: [500, 1000, 2500, 5000]
+	 *                  default: 1000
 	 *                description:
 	 *                  type: string
 	 *                name:
@@ -225,6 +240,12 @@ class WorkspaceController extends BaseController {
 	 *            enum: [all, owned, shared]
 	 *            default: all
 	 *          description: Limits the list to owned or shared workspaces
+	 *        - in: query
+	 *          name: sort
+	 *          schema:
+	 *            type: string
+	 *            enum: [averageScore, readiness, recentActivity]
+	 *          description: Orders the list by recent activity, readiness, or average score
 	 *        - in: query
 	 *          name: workspaceName
 	 *          schema:
@@ -378,6 +399,9 @@ class WorkspaceController extends BaseController {
 	 *             additionalProperties: false
 	 *             minProperties: 1
 	 *             properties:
+	 *               datasetTarget:
+	 *                 type: integer
+	 *                 enum: [500, 1000, 2500, 5000]
 	 *               description:
 	 *                 type: string
 	 *                 maxLength: 200

@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { type SelectOption } from "~/libs/components/select/libs/types/types.js";
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -24,7 +25,6 @@ import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "../../constants/constants.js";
 import { PromptBodyMode, RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
-	canSubmit: boolean;
 	control: Control<PromptCreateRequestDto, null>;
 	error: unknown;
 	isSubmitting: boolean;
@@ -32,9 +32,9 @@ type ReturnValue = {
 	mode: ValueOf<typeof PromptBodyMode>;
 	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
-	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
 	workspaceId: number | undefined;
+	workspaceOptions: SelectOption[];
 };
 
 const useRecordPromptForm = (): ReturnValue => {
@@ -45,7 +45,7 @@ const useRecordPromptForm = (): ReturnValue => {
 	const [recordPrompt, { data: loggedPrompt, error, isLoading }] =
 		useRecordPromptMutation();
 
-	const { control, formState, handleSubmit, reset, setValue } =
+	const { control, handleSubmit, reset, setValue } =
 		useAppForm<PromptCreateRequestDto>({
 			defaultValues: DEFAULT_RECORD_PROMPT_PAYLOAD,
 			mode: FormValidationMode.ON_TOUCHED,
@@ -53,6 +53,17 @@ const useRecordPromptForm = (): ReturnValue => {
 		});
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
+
+	const workspaceOptions = useMemo(
+		() =>
+			workspaces?.items.map(({ id, name }) => {
+				return {
+					label: name,
+					value: id,
+				};
+			}) ?? [],
+		[workspaces],
+	);
 
 	const location = useLocation();
 
@@ -97,17 +108,8 @@ const useRecordPromptForm = (): ReturnValue => {
 		workspaces: workspaces?.items,
 	});
 
-	const handleScoreSelect = useCallback(
-		(nextScore: number) => {
-			return (): void => {
-				setValue("efficiencyScore", nextScore, { shouldValidate: true });
-			};
-		},
-		[setValue],
-	);
-
 	const handleSubmitPrompt = useCallback(
-		(event: React.BaseSyntheticEvent): void => {
+		(event?: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (payload: PromptCreateRequestDto) => {
 				const { data } = await recordPrompt(payload);
 
@@ -127,8 +129,17 @@ const useRecordPromptForm = (): ReturnValue => {
 		[handleSubmit, recordPrompt, reset],
 	);
 
+	const handleScoreSelect = useCallback(
+		(nextScore: number) => {
+			return (): void => {
+				setValue("efficiencyScore", nextScore, { shouldValidate: true });
+				handleSubmitPrompt();
+			};
+		},
+		[handleSubmitPrompt, setValue],
+	);
+
 	return {
-		canSubmit: formState.isValid,
 		control,
 		error,
 		isSubmitting: isLoading,
@@ -136,9 +147,9 @@ const useRecordPromptForm = (): ReturnValue => {
 		mode,
 		onModeChange: setMode,
 		onScoreSelect: handleScoreSelect,
-		onSubmit: handleSubmitPrompt,
 		score,
 		workspaceId,
+		workspaceOptions,
 	};
 };
 
