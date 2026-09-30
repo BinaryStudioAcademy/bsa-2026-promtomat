@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
+import { type SelectOption } from "~/libs/components/select/libs/types/types.js";
 import { FormValidationMode } from "~/libs/enums/enums.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -33,6 +34,7 @@ type ReturnValue = {
 	onScoreSelect: (score: number) => () => void;
 	score: null | number;
 	workspaceId: number | undefined;
+	workspaceOptions: SelectOption[];
 };
 
 const useRecordPromptForm = (): ReturnValue => {
@@ -51,6 +53,17 @@ const useRecordPromptForm = (): ReturnValue => {
 		});
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
+
+	const workspaceOptions = useMemo(
+		() =>
+			workspaces?.items.map(({ id, name }) => {
+				return {
+					label: name,
+					value: id,
+				};
+			}) ?? [],
+		[workspaces],
+	);
 
 	const location = useLocation();
 
@@ -136,6 +149,7 @@ const useRecordPromptForm = (): ReturnValue => {
 		onScoreSelect: handleScoreSelect,
 		score,
 		workspaceId,
+		workspaceOptions,
 	};
 };
 
