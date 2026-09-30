@@ -7,13 +7,12 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getBrowserTimeZone } from "~/libs/helpers/helpers.js";
 import { useGetPromptStreakQuery } from "~/modules/prompts/prompts-api.js";
-import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
 import { mapStreakDaysToCells } from "./components/logging-streak/libs/helpers/helpers.js";
 import { LoggingStreak } from "./components/logging-streak/logging-streak.js";
 import { RecentPrompts } from "./components/recent-prompts/recent-prompts.js";
-import { RecordPromptFormMessage } from "./components/record-prompt-form/libs/enums/enums.js";
 import { RecordPromptForm } from "./components/record-prompt-form/record-prompt-form.js";
+import { TrainingPageMessage } from "./libs/enums/enums.js";
 import { useRecordPromptForm } from "./libs/hooks/use-record-prompt-form/use-record-prompt-form.hook.js";
 import styles from "./styles.module.css";
 
@@ -28,6 +27,7 @@ const Training: React.FC = () => {
 		onSubmit,
 		score,
 		workspaceId,
+		workspaceOptions,
 	} = useRecordPromptForm();
 
 	const { data: streak } = useGetPromptStreakQuery({
@@ -35,33 +35,25 @@ const Training: React.FC = () => {
 	});
 
 	const streakCells = mapStreakDaysToCells(streak?.days ?? []);
-	const { data: workspaces } = useGetWorkspacesQuery({});
-	const workspaceOptions =
-		workspaces?.items.map(({ id, name }) => {
-			return {
-				label: name,
-				value: id,
-			};
-		}) ?? [];
 
 	return (
 		<PageContainer>
 			<div className={styles["layout"]}>
 				<header className={styles["intro"]}>
 					<PageIntro
-						description={RecordPromptFormMessage.SUBTITLE}
-						label={RecordPromptFormMessage.EYEBROW}
-						title={RecordPromptFormMessage.TITLE}
+						description={TrainingPageMessage.SUBTITLE}
+						label={TrainingPageMessage.EYEBROW}
+						title={TrainingPageMessage.TITLE}
 					/>
 					<div className={styles["workspace"]}>
 						<Select
 							control={control}
 							isDisabled={isSubmitting}
-							label={RecordPromptFormMessage.WORKSPACE_LABEL}
+							label={TrainingPageMessage.WORKSPACE_LABEL}
 							leadingIconName={IconName.FOLDER}
 							name="workspaceId"
 							options={workspaceOptions}
-							placeholder={RecordPromptFormMessage.WORKSPACE_PLACEHOLDER}
+							placeholder={TrainingPageMessage.WORKSPACE_PLACEHOLDER}
 							size={ControlSize.LG}
 						/>
 					</div>

@@ -32,6 +32,12 @@ type ReturnValue = {
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
 	workspaceId: number | undefined;
+	workspaceOptions: WorkspaceOption[];
+};
+
+type WorkspaceOption = {
+	label: string;
+	value: number;
 };
 
 const useRecordPromptForm = (): ReturnValue => {
@@ -46,6 +52,14 @@ const useRecordPromptForm = (): ReturnValue => {
 		});
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
+
+	const workspaceOptions =
+		workspaces?.items.map(({ id, name }) => {
+			return {
+				label: name,
+				value: id,
+			};
+		}) ?? [];
 
 	const location = useLocation();
 
@@ -129,6 +143,7 @@ const useRecordPromptForm = (): ReturnValue => {
 		onSubmit: handleSubmitPrompt,
 		score,
 		workspaceId,
+		workspaceOptions,
 	};
 };
 
