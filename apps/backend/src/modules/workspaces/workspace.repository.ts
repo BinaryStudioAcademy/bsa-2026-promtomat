@@ -52,42 +52,46 @@ class WorkspaceRepository {
 	): void {
 		const workspaceId = `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`;
 
-		if (sort === WorkspaceListSort.RECENT_ACTIVITY) {
-			query
-				.orderBy(SQLAlias.RECENT_ACTIVITY, SortOrder.DESC)
-				.orderBy(workspaceId, SortOrder.ASC);
+		switch (sort) {
+			case WorkspaceListSort.AVERAGE_SCORE: {
+				query
+					.orderByRaw(`?? ${SortOrder.DESC} NULLS LAST`, [
+						SQLAlias.AVERAGE_SCORE,
+					])
+					.orderBy(workspaceId, SortOrder.ASC);
 
-			return;
+				return;
+			}
+			case WorkspaceListSort.READINESS: {
+				query
+					.orderByRaw(
+						`count(distinct ??)::double precision / ?? ${SortOrder.DESC}`,
+						[
+							`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+							`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.DATASET_TARGET}`,
+						],
+					)
+					.orderBy(workspaceId, SortOrder.ASC);
+
+				return;
+			}
+			case WorkspaceListSort.RECENT_ACTIVITY: {
+				query
+					.orderBy(SQLAlias.RECENT_ACTIVITY, SortOrder.DESC)
+					.orderBy(workspaceId, SortOrder.ASC);
+
+				return;
+			}
+			default: {
+				query
+					.orderBy(
+						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
+						SortOrder.DESC,
+					)
+					.orderBy(workspaceId, SortOrder.ASC);
+				return;
+			}
 		}
-
-		if (sort === WorkspaceListSort.READINESS) {
-			query
-				.orderByRaw(
-					`count(distinct ??)::double precision / ?? ${SortOrder.DESC}`,
-					[
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
-						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.DATASET_TARGET}`,
-					],
-				)
-				.orderBy(workspaceId, SortOrder.ASC);
-
-			return;
-		}
-
-		if (sort === WorkspaceListSort.AVERAGE_SCORE) {
-			query
-				.orderByRaw(`?? ${SortOrder.DESC} NULLS LAST`, [SQLAlias.AVERAGE_SCORE])
-				.orderBy(workspaceId, SortOrder.ASC);
-
-			return;
-		}
-
-		query
-			.orderBy(
-				`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
-				SortOrder.DESC,
-			)
-			.orderBy(workspaceId, SortOrder.ASC);
 	}
 
 	private buildWorkspaceWithCountsQuery(): QueryBuilder<
