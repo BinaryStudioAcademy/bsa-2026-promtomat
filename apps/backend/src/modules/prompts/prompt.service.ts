@@ -1,12 +1,12 @@
 import { type Transaction } from "objection";
 
-import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { DateFormat } from "~/libs/enums/enums.js";
 import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
-import { formatDateInTimeZone } from "~/libs/helpers/helpers.js";
+import { formatDateInTimeZone, roundScore } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
@@ -182,9 +182,7 @@ class PromptService {
 			: await this.promptRepository.findAll(options);
 
 		const formattedAverageScore =
-			averageScore === null
-				? null
-				: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
+			averageScore === null ? null : roundScore(averageScore);
 
 		return {
 			averageScore: formattedAverageScore,
@@ -323,10 +321,7 @@ class PromptService {
 			await this.promptRepository.findUserPromptSummary(userId);
 
 		return {
-			averageScore:
-				averageScore === null
-					? null
-					: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR,
+			averageScore: averageScore === null ? null : roundScore(averageScore),
 			totalCount,
 		};
 	}

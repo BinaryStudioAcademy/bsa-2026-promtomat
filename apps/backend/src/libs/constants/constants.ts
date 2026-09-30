@@ -6,7 +6,6 @@ export {
 	BEARER,
 	EMPTY_LENGTH,
 	FIRST_ELEMENT_INDEX,
-	ROUND_FACTOR,
 	SINGLE_DAY,
 	ZERO_VALUE,
 } from "@promptomat/shared";
