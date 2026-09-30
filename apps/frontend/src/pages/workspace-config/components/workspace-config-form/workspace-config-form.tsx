@@ -29,7 +29,7 @@ import { type ValueOf } from "~/libs/types/types.js";
 import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useUpdateWorkspaceMutation,
-	WorkspaceTargets,
+	WorkspaceTarget,
 	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
@@ -129,7 +129,7 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	);
 
 	const handleDatasetTargetChange = useCallback(
-		(target: ValueOf<typeof WorkspaceTargets>) => {
+		(target: ValueOf<typeof WorkspaceTarget>) => {
 			return (): void => {
 				setValue("datasetTarget", target, {
 					shouldDirty: true,
@@ -227,7 +227,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 						{`${String(progressPercentage)}% ${WorkspaceConfigLabel.OF_TARGET_REACHED}`}
 					</span>
 					<span className={styles["target-count"]}>
-						{`${workspace.promptCount.toLocaleString("en-US")} / ${datasetTarget.toLocaleString("en-US")}`}
+						{workspace.promptCount.toLocaleString("en-US")} /{" "}
+						{datasetTarget.toLocaleString("en-US")}
 					</span>
 				</div>
 				<ProgressBar
