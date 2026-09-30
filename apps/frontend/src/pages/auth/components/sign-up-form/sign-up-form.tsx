@@ -8,8 +8,8 @@ import { Link } from "~/libs/components/link/link.js";
 import { AppRoute, ControlSize, ErrorCode } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { checkIsToastedError } from "~/libs/modules/api/libs/helpers/check-is-toasted-error.helper.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
 import {
 	AuthValidationRule,
 	type SignUpRequestDto,
@@ -48,7 +48,7 @@ const SignUpForm: React.FC<Properties> = ({
 	const { isSubmitted } = useFormState({ control });
 
 	useEffect(() => {
-		if (!isServerError(error)) {
+		if (!checkIsServerError(error)) {
 			return;
 		}
 

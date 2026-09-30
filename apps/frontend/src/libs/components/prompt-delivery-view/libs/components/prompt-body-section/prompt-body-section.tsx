@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button } from "~/libs/components/button/button.js";
+import { Markdown } from "~/libs/components/markdown/markdown.js";
 import { ButtonVariant, ControlSize } from "~/libs/enums/enums.js";
 
 import { PromptDeliveryViewLabel } from "../../enums/enums.js";
@@ -9,28 +10,38 @@ import styles from "./styles.module.css";
 
 type Properties = {
 	body: string;
+	bodySlot: React.ReactNode;
+	isHeaderHidden: boolean;
 	onCopyPrompt: () => void;
 };
 
 const PromptBodySection: React.FC<Properties> = ({
 	body,
+	bodySlot,
+	isHeaderHidden,
 	onCopyPrompt,
 }: Properties) => (
 	<PromptDeliveryCard>
-		<PromptDeliveryCard.Header>
-			<PromptDeliveryCard.Title>
-				{PromptDeliveryViewLabel.OPTIMIZED_PROMPT_HEADING}
-			</PromptDeliveryCard.Title>
-			<Button
-				label={PromptDeliveryViewLabel.COPY_PROMPT}
-				onClick={onCopyPrompt}
-				size={ControlSize.SM}
-				type="button"
-				variant={ButtonVariant.PRIMARY}
-			/>
-		</PromptDeliveryCard.Header>
+		{!isHeaderHidden && (
+			<PromptDeliveryCard.Header>
+				<PromptDeliveryCard.Title>
+					{PromptDeliveryViewLabel.OPTIMIZED_PROMPT_HEADING}
+				</PromptDeliveryCard.Title>
+				<Button
+					label={PromptDeliveryViewLabel.COPY_PROMPT}
+					onClick={onCopyPrompt}
+					size={ControlSize.SM}
+					type="button"
+					variant={ButtonVariant.PRIMARY}
+				/>
+			</PromptDeliveryCard.Header>
+		)}
 		<PromptDeliveryCard.Body>
-			<pre className={styles["prompt-body"]}>{body}</pre>
+			{bodySlot ?? (
+				<div className={styles["prompt-body"]}>
+					<Markdown content={body} />
+				</div>
+			)}
 		</PromptDeliveryCard.Body>
 	</PromptDeliveryCard>
 );

@@ -3,8 +3,8 @@ import convict from "convict";
 import { MCPEnvironmentVariable } from "~/libs/enums/enums.js";
 
 import { ConfigFormat } from "./libs/enums/enums.js";
-import { apiUrlFormat } from "./libs/formats/formats.js";
-import { validateApiToken } from "./libs/helpers/helpers.js";
+import { apiUrlFormat, webUrlFormat } from "./libs/formats/formats.js";
+import { resolveWebUrl, validateApiToken } from "./libs/helpers/helpers.js";
 import { type Config, type EnvironmentSchema } from "./libs/types/types.js";
 
 class EnvironmentConfig implements Config {
@@ -12,6 +12,7 @@ class EnvironmentConfig implements Config {
 
 	public constructor() {
 		convict.addFormat(apiUrlFormat);
+		convict.addFormat(webUrlFormat);
 
 		const schema = convict<EnvironmentSchema>({
 			API: {
@@ -29,11 +30,26 @@ class EnvironmentConfig implements Config {
 					format: ConfigFormat.API_URL,
 				},
 			},
+			WEB: {
+				URL: {
+					default: "",
+					doc: "Web application base URL used in links, the origin of the API URL when not set",
+					env: MCPEnvironmentVariable.WEB_URL,
+					format: ConfigFormat.WEB_URL,
+				},
+			},
 		});
 
 		schema.validate({ allowed: "strict" });
 
-		this.ENV = schema.getProperties();
+		const environment = schema.getProperties();
+
+		this.ENV = {
+			...environment,
+			WEB: {
+				URL: resolveWebUrl(environment.WEB.URL, environment.API.URL),
+			},
+		};
 	}
 }
 

@@ -21,6 +21,12 @@
 	display: block;
 }
 
+@media (width < 768px) {
+	.result-block {
+		gap: 0;
+	}
+}
+
 @media (width >= 768px) {
 	.mobile-detail {
 		display: none;

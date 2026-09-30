@@ -140,7 +140,7 @@ variable "bedrock_connection_timeout_ms" {
 
 variable "bedrock_max_attempts" {
   type    = number
-  default = 1
+  default = 3
 }
 
 variable "generation_candidate_limit" {
@@ -156,6 +156,21 @@ variable "generation_max_tokens" {
 variable "generation_source_body_max_length" {
   type    = number
   default = 8000
+}
+
+variable "generation_recompose_limit" {
+  type    = number
+  default = 3
+}
+
+variable "generation_request_limit" {
+  type    = number
+  default = 10
+}
+
+variable "generation_window_minutes" {
+  type    = number
+  default = 1
 }
 
 variable "aws_secret_mail_arn" {

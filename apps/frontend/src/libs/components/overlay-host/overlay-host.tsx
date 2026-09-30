@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 
 import { Notification } from "~/libs/components/notification/notification.js";
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
-import { KeyboardKey } from "~/libs/enums/enums.js";
+import { EventType, KeyboardKey } from "~/libs/enums/enums.js";
 import {
 	bindShowNotification,
 	showNotification,
@@ -146,10 +146,10 @@ const OverlayHost = ({ children }: Properties) => {
 			}
 		};
 
-		document.addEventListener("keydown", handleKeyPress);
+		document.addEventListener(EventType.KEYDOWN, handleKeyPress);
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyPress);
+			document.removeEventListener(EventType.KEYDOWN, handleKeyPress);
 		};
 	}, [dismissNotifications, hasBlocking]);
 

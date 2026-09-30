@@ -14,15 +14,15 @@ import {
 } from "~/libs/enums/enums.js";
 import { preventLineBreak } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
-import { isServerError } from "~/libs/modules/api/libs/helpers/is-server-error.helper.js";
+import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { type WorkspaceCreateRequestDto } from "~/modules/workspaces/libs/types/types.js";
 import {
 	useCreateWorkspaceMutation,
-	workspaceCreationValidationSchema,
 	WorkspaceValidationRule,
 } from "~/modules/workspaces/workspaces.js";
 
 import { WorkspaceFormMessage } from "../../libs/enums/enums.js";
+import { workspaceCreateFormValidationSchema } from "../../libs/validation-schemas/validation-schemas.js";
 import styles from "../../styles.module.css";
 import { DEFAULT_WORKSPACE_CREATE_PAYLOAD } from "./libs/constants/constants.js";
 
@@ -34,17 +34,31 @@ const STACK_TAGS = "stackTags";
 
 const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 	const [createWorkspace, { isLoading }] = useCreateWorkspaceMutation();
-	const { control, handleSubmit, setError } =
+	const { control, handleSubmit, setError, setValue } =
 		useAppForm<WorkspaceCreateRequestDto>({
 			defaultValues: DEFAULT_WORKSPACE_CREATE_PAYLOAD,
-			mode: FormValidationMode.ON_CHANGE,
-			validationSchema: workspaceCreationValidationSchema,
+			mode: FormValidationMode.ON_TOUCHED,
+			validationSchema: workspaceCreateFormValidationSchema,
 		});
 
 	const { field: stackTagsField } = useController({
 		control,
 		name: STACK_TAGS,
 	});
+
+	const handleNameBlur = useCallback(
+		(event: React.FocusEvent<HTMLInputElement>): void => {
+			setValue("name", event.target.value.trim());
+		},
+		[setValue],
+	);
+
+	const handleDescriptionBlur = useCallback(
+		(event: React.FocusEvent<HTMLTextAreaElement>): void => {
+			setValue("description", event.target.value.trim());
+		},
+		[setValue],
+	);
 
 	const handleFormSubmit = useCallback(
 		(event: React.BaseSyntheticEvent): void => {
@@ -55,7 +69,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 				}
 
 				if (
-					isServerError(error) &&
+					checkIsServerError(error) &&
 					error.code === ErrorCode.WORKSPACE_ALREADY_EXISTS
 				) {
 					setError("name", { message: error.message, type: "server" });
@@ -73,6 +87,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						control={control}
 						label="Workspace name"
 						name="name"
+						onBlur={handleNameBlur}
 						placeholder="Enter name"
 					/>
 					<Textarea
@@ -80,6 +95,7 @@ const WorkspaceCreateForm: React.FC<Properties> = ({ onClose }: Properties) => {
 						label="Description"
 						maxLength={WorkspaceValidationRule.DESCRIPTION_MAXIMUM_LENGTH}
 						name="description"
+						onBlur={handleDescriptionBlur}
 						onKeyDown={preventLineBreak}
 						placeholder="Enter description"
 						rows={2}
