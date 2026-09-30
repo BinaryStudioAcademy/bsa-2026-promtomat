@@ -1,0 +1,3 @@
+const PERCENTAGE_POINT = 1;
+
+export { PERCENTAGE_POINT };
