@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
@@ -49,13 +49,16 @@ const useRecordPromptForm = (): ReturnValue => {
 
 	const { data: workspaces } = useGetWorkspacesQuery({});
 
-	const workspaceOptions =
-		workspaces?.items.map(({ id, name }) => {
-			return {
-				label: name,
-				value: id,
-			};
-		}) ?? [];
+	const workspaceOptions = useMemo(
+		() =>
+			workspaces?.items.map(({ id, name }) => {
+				return {
+					label: name,
+					value: id,
+				};
+			}) ?? [],
+		[workspaces],
+	);
 
 	const location = useLocation();
 
