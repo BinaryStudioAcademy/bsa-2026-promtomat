@@ -6,6 +6,5 @@ export {
 	promptStreakQueryValidationSchema,
 	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
-	promptUpdateScoreValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "@promptomat/shared";

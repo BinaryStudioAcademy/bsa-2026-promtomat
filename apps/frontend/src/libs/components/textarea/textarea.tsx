@@ -6,6 +6,7 @@ import {
 	useController,
 } from "react-hook-form";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ControlSize } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -17,7 +18,7 @@ type Properties<T extends FieldValues> =
 	React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 		className?: string | undefined;
 		control: Control<T, null>;
-		descriptionId?: string;
+		descriptionId?: string | undefined;
 		isDisabled?: boolean;
 		isLabelHidden?: boolean;
 		isMessageHidden?: boolean;
@@ -25,6 +26,8 @@ type Properties<T extends FieldValues> =
 		maxHeight?: null | number;
 		name: FieldPath<T>;
 		onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
+		onClick?: React.MouseEventHandler<HTMLTextAreaElement>;
+		onKeyDown?: React.KeyboardEventHandler<HTMLTextAreaElement>;
 		rows?: number;
 		size?: ValueOf<typeof ControlSize>;
 	};
@@ -40,6 +43,8 @@ const Textarea = <T extends FieldValues>({
 	maxHeight = MAX_HEIGHT,
 	name,
 	onBlur,
+	onClick,
+	onKeyDown,
 	rows,
 	size = ControlSize.MD,
 	...rest
@@ -71,17 +76,26 @@ const Textarea = <T extends FieldValues>({
 
 		textarea.style.height = "auto";
 
+		const computedStyle = getComputedStyle(textarea);
+		const borderTop =
+			Number(computedStyle.borderTopWidth.replace("px", "")) || ZERO_VALUE;
+		const borderBottom =
+			Number(computedStyle.borderBottomWidth.replace("px", "")) || ZERO_VALUE;
+
+		const totalRequiredHeight =
+			textarea.scrollHeight + borderTop + borderBottom;
+
 		if (maxHeight === null) {
-			textarea.style.height = `${String(textarea.scrollHeight)}px`;
+			textarea.style.height = `${String(totalRequiredHeight)}px`;
 			textarea.style.overflowY = "hidden";
 			return;
 		}
 
-		const height = Math.min(textarea.scrollHeight, maxHeight);
+		const height = Math.min(totalRequiredHeight, maxHeight);
 
 		textarea.style.height = `${String(height)}px`;
 		textarea.style.overflowY =
-			textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+			totalRequiredHeight > maxHeight ? "auto" : "hidden";
 	}, [maxHeight]);
 
 	const handleReference = useCallback(
@@ -130,6 +144,8 @@ const Textarea = <T extends FieldValues>({
 					id={textareaId}
 					onBlur={handleBlur}
 					onChange={field.onChange}
+					onClick={onClick}
+					onKeyDown={onKeyDown}
 					ref={handleReference}
 					rows={rows}
 				/>

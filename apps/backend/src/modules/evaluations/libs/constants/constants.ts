@@ -1,0 +1,4 @@
+const DAMPING_FACTOR = 5;
+const DECIMAL_PLACES = 2;
+
+export { DAMPING_FACTOR, DECIMAL_PLACES };

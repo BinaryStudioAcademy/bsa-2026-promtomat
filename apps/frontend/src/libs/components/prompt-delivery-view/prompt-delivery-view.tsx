@@ -13,6 +13,7 @@ import styles from "./styles.module.css";
 const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	body,
 	bodySlot,
+	computedScore,
 	efficiencyScore,
 	explanation = "",
 	feedback,
@@ -35,6 +36,7 @@ const PromptDeliveryView: React.FC<PromptDeliveryViewProperties> = ({
 	return (
 		<div className={styles["view"]}>
 			<PromptMetaSection
+				computedScore={computedScore}
 				efficiencyScore={efficiencyScore}
 				workspaceName={workspaceName}
 			/>

@@ -25,7 +25,6 @@ import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "../../constants/constants.js";
 import { PromptBodyMode, RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
-	canSubmit: boolean;
 	control: Control<PromptCreateRequestDto, null>;
 	error: unknown;
 	isSubmitting: boolean;
@@ -33,7 +32,6 @@ type ReturnValue = {
 	mode: ValueOf<typeof PromptBodyMode>;
 	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
-	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
 	workspaceId: number | undefined;
 	workspaceOptions: SelectOption[];
@@ -47,7 +45,7 @@ const useRecordPromptForm = (): ReturnValue => {
 	const [recordPrompt, { data: loggedPrompt, error, isLoading }] =
 		useRecordPromptMutation();
 
-	const { control, formState, handleSubmit, reset, setValue } =
+	const { control, handleSubmit, reset, setValue } =
 		useAppForm<PromptCreateRequestDto>({
 			defaultValues: DEFAULT_RECORD_PROMPT_PAYLOAD,
 			mode: FormValidationMode.ON_TOUCHED,
@@ -110,17 +108,8 @@ const useRecordPromptForm = (): ReturnValue => {
 		workspaces: workspaces?.items,
 	});
 
-	const handleScoreSelect = useCallback(
-		(nextScore: number) => {
-			return (): void => {
-				setValue("efficiencyScore", nextScore, { shouldValidate: true });
-			};
-		},
-		[setValue],
-	);
-
 	const handleSubmitPrompt = useCallback(
-		(event: React.BaseSyntheticEvent): void => {
+		(event?: React.BaseSyntheticEvent): void => {
 			void handleSubmit(async (payload: PromptCreateRequestDto) => {
 				const { data } = await recordPrompt(payload);
 
@@ -140,8 +129,17 @@ const useRecordPromptForm = (): ReturnValue => {
 		[handleSubmit, recordPrompt, reset],
 	);
 
+	const handleScoreSelect = useCallback(
+		(nextScore: number) => {
+			return (): void => {
+				setValue("efficiencyScore", nextScore, { shouldValidate: true });
+				handleSubmitPrompt();
+			};
+		},
+		[handleSubmitPrompt, setValue],
+	);
+
 	return {
-		canSubmit: formState.isValid,
 		control,
 		error,
 		isSubmitting: isLoading,
@@ -149,7 +147,6 @@ const useRecordPromptForm = (): ReturnValue => {
 		mode,
 		onModeChange: setMode,
 		onScoreSelect: handleScoreSelect,
-		onSubmit: handleSubmitPrompt,
 		score,
 		workspaceId,
 		workspaceOptions,

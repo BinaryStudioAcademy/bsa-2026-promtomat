@@ -2,11 +2,10 @@ import React from "react";
 
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { formatScore, getValidClasses } from "~/libs/helpers/helpers.js";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
 import { AnalyticLabel } from "../../libs/enums/enums.js";
-import { formatScore } from "../../libs/helpers/format-score.helper.js";
 import { getScoreTone } from "../../libs/helpers/get-score-tone.helper.js";
 import styles from "./styles.module.css";
 

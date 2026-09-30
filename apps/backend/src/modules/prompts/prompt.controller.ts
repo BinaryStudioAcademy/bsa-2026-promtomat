@@ -19,7 +19,6 @@ import {
 	type PromptStreakQueryDto,
 	type PromptUpdateBodyRequestDto,
 	type PromptUpdateIntentRequestDto,
-	type PromptUpdateScoreRequestDto,
 	type PromptWorkspaceQueryDto,
 } from "./libs/types/types.js";
 import {
@@ -30,7 +29,6 @@ import {
 	promptStreakQueryValidationSchema,
 	promptUpdateBodyValidationSchema,
 	promptUpdateIntentValidationSchema,
-	promptUpdateScoreValidationSchema,
 	promptWorkspaceQueryValidationSchema,
 } from "./libs/validation-schemas/validation-schemas.js";
 import { type PromptService } from "./prompt.service.js";
@@ -271,23 +269,6 @@ class PromptController extends BaseController {
 				params: promptRouteParametersValidationSchema,
 			},
 		});
-
-		this.addRoute({
-			handler: (options) =>
-				this.updateScore(
-					options as APIHandlerOptions<{
-						body: PromptUpdateScoreRequestDto;
-						params: PromptRouteParametersDto;
-					}>,
-				),
-			method: HTTPMethod.PATCH,
-			path: PromptsApiPath.$PROMPT_ID_SCORE,
-			preHandler: promptAccessHook(this.promptService),
-			validation: {
-				body: promptUpdateScoreValidationSchema,
-				params: promptRouteParametersValidationSchema,
-			},
-		});
 	}
 
 	/**
@@ -430,42 +411,42 @@ class PromptController extends BaseController {
 	/**
 	 * @swagger
 	 * /prompts/{id}:
-	 *    get:
-	 *      description: Returns a prompt of a workspace the caller may read
-	 *      security:
-	 *        - bearerAuth: []
-	 *      parameters:
-	 *        - in: path
-	 *          name: id
-	 *          required: true
-	 *          schema:
-	 *            type: number
-	 *            minimum: 1
-	 *      responses:
-	 *        200:
-	 *          description: Successful operation
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/PromptItem"
-	 *        401:
-	 *          description: Unauthorized
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Error"
-	 *        404:
-	 *          description: Prompt not found
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/Error"
-	 *        422:
-	 *          description: Validation failed
-	 *          content:
-	 *            application/json:
-	 *              schema:
-	 *                $ref: "#/components/schemas/ValidationError"
+	 *   get:
+	 *     description: Returns a prompt of a workspace the caller may read
+	 *     security:
+	 *       - bearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: id
+	 *         required: true
+	 *         schema:
+	 *           type: number
+	 *           minimum: 1
+	 *     responses:
+	 *       200:
+	 *         description: Successful operation
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/PromptItem"
+	 *       401:
+	 *         description: Unauthorized
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       404:
+	 *         description: Prompt not found
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/Error"
+	 *       422:
+	 *         description: Validation failed
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: "#/components/schemas/ValidationError"
 	 */
 	private async findById(
 		options: APIHandlerOptions<{ params: PromptIdParameterDto }>,
@@ -741,76 +722,6 @@ class PromptController extends BaseController {
 
 		return {
 			payload: await this.promptService.updateIntent(payload),
-			status: HTTPCode.OK,
-		};
-	}
-
-	/**
-	 * @swagger
-	 * /prompts/{promptId}/score:
-	 *   patch:
-	 *     description: Sets or clears the efficiency score of a prompt the caller owns
-	 *     security:
-	 *       - bearerAuth: []
-	 *     parameters:
-	 *       - in: path
-	 *         name: promptId
-	 *         required: true
-	 *         schema:
-	 *           type: integer
-	 *           minimum: 1
-	 *     requestBody:
-	 *       description: New efficiency score, or null to clear it
-	 *       required: true
-	 *       content:
-	 *         application/json:
-	 *           schema:
-	 *             type: object
-	 *             properties:
-	 *               efficiencyScore:
-	 *                 type: number
-	 *                 minimum: 1
-	 *                 maximum: 10
-	 *                 nullable: true
-	 *     responses:
-	 *       200:
-	 *         description: Successful operation
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/Prompt"
-	 *       401:
-	 *         description: Unauthorized
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       404:
-	 *         description: Prompt not found
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ErrorResponse"
-	 *       422:
-	 *         description: Validation failed
-	 *         content:
-	 *           application/json:
-	 *             schema:
-	 *               $ref: "#/components/schemas/ValidationErrorResponse"
-	 */
-	private async updateScore(
-		options: APIHandlerOptions<{
-			body: PromptUpdateScoreRequestDto;
-			params: PromptRouteParametersDto;
-		}>,
-	): Promise<APIHandlerResponse> {
-		const payload = {
-			...options.body,
-			id: options.params.promptId,
-		};
-
-		return {
-			payload: await this.promptService.updateScore(payload),
 			status: HTTPCode.OK,
 		};
 	}

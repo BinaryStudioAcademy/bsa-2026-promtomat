@@ -133,6 +133,15 @@ export {
 	composeValidationSchema,
 	FallbackReason,
 } from "./modules/composed-prompts/composed-prompts.js";
+export {
+	type EvaluationCreateRequestDto,
+	type EvaluationResponseDto,
+	evaluationCreate,
+	EvaluationsApiPath,
+	EvaluationTargetType,
+	EvaluationValidationMessage,
+	EvaluationValidationRule,
+} from "./modules/evaluations/evaluations.js";
 export { HealthApiPath } from "./modules/health/health.js";
 export {
 	type GetLabelsRequestDto,
@@ -169,6 +178,7 @@ export {
 	promptGetQueryValidationSchema,
 	promptIdParameterValidationSchema,
 	PromptProgress,
+	PromptQualityTier,
 	promptRouteParametersValidationSchema,
 	PromptsApiPath,
 	PromptsErrorMessage,
@@ -178,6 +188,7 @@ export {
 	promptUpdateScoreValidationSchema,
 	PromptValidationRule,
 	promptWorkspaceQueryValidationSchema,
+	QualityScoreThreshold,
 } from "./modules/prompts/prompts.js";
 export {
 	type CreateRepositoryBindingRequestDto,

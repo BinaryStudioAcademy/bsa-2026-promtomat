@@ -1,12 +1,11 @@
 import React from "react";
 
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { formatScore, getValidClasses } from "~/libs/helpers/helpers.js";
 import { type AnalyticsGranularity } from "~/modules/analytics/libs/types/types.js";
 
 import { SCORE_FRACTION_DIGITS } from "../../libs/constants/constants.js";
 import { AnalyticLabel, GrowthUnits } from "../../libs/enums/enums.js";
 import { formatScoreChange } from "../../libs/helpers/format-score-change.helper.js";
-import { formatScore } from "../../libs/helpers/format-score.helper.js";
 import { type GrowthSummary, type ScoreDelta } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
 

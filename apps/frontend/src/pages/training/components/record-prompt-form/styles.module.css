@@ -45,15 +45,3 @@
 .success-outline {
 	color: var(--fg-success);
 }
-
-.actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--space-14);
-	align-items: center;
-}
-
-.hint {
-	font-size: var(--font-size-body-sm);
-	color: var(--text-faint);
-}

@@ -159,6 +159,7 @@ const ComposedResultCard: React.FC<Properties> = ({
 						/>
 					) : undefined
 				}
+				computedScore={composedPrompt.computedScore}
 				explanation={composedPrompt.explanation.trim()}
 				feedback={
 					adoptedPrompt === undefined
