@@ -1,6 +1,6 @@
 import { type RelationMappings } from "objection";
 
-import { type WorkspaceTargets } from "~/libs/enums/enums.js";
+import { type WorkspaceTarget } from "~/libs/enums/enums.js";
 import {
 	AbstractModel,
 	DatabaseTableName,
@@ -16,7 +16,7 @@ import {
 } from "./libs/enums/enums.js";
 
 class WorkspaceModel extends AbstractModel {
-	public datasetTarget!: ValueOf<typeof WorkspaceTargets>;
+	public datasetTarget!: ValueOf<typeof WorkspaceTarget>;
 
 	public description!: string;
 

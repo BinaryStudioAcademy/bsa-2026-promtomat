@@ -2,7 +2,7 @@ export {
 	WorkspaceListScope,
 	WorkspaceListSort,
 	WorkspacesApiTag,
-	WorkspaceTargets,
+	WorkspaceTarget,
 	WorkspaceValidationRule,
 } from "./libs/enums/enums.js";
 export { useActiveWorkspace } from "./libs/hooks/use-active-workspace/use-active-workspace.hook.js";

@@ -252,7 +252,7 @@ export {
 	WorkspacesApiPath,
 	WorkspacesErrorCode,
 	WorkspacesErrorMessage,
-	WorkspaceTargets,
+	WorkspaceTarget,
 	workspaceUpdateValidationSchema,
 	WorkspaceValidationRule,
 	WorkspaceVisibility,

@@ -15,5 +15,5 @@ export {
 	SortOrder,
 	TimeUnit,
 	TokenErrorCode,
-	WorkspaceTargets,
+	WorkspaceTarget,
 } from "@promptomat/shared";

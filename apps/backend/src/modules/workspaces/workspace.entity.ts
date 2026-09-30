@@ -1,4 +1,4 @@
-import { EntityName, WorkspaceTargets } from "~/libs/enums/enums.js";
+import { EntityName, WorkspaceTarget } from "~/libs/enums/enums.js";
 import { requireEntityId } from "~/libs/helpers/helpers.js";
 import { type Entity, type ValueOf } from "~/libs/types/types.js";
 
@@ -10,7 +10,7 @@ import {
 } from "./libs/types/types.js";
 
 class WorkspaceEntity implements Entity {
-	private datasetTarget: ValueOf<typeof WorkspaceTargets>;
+	private datasetTarget: ValueOf<typeof WorkspaceTarget>;
 
 	private description: string;
 

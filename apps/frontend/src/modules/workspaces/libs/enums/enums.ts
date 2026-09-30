@@ -4,7 +4,7 @@ export {
 	WorkspaceListScope,
 	WorkspaceListSort,
 	WorkspacesApiPath,
-	WorkspaceTargets,
+	WorkspaceTarget,
 	WorkspaceValidationRule,
 	WorkspaceVisibility,
 } from "@promptomat/shared";
