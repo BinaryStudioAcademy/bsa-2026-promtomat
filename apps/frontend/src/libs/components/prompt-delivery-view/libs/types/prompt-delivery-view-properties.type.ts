@@ -4,6 +4,7 @@ import { type PromptDeliverySource } from "./prompt-delivery-source.type.js";
 type PromptDeliveryViewProperties = {
 	body: string;
 	bodySlot?: React.ReactNode;
+	computedScore?: null | number | undefined;
 	efficiencyScore?: null | number;
 	explanation?: string;
 	feedback?: PromptDeliveryFeedback | undefined;

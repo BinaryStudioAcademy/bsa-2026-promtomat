@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { PromptValidationRule } from "../enums/enums.js";
+import { PromptQualityTier, PromptValidationRule } from "../enums/enums.js";
+
+type PromptQualityTierValue =
+	(typeof PromptQualityTier)[keyof typeof PromptQualityTier];
 
 const promptGetQuery = z.object({
 	limit: z.coerce
@@ -10,11 +13,13 @@ const promptGetQuery = z.object({
 		.max(PromptValidationRule.MAX_LIMIT)
 		.optional(),
 	page: z.coerce.number().int().positive().optional(),
-	score: z.coerce
-		.number()
-		.int()
-		.min(PromptValidationRule.EFFICIENCY_SCORE_MIN)
-		.max(PromptValidationRule.EFFICIENCY_SCORE_MAX)
+	qualityTier: z
+		.enum(
+			Object.values(PromptQualityTier) as [
+				PromptQualityTierValue,
+				...PromptQualityTierValue[],
+			],
+		)
 		.optional(),
 	search: z.string().trim().optional(),
 	workspaceId: z.coerce.number().int().positive().optional(),

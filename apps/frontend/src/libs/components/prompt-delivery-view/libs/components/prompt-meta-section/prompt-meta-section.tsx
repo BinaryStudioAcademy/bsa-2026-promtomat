@@ -1,20 +1,23 @@
 import React from "react";
 
+import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
-import { PromptDeliveryViewLabel } from "../../enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
-	efficiencyScore: null | number | undefined;
-	workspaceName: string | undefined;
+	computedScore?: null | number | undefined;
+	efficiencyScore?: null | number | undefined;
+	workspaceName?: string | undefined;
 };
 
 const PromptMetaSection: React.FC<Properties> = ({
+	computedScore,
 	efficiencyScore,
 	workspaceName,
 }: Properties) => {
-	const hasMeta = efficiencyScore !== undefined || Boolean(workspaceName);
+	const score = computedScore ?? efficiencyScore;
+	const hasMeta = score !== undefined || Boolean(workspaceName);
 
 	if (!hasMeta) {
 		return null;
@@ -22,12 +25,11 @@ const PromptMetaSection: React.FC<Properties> = ({
 
 	return (
 		<div className={styles["meta-row"]}>
-			{efficiencyScore !== undefined && (
-				<span className={styles["badge"]}>
-					{efficiencyScore === null
-						? PromptDeliveryViewLabel.UNRATED
-						: `${PromptDeliveryViewLabel.SCORE} ${String(efficiencyScore)} / ${String(PromptValidationRule.EFFICIENCY_SCORE_MAX)}`}
-				</span>
+			{score !== undefined && (
+				<ScoreBadge
+					efficiencyScore={score}
+					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
+				/>
 			)}
 			{workspaceName && (
 				<span className={styles["badge"]}>{workspaceName}</span>

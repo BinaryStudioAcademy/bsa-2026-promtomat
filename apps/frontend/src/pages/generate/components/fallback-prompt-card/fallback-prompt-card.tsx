@@ -51,7 +51,11 @@ const FallbackPromptCard: React.FC<Properties> = ({
 					maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
 				/>
 			</div>
-			<PromptDeliveryView body={prompt.promptBody} isBodyHeaderHidden />
+			<PromptDeliveryView
+				body={prompt.promptBody}
+				computedScore={null}
+				isBodyHeaderHidden
+			/>
 			<p className={styles["hint"]}>{GenerateMessage.FALLBACK_NOTHING_SAVED}</p>
 			<ResultCard.Actions>
 				<Button
