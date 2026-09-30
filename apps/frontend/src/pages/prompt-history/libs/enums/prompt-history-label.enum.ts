@@ -14,7 +14,6 @@ const PromptHistoryLabel = {
 	LOAD_ERROR: "Failed to load prompts. Please try again.",
 	LOAD_MORE: "Load More",
 	LOADING: "Loading...",
-	OPEN_COMPOSED_PROMPT: "Open composed prompt",
 	PROMPTS_LOGGED: "Prompts logged",
 	QUALITY_TIER: "Quality Tier",
 	QUALITY_TIER_ALL: "Any quality",

@@ -222,7 +222,7 @@ class PromptEmbeddingRepository {
 				),
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -232,7 +232,6 @@ class PromptEmbeddingRepository {
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
 					MAX_EFFICIENCY_SCORE,
 				],
 			)
@@ -314,7 +313,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -324,7 +323,6 @@ class PromptEmbeddingRepository {
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
 					MAX_EFFICIENCY_SCORE,
 				],
 			)

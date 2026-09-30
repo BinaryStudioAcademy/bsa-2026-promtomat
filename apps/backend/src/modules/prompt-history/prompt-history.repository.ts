@@ -4,8 +4,20 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ScoreTierMin } from "~/libs/enums/enums.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { type Embedding } from "~/libs/modules/embedding/embedding.js";
 import { type ComposedPromptModel } from "~/modules/composed-prompts/composed-prompt.model.js";
 import { ColumnName as ComposedPromptColumnName } from "~/modules/composed-prompts/libs/enums/column-name.enum.js";
+import { EvaluationColumnName } from "~/modules/evaluations/libs/enums/enums.js";
+import {
+	MAX_EFFICIENCY_SCORE,
+	MAX_SIMILARITY,
+	SIMILARITY_THRESHOLD,
+} from "~/modules/prompt-embeddings/libs/constants/constants.js";
+import {
+	PromptEmbeddingColumnName,
+	RelevanceWeight,
+} from "~/modules/prompt-embeddings/libs/enums/enums.js";
+import { serializeEmbedding } from "~/modules/prompt-embeddings/libs/helpers/helpers.js";
 import {
 	PaginationValue,
 	PromptColumnName,
@@ -23,8 +35,10 @@ import {
 } from "./libs/types/types.js";
 
 type BranchFilters = {
+	embedding: Embedding | null;
 	qualityTier?: string | undefined;
 	search?: string | undefined;
+	userId: number;
 	workspaceId: number;
 };
 
@@ -78,6 +92,7 @@ class PromptHistoryRepository {
 	private buildComposedBranch({
 		qualityTier,
 		search,
+		userId,
 		workspaceId,
 	}: BranchFilters): QueryBuilder<ComposedPromptModel> {
 		const query = this.composedPromptModel
@@ -106,6 +121,16 @@ class PromptHistoryRepository {
 				raw(`?? as ${PromptHistorySqlAlias.COMPUTED_SCORE}`, [
 					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.COMPUTED_SCORE}`,
 				]),
+				raw("(SELECT ?? FROM ?? WHERE ?? = ?? AND ?? = ? LIMIT 1) as ??", [
+					EvaluationColumnName.SCORE,
+					DatabaseTableName.EVALUATIONS,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.COMPOSED_PROMPT_ID}`,
+					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.ID}`,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.USER_ID}`,
+					userId,
+					PromptHistorySqlAlias.MY_SCORE,
+				]),
+				raw("0 as ??", [PromptHistorySqlAlias.SORT_SCORE]),
 			)
 			.where(
 				`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.WORKSPACE_ID}`,
@@ -147,8 +172,9 @@ class PromptHistoryRepository {
 	}
 
 	private buildRegularBranch({
+		embedding,
 		qualityTier,
-		search,
+		userId,
 		workspaceId,
 	}: BranchFilters): QueryBuilder<PromptModel> {
 		const query = this.promptModel
@@ -179,6 +205,16 @@ class PromptHistoryRepository {
 				raw(`?? as ${PromptHistorySqlAlias.COMPUTED_SCORE}`, [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 				]),
+				raw("(SELECT ?? FROM ?? WHERE ?? = ?? AND ?? = ? LIMIT 1) as ??", [
+					EvaluationColumnName.SCORE,
+					DatabaseTableName.EVALUATIONS,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.PROMPT_ID}`,
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.USER_ID}`,
+					userId,
+					PromptHistorySqlAlias.MY_SCORE,
+				]),
+				this.buildRegularSortScoreSelect(embedding),
 			)
 			.where(
 				`${DatabaseTableName.PROMPTS}.${PromptColumnName.WORKSPACE_ID}`,
@@ -194,27 +230,58 @@ class PromptHistoryRepository {
 			qualityTier,
 		);
 
-		if (search) {
-			const escapedSearch = escapeILikePattern(search);
+		if (embedding) {
+			const serializedEmbedding = serializeEmbedding(embedding);
 
-			query.where((builder) => {
-				builder
-					.whereILike(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.TASK_INTENT}`,
-						`%${escapedSearch}%`,
-					)
-					.orWhereILike(
-						`${DatabaseTableName.PROMPTS}.${PromptColumnName.PROMPT_BODY}`,
-						`%${escapedSearch}%`,
-					);
-			});
+			query
+				.join(
+					DatabaseTableName.PROMPT_EMBEDDINGS,
+					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.PROMPT_ID}`,
+					`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
+				)
+				.where(
+					raw("?? <=> ?::vector", [
+						`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+						serializedEmbedding,
+					]),
+					"<",
+					SIMILARITY_THRESHOLD,
+				);
 		}
 
 		return query;
 	}
 
+	private buildRegularSortScoreSelect(
+		embedding: Embedding | null,
+	): ReturnType<typeof raw> {
+		if (!embedding) {
+			return raw("0 as ??", [PromptHistorySqlAlias.SORT_SCORE]);
+		}
+
+		const serializedEmbedding = serializeEmbedding(embedding);
+
+		return raw(
+			"(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) as ??",
+			[
+				RelevanceWeight.SIMILARITY_WEIGHT,
+				MAX_SIMILARITY,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+				serializedEmbedding,
+				SIMILARITY_THRESHOLD,
+				RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				MAX_EFFICIENCY_SCORE,
+				PromptHistorySqlAlias.SORT_SCORE,
+			],
+		);
+	}
+
 	public async findAll(
 		query: PromptHistoryGetQueryDto,
+		requesterId: number,
+		embedding: Embedding | null,
 	): Promise<PromptHistoryFindAllResult> {
 		const {
 			limit = PaginationValue.DEFAULT_LIMIT,
@@ -225,10 +292,24 @@ class PromptHistoryRepository {
 		} = query;
 
 		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
-		const filters = { qualityTier, search, workspaceId };
+		const filters = {
+			embedding,
+			qualityTier,
+			search,
+			userId: requesterId,
+			workspaceId,
+		};
+
+		const unifiedQuery = this.buildFilteredUnion(filters);
+
+		if (embedding) {
+			unifiedQuery
+				.orderBy(PromptHistorySqlAlias.IS_COMPOSED, "asc")
+				.orderBy(PromptHistorySqlAlias.SORT_SCORE, "desc");
+		}
 
 		const [rows, [aggregate]] = await Promise.all([
-			this.buildFilteredUnion(filters)
+			unifiedQuery
 				.orderBy(PromptHistorySqlAlias.CREATED_AT, "desc")
 				.limit(limit)
 				.offset(offset)
@@ -261,6 +342,7 @@ class PromptHistoryRepository {
 				id: row.id,
 				intent: row.intent,
 				isComposed: row.isComposed,
+				myScore: row.myScore,
 				score: row.score,
 				userId: row.userId,
 				workspaceId: row.workspaceId,

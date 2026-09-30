@@ -307,6 +307,29 @@ class PromptEmbeddingService {
 		}
 	}
 
+	public async embedQuery(query: string): Promise<Embedding> {
+		try {
+			const [embedding] = await this.embeddingService.embed([query]);
+
+			if (!embedding) {
+				throw new PromptEmbeddingError(
+					PromptEmbeddingErrorMessage.EMPTY_RESULT,
+				);
+			}
+
+			return embedding;
+		} catch (error) {
+			if (
+				error instanceof EmbeddingNotReadyError ||
+				error instanceof EmbeddingFailedError
+			) {
+				throw PromptSearchError.unavailable();
+			}
+
+			throw error;
+		}
+	}
+
 	public async findAllByQuery({
 		limit,
 		offset,

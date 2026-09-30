@@ -37,6 +37,8 @@
 	--bg-danger: #2a1a1d;
 	--fg-info: #8aa9c4;
 	--bg-info: #16202b;
+	--fg-generated: #38bdf8;
+	--bg-generated: rgb(56 189 248 / 12%);
 	--state-hover-tint: rgb(255 255 255 / 6%);
 	--state-press-tint: rgb(255 255 255 / 10%);
 	--state-disabled-tint: rgb(255 255 255 / 4%);

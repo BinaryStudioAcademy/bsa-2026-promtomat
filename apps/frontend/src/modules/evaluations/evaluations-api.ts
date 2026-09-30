@@ -15,7 +15,11 @@ import {
 
 const evaluationApi = baseApi
 	.enhanceEndpoints({
-		addTagTypes: [PromptsApiTag.PROMPT, ComposedPromptsApiTag.COMPOSED_PROMPT],
+		addTagTypes: [
+			PromptsApiTag.PROMPT,
+			PromptsApiTag.PROMPT_HISTORY,
+			ComposedPromptsApiTag.COMPOSED_PROMPT,
+		],
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
@@ -29,7 +33,7 @@ const evaluationApi = baseApi
 					}
 
 					if (result.targetType === EvaluationTargetType.PROMPT) {
-						return [PromptsApiTag.PROMPT];
+						return [PromptsApiTag.PROMPT, PromptsApiTag.PROMPT_HISTORY];
 					}
 
 					return [
@@ -41,6 +45,7 @@ const evaluationApi = baseApi
 							id: "LIST",
 							type: ComposedPromptsApiTag.COMPOSED_PROMPT,
 						},
+						PromptsApiTag.PROMPT_HISTORY,
 					];
 				},
 				query: (payload) => ({

@@ -1,5 +1,3 @@
-export { checkMatchesQualityTier } from "./check-matches-quality-tier.helper.js";
-export { mapComposedToHistoryItem } from "./map-composed-to-history-item.helper.js";
 export { mapPromptToHistoryItem } from "./map-prompt-to-history-item.helper.js";
 export { resolveAverageScoreLabel } from "./resolve-average-score-label.helper.js";
 export { resolveLoadMoreLabel } from "./resolve-load-more-label.helper.js";

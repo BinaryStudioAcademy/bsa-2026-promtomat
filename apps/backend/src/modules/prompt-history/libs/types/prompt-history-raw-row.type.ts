@@ -5,6 +5,7 @@ type PromptHistoryRawRow = {
 	id: number;
 	intent: string;
 	isComposed: boolean;
+	myScore: null | number;
 	score: number;
 	userId: number;
 	workspaceId: number;

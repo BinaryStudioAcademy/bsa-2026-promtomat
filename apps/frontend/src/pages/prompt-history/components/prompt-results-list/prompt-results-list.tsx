@@ -91,7 +91,7 @@ const PromptResultsList: React.FC<Properties> = ({
 							onSelect={onSelectPrompt}
 							prompt={item}
 						/>
-						{isSelected && !item.isComposed ? (
+						{isSelected ? (
 							<div className={styles["mobile-detail"]} id={detailId}>
 								<PromptDetailPanel prompt={item} />
 							</div>

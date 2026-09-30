@@ -155,7 +155,10 @@ class PromptHistoryController extends BaseController {
 	private async findAll(
 		options: APIHandlerOptions<{ query: PromptHistoryGetQueryDto }>,
 	): Promise<APIHandlerResponse> {
-		const result = await this.promptHistoryService.findAll(options.query);
+		const result = await this.promptHistoryService.findAll(
+			options.query,
+			options.user?.id as number,
+		);
 
 		return {
 			payload: result,

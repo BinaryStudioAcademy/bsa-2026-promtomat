@@ -1,5 +1,6 @@
 import { logger } from "~/libs/modules/logger/logger.js";
 import { ComposedPromptModel } from "~/modules/composed-prompts/composed-prompt.model.js";
+import { promptEmbeddingService } from "~/modules/prompt-embeddings/prompt-embeddings.js";
 import { PromptModel } from "~/modules/prompts/prompt.model.js";
 import { workspaceService } from "~/modules/workspaces/workspaces.js";
 
@@ -13,6 +14,7 @@ const promptHistoryRepository = new PromptHistoryRepository(
 );
 const promptHistoryService = new PromptHistoryService(
 	promptHistoryRepository,
+	promptEmbeddingService,
 	workspaceService,
 );
 

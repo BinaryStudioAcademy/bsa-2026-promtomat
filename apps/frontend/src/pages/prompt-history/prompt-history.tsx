@@ -4,21 +4,14 @@ import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
-import { Link } from "~/libs/components/link/link.js";
 import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { Select } from "~/libs/components/select/select.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import {
-	AppRoute,
-	ButtonVariant,
-	ControlSize,
-	IconName,
-} from "~/libs/enums/enums.js";
-import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
+import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
-import { type NavigableRoute } from "~/libs/types/types.js";
 import { usePromptFilters } from "~/modules/prompts/libs/hooks/use-prompt-filters/use-prompt-filters.hook.js";
 import { useGetPromptsInfiniteQuery } from "~/modules/prompts/prompts-api.js";
 import {
@@ -30,18 +23,14 @@ import { PromptResultsList } from "./components/prompt-results-list/prompt-resul
 import { QUALITY_TIER_OPTIONS } from "./libs/constants/constants.js";
 import { PromptHistoryLabel } from "./libs/enums/enums.js";
 import {
+	mapPromptToHistoryItem,
 	resolveAverageScoreLabel,
 	resolveLoadMoreLabel,
 	resolveModeHint,
 	resolveResultCountLabel,
 } from "./libs/helpers/helpers.js";
-import {
-	usePromptSelection,
-	useUnifiedPromptHistory,
-} from "./libs/hooks/hooks.js";
+import { usePromptSelection } from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
-
-const NO_COMPOSED_ITEMS: never[] = [];
 
 const PromptHistory: React.FC = () => {
 	const {
@@ -91,20 +80,13 @@ const PromptHistory: React.FC = () => {
 			value: id,
 		})) ?? [];
 
-	const activeWorkspaceName =
-		workspaces?.find((workspace) => workspace.id === workspaceId)?.name ?? "";
-
-	const regularItems = useMemo(
-		() => data?.pages.flatMap((page) => page.items) ?? [],
+	const items = useMemo(
+		() =>
+			data?.pages
+				.flatMap((page) => page.items)
+				.map((item) => mapPromptToHistoryItem(item)) ?? [],
 		[data?.pages],
 	);
-
-	const items = useUnifiedPromptHistory({
-		composedItems: NO_COMPOSED_ITEMS,
-		qualityTier: filterQueryPayload.qualityTier,
-		regularItems,
-		workspaceName: activeWorkspaceName,
-	});
 
 	const [firstPage] = data?.pages ?? [];
 	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
@@ -141,23 +123,8 @@ const PromptHistory: React.FC = () => {
 
 	let detailPane: React.ReactNode = null;
 
-	if (selectedPrompt && !selectedPrompt.isComposed) {
+	if (selectedPrompt) {
 		detailPane = <PromptDetailPanel prompt={selectedPrompt} />;
-	} else if (selectedPrompt?.isComposed) {
-		detailPane = (
-			<div className={styles["empty-selection"]}>
-				<Link
-					hasDefaultStyles={false}
-					to={
-						configureString(AppRoute.COMPOSED_PROMPTS_$COMPOSED_PROMPT_ID, {
-							composedPromptId: String(selectedPrompt.id),
-						}) as NavigableRoute
-					}
-				>
-					{PromptHistoryLabel.OPEN_COMPOSED_PROMPT}
-				</Link>
-			</div>
-		);
 	} else if (items.length > ZERO_VALUE) {
 		detailPane = (
 			<div className={styles["empty-selection"]}>

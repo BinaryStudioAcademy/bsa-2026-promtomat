@@ -72,6 +72,7 @@ const promptApi = baseApi
 		addTagTypes: [
 			AnalyticsApiTag.ANALYTIC,
 			PromptsApiTag.PROMPT,
+			PromptsApiTag.PROMPT_HISTORY,
 			WorkspacesApiTag.WORKSPACE,
 		],
 	})
@@ -113,7 +114,7 @@ const promptApi = baseApi
 					},
 					initialPageParam: PaginationValue.DEFAULT_PAGE,
 				},
-				providesTags: [PromptsApiTag.PROMPT],
+				providesTags: [PromptsApiTag.PROMPT_HISTORY],
 				query: ({ pageParam, queryArg }) => ({
 					params: { ...queryArg, page: pageParam },
 					url: APIPath.PROMPT_HISTORY,
