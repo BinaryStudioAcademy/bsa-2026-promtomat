@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { type Control, useWatch } from "react-hook-form";
 import { useLocation } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
 import { useWorkspaceSearchParameter } from "~/libs/hooks/use-workspace-search-parameter/use-workspace-search-parameter.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import { checkIsPromptForkDraft } from "~/modules/prompts/libs/helpers/check-is-prompt-fork-draft.helper.js";
 import { useRecordPromptMutation } from "~/modules/prompts/prompts-api.js";
 import {
@@ -20,7 +21,7 @@ import {
 } from "~/modules/workspaces/workspaces.js";
 
 import { DEFAULT_RECORD_PROMPT_PAYLOAD } from "../../constants/constants.js";
-import { RecordPromptMessage } from "../../enums/enums.js";
+import { PromptBodyMode, RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
 	canSubmit: boolean;
@@ -28,6 +29,8 @@ type ReturnValue = {
 	error: unknown;
 	isSubmitting: boolean;
 	loggedLabel: string | undefined;
+	mode: ValueOf<typeof PromptBodyMode>;
+	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
 	score: null | number;
@@ -35,6 +38,10 @@ type ReturnValue = {
 };
 
 const useRecordPromptForm = (): ReturnValue => {
+	const [mode, setMode] = useState<ValueOf<typeof PromptBodyMode>>(
+		PromptBodyMode.WRITE,
+	);
+
 	const [recordPrompt, { data: loggedPrompt, error, isLoading }] =
 		useRecordPromptMutation();
 
@@ -109,6 +116,7 @@ const useRecordPromptForm = (): ReturnValue => {
 						...DEFAULT_RECORD_PROMPT_PAYLOAD,
 						workspaceId: payload.workspaceId,
 					});
+					setMode(PromptBodyMode.WRITE);
 					showNotification({
 						message: RecordPromptMessage.SUCCESS,
 						type: NotificationType.SUCCESS,
@@ -125,6 +133,8 @@ const useRecordPromptForm = (): ReturnValue => {
 		error,
 		isSubmitting: isLoading,
 		loggedLabel: loggedPrompt?.label,
+		mode,
+		onModeChange: setMode,
 		onScoreSelect: handleScoreSelect,
 		onSubmit: handleSubmitPrompt,
 		score,

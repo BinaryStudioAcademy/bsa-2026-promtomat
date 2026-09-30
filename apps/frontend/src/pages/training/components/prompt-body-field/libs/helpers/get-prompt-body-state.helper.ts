@@ -1,7 +1,8 @@
 import { EMPTY_LENGTH } from "~/libs/constants/constants.js";
 import { type ValueOf } from "~/libs/types/types.js";
 
-import { PromptBodyMode, PromptBodyState } from "../enums/enums.js";
+import { PromptBodyMode } from "../../../../libs/enums/enums.js";
+import { PromptBodyState } from "../enums/enums.js";
 
 type Parameters = {
 	characterCount: number;
