@@ -1,4 +1,5 @@
-import { PromptBodyFieldMessage, PromptBodyMode } from "../enums/enums.js";
+import { PromptBodyMode } from "../../../../libs/enums/enums.js";
+import { PromptBodyFieldMessage } from "../enums/enums.js";
 
 const PROMPT_BODY_MODE_OPTIONS = [
 	{ label: PromptBodyFieldMessage.WRITE, value: PromptBodyMode.WRITE },
