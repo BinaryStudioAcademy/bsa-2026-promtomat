@@ -5,6 +5,7 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { getBrowserTimeZone } from "~/libs/helpers/helpers.js";
 import { useGetPromptStreakQuery } from "~/modules/prompts/prompts-api.js";
 
+import { DatasetTarget } from "./components/dataset-target/dataset-target.js";
 import { mapStreakDaysToCells } from "./components/logging-streak/libs/helpers/helpers.js";
 import { LoggingStreak } from "./components/logging-streak/logging-streak.js";
 import { RecentPrompts } from "./components/recent-prompts/recent-prompts.js";
@@ -23,6 +24,7 @@ const Training: React.FC = () => {
 		onModeChange,
 		onScoreSelect,
 		onSubmit,
+		promptCount,
 		score,
 		workspaceId,
 	} = useRecordPromptForm();
@@ -51,6 +53,9 @@ const Training: React.FC = () => {
 					/>
 				</section>
 				<aside className={styles["aside"]}>
+					{promptCount !== undefined && (
+						<DatasetTarget promptCount={promptCount} />
+					)}
 					<LoggingStreak
 						cells={streakCells}
 						currentStreak={streak?.currentStreak ?? ZERO_VALUE}

@@ -33,6 +33,7 @@ type ReturnValue = {
 	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
 	onSubmit: (event: React.BaseSyntheticEvent) => void;
+	promptCount: number | undefined;
 	score: null | number;
 	workspaceId: number | undefined;
 };
@@ -84,6 +85,10 @@ const useRecordPromptForm = (): ReturnValue => {
 	});
 
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
+
+	const activeWorkspace = workspaces?.items.find((workspace) => {
+		return workspace.id === workspaceId;
+	});
 
 	const handleWorkspaceSelect = useCallback(
 		(requestedWorkspaceId: number): void => {
@@ -137,6 +142,7 @@ const useRecordPromptForm = (): ReturnValue => {
 		onModeChange: setMode,
 		onScoreSelect: handleScoreSelect,
 		onSubmit: handleSubmitPrompt,
+		promptCount: activeWorkspace?.promptCount,
 		score,
 		workspaceId,
 	};
