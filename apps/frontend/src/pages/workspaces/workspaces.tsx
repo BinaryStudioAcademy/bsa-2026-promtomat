@@ -6,6 +6,7 @@ import { Button } from "~/libs/components/button/button.js";
 import { Input } from "~/libs/components/input/input.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-variant.enum.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import { Select } from "~/libs/components/select/select.js";
 import {
@@ -19,7 +20,7 @@ import {
 	FormValidationMode,
 	IconName,
 } from "~/libs/enums/enums.js";
-import { configureString, getValidClasses } from "~/libs/helpers/helpers.js";
+import { configureString } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useSearch } from "~/libs/hooks/use-search/use-search.hook.js";
 import { type ValueOf } from "~/libs/types/types.js";
@@ -134,7 +135,7 @@ const Workspaces: React.FC = () => {
 	}, [resetSearch, resetSort]);
 
 	return (
-		<div className={getValidClasses("page-container", styles["page-wrapper"])}>
+		<PageContainer>
 			<WorkspaceHeader onCreate={handleCreateOpen} />
 
 			{collectionStats && (
@@ -220,7 +221,7 @@ const Workspaces: React.FC = () => {
 			{activeModal?.type === "create" && (
 				<WorkspaceCreateModal onClose={handleModalClose} />
 			)}
-		</div>
+		</PageContainer>
 	);
 };
 

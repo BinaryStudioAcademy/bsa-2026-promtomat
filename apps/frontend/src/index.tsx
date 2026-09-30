@@ -13,7 +13,7 @@ import { RouterProvider } from "~/libs/components/router-provider/router-provide
 import { AppRoute } from "~/libs/enums/enums.js";
 import { store } from "~/libs/modules/store/store.js";
 import { ErrorPage } from "~/pages/error/error.js";
-import { NotFoundPage } from "~/pages/not-found/not-found.js";
+import { NotFoundRoute } from "~/pages/not-found/not-found.js";
 import { PasswordReset } from "~/pages/password-reset/password-reset.js";
 
 const loadAuthPage = async (): Promise<{ Component: ComponentType }> => {
@@ -162,7 +162,7 @@ createRoot(document.querySelector("#root") as HTMLElement).render(
 								path: AppRoute.RESET_PASSWORD,
 							},
 							{
-								element: <NotFoundPage />,
+								element: <NotFoundRoute />,
 								path: AppRoute.ANY,
 							},
 						],

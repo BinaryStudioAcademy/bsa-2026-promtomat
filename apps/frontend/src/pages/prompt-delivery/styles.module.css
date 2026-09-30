@@ -3,16 +3,6 @@
 	flex-direction: column;
 	gap: var(--space-16);
 	width: 100%;
-	max-width: 720px;
-	padding-block: var(--space-32) var(--space-64);
-	padding-inline: var(--space-16);
-	margin-inline: auto;
-}
-
-@media (width >= 768px) {
-	.page {
-		padding-inline: var(--space-24);
-	}
 }
 
 .back-link {

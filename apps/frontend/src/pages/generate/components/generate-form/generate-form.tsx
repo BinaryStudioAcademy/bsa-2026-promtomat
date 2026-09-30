@@ -45,10 +45,11 @@ const GenerateForm: React.FC<Properties> = ({
 						isDisabled={isLoading}
 						isLabelHidden
 						label={GenerateLabel.WORKSPACE_FIELD}
+						leadingIconName={IconName.FOLDER}
 						name="workspaceId"
 						options={options}
 						placeholder={GenerateLabel.WORKSPACE_PLACEHOLDER}
-						size={ControlSize.MD}
+						size={ControlSize.LG}
 					/>
 				</div>
 			</div>

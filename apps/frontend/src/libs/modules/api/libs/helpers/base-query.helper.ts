@@ -49,7 +49,7 @@ const baseQuery: BaseQueryFunctionInternal = async (
 		return result;
 	}
 
-	const error = toServerError(result.error);
+	const error = toServerError(result.error, result.meta?.response?.headers);
 
 	switch (error.code) {
 		case ErrorCode.FORBIDDEN: {

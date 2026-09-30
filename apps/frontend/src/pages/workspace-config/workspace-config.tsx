@@ -6,9 +6,9 @@ import { Icon } from "~/libs/components/icon/icon.js";
 import { Link } from "~/libs/components/link/link.js";
 import { LoaderVariant } from "~/libs/components/loader/libs/enums/enums.js";
 import { Loader } from "~/libs/components/loader/loader.js";
+import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { AppRoute, HTTPCode, IconName } from "~/libs/enums/enums.js";
-import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { checkIsServerError } from "~/libs/modules/api/libs/helpers/check-is-server-error.helper.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { useGetWorkspaceByIdQuery } from "~/modules/workspaces/workspaces.js";
@@ -49,11 +49,9 @@ const WorkspaceConfig: React.FC = () => {
 		return <NotFoundPage />;
 	}
 
-	const pageClassName = getValidClasses("page-container", styles["page"]);
-
 	if (!workspace) {
 		return (
-			<div className={pageClassName}>
+			<PageContainer>
 				<p>{WorkspaceConfigMessage.LOAD_FAILED}</p>
 				<Button
 					isLoading={isFetching}
@@ -61,19 +59,15 @@ const WorkspaceConfig: React.FC = () => {
 					onClick={handleRetry}
 					type="button"
 				/>
-			</div>
+			</PageContainer>
 		);
 	}
 
 	const isOwner = workspace.userId === user?.id;
-	const containerClassName = getValidClasses(
-		"page-container",
-		styles["container"],
-	);
 
 	return (
-		<div className={styles["page"]}>
-			<div className={containerClassName}>
+		<PageContainer>
+			<div className={styles["container"]}>
 				<Link
 					className={styles["back-link"]}
 					hasDefaultStyles={false}
@@ -95,7 +89,7 @@ const WorkspaceConfig: React.FC = () => {
 
 				{isOwner && <DangerZone workspace={workspace} />}
 			</div>
-		</div>
+		</PageContainer>
 	);
 };
 

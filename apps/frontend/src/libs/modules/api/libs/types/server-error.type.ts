@@ -9,7 +9,15 @@ type ServerCommonError = {
 	status: FetchBaseQueryError["status"];
 };
 
-type ServerError = ServerCommonError | ServerValidationError;
+type ServerError =
+	ServerCommonError | ServerRateLimitError | ServerValidationError;
+
+type ServerRateLimitError = {
+	code: typeof ErrorCode.TOO_MANY_REQUESTS;
+	message: string;
+	retryAfterSeconds: null | number;
+	status: FetchBaseQueryError["status"];
+};
 
 type ServerValidationError = {
 	code: typeof ErrorCode.VALIDATION_FAILED;
@@ -18,4 +26,8 @@ type ServerValidationError = {
 	status: FetchBaseQueryError["status"];
 };
 
-export { type ServerError, type ServerValidationError };
+export {
+	type ServerError,
+	type ServerRateLimitError,
+	type ServerValidationError,
+};
