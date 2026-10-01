@@ -2,11 +2,10 @@ import { useCallback, useEffect } from "react";
 import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
+import { DatasetTarget } from "~/libs/components/dataset-target/dataset-target.js";
 import { FormAlert } from "~/libs/components/form-alert/form-alert.js";
 import { Input } from "~/libs/components/input/input.js";
 import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
-import { getProgressPercentage } from "~/libs/components/progress-bar/libs/helpers/helpers.js";
-import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { SearchableSelect } from "~/libs/components/searchable-select/searchable-select.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
 import {
@@ -84,10 +83,6 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 	}, [trigger]);
 
 	const datasetTarget = useWatch({ control, name: "datasetTarget" });
-	const progressPercentage = Math.round(
-		getProgressPercentage(workspace.promptCount, datasetTarget),
-	);
-
 	const [updateWorkspace, { error, isLoading }] = useUpdateWorkspaceMutation();
 	const { hasFieldErrors } = useServerFormErrors({
 		clearErrors,
@@ -222,19 +217,8 @@ const WorkspaceConfigForm: React.FC<Properties> = ({
 				<h3 className={styles["section-title"]}>
 					{WorkspaceConfigLabel.DATASET_TARGET}
 				</h3>
-				<div className={styles["target-summary"]}>
-					<span className={styles["target-reached"]}>
-						{`${String(progressPercentage)}% ${WorkspaceConfigLabel.OF_TARGET_REACHED}`}
-					</span>
-					<span className={styles["target-count"]}>
-						{workspace.promptCount.toLocaleString("en-US")} /{" "}
-						{datasetTarget.toLocaleString("en-US")}
-					</span>
-				</div>
-				<ProgressBar
-					count={workspace.promptCount}
-					isSummaryHidden
-					label={WorkspaceConfigLabel.DATASET_TARGET}
+				<DatasetTarget
+					promptCount={workspace.promptCount}
 					target={datasetTarget}
 				/>
 				<fieldset className={styles["target-field"]}>

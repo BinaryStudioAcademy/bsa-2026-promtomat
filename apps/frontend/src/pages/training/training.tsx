@@ -1,5 +1,7 @@
 import React from "react";
 
+import { DatasetTarget } from "~/libs/components/dataset-target/dataset-target.js";
+import { DatasetTargetMessage } from "~/libs/components/dataset-target/libs/enums/enums.js";
 import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { Select } from "~/libs/components/select/select.js";
@@ -19,12 +21,14 @@ import styles from "./styles.module.css";
 const Training: React.FC = () => {
 	const {
 		control,
+		datasetTarget,
 		error,
 		isSubmitting,
 		loggedLabel,
 		mode,
 		onModeChange,
 		onScoreSelect,
+		promptCount,
 		score,
 		workspaceId,
 		workspaceOptions,
@@ -72,6 +76,17 @@ const Training: React.FC = () => {
 						/>
 					</section>
 					<aside className={styles["aside"]}>
+						{datasetTarget !== undefined && promptCount !== undefined && (
+							<section className={styles["card"]}>
+								<h2 className={styles["card-title"]}>
+									{DatasetTargetMessage.TITLE}
+								</h2>
+								<DatasetTarget
+									promptCount={promptCount}
+									target={datasetTarget}
+								/>
+							</section>
+						)}
 						<LoggingStreak
 							cells={streakCells}
 							currentStreak={streak?.currentStreak ?? ZERO_VALUE}

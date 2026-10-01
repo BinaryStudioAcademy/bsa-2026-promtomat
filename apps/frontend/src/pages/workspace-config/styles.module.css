@@ -98,24 +98,6 @@
 	color: var(--text-body);
 }
 
-.target-summary {
-	display: flex;
-	gap: var(--space-12);
-	align-items: center;
-	justify-content: space-between;
-}
-
-.target-reached,
-.target-count {
-	font-size: var(--font-size-body-base);
-	color: var(--text-body);
-}
-
-.target-count {
-	font-size: var(--font-size-body-sm);
-	white-space: nowrap;
-}
-
 .target-field {
 	display: flex;
 	flex-direction: column;
