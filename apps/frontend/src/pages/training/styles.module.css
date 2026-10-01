@@ -34,6 +34,25 @@
 	border-radius: var(--radius-xl);
 }
 
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-10);
+	padding: var(--space-20);
+	background-color: var(--surface-card);
+	border: var(--border-width-hairline) solid var(--border-subtle);
+	border-radius: var(--radius-xl);
+}
+
+.card-title {
+	margin: 0;
+	font-size: var(--font-size-meta);
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
 .aside {
 	display: flex;
 	flex-direction: column;

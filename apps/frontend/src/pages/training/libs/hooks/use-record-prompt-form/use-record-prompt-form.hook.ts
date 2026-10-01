@@ -26,12 +26,14 @@ import { PromptBodyMode, RecordPromptMessage } from "../../enums/enums.js";
 
 type ReturnValue = {
 	control: Control<PromptCreateRequestDto, null>;
+	datasetTarget: number | undefined;
 	error: unknown;
 	isSubmitting: boolean;
 	loggedLabel: string | undefined;
 	mode: ValueOf<typeof PromptBodyMode>;
 	onModeChange: (mode: ValueOf<typeof PromptBodyMode>) => void;
 	onScoreSelect: (score: number) => () => void;
+	promptCount: number | undefined;
 	score: null | number;
 	workspaceId: number | undefined;
 	workspaceOptions: SelectOption[];
@@ -96,6 +98,10 @@ const useRecordPromptForm = (): ReturnValue => {
 
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
+	const activeWorkspace = workspaces?.items.find((workspace) => {
+		return workspace.id === workspaceId;
+	});
+
 	const handleWorkspaceSelect = useCallback(
 		(requestedWorkspaceId: number): void => {
 			setValue("workspaceId", requestedWorkspaceId);
@@ -141,12 +147,14 @@ const useRecordPromptForm = (): ReturnValue => {
 
 	return {
 		control,
+		datasetTarget: activeWorkspace?.datasetTarget,
 		error,
 		isSubmitting: isLoading,
 		loggedLabel: loggedPrompt?.label,
 		mode,
 		onModeChange: setMode,
 		onScoreSelect: handleScoreSelect,
+		promptCount: activeWorkspace?.promptCount,
 		score,
 		workspaceId,
 		workspaceOptions,
