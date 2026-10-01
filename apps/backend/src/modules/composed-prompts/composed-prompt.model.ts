@@ -25,6 +25,8 @@ class ComposedPromptModel extends AbstractModel {
 
 	public modelId!: string;
 
+	public myScore?: null | number;
+
 	public requesterId!: number;
 
 	public sources!: ComposedPromptSourceModel[];
@@ -54,10 +56,12 @@ class ComposedPromptModel extends AbstractModel {
 		const parsed = super.$parseDatabaseJson(json);
 
 		if (
-			parsed["computedScore"] !== null &&
-			parsed["computedScore"] !== undefined
+			parsed[ComposedPromptColumnName.COMPUTED_SCORE] !== null &&
+			parsed[ComposedPromptColumnName.COMPUTED_SCORE] !== undefined
 		) {
-			parsed["computedScore"] = Number(parsed["computedScore"]);
+			parsed[ComposedPromptColumnName.COMPUTED_SCORE] = Number(
+				parsed[ComposedPromptColumnName.COMPUTED_SCORE],
+			);
 		}
 
 		return parsed;

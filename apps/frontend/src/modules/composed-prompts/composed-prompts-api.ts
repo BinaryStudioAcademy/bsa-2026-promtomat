@@ -1,57 +1,39 @@
 import { APIPath, HTTPMethod } from "~/libs/enums/enums.js";
-import { configureString } from "~/libs/helpers/helpers.js";
 import { baseApi } from "~/libs/modules/api/base-api.js";
-import { AnalyticsApiTag } from "~/modules/analytics/libs/enums/enums.js";
-import { PromptsApiTag } from "~/modules/prompts/libs/enums/enums.js";
-import { WorkspacesApiTag } from "~/modules/workspaces/workspaces.js";
 
-import { ComposedPromptsApiPath } from "./libs/enums/enums.js";
+import { ComposedPromptsApiTag } from "./libs/enums/enums.js";
 import {
-	type ComposedPromptAdoptRequestDto,
+	type ComposedPromptDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
-	type PromptDto,
 } from "./libs/types/types.js";
 
 const composedPromptApi = baseApi
 	.enhanceEndpoints({
-		addTagTypes: [
-			AnalyticsApiTag.ANALYTIC,
-			PromptsApiTag.PROMPT,
-			WorkspacesApiTag.WORKSPACE,
-		],
+		addTagTypes: [ComposedPromptsApiTag.COMPOSED_PROMPT],
 	})
 	.injectEndpoints({
 		endpoints: (builder) => ({
-			adopt: builder.mutation<
-				PromptDto,
-				{ id: number; payload: ComposedPromptAdoptRequestDto }
-			>({
-				invalidatesTags: [
-					AnalyticsApiTag.ANALYTIC,
-					PromptsApiTag.PROMPT,
-					WorkspacesApiTag.WORKSPACE,
-				],
-				query: ({ id, payload }) => ({
-					body: payload,
-					method: HTTPMethod.POST,
-					url: configureString(
-						APIPath.COMPOSED_PROMPTS,
-						ComposedPromptsApiPath.$ID_ADOPT,
-						{ id: String(id) },
-					),
-				}),
-			}),
 			compose: builder.mutation<ComposeResponseDto, ComposeRequestDto>({
+				invalidatesTags: [ComposedPromptsApiTag.COMPOSED_PROMPT],
 				query: (payload) => ({
 					body: payload,
 					method: HTTPMethod.POST,
-					url: `${APIPath.COMPOSED_PROMPTS}${ComposedPromptsApiPath.ROOT}`,
+					url: APIPath.COMPOSED_PROMPTS,
+				}),
+			}),
+			getComposedPromptById: builder.query<ComposedPromptDto, number>({
+				providesTags: (_result, _error, id) => [
+					{ id, type: ComposedPromptsApiTag.COMPOSED_PROMPT },
+				],
+				query: (id) => ({
+					method: HTTPMethod.GET,
+					url: `${APIPath.COMPOSED_PROMPTS}/${String(id)}`,
 				}),
 			}),
 		}),
 	});
 
-const { useAdoptMutation, useComposeMutation } = composedPromptApi;
+const { useComposeMutation, useGetComposedPromptByIdQuery } = composedPromptApi;
 
-export { useAdoptMutation, useComposeMutation };
+export { useComposeMutation, useGetComposedPromptByIdQuery };

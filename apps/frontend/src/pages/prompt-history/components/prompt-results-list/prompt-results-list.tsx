@@ -5,9 +5,9 @@ import { LoaderVariant } from "~/libs/components/loader/libs/enums/loader-varian
 import { Loader } from "~/libs/components/loader/loader.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { ButtonVariant } from "~/libs/enums/enums.js";
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
 import { PromptHistoryLabel } from "../../libs/enums/enums.js";
+import { type PromptHistoryItem } from "../../libs/types/types.js";
 import { PromptResultCard } from "../prompt-result-card/prompt-result-card.js";
 import styles from "./styles.module.css";
 
@@ -21,10 +21,10 @@ type Properties = {
 	isFetching: boolean;
 	isLoadingPrompts: boolean;
 	isLoadingWorkspaces: boolean;
-	items: PromptItemResponseDto[];
+	items: PromptHistoryItem[];
 	onRetry: () => void;
-	onSelectPrompt: (promptId: number) => void;
-	selectedPromptId: null | number;
+	onSelectPrompt: (uniqueKey: string) => void;
+	selectedPromptKey: null | string;
 };
 
 const PromptResultsList: React.FC<Properties> = ({
@@ -37,7 +37,7 @@ const PromptResultsList: React.FC<Properties> = ({
 	items,
 	onRetry,
 	onSelectPrompt,
-	selectedPromptId,
+	selectedPromptKey,
 }: Properties) => {
 	if (isLoadingWorkspaces || (hasWorkspace && isLoadingPrompts)) {
 		return <Loader variant={LoaderVariant.SECTION} />;
@@ -80,11 +80,11 @@ const PromptResultsList: React.FC<Properties> = ({
 	return (
 		<>
 			{items.map((item) => {
-				const isSelected = item.id === selectedPromptId;
-				const detailId = `${DETAIL_ID_PREFIX}-${String(item.id)}`;
+				const isSelected = item.uniqueKey === selectedPromptKey;
+				const detailId = `${DETAIL_ID_PREFIX}-${item.uniqueKey}`;
 
 				return (
-					<div className={styles["result-block"]} key={item.id}>
+					<div className={styles["result-block"]} key={item.uniqueKey}>
 						<PromptResultCard
 							detailId={detailId}
 							isSelected={isSelected}

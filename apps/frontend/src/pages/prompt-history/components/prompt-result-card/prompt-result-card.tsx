@@ -2,24 +2,24 @@ import React, { useCallback } from "react";
 
 import { Icon } from "~/libs/components/icon/icon.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { IconName } from "~/libs/enums/enums.js";
 import {
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
-import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 
+import { LINE_BREAK } from "../../libs/constants/constants.js";
+import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	detailId: string;
 	isSelected: boolean;
-	onSelect: (promptId: number) => void;
-	prompt: PromptItemResponseDto;
+	onSelect: (uniqueKey: string) => void;
+	prompt: PromptHistoryItem;
 };
-
-const LINE_BREAK = "\n";
 
 const PromptResultCard: React.FC<Properties> = ({
 	detailId,
@@ -31,10 +31,12 @@ const PromptResultCard: React.FC<Properties> = ({
 	const [snippet = ""] = prompt.body.split(LINE_BREAK);
 
 	const handleSelect = useCallback((): void => {
-		onSelect(prompt.id);
-	}, [onSelect, prompt.id]);
+		onSelect(prompt.uniqueKey);
+	}, [onSelect, prompt.uniqueKey]);
 
-	const score = prompt.computedScore ?? prompt.score;
+	const score =
+		prompt.computedScore ??
+		(prompt.score !== null && prompt.score > ZERO_VALUE ? prompt.score : null);
 
 	return (
 		<button

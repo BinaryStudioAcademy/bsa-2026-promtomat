@@ -1,12 +1,12 @@
 import { type Transaction } from "objection";
 
-import { ROUND_FACTOR, ZERO_VALUE } from "~/libs/constants/constants.js";
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { DateFormat } from "~/libs/enums/enums.js";
 import {
 	PromptDeliveryError,
 	PromptError,
 } from "~/libs/exceptions/exceptions.js";
-import { formatDateInTimeZone } from "~/libs/helpers/helpers.js";
+import { formatDateInTimeZone, roundScore } from "~/libs/helpers/helpers.js";
 import { TextGenerationError } from "~/libs/modules/bedrock/bedrock.js";
 import { Database } from "~/libs/modules/database/database.js";
 import { Generator } from "~/libs/modules/generator/generator.js";
@@ -16,7 +16,7 @@ import { type UserStreakService } from "~/modules/users/user-streak.service.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { LabelService } from "../labels/labels.js";
-import { PaginationValue, PromptProgress } from "./libs/enums/enums.js";
+import { PromptProgress } from "./libs/enums/enums.js";
 import {
 	buildActivityWindow,
 	createGenerateLabelOptions,
@@ -26,10 +26,8 @@ import {
 	type PromptCandidateQuery,
 	type PromptCreatePayload,
 	type PromptDto,
-	type PromptFindAllOptions,
 	type PromptFindByWorkspacePayload,
 	type PromptGenerateLabelPayload,
-	type PromptGetAllResponseDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptLabelSource,
@@ -208,46 +206,6 @@ class PromptService {
 		return prompt;
 	}
 
-	public async findAll(
-		options: PromptFindAllOptions,
-	): Promise<PromptGetAllResponseDto> {
-		const { query, userId } = options;
-		const {
-			limit = PaginationValue.DEFAULT_LIMIT,
-			page = PaginationValue.DEFAULT_PAGE,
-			qualityTier,
-			search,
-			workspaceId,
-		} = query;
-		const offset = (page - PaginationValue.DEFAULT_PAGE) * limit;
-
-		const { averageScore, items, totalCount } = search
-			? await this.promptEmbeddingService.findAllByQuery({
-					limit,
-					offset,
-					qualityTier,
-					search,
-					userId,
-					workspaceId,
-				})
-			: await this.promptRepository.findAll(options);
-
-		const formattedAverageScore =
-			averageScore === null
-				? null
-				: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR;
-
-		return {
-			averageScore: formattedAverageScore,
-			items: items.map((item) =>
-				PromptEntity.initialize(item).toDto(item.workspaceName),
-			),
-			page,
-			pageSize: limit,
-			totalCount,
-		};
-	}
-
 	public async findById(
 		id: number,
 		userId: number,
@@ -378,10 +336,7 @@ class PromptService {
 			await this.promptRepository.findUserPromptSummary(userId);
 
 		return {
-			averageScore:
-				averageScore === null
-					? null
-					: Math.round(averageScore * ROUND_FACTOR) / ROUND_FACTOR,
+			averageScore: averageScore === null ? null : roundScore(averageScore),
 			totalCount,
 		};
 	}

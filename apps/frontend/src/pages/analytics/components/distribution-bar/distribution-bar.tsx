@@ -25,8 +25,6 @@ const DistributionBar: React.FC<Properties> = ({
 	range,
 	tone,
 }: Properties) => {
-	const roundedPercentage = Math.round(percentage);
-
 	return (
 		<li className={getValidClasses(styles["tier"], styles[tone])}>
 			<div className={styles["header"]}>
@@ -35,7 +33,7 @@ const DistributionBar: React.FC<Properties> = ({
 					<span className={styles["label"]}>{label}</span>
 				</div>
 				<div className={styles["stats"]}>
-					<span className={styles["percent"]}>{roundedPercentage}%</span>
+					<span className={styles["percent"]}>{percentage}%</span>
 					<span className={styles["count"]}>{count}</span>
 				</div>
 			</div>

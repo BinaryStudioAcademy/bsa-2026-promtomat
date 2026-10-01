@@ -2,6 +2,7 @@ import { type Transaction } from "objection";
 
 import { FIRST_ELEMENT_INDEX } from "~/libs/constants/constants.js";
 import { WorkspaceError } from "~/libs/exceptions/exceptions.js";
+import { roundScore } from "~/libs/helpers/helpers.js";
 import { type Database } from "~/libs/modules/database/database.js";
 
 import {
@@ -31,6 +32,18 @@ class WorkspaceService {
 	) {
 		this.workspaceRepository = workspaceRepository;
 		this.database = database;
+	}
+
+	private withRoundedAverageScore(
+		workspace: WorkspaceListItemDto,
+	): WorkspaceListItemDto {
+		return {
+			...workspace,
+			averageScore:
+				workspace.averageScore === null
+					? null
+					: roundScore(workspace.averageScore),
+		};
 	}
 
 	public async appendStackTags(
@@ -82,14 +95,16 @@ class WorkspaceService {
 		query: WorkspaceGetAllRequestDto,
 	): Promise<WorkspaceGetAllResponseDto> {
 		const scope = query.scope ?? WorkspaceListScope.ALL;
-		const workspaces = await this.workspaceRepository.findAllByUserId(
-			userId,
+		const workspaces = await this.workspaceRepository.findAllByUserId(userId, {
 			scope,
-			query.workspaceName,
-		);
+			sort: query.sort,
+			workspaceName: query.workspaceName,
+		});
 
 		return {
-			items: workspaces,
+			items: workspaces.map((workspace) =>
+				this.withRoundedAverageScore(workspace),
+			),
 		};
 	}
 
@@ -100,7 +115,7 @@ class WorkspaceService {
 			throw WorkspaceError.notFound();
 		}
 
-		return workspace;
+		return this.withRoundedAverageScore(workspace);
 	}
 
 	public async findByIdAndContributor(

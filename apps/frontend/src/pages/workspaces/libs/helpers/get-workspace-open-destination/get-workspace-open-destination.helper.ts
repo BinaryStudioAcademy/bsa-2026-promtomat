@@ -1,11 +1,11 @@
 import { AppRoute } from "~/libs/enums/enums.js";
 import { type ValueOf } from "~/libs/types/types.js";
-import { PromptProgress } from "~/modules/prompts/prompts.js";
+import { type WorkspaceListItemDto } from "~/modules/workspaces/libs/types/types.js";
 
 const getWorkspaceOpenDestination = (
-	promptCount: number,
+	workspace: WorkspaceListItemDto,
 ): ValueOf<typeof AppRoute> => {
-	return promptCount < PromptProgress.TARGET_COUNT
+	return workspace.promptCount < workspace.datasetTarget
 		? AppRoute.TRAINING
 		: AppRoute.GENERATE;
 };

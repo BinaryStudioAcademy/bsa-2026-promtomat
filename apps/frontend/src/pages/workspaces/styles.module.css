@@ -1,12 +1,12 @@
 .filters {
 	display: flex;
+	flex-direction: column;
 	gap: var(--space-12);
-	align-items: center;
 	margin-bottom: var(--space-20);
 }
 
 .search {
-	flex: 1;
+	width: 100%;
 	min-width: 0;
 }
 
@@ -22,14 +22,47 @@
 	color: var(--border-strong);
 }
 
+.controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-12);
+	align-items: center;
+}
+
 .scope {
-	flex-shrink: 0;
+	flex: 1 1 448px;
 	align-items: stretch;
+	min-width: min(100%, 448px);
 	height: calc(var(--size-control-h-lg) + var(--space-4));
 	padding: 0;
 	overflow: hidden;
 	background-color: var(--surface-card);
 	border-color: var(--border-strong);
+	border-radius: var(--radius-xl);
+}
+
+.sort {
+	flex: 0 0 300px;
+	width: 300px;
+	min-width: min(100%, 300px);
+}
+
+.sort-field {
+	gap: 0;
+	width: 100%;
+}
+
+.sort .sort-select {
+	height: calc(var(--size-control-h-lg) + var(--space-4));
+	font-size: var(--font-size-body-base);
+	font-weight: 600;
+	background-color: var(--surface-card);
+	border-color: var(--border-strong);
+}
+
+.clear {
+	flex-shrink: 0;
+	height: calc(var(--size-control-h-lg) + var(--space-4));
 	border-radius: var(--radius-xl);
 }
 
@@ -42,14 +75,22 @@
 
 @container (width <= 640px) {
 	.filters {
-		flex-direction: column;
 		gap: var(--space-8);
-		align-items: stretch;
 		margin-bottom: var(--space-16);
 	}
 
-	.scope {
+	.controls {
+		flex-direction: column;
+		gap: var(--space-8);
+		align-items: stretch;
+	}
+
+	.scope,
+	.sort,
+	.clear {
+		flex: none;
 		width: 100%;
+		min-width: 0;
 	}
 
 	.list {

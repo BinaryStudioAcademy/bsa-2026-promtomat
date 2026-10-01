@@ -1,18 +1,9 @@
 import { raw, type Transaction } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import {
-	PromptQualityTier,
-	QualityScoreThreshold,
-	SortOrder,
-	SQLAlias,
-} from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
-import { ContributorColumnName } from "~/modules/contributors/libs/enums/enums.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
-import { type PromptRepositoryItem } from "~/modules/prompts/libs/types/types.js";
-import { WorkspaceColumnName } from "~/modules/workspaces/libs/enums/enums.js";
 
 import {
 	COLUMN_TYPE_ALIAS,
@@ -23,8 +14,7 @@ import {
 	NEAREST_PROMPT_SEARCH_LIMIT,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
-	PROMPT_WORKSPACE_ALIAS,
-	PROMPT_WORKSPACE_RELATION,
+	RELEVANCE_ORDER_TEMPLATE,
 	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
@@ -41,9 +31,6 @@ import {
 	type IndexedPromptSource,
 	type NearestPrompt,
 	type NearestPromptQuery,
-	type PromptAggregateRow,
-	type PromptSemanticSearchQuery,
-	type PromptSemanticSearchResult,
 } from "./libs/types/types.js";
 import { PromptEmbeddingEntity } from "./prompt-embedding.entity.js";
 import { type PromptEmbeddingModel } from "./prompt-embedding.model.js";
@@ -83,177 +70,6 @@ class PromptEmbeddingRepository {
 			.delete()
 			.where(PromptEmbeddingColumnName.PROMPT_ID, promptId)
 			.execute();
-	}
-
-	public async findAll({
-		embedding,
-		limit,
-		offset,
-		qualityTier,
-		userId,
-		workspaceId,
-	}: PromptSemanticSearchQuery): Promise<PromptSemanticSearchResult> {
-		const serializedEmbeddings = serializeEmbedding(embedding);
-
-		const baseQuery = this.promptEmbeddingModel
-			.query()
-			.joinRelated(PROMPT_WORKSPACE_RELATION)
-			.where((builder) => {
-				builder
-					.where(
-						`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.USER_ID}`,
-						userId,
-					)
-					.orWhereExists(
-						this.promptEmbeddingModel
-							.query()
-							.select(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.ID}`,
-							)
-							.from(DatabaseTableName.CONTRIBUTORS)
-							.where(
-								raw("?? = ??", [
-									`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.WORKSPACE_ID}`,
-									`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
-								]),
-							)
-							.where(
-								`${DatabaseTableName.CONTRIBUTORS}.${ContributorColumnName.USER_ID}`,
-								userId,
-							),
-					);
-			})
-			.where(
-				raw("?? <=> ?::vector", [
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-				]),
-				"<",
-				SIMILARITY_THRESHOLD,
-			);
-
-		if (workspaceId) {
-			baseQuery.where(
-				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
-				workspaceId,
-			);
-		}
-
-		if (qualityTier && qualityTier !== PromptQualityTier.ALL) {
-			switch (qualityTier) {
-				case PromptQualityTier.NEEDS_IMPROVEMENT: {
-					baseQuery
-						.whereRaw("COALESCE(??, ??) >= ?", [
-							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.MIN_NEEDS_IMPROVEMENT,
-						])
-						.andWhereRaw("COALESCE(??, ??) < ?", [
-							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.MAX_NEEDS_IMPROVEMENT,
-						]);
-					break;
-				}
-				case PromptQualityTier.PROVEN: {
-					baseQuery.whereRaw("COALESCE(??, ??) >= ?", [
-						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-						`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-						QualityScoreThreshold.PROVEN,
-					]);
-					break;
-				}
-				case PromptQualityTier.UNRATED: {
-					baseQuery.whereNull(
-						`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					);
-					break;
-				}
-				case PromptQualityTier.USABLE: {
-					baseQuery
-						.whereRaw("COALESCE(??, ??) >= ?", [
-							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.USABLE,
-						])
-						.andWhereRaw("COALESCE(??, ??) < ?", [
-							`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-							`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-							QualityScoreThreshold.PROVEN,
-						]);
-					break;
-				}
-			}
-		}
-
-		const [aggregation] = await baseQuery
-			.clone()
-			.clearSelect()
-			.count(`${PROMPT_RELATION}.${PromptColumnName.ID} as ${SQLAlias.COUNT}`)
-			.select(
-				raw("AVG(COALESCE(??, ??)) as ??", [
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					SQLAlias.AVERAGE_SCORE,
-				]),
-			)
-			.castTo<PromptAggregateRow[]>()
-			.execute();
-
-		const rawItems = await baseQuery
-			.clone()
-			.select(
-				`${PROMPT_RELATION}.${PromptColumnName.ID}`,
-				`${PROMPT_RELATION}.${PromptColumnName.WORKSPACE_ID}`,
-				`${PROMPT_RELATION}.${PromptColumnName.TASK_INTENT}`,
-				`${PROMPT_RELATION}.${PromptColumnName.CREATED_AT}`,
-				`${PROMPT_RELATION}.${PromptColumnName.UPDATED_AT}`,
-				`${PROMPT_RELATION}.${PromptColumnName.USER_ID}`,
-				`${PROMPT_RELATION}.${PromptColumnName.PROMPT_BODY}`,
-				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-				raw("?? AS ??", [
-					`${PROMPT_WORKSPACE_ALIAS}.${WorkspaceColumnName.NAME}`,
-					SQLAlias.WORKSPACE_NAME,
-				]),
-				raw(
-					`(SELECT score FROM ${DatabaseTableName.EVALUATIONS} WHERE prompt_id = ${PROMPT_RELATION}.${PromptColumnName.ID} AND user_id = ? LIMIT 1) as "myScore"`,
-					[userId],
-				),
-			)
-			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
-				[
-					RelevanceWeight.SIMILARITY_WEIGHT,
-					MAX_SIMILARITY,
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-					SIMILARITY_THRESHOLD,
-					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
-					MAX_EFFICIENCY_SCORE,
-				],
-			)
-			.offset(offset)
-			.limit(limit)
-			.castTo<PromptRepositoryItem[]>()
-			.execute();
-
-		const items = rawItems.map((item) => ({
-			...item,
-			computedScore: item.computedScore === null ? null : item.computedScore,
-			myScore: item.myScore ?? null,
-		}));
-
-		return {
-			averageScore: aggregation?.averageScore
-				? Number(aggregation.averageScore)
-				: null,
-			items,
-			totalCount: aggregation?.count ? Number(aggregation.count) : ZERO_VALUE,
-		};
 	}
 
 	public async findIndexedSourcesAfter(
@@ -313,21 +129,18 @@ class PromptEmbeddingRepository {
 				"<",
 				SIMILARITY_THRESHOLD,
 			)
-			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
-				[
-					RelevanceWeight.SIMILARITY_WEIGHT,
-					MAX_SIMILARITY,
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-					SIMILARITY_THRESHOLD,
-					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
-					MAX_EFFICIENCY_SCORE,
-				],
-			)
+			.orderByRaw(RELEVANCE_ORDER_TEMPLATE, [
+				RelevanceWeight.SIMILARITY_WEIGHT,
+				MAX_SIMILARITY,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+				serializedEmbeddings,
+				SIMILARITY_THRESHOLD,
+				RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				ZERO_VALUE,
+				MAX_EFFICIENCY_SCORE,
+			])
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();

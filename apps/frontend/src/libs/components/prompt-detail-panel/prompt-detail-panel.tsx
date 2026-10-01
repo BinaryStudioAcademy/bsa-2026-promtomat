@@ -9,16 +9,15 @@ import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
 import { ScoreGrid } from "~/libs/components/score-grid/score-grid.js";
 import { SegmentedControl } from "~/libs/components/segmented-control/segmented-control.js";
 import { Textarea } from "~/libs/components/textarea/textarea.js";
-import { AppRoute, ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
 import {
-	configureString,
 	getRelativeTimeLabel,
 	getValidClasses,
 } from "~/libs/helpers/helpers.js";
 import { useAppForm } from "~/libs/hooks/use-app-form/use-app-form.hook.js";
 import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
 import { showNotification } from "~/libs/modules/notification/notification.js";
-import { type NavigableRoute, type ValueOf } from "~/libs/types/types.js";
+import { type ValueOf } from "~/libs/types/types.js";
 import { useGetAuthenticatedUserQuery } from "~/modules/auth/auth-api.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 import { usePromptRevision } from "~/modules/prompts/libs/hooks/use-prompt-revision/use-prompt-revision.hook.js";
@@ -39,11 +38,15 @@ import {
 	PromptDetailLabel,
 	PromptDetailMessage,
 } from "./libs/enums/enums.js";
+import {
+	resolveDeliveryPath,
+	resolvePromptScores,
+} from "./libs/helpers/helpers.js";
 import styles from "./styles.module.css";
 
 type Properties = {
 	isCompact?: boolean;
-	prompt: PromptItemResponseDto;
+	prompt: PromptItemResponseDto & { isComposed?: boolean };
 	shouldShowOpenFullPageLink?: boolean;
 };
 
@@ -76,13 +79,16 @@ const PromptDetailPanel: React.FC<Properties> = ({
 	const editorReference = useRef<HTMLDivElement>(null);
 
 	const errorMessage = errors.taskIntent?.message;
+	const isComposed = Boolean(prompt.isComposed);
 	const isOwner = user?.id === prompt.userId;
-	const selectedScore = prompt.myScore ?? (isOwner ? prompt.score : null);
-	const displayScore = prompt.computedScore ?? prompt.score;
+	const canEdit = isOwner && !isComposed;
+	const { displayScore, selectedScore } = resolvePromptScores({
+		isComposed,
+		isOwner,
+		prompt,
+	});
 	const relativeTime = getRelativeTimeLabel(prompt.createdAt);
-	const deliveryPath = configureString(AppRoute.PROMPTS_$PROMPT_ID, {
-		promptId: String(prompt.id),
-	}) as NavigableRoute;
+	const deliveryPath = resolveDeliveryPath(prompt.id, isComposed);
 
 	useEffect(() => {
 		lastValidIntentReference.current = prompt.intent;
@@ -99,6 +105,11 @@ const PromptDetailPanel: React.FC<Properties> = ({
 
 	const handleSaveUpdatedIntent = useCallback(() => {
 		return new Promise<void>((resolve, reject) => {
+			if (isComposed) {
+				reject(new Error("Composing"));
+				return;
+			}
+
 			void handleSubmit(
 				async (payload: PromptUpdateIntentRequestDto) => {
 					const previousIntent = lastValidIntentReference.current;
@@ -125,7 +136,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				},
 			)();
 		});
-	}, [handleSubmit, prompt.id, reset, updateIntent]);
+	}, [handleSubmit, isComposed, prompt.id, reset, updateIntent]);
 
 	const handleCancel = useCallback(() => {
 		clearErrors("taskIntent");
@@ -153,7 +164,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 		<article className={styles["panel"]}>
 			<div className={styles["heading"]}>
 				<div className={styles["title-row"]}>
-					{isOwner ? (
+					{canEdit ? (
 						<div className={styles["intent-wrapper"]}>
 							<InlineEdit
 								className={styles["intent"]}
@@ -171,10 +182,17 @@ const PromptDetailPanel: React.FC<Properties> = ({
 					) : (
 						<h2 className={styles["intent"]}>{prompt.intent}</h2>
 					)}
-					<ScoreBadge
-						efficiencyScore={displayScore}
-						maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
-					/>
+					<div className={styles["badges"]}>
+						{isComposed && (
+							<span className={styles["badge-generated"]}>
+								{PromptDetailLabel.GENERATED}
+							</span>
+						)}
+						<ScoreBadge
+							efficiencyScore={displayScore}
+							maxScore={PromptValidationRule.EFFICIENCY_SCORE_MAX}
+						/>
+					</div>
 				</div>
 				<div
 					className={
@@ -194,7 +212,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			</div>
 
 			<div className={styles["toolbar"]}>
-				{isOwner && (
+				{canEdit && (
 					<>
 						<SegmentedControl
 							label={PromptDetailLabel.PROMPT_VIEW}
@@ -227,7 +245,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 				)}
 			</div>
 
-			{isOwner && isEditingBody ? (
+			{canEdit && isEditingBody ? (
 				<div className={styles["editor"]} ref={editorReference}>
 					<Textarea
 						className={getValidClasses(
@@ -267,7 +285,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 			</div>
 
 			<div className={styles["actions"]}>
-				{isOwner && isEditingBody ? (
+				{canEdit && isEditingBody ? (
 					<>
 						<Button
 							className={styles["copy-button"]}

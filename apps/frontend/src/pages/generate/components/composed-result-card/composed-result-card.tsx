@@ -1,17 +1,23 @@
 import React, { useCallback, useState } from "react";
 
 import { Button } from "~/libs/components/button/button.js";
+import { NotificationType } from "~/libs/components/overlay-host/libs/enums/enums.js";
 import { PromptDeliveryView } from "~/libs/components/prompt-delivery-view/prompt-delivery-view.js";
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { ButtonVariant, IconName } from "~/libs/enums/enums.js";
+import {
+	ButtonVariant,
+	EvaluationTargetType,
+	IconName,
+} from "~/libs/enums/enums.js";
 import { getRelativeTimeLabel } from "~/libs/helpers/helpers.js";
 import { useCopyPrompt } from "~/libs/hooks/use-copy-prompt/use-copy-prompt.hook.js";
+import { showNotification } from "~/libs/modules/notification/notification.js";
 import { type ValueOf } from "~/libs/types/types.js";
+import { type ComposedPromptDto } from "~/modules/composed-prompts/composed-prompts.js";
 import {
-	type ComposedPromptAdoptRequestDto,
-	type ComposedPromptDto,
-	useAdoptMutation,
-} from "~/modules/composed-prompts/composed-prompts.js";
+	EvaluationMessage,
+	useEvaluateMutation,
+} from "~/modules/evaluations/evaluations.js";
 import { useGetWorkspacesQuery } from "~/modules/workspaces/workspaces.js";
 
 import {
@@ -23,7 +29,6 @@ import {
 	getProvenanceLabel,
 	getRecompositionsLeftLabel,
 } from "../../libs/helpers/helpers.js";
-import { AdoptedNotice } from "../adopted-notice/adopted-notice.js";
 import { ComposedBodyEditor } from "../composed-body-editor/composed-body-editor.js";
 import { PendingActionConfirmation } from "../pending-action-confirmation/pending-action-confirmation.js";
 import { ResultCard } from "../result-card/result-card.js";
@@ -47,37 +52,50 @@ const ComposedResultCard: React.FC<Properties> = ({
 		({ id }) => id === composedPrompt.workspaceId,
 	)?.name;
 
-	const [adopt, { data: adoptedPrompt, isLoading: isAdopting }] =
-		useAdoptMutation();
+	const [evaluate, { isLoading: isEvaluating }] = useEvaluateMutation();
 	const [appliedBody, setAppliedBody] = useState<string>(composedPrompt.body);
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [pendingAction, setPendingAction] = useState<null | ValueOf<
 		typeof PendingCardAction
 	>>(null);
-	const [selectedScore, setSelectedScore] = useState<null | number>(null);
+	const [selectedScore, setSelectedScore] = useState<null | number>(
+		composedPrompt.myScore ?? null,
+	);
 
-	const isAdopted = adoptedPrompt !== undefined;
 	const isEdited = appliedBody !== composedPrompt.body;
-	const hasUnsavedEdits = isEdited && !isAdopted;
-	const hasActions = !isAdopting && !isEditing && !isAdopted;
+	const hasUnsavedEdits = isEdited;
+	const hasActions = !isEvaluating && !isEditing;
 	const isRecomposePending = pendingAction === PendingCardAction.RECOMPOSE;
 	const isRecomposeDisabled =
-		isAdopting || isEditing || remainingRecompositions === ZERO_VALUE;
+		isEvaluating || isEditing || remainingRecompositions === ZERO_VALUE;
 
 	const handleCopyPrompt = useCopyPrompt({ body: appliedBody });
 
 	const handleScoreSelect = useCallback(
 		(score: number) => {
 			return (): void => {
-				const payload: ComposedPromptAdoptRequestDto = isEdited
-					? { promptBody: appliedBody, score }
-					: { score };
-
 				setSelectedScore(score);
-				void adopt({ id: composedPrompt.id, payload });
+				void evaluate({
+					score,
+					targetId: composedPrompt.id,
+					targetType: EvaluationTargetType.COMPOSED_PROMPT,
+				})
+					.unwrap()
+					.then(() => {
+						showNotification({
+							message: EvaluationMessage.EVALUATION_SUCCESS,
+							type: NotificationType.SUCCESS,
+						});
+					})
+					.catch(() => {
+						showNotification({
+							message: EvaluationMessage.EVALUATION_FAILED,
+							type: NotificationType.DANGER,
+						});
+					});
 			};
 		},
-		[adopt, appliedBody, composedPrompt.id, isEdited],
+		[composedPrompt.id, evaluate],
 	);
 
 	const handleEditStart = useCallback((): void => {
@@ -161,24 +179,13 @@ const ComposedResultCard: React.FC<Properties> = ({
 				}
 				computedScore={composedPrompt.computedScore}
 				explanation={composedPrompt.explanation.trim()}
-				feedback={
-					adoptedPrompt === undefined
-						? {
-								hint: isEdited
-									? GenerateMessage.EDITED_HINT
-									: GenerateMessage.RATE_HINT,
-								isDisabled: isAdopting || isEditing,
-								label: GenerateLabel.RATE_HEADING,
-								onScoreSelect: handleScoreSelect,
-								selectedScore,
-							}
-						: undefined
-				}
-				feedbackSlot={
-					adoptedPrompt === undefined ? undefined : (
-						<AdoptedNotice prompt={adoptedPrompt} />
-					)
-				}
+				feedback={{
+					hint: GenerateMessage.RATE_HINT,
+					isDisabled: isEvaluating || isEditing,
+					label: GenerateLabel.RATE_HEADING,
+					onScoreSelect: handleScoreSelect,
+					selectedScore,
+				}}
 				isBodyHeaderHidden
 				sources={composedPrompt.sources}
 			/>
