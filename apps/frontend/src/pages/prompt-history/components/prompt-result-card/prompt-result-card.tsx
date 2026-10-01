@@ -10,6 +10,7 @@ import {
 } from "~/libs/helpers/helpers.js";
 import { PromptValidationRule } from "~/modules/prompts/libs/enums/enums.js";
 
+import { LINE_BREAK } from "../../libs/constants/constants.js";
 import { type PromptHistoryItem } from "../../libs/types/types.js";
 import styles from "./styles.module.css";
 
@@ -19,8 +20,6 @@ type Properties = {
 	onSelect: (uniqueKey: string) => void;
 	prompt: PromptHistoryItem;
 };
-
-const LINE_BREAK = "\n";
 
 const PromptResultCard: React.FC<Properties> = ({
 	detailId,
