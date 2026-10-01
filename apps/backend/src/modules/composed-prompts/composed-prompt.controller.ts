@@ -282,7 +282,10 @@ class ComposedPromptController extends BaseController {
 		options: APIHandlerOptions<{ params: ComposedPromptIdParametersDto }>,
 	): Promise<APIHandlerResponse> {
 		return {
-			payload: await this.composedPromptService.findById(options.params.id),
+			payload: await this.composedPromptService.findById(
+				options.params.id,
+				options.user?.id,
+			),
 			status: HTTPCode.OK,
 		};
 	}

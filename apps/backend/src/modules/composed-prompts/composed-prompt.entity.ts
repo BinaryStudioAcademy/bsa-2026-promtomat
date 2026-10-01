@@ -24,6 +24,8 @@ class ComposedPromptEntity implements Entity {
 
 	private modelId: string;
 
+	private myScore: null | number;
+
 	private requesterId: number;
 
 	private sources: ComposedPromptSourceDto[];
@@ -41,6 +43,7 @@ class ComposedPromptEntity implements Entity {
 		explanation,
 		id,
 		modelId,
+		myScore,
 		requesterId,
 		sources,
 		updatedAt,
@@ -54,6 +57,7 @@ class ComposedPromptEntity implements Entity {
 		explanation: string;
 		id: null | number;
 		modelId: string;
+		myScore?: null | number | undefined;
 		requesterId: number;
 		sources: ComposedPromptSourceDto[];
 		updatedAt: string;
@@ -67,6 +71,7 @@ class ComposedPromptEntity implements Entity {
 		this.body = body;
 		this.explanation = explanation;
 		this.modelId = modelId;
+		this.myScore = myScore ?? null;
 		this.sources = sources;
 		this.computedScore = computedScore;
 		this.createdAt = createdAt;
@@ -82,6 +87,7 @@ class ComposedPromptEntity implements Entity {
 		explanation,
 		id,
 		modelId,
+		myScore,
 		requesterId,
 		sources,
 		updatedAt,
@@ -95,6 +101,7 @@ class ComposedPromptEntity implements Entity {
 		explanation: string;
 		id: number;
 		modelId: string;
+		myScore?: null | number | undefined;
 		requesterId: number;
 		sources: ComposedPromptSourceDto[];
 		updatedAt: string;
@@ -109,6 +116,7 @@ class ComposedPromptEntity implements Entity {
 			explanation,
 			id,
 			modelId,
+			myScore,
 			requesterId,
 			sources,
 			updatedAt,
@@ -186,6 +194,7 @@ class ComposedPromptEntity implements Entity {
 		explanation: string;
 		id: number;
 		modelId: string;
+		myScore: null | number;
 		requesterId: number;
 		sources: ComposedPromptSourceDto[];
 		updatedAt: string;
@@ -200,6 +209,7 @@ class ComposedPromptEntity implements Entity {
 			explanation: this.explanation,
 			id: requireEntityId(this.id, EntityName.COMPOSED_PROMPT),
 			modelId: this.modelId,
+			myScore: this.myScore,
 			requesterId: this.requesterId,
 			sources: this.sources.map((source) => ({ ...source })),
 			updatedAt: this.updatedAt,

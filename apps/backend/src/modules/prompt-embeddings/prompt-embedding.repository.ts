@@ -1,5 +1,6 @@
 import { raw, type Transaction } from "objection";
 
+import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
@@ -129,7 +130,7 @@ class PromptEmbeddingRepository {
 				SIMILARITY_THRESHOLD,
 			)
 			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ??)::numeric / ?)) ${SortOrder.DESC}`,
+				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
 				[
 					RelevanceWeight.SIMILARITY_WEIGHT,
 					MAX_SIMILARITY,
@@ -139,6 +140,7 @@ class PromptEmbeddingRepository {
 					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
 					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
 					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+					ZERO_VALUE,
 					MAX_EFFICIENCY_SCORE,
 				],
 			)

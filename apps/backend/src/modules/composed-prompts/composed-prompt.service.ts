@@ -267,6 +267,7 @@ class ComposedPromptService {
 			explanation,
 			id,
 			modelId,
+			myScore,
 			sources,
 			workspaceId,
 		} = entity.toObject();
@@ -279,6 +280,7 @@ class ComposedPromptService {
 			explanation,
 			id,
 			modelId,
+			myScore,
 			sources,
 			workspaceId,
 		};
@@ -344,8 +346,14 @@ class ComposedPromptService {
 		});
 	}
 
-	public async findById(id: number): Promise<ComposedPromptDto> {
-		const composedPrompt = await this.composedPromptRepository.findById(id);
+	public async findById(
+		id: number,
+		userId?: number,
+	): Promise<ComposedPromptDto> {
+		const composedPrompt = await this.composedPromptRepository.findById(
+			id,
+			userId,
+		);
 
 		if (!composedPrompt) {
 			throw ComposedPromptError.notFound();

@@ -1,0 +1,3 @@
+const MY_SCORE_LOOKUP_LIMIT = 1;
+
+export { MY_SCORE_LOOKUP_LIMIT };

@@ -1,7 +1,7 @@
 import { type Model, type QueryBuilder, raw } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { ScoreTierMin, SortOrder } from "~/libs/enums/enums.js";
+import { ScoreTierMin, SortOrder, SQLAlias } from "~/libs/enums/enums.js";
 import { escapeILikePattern } from "~/libs/helpers/helpers.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { type Embedding } from "~/libs/modules/embedding/embedding.js";
@@ -93,7 +93,7 @@ class PromptHistoryRepository {
 				raw("?? as id", [
 					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.ID}`,
 				]),
-				raw(`?? as ${PromptHistorySqlAlias.CREATED_AT}`, [
+				raw(`?? as ${PromptColumnName.CREATED_AT}`, [
 					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.CREATED_AT}`,
 				]),
 				raw("?? as body", [
@@ -110,7 +110,7 @@ class PromptHistoryRepository {
 				]),
 				raw(`true as ${PromptHistorySqlAlias.IS_COMPOSED}`),
 				raw("0 as score"),
-				raw(`?? as ${PromptHistorySqlAlias.COMPUTED_SCORE}`, [
+				raw(`?? as ${PromptColumnName.COMPUTED_SCORE}`, [
 					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.COMPUTED_SCORE}`,
 				]),
 				raw("(SELECT ?? FROM ?? WHERE ?? = ?? AND ?? = ? LIMIT 1) as ??", [
@@ -120,7 +120,7 @@ class PromptHistoryRepository {
 					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.ID}`,
 					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.USER_ID}`,
 					userId,
-					PromptHistorySqlAlias.MY_SCORE,
+					SQLAlias.MY_SCORE,
 				]),
 				raw("0 as ??", [PromptHistorySqlAlias.SORT_SCORE]),
 			)
@@ -175,7 +175,7 @@ class PromptHistoryRepository {
 				raw("?? as id", [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
 				]),
-				raw(`?? as ${PromptHistorySqlAlias.CREATED_AT}`, [
+				raw(`?? as ${PromptColumnName.CREATED_AT}`, [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.CREATED_AT}`,
 				]),
 				raw("?? as body", [
@@ -194,7 +194,7 @@ class PromptHistoryRepository {
 				raw("?? as score", [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.EFFICIENCY_SCORE}`,
 				]),
-				raw(`?? as ${PromptHistorySqlAlias.COMPUTED_SCORE}`, [
+				raw(`?? as ${PromptColumnName.COMPUTED_SCORE}`, [
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.COMPUTED_SCORE}`,
 				]),
 				raw("(SELECT ?? FROM ?? WHERE ?? = ?? AND ?? = ? LIMIT 1) as ??", [
@@ -204,7 +204,7 @@ class PromptHistoryRepository {
 					`${DatabaseTableName.PROMPTS}.${PromptColumnName.ID}`,
 					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.USER_ID}`,
 					userId,
-					PromptHistorySqlAlias.MY_SCORE,
+					SQLAlias.MY_SCORE,
 				]),
 				this.buildRegularSortScoreSelect(embedding),
 			)
@@ -302,7 +302,7 @@ class PromptHistoryRepository {
 
 		const [rows, [aggregate]] = await Promise.all([
 			unifiedQuery
-				.orderBy(PromptHistorySqlAlias.CREATED_AT, SortOrder.DESC)
+				.orderBy(PromptColumnName.CREATED_AT, SortOrder.DESC)
 				.limit(limit)
 				.offset(offset)
 				.castTo<PromptHistoryRawRow[]>()
@@ -316,7 +316,7 @@ class PromptHistoryRepository {
 						PromptHistorySqlAlias.TOTAL_COUNT,
 					]),
 					raw("AVG(COALESCE(??, NULLIF(??, 0))) as ??", [
-						PromptHistorySqlAlias.COMPUTED_SCORE,
+						PromptColumnName.COMPUTED_SCORE,
 						"score",
 						PromptHistorySqlAlias.AVERAGE_SCORE,
 					]),
