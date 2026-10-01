@@ -11,6 +11,7 @@ export { NEAREST_LABEL_LIMIT } from "./nearest-label-limit.constant.js";
 export { NEAREST_LABEL_RELATION } from "./nearest-label-relation.constant.js";
 export { PG_ATTRIBUTE_TABLE } from "./pg-attribute-table.constant.js";
 export { PROMPT_RELATION } from "./prompt-relation.constant.js";
+export { RELEVANCE_ORDER_TEMPLATE } from "./relevance-order-template.constant.js";
 export { SIMILARITY_THRESHOLD } from "./similarity-threshold.constant.js";
 export { VECTOR_TYPE_PATTERN } from "./vector-type-pattern.constant.js";
 export { MAX_EFFICIENCY_SCORE } from "@promptomat/shared";

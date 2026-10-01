@@ -1,7 +1,6 @@
 import { raw, type Transaction } from "objection";
 
 import { ZERO_VALUE } from "~/libs/constants/constants.js";
-import { SortOrder } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
 import { LabelColumnName } from "~/modules/labels/libs/enums/enums.js";
 import { PromptColumnName } from "~/modules/prompts/libs/enums/enums.js";
@@ -15,6 +14,7 @@ import {
 	NEAREST_PROMPT_SEARCH_LIMIT,
 	PG_ATTRIBUTE_TABLE,
 	PROMPT_RELATION,
+	RELEVANCE_ORDER_TEMPLATE,
 	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
@@ -129,21 +129,18 @@ class PromptEmbeddingRepository {
 				"<",
 				SIMILARITY_THRESHOLD,
 			)
-			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
-				[
-					RelevanceWeight.SIMILARITY_WEIGHT,
-					MAX_SIMILARITY,
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-					SIMILARITY_THRESHOLD,
-					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
-					MAX_EFFICIENCY_SCORE,
-				],
-			)
+			.orderByRaw(RELEVANCE_ORDER_TEMPLATE, [
+				RelevanceWeight.SIMILARITY_WEIGHT,
+				MAX_SIMILARITY,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+				serializedEmbeddings,
+				SIMILARITY_THRESHOLD,
+				RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				ZERO_VALUE,
+				MAX_EFFICIENCY_SCORE,
+			])
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();
