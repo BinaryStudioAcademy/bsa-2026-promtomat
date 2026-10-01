@@ -12,6 +12,7 @@ import { contributorController } from "~/modules/contributors/contributors.js";
 import { evaluationController } from "~/modules/evaluations/evaluations.js";
 import { healthController } from "~/modules/health/health.js";
 import { labelController } from "~/modules/labels/labels.js";
+import { promptHistoryController } from "~/modules/prompt-history/prompt-history.js";
 import { promptController } from "~/modules/prompts/prompts.js";
 import { repositoryBindingController } from "~/modules/repository-bindings/repository-bindings.js";
 import { userController, userService } from "~/modules/users/users.js";
@@ -41,6 +42,7 @@ const apiV1 = new BaseServerApplicationApi(
 	...evaluationController.routes,
 	...healthController.routes,
 	...labelController.routes,
+	...promptHistoryController.routes,
 	...promptController.routes,
 	...userController.routes,
 	...repositoryBindingController.routes,

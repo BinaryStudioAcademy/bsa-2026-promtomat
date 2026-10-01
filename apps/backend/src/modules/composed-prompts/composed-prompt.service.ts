@@ -32,14 +32,12 @@ import {
 	selectUsedSources,
 } from "./libs/helpers/helpers.js";
 import {
-	type ComposedPromptAdoptPayload,
 	type ComposedPromptDto,
 	type ComposePayload,
 	type ComposeResult,
 	type GenerationOutcome,
 	type ModelCallLog,
 	type PromptCandidateDto,
-	type PromptDto,
 } from "./libs/types/types.js";
 
 type Constructor = {
@@ -269,6 +267,7 @@ class ComposedPromptService {
 			explanation,
 			id,
 			modelId,
+			myScore,
 			sources,
 			workspaceId,
 		} = entity.toObject();
@@ -281,28 +280,10 @@ class ComposedPromptService {
 			explanation,
 			id,
 			modelId,
+			myScore,
 			sources,
 			workspaceId,
 		};
-	}
-
-	public async adopt(payload: ComposedPromptAdoptPayload): Promise<PromptDto> {
-		const { id, promptBody, score, userId } = payload;
-		const composedPrompt = await this.composedPromptRepository.findById(id);
-
-		if (!composedPrompt) {
-			throw ComposedPromptError.notFound();
-		}
-
-		const { body, description, workspaceId } = composedPrompt.toObject();
-
-		return await this.promptService.create({
-			efficiencyScore: score,
-			promptBody: promptBody ?? body,
-			taskIntent: description,
-			userId,
-			workspaceId,
-		});
 	}
 
 	public async compose(payload: ComposePayload): Promise<ComposeResult> {
@@ -365,8 +346,14 @@ class ComposedPromptService {
 		});
 	}
 
-	public async findById(id: number): Promise<ComposedPromptDto> {
-		const composedPrompt = await this.composedPromptRepository.findById(id);
+	public async findById(
+		id: number,
+		userId?: number,
+	): Promise<ComposedPromptDto> {
+		const composedPrompt = await this.composedPromptRepository.findById(
+			id,
+			userId,
+		);
 
 		if (!composedPrompt) {
 			throw ComposedPromptError.notFound();

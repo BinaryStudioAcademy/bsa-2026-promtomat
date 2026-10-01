@@ -1,11 +1,14 @@
-import { type Transaction } from "objection";
+import { raw, type Transaction } from "objection";
 
-import { SortOrder } from "~/libs/enums/enums.js";
+import { SortOrder, SQLAlias } from "~/libs/enums/enums.js";
+import { DatabaseTableName } from "~/libs/modules/database/database.js";
+import { EvaluationColumnName } from "~/modules/evaluations/libs/enums/enums.js";
 
 import { ComposedPromptEntity } from "./composed-prompt.entity.js";
 import { type ComposedPromptModel } from "./composed-prompt.model.js";
 import {
 	LATEST_COMPOSITION_LIMIT,
+	MY_SCORE_LOOKUP_LIMIT,
 	SOURCES_GRAPH,
 } from "./libs/constants/constants.js";
 import { ComposedPromptColumnName } from "./libs/enums/enums.js";
@@ -29,6 +32,7 @@ class ComposedPromptRepository {
 			explanation: composedPrompt.explanation,
 			id: composedPrompt.id,
 			modelId: composedPrompt.modelId,
+			myScore: composedPrompt.myScore ?? null,
 			requesterId: composedPrompt.requesterId,
 			sources: composedPrompt.sources.map((source) => ({
 				efficiencyScore: source.prompt.efficiencyScore,
@@ -57,12 +61,32 @@ class ComposedPromptRepository {
 		});
 	}
 
-	public async findById(id: number): Promise<ComposedPromptEntity | null> {
-		const composedPrompt = await this.composedPromptModel
+	public async findById(
+		id: number,
+		userId?: number,
+	): Promise<ComposedPromptEntity | null> {
+		const query = this.composedPromptModel
 			.query()
 			.findById(id)
-			.withGraphFetched(SOURCES_GRAPH)
-			.execute();
+			.withGraphFetched(SOURCES_GRAPH);
+
+		if (userId !== undefined) {
+			query.select(
+				`${DatabaseTableName.COMPOSED_PROMPTS}.*`,
+				raw("(SELECT ?? FROM ?? WHERE ?? = ?? AND ?? = ? LIMIT ?) as ??", [
+					EvaluationColumnName.SCORE,
+					DatabaseTableName.EVALUATIONS,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.COMPOSED_PROMPT_ID}`,
+					`${DatabaseTableName.COMPOSED_PROMPTS}.${ComposedPromptColumnName.ID}`,
+					`${DatabaseTableName.EVALUATIONS}.${EvaluationColumnName.USER_ID}`,
+					userId,
+					MY_SCORE_LOOKUP_LIMIT,
+					SQLAlias.MY_SCORE,
+				]),
+			);
+		}
+
+		const composedPrompt = await query.execute();
 
 		return composedPrompt ? this.initializeEntity(composedPrompt) : null;
 	}

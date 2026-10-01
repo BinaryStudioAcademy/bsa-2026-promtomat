@@ -115,14 +115,15 @@ export {
 	signUpValidationSchema,
 } from "./modules/auth/auth.js";
 export {
-	type ComposedPromptAdoptRequestDto,
 	type ComposedPromptDto,
+	type ComposedPromptGetAllResponseDto,
+	type ComposedPromptGetQueryDto,
 	type ComposedPromptIdParametersDto,
 	type ComposedPromptSourceDto,
 	type ComposeRequestDto,
 	type ComposeResponseDto,
 	type PromptCandidateDto,
-	composedPromptAdoptValidationSchema,
+	composedPromptGetQueryValidationSchema,
 	composedPromptIdParametersValidationSchema,
 	ComposedPromptsApiPath,
 	ComposedPromptsErrorCode,
@@ -154,6 +155,12 @@ export {
 	MCPEnvironmentVariable,
 	MCPSetup,
 } from "./modules/mcp/mcp.js";
+export {
+	type PromptHistoryGetQueryDto,
+	PromptHistoryApiPath,
+	promptHistoryGetQueryValidationSchema,
+	PromptHistoryScoreTier,
+} from "./modules/prompt-history/prompt-history.js";
 export {
 	type GetPromptsRequestDto,
 	type PromptCreateRequestDto,

@@ -2,7 +2,6 @@ export {
 	type PromptCreateRequestDto,
 	type PromptDto,
 	type PromptGetAllResponseDto,
-	type PromptGetQueryDto,
 	type PromptGetRecentResponseDto,
 	type PromptItemResponseDto,
 	type PromptRecentDto,

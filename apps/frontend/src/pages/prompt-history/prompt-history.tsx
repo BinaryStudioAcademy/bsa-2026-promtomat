@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import { skipToken } from "@reduxjs/toolkit/query";
+import React, { useCallback, useMemo } from "react";
 import { useWatch } from "react-hook-form";
 
 import { Button } from "~/libs/components/button/button.js";
@@ -17,16 +18,19 @@ import {
 	useActiveWorkspace,
 	useGetWorkspacesQuery,
 } from "~/modules/workspaces/workspaces.js";
-import { AnalyticLabel } from "~/pages/analytics/libs/enums/enums.js";
 
 import { PromptResultsList } from "./components/prompt-results-list/prompt-results-list.js";
 import { QUALITY_TIER_OPTIONS } from "./libs/constants/constants.js";
 import { PromptHistoryLabel } from "./libs/enums/enums.js";
-import { usePromptSelection } from "./libs/hooks/use-prompt-selection/use-prompt-selection.hook.js";
+import {
+	mapPromptToHistoryItem,
+	resolveAverageScoreLabel,
+	resolveLoadMoreLabel,
+	resolveModeHint,
+	resolveResultCountLabel,
+} from "./libs/helpers/helpers.js";
+import { usePromptSelection } from "./libs/hooks/hooks.js";
 import styles from "./styles.module.css";
-
-const FRACTION_DIGITS = 1;
-const SINGLE_RESULT_COUNT = 1;
 
 const PromptHistory: React.FC = () => {
 	const {
@@ -50,10 +54,15 @@ const PromptHistory: React.FC = () => {
 	useSyncedFormValue({ name: "workspaceId", setValue, value: workspaceId });
 
 	const hasWorkspace = typeof workspaceId === "number";
-	const queryPayload = {
-		...filterQueryPayload,
-		workspaceId: hasWorkspace ? workspaceId : undefined,
-	};
+
+	const queryPayload = hasWorkspace
+		? {
+				limit: filterQueryPayload.limit,
+				qualityTier: filterQueryPayload.qualityTier,
+				search: filterQueryPayload.search,
+				workspaceId,
+			}
+		: skipToken;
 
 	const {
 		data,
@@ -63,7 +72,7 @@ const PromptHistory: React.FC = () => {
 		isFetching,
 		isLoading,
 		refetch,
-	} = useGetPromptsInfiniteQuery(queryPayload, { skip: !hasWorkspace });
+	} = useGetPromptsInfiniteQuery(queryPayload);
 
 	const workspaceOptions =
 		workspaces?.map(({ id, name }) => ({
@@ -71,20 +80,28 @@ const PromptHistory: React.FC = () => {
 			value: id,
 		})) ?? [];
 
-	const items = data?.pages.flatMap((page) => page.items) ?? [];
+	const items = useMemo(
+		() =>
+			data?.pages
+				.flatMap((page) => page.items)
+				.map((item) => mapPromptToHistoryItem(item)) ?? [],
+		[data?.pages],
+	);
+
 	const [firstPage] = data?.pages ?? [];
 	const totalPrompts = firstPage?.totalCount ?? ZERO_VALUE;
 	const averageScore = firstPage?.averageScore ?? null;
 
-	const hasActiveFilters = Boolean(search) || Boolean(queryPayload.qualityTier);
+	const hasActiveFilters =
+		Boolean(search) || Boolean(filterQueryPayload.qualityTier);
 
 	const filterKey = [
-		String(queryPayload.workspaceId ?? ""),
-		queryPayload.qualityTier ?? "",
+		String(workspaceId ?? ""),
+		filterQueryPayload.qualityTier ?? "",
 		search,
 	].join(":");
 
-	const { handleSelectPrompt, selectedPrompt, selectedPromptId } =
+	const { handleSelectPrompt, selectedPrompt, selectedPromptKey } =
 		usePromptSelection({ filterKey, items });
 
 	const handleLoadMore = useCallback((): void => {
@@ -95,27 +112,14 @@ const PromptHistory: React.FC = () => {
 		void refetch();
 	}, [refetch]);
 
-	const resultCountLabel =
-		totalPrompts === SINGLE_RESULT_COUNT
-			? `${String(totalPrompts)} ${PromptHistoryLabel.RESULT}`
-			: `${String(totalPrompts)} ${PromptHistoryLabel.RESULTS}`;
+	const resultCountLabel = resolveResultCountLabel(items.length);
+	const modeHint = resolveModeHint(search);
+	const loadMoreLabel = resolveLoadMoreLabel(isFetching, isError);
+	const averageScoreLabel = resolveAverageScoreLabel(averageScore);
 
-	const modeHint = search
-		? PromptHistoryLabel.HINT_SEARCH
-		: PromptHistoryLabel.HINT_BROWSE;
-
-	let loadMoreLabel: string = PromptHistoryLabel.LOAD_MORE;
-
-	if (isFetching) {
-		loadMoreLabel = PromptHistoryLabel.LOADING;
-	} else if (isError) {
-		loadMoreLabel = PromptHistoryLabel.RETRY;
-	}
-
-	const averageScoreLabel =
-		averageScore === null
-			? "—"
-			: `${String(+averageScore.toFixed(FRACTION_DIGITS))} ${AnalyticLabel.KPI_AVERAGE_CAPTION}`;
+	const isSearchLayoutEmpty = !selectedPrompt && items.length === ZERO_VALUE;
+	const isAverageScoreHidden = averageScore === null;
+	const shouldShowLoadMore = hasNextPage && hasWorkspace && !isLoading;
 
 	let detailPane: React.ReactNode = null;
 
@@ -165,7 +169,7 @@ const PromptHistory: React.FC = () => {
 						<span
 							className={getValidClasses(
 								styles["metric-value"],
-								styles["metric-score"],
+								isAverageScoreHidden && styles["list-metric-hidden"],
 							)}
 						>
 							{averageScoreLabel}
@@ -212,9 +216,7 @@ const PromptHistory: React.FC = () => {
 				<div
 					className={getValidClasses(
 						styles["search-layout"],
-						!selectedPrompt &&
-							items.length === ZERO_VALUE &&
-							styles["search-layout-empty"],
+						isSearchLayoutEmpty && styles["search-layout-empty"],
 					)}
 				>
 					<div className={styles["results"]}>
@@ -228,9 +230,9 @@ const PromptHistory: React.FC = () => {
 							items={items}
 							onRetry={handleRetry}
 							onSelectPrompt={handleSelectPrompt}
-							selectedPromptId={selectedPromptId}
+							selectedPromptKey={selectedPromptKey}
 						/>
-						{hasNextPage && hasWorkspace && !isLoading ? (
+						{shouldShowLoadMore ? (
 							<div className={styles["load-more-wrapper"]}>
 								<Button
 									isDisabled={isFetching}

@@ -2,6 +2,7 @@ const PromptDetailLabel = {
 	CANCEL: "Cancel",
 	COPY_PROMPT: "Copy prompt",
 	FORK: "Fork",
+	GENERATED: "Generated",
 	MARKDOWN: "markdown",
 	OPEN_FULL_PAGE: "Open full page",
 	PREVIEW: "Preview",

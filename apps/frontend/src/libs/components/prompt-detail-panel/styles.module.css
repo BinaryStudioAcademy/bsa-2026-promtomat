@@ -186,3 +186,21 @@
 	min-height: 72px;
 	max-height: 200px;
 }
+
+.badges {
+	display: inline-flex;
+	flex-shrink: 0;
+	gap: var(--space-8);
+	align-items: center;
+}
+
+.badge-generated {
+	display: inline-flex;
+	align-items: center;
+	padding: var(--space-4) var(--space-8);
+	font-size: var(--font-size-label-xs);
+	font-weight: 700;
+	color: var(--fg-generated);
+	background-color: var(--bg-generated);
+	border-radius: var(--radius-sm);
+}

@@ -8,10 +8,12 @@ import { Loader } from "~/libs/components/loader/loader.js";
 import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
 import { AppRoute, IconName } from "~/libs/enums/enums.js";
+import { useGetComposedPromptByIdQuery } from "~/modules/composed-prompts/composed-prompts-api.js";
 import { type PromptItemResponseDto } from "~/modules/prompts/libs/types/types.js";
 import { useGetPromptByIdQuery } from "~/modules/prompts/prompts-api.js";
 import { NotFoundPage } from "~/pages/not-found/not-found.js";
 
+import { ComposedPromptDeliveryContent } from "./components/composed-prompt-delivery-content/composed-prompt-delivery-content.js";
 import { PromptDeliveryLabel } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -53,19 +55,45 @@ const PromptDeliveryContent: React.FC<ContentProperties> = ({
 );
 
 const PromptDelivery: React.FC = () => {
-	const { promptId } = useParams<{ promptId?: string }>();
-	const parsedPromptId = Number(promptId);
-	const { data, isLoading } = useGetPromptByIdQuery(parsedPromptId);
+	const { composedPromptId, promptId } = useParams<{
+		composedPromptId?: string;
+		promptId?: string;
+	}>();
 
-	if (isLoading) {
+	const isComposed = Boolean(composedPromptId);
+	const targetId = Number(composedPromptId ?? promptId);
+
+	const { data: regularData, isLoading: isLoadingRegular } =
+		useGetPromptByIdQuery(targetId, {
+			skip: isComposed || !targetId,
+		});
+
+	const { data: composedData, isLoading: isLoadingComposed } =
+		useGetComposedPromptByIdQuery(targetId, {
+			skip: !isComposed || !targetId,
+		});
+
+	if (isComposed) {
+		if (isLoadingComposed) {
+			return <Loader variant={LoaderVariant.SECTION} />;
+		}
+
+		if (!composedData) {
+			return <NotFoundPage />;
+		}
+
+		return <ComposedPromptDeliveryContent composedPrompt={composedData} />;
+	}
+
+	if (isLoadingRegular) {
 		return <Loader variant={LoaderVariant.SECTION} />;
 	}
 
-	if (!data) {
+	if (!regularData) {
 		return <NotFoundPage />;
 	}
 
-	return <PromptDeliveryContent prompt={data} />;
+	return <PromptDeliveryContent prompt={regularData} />;
 };
 
 export { PromptDelivery };

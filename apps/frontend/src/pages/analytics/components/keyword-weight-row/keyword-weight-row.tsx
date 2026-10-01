@@ -2,7 +2,7 @@ import React from "react";
 
 import { ProgressBar } from "~/libs/components/progress-bar/progress-bar.js";
 import { ScoreBadge } from "~/libs/components/score-badge/score-badge.js";
-import { formatScore, getValidClasses } from "~/libs/helpers/helpers.js";
+import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { PromptValidationRule } from "~/modules/prompts/prompts.js";
 
 import { AnalyticLabel } from "../../libs/enums/enums.js";
@@ -28,11 +28,7 @@ const KeywordWeightRow: React.FC<Properties> = ({
 			<div className={styles["header"]}>
 				<span className={styles["label"]}>{keyword}</span>
 				<div className={styles["stats"]}>
-					<ScoreBadge
-						efficiencyScore={averageScore}
-						isFill={false}
-						label={formatScore(averageScore)}
-					/>
+					<ScoreBadge efficiencyScore={averageScore} isFill={false} />
 					<span className={styles["count"]}>{count}</span>
 				</div>
 			</div>
