@@ -13,6 +13,36 @@
 	width: 100%;
 }
 
+.back-link {
+	display: inline-flex;
+	gap: var(--space-8);
+	align-items: center;
+	align-self: flex-start;
+	padding: var(--space-10) var(--space-16) var(--space-10) var(--space-12);
+	font-size: var(--font-size-body-base);
+	font-weight: 600;
+	color: var(--text-strong);
+	text-decoration: none;
+	background-color: var(--surface-raised);
+	border: var(--border-width-hairline) solid var(--border-strong);
+	border-radius: var(--radius-xl);
+	transition: background-color var(--motion-duration-fast)
+		var(--motion-ease-standard);
+}
+
+.back-link:hover {
+	background-color: var(--surface-card);
+}
+
+.back-link:focus-visible {
+	outline: var(--border-width-focus) solid var(--border-focus);
+	outline-offset: var(--border-width-focus);
+}
+
+.back-icon {
+	transform: rotate(90deg);
+}
+
 .card {
 	display: flex;
 	flex-direction: column;

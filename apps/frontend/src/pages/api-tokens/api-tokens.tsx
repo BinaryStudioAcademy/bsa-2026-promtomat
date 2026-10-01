@@ -1,5 +1,8 @@
+import { Icon } from "~/libs/components/icon/icon.js";
+import { Link } from "~/libs/components/link/link.js";
 import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
+import { AppRoute, IconName } from "~/libs/enums/enums.js";
 
 import { ApiTokensSection } from "./components/api-tokens-section/api-tokens-section.js";
 import { ApiTokensMessage } from "./components/api-tokens-section/libs/enums/enums.js";
@@ -11,6 +14,14 @@ const ApiTokensPage: React.FC = () => {
 		<div className={styles["page"]}>
 			<PageContainer>
 				<div className={styles["container"]}>
+					<Link
+						className={styles["back-link"]}
+						hasDefaultStyles={false}
+						to={AppRoute.PROFILE}
+					>
+						<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
+						Profile
+					</Link>
 					<PageIntro
 						label={ApiTokensPageMessage.KICKER}
 						title={ApiTokensMessage.SECTION_TITLE}
