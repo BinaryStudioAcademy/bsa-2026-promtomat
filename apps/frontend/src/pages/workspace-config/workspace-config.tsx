@@ -78,7 +78,7 @@ const WorkspaceConfig: React.FC = () => {
 				</Link>
 				<PageIntro label="Workspace config" title={workspace.name} />
 				<WorkspaceConfigForm isOwner={isOwner} workspace={workspace} />
-				<RepositoryBindingsCard workspaceId={workspace.id} />
+				<RepositoryBindingsCard isOwner={isOwner} workspaceId={workspace.id} />
 				{user && (
 					<AccessCard
 						currentUserId={user.id}

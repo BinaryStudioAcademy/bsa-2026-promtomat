@@ -10,10 +10,12 @@ import pageStyles from "../../styles.module.css";
 import { RepositoryBindingList } from "./components/repository-binding-list/repository-binding-list.js";
 
 type Properties = {
+	isOwner: boolean;
 	workspaceId: number;
 };
 
 const RepositoryBindingsCard: React.FC<Properties> = ({
+	isOwner,
 	workspaceId,
 }: Properties) => {
 	const {
@@ -52,6 +54,7 @@ const RepositoryBindingsCard: React.FC<Properties> = ({
 				}
 				isError={isBindingsError}
 				isLoading={isBindingsLoading}
+				isOwner={isOwner}
 				isRemoving={isRemovingBinding}
 				onRemove={handleRemoveBinding}
 				onRetry={handleRetryBindings}

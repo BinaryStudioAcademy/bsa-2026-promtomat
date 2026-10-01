@@ -3,12 +3,13 @@ import { type preHandlerAsyncHookHandler } from "fastify";
 import {
 	AuthError,
 	RepositoryBindingError,
+	WorkspaceError,
 } from "~/libs/exceptions/exceptions.js";
 import { type WorkspaceService } from "~/modules/workspaces/workspace.service.js";
 
 import { type RepositoryBindingService } from "../../repository-binding.service.js";
 
-const repositoryBindingAccessHook = (
+const repositoryBindingOwnerAccessHook = (
 	repositoryBindingService: RepositoryBindingService,
 	workspaceService: WorkspaceService,
 ): preHandlerAsyncHookHandler => {
@@ -48,11 +49,11 @@ const repositoryBindingAccessHook = (
 		);
 
 		if (contributedWorkspace) {
-			return;
+			throw WorkspaceError.forbidden();
 		}
 
 		throw RepositoryBindingError.notFound();
 	};
 };
 
-export { repositoryBindingAccessHook };
+export { repositoryBindingOwnerAccessHook };

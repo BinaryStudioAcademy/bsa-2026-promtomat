@@ -9,12 +9,14 @@ import styles from "./styles.module.css";
 type Properties = {
 	binding: RepositoryBindingDto;
 	isDisabled: boolean;
+	isOwner: boolean;
 	onRemove: (repositoryBindingId: number) => void;
 };
 
 const RepositoryBindingItem: React.FC<Properties> = ({
 	binding,
 	isDisabled,
+	isOwner,
 	onRemove,
 }: Properties) => {
 	const identity = `${binding.owner}/${binding.repo}`;
@@ -32,14 +34,16 @@ const RepositoryBindingItem: React.FC<Properties> = ({
 				</span>
 				<span className={styles["host"]}>{binding.host}</span>
 			</div>
-			<IconButton
-				ariaLabel={bindingRemoveLabel}
-				className={styles["remove-button"]}
-				iconName={IconName.TRASH_2}
-				isDisabled={isDisabled}
-				onClick={handleRemove}
-				size={ControlSize.MD}
-			/>
+			{isOwner && (
+				<IconButton
+					ariaLabel={bindingRemoveLabel}
+					className={styles["remove-button"]}
+					iconName={IconName.TRASH_2}
+					isDisabled={isDisabled}
+					onClick={handleRemove}
+					size={ControlSize.MD}
+				/>
+			)}
 		</li>
 	);
 };

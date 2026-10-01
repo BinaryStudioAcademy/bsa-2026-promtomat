@@ -16,6 +16,7 @@ type Properties = {
 	errorMessage?: string;
 	isError?: boolean;
 	isLoading: boolean;
+	isOwner: boolean;
 	isRemoving?: boolean;
 	onRemove: (repositoryBindingId: number) => void;
 	onRetry?: () => void;
@@ -28,6 +29,7 @@ const RepositoryBindingList: React.FC<Properties> = ({
 	errorMessage,
 	isError = false,
 	isLoading,
+	isOwner,
 	isRemoving = false,
 	onRemove,
 	onRetry,
@@ -77,6 +79,7 @@ const RepositoryBindingList: React.FC<Properties> = ({
 						<RepositoryBindingItem
 							binding={binding}
 							isDisabled={isRemoving}
+							isOwner={isOwner}
 							key={binding.id}
 							onRemove={onRemove}
 						/>
