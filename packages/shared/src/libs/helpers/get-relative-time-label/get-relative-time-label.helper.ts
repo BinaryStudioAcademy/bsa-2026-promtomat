@@ -1,7 +1,7 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 const getRelativeTimeLabel = (isoDate: string): string => {
-	return formatDistanceToNowStrict(new Date(isoDate), { addSuffix: true });
+	return formatDistanceToNow(new Date(isoDate), { addSuffix: true });
 };
 
 export { getRelativeTimeLabel };
