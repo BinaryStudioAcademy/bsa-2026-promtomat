@@ -68,7 +68,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 		isSavingBody,
 		isSavingScore,
 	} = usePromptRevision({ prompt });
-	const { control, errors, handleSubmit, reset } =
+	const { clearErrors, control, errors, handleSubmit, reset } =
 		useAppForm<PromptUpdateIntentRequestDto>({
 			defaultValues: { taskIntent: prompt.intent },
 			validationSchema: promptUpdateIntentValidationSchema,
@@ -103,38 +103,44 @@ const PromptDetailPanel: React.FC<Properties> = ({
 		editorReference.current?.querySelector("textarea")?.focus();
 	}, [isEditingBody]);
 
-	const handleSaveUpdatedIntent = useCallback((): void => {
-		if (isComposed) {
-			return;
-		}
+	const handleSaveUpdatedIntent = useCallback(() => {
+		return new Promise<void>((resolve, reject) => {
+			if (isComposed) {
+				reject(new Error("Composing"));
+				return;
+			}
 
-		void handleSubmit(
-			async (payload: PromptUpdateIntentRequestDto) => {
-				const previousIntent = lastValidIntentReference.current;
-				lastValidIntentReference.current = payload.taskIntent;
+			void handleSubmit(
+				async (payload: PromptUpdateIntentRequestDto) => {
+					const previousIntent = lastValidIntentReference.current;
+					lastValidIntentReference.current = payload.taskIntent;
 
-				try {
-					await updateIntent({
-						id: prompt.id,
-						payload,
-					}).unwrap();
-					showNotification({
-						message: PromptDetailMessage.UPDATE_INTENT_SUCCESS,
-						type: NotificationType.SUCCESS,
-					});
-				} catch {
-					lastValidIntentReference.current = previousIntent;
-					reset({ taskIntent: previousIntent });
-				}
-			},
-			() => {
-				reset(
-					{ taskIntent: lastValidIntentReference.current },
-					{ keepErrors: true },
-				);
-			},
-		)();
+					try {
+						await updateIntent({
+							id: prompt.id,
+							payload,
+						}).unwrap();
+						showNotification({
+							message: PromptDetailMessage.UPDATE_INTENT_SUCCESS,
+							type: NotificationType.SUCCESS,
+						});
+						resolve();
+					} catch {
+						lastValidIntentReference.current = previousIntent;
+						reset({ taskIntent: previousIntent });
+						resolve();
+					}
+				},
+				() => {
+					reject(new Error("Validation failed"));
+				},
+			)();
+		});
 	}, [handleSubmit, isComposed, prompt.id, reset, updateIntent]);
+
+	const handleCancel = useCallback(() => {
+		clearErrors("taskIntent");
+	}, [clearErrors]);
 
 	const handleBodyViewChange = useCallback(
 		(view: ValueOf<typeof PromptDetailBodyView>): void => {
@@ -167,6 +173,7 @@ const PromptDetailPanel: React.FC<Properties> = ({
 								isLabelHidden
 								label={PromptDetailLabel.TASK_INTENT}
 								name="taskIntent"
+								onCancel={handleCancel}
 								onSave={handleSaveUpdatedIntent}
 								size="sm"
 								variant="textarea"
