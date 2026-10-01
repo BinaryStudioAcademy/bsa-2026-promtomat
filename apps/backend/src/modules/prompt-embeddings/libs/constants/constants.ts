@@ -13,6 +13,7 @@ export { PG_ATTRIBUTE_TABLE } from "./pg-attribute-table.constant.js";
 export { PROMPT_RELATION } from "./prompt-relation.constant.js";
 export { PROMPT_WORKSPACE_ALIAS } from "./prompt-workspace-alias.constant.js";
 export { PROMPT_WORKSPACE_RELATION } from "./prompt-workspace-relation.constant.js";
+export { RELEVANCE_ORDER_TEMPLATE } from "./relevance-order-template.constant.js";
 export { SIMILARITY_THRESHOLD } from "./similarity-threshold.constant.js";
 export { VECTOR_TYPE_PATTERN } from "./vector-type-pattern.constant.js";
 export { MAX_EFFICIENCY_SCORE } from "@promptomat/shared";

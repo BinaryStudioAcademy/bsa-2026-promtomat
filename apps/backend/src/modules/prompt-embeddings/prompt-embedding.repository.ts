@@ -4,7 +4,6 @@ import { ZERO_VALUE } from "~/libs/constants/constants.js";
 import {
 	PromptQualityTier,
 	QualityScoreThreshold,
-	SortOrder,
 	SQLAlias,
 } from "~/libs/enums/enums.js";
 import { DatabaseTableName } from "~/libs/modules/database/database.js";
@@ -25,6 +24,7 @@ import {
 	PROMPT_RELATION,
 	PROMPT_WORKSPACE_ALIAS,
 	PROMPT_WORKSPACE_RELATION,
+	RELEVANCE_ORDER_TEMPLATE,
 	SIMILARITY_THRESHOLD,
 } from "./libs/constants/constants.js";
 import {
@@ -221,21 +221,18 @@ class PromptEmbeddingRepository {
 					[userId],
 				),
 			)
-			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
-				[
-					RelevanceWeight.SIMILARITY_WEIGHT,
-					MAX_SIMILARITY,
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-					SIMILARITY_THRESHOLD,
-					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
-					MAX_EFFICIENCY_SCORE,
-				],
-			)
+			.orderByRaw(RELEVANCE_ORDER_TEMPLATE, [
+				RelevanceWeight.SIMILARITY_WEIGHT,
+				MAX_SIMILARITY,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+				serializedEmbeddings,
+				SIMILARITY_THRESHOLD,
+				RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				ZERO_VALUE,
+				MAX_EFFICIENCY_SCORE,
+			])
 			.offset(offset)
 			.limit(limit)
 			.castTo<PromptRepositoryItem[]>()
@@ -313,21 +310,18 @@ class PromptEmbeddingRepository {
 				"<",
 				SIMILARITY_THRESHOLD,
 			)
-			.orderByRaw(
-				`(? * (? - (?? <=> ?::vector) / ?) + ? * (COALESCE(??, ?)::numeric / ?)) ${SortOrder.DESC}`,
-				[
-					RelevanceWeight.SIMILARITY_WEIGHT,
-					MAX_SIMILARITY,
-					`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
-					serializedEmbeddings,
-					SIMILARITY_THRESHOLD,
-					RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
-					`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
-					`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
-					ZERO_VALUE,
-					MAX_EFFICIENCY_SCORE,
-				],
-			)
+			.orderByRaw(RELEVANCE_ORDER_TEMPLATE, [
+				RelevanceWeight.SIMILARITY_WEIGHT,
+				MAX_SIMILARITY,
+				`${DatabaseTableName.PROMPT_EMBEDDINGS}.${PromptEmbeddingColumnName.EMBEDDING}`,
+				serializedEmbeddings,
+				SIMILARITY_THRESHOLD,
+				RelevanceWeight.EFFICIENCY_SCORE_WEIGHT,
+				`${PROMPT_RELATION}.${PromptColumnName.COMPUTED_SCORE}`,
+				`${PROMPT_RELATION}.${PromptColumnName.EFFICIENCY_SCORE}`,
+				ZERO_VALUE,
+				MAX_EFFICIENCY_SCORE,
+			])
 			.limit(limit)
 			.castTo<NearestPrompt[]>()
 			.execute();
