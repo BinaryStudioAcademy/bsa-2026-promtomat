@@ -1,7 +1,10 @@
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { ScoreValue } from "~/libs/components/score-value/score-value.js";
+import { StatCard } from "~/libs/components/stat-card/stat-card.js";
+import { StatGrid } from "~/libs/components/stat-grid/stat-grid.js";
+import { SCORE_SCALE_CAPTION } from "~/libs/constants/constants.js";
+import { Locale } from "~/libs/enums/enums.js";
 
-import { WORKSPACE_EMPTY_METRIC } from "../../libs/constants/constants.js";
-import { SCORE_FRACTION_DIGITS } from "./libs/constants/constants.js";
+import { WorkspaceStatsLabel } from "../../libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -15,59 +18,31 @@ const WorkspaceStats: React.FC<Properties> = ({
 	promptCount,
 	workspaceCount,
 }: Properties) => {
-	const averageScoreLabel =
-		averageScore === null
-			? WORKSPACE_EMPTY_METRIC
-			: averageScore.toFixed(SCORE_FRACTION_DIGITS);
-
-	const stats = [
-		{
-			caption: "active",
-			isWide: false,
-			label: "Workspaces",
-			tone: "strong",
-			value: String(workspaceCount),
-		},
-		{
-			caption: "total",
-			isWide: false,
-			label: "Prompts logged",
-			tone: "accent",
-			value: promptCount.toLocaleString("en-US"),
-		},
-		{
-			caption: "/ 10",
-			isWide: true,
-			label: "Avg score",
-			tone: "success",
-			value: averageScoreLabel,
-		},
-	] as const;
-
 	return (
-		<section aria-label="Workspace collection">
-			<dl className={styles["stats"]}>
-				{stats.map((stat) => (
-					<div
-						className={getValidClasses(
-							styles["stat"],
-							stat.isWide && styles["wide"],
-						)}
-						key={stat.label}
-					>
-						<dt className={styles["label"]}>{stat.label}</dt>
-						<dd className={styles["figure"]}>
-							<span
-								className={getValidClasses(styles["value"], styles[stat.tone])}
-							>
-								{stat.value}
-							</span>
-							<span className={styles["caption"]}>{stat.caption}</span>
-						</dd>
-					</div>
-				))}
-			</dl>
-		</section>
+		<div className={styles["stats"]}>
+			<StatGrid label={WorkspaceStatsLabel.SECTION}>
+				<StatCard
+					caption={WorkspaceStatsLabel.WORKSPACES_CAPTION}
+					label={WorkspaceStatsLabel.WORKSPACES}
+				>
+					{workspaceCount}
+				</StatCard>
+				<StatCard
+					caption={WorkspaceStatsLabel.PROMPTS_CAPTION}
+					label={WorkspaceStatsLabel.PROMPTS}
+				>
+					<span className={styles["accent"]}>
+						{promptCount.toLocaleString(Locale.EN_US)}
+					</span>
+				</StatCard>
+				<StatCard
+					caption={averageScore === null ? undefined : SCORE_SCALE_CAPTION}
+					label={WorkspaceStatsLabel.AVERAGE_SCORE}
+				>
+					<ScoreValue score={averageScore} />
+				</StatCard>
+			</StatGrid>
+		</div>
 	);
 };
 

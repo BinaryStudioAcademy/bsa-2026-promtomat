@@ -1,9 +1,8 @@
-const BadgeVariant = {
+const ScoreVariant = {
 	DANGER: "danger",
 	NEUTRAL: "neutral",
 	SUCCESS: "success",
-	UNRATED: "unrated",
 	WARNING: "warning",
 } as const;
 
-export { BadgeVariant };
+export { ScoreVariant };

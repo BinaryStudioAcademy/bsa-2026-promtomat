@@ -1,4 +1,4 @@
-import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { EMPTY_METRIC_VALUE, ZERO_VALUE } from "~/libs/constants/constants.js";
 
 import { SCORE_FRACTION_DIGITS } from "../constants/constants.js";
 import { AnalyticLabel, MetricTone } from "../enums/enums.js";
@@ -11,8 +11,8 @@ const formatScoreChange = ({
 	if (change === null || previousScore === null) {
 		return {
 			caption: "",
-			tone: MetricTone.NEUTRAL,
-			value: AnalyticLabel.EMPTY_VALUE,
+			tone: MetricTone.MUTED,
+			value: EMPTY_METRIC_VALUE,
 		};
 	}
 

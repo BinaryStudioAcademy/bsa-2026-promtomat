@@ -1,0 +1,15 @@
+.success {
+	color: var(--fg-success);
+}
+
+.warning {
+	color: var(--fg-warning);
+}
+
+.danger {
+	color: var(--fg-danger);
+}
+
+.neutral {
+	color: var(--text-muted);
+}
