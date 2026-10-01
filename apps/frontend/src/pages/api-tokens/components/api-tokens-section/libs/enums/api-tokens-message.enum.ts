@@ -21,7 +21,7 @@ const ApiTokensMessage = {
 	LAST_USED_NEVER: "Never",
 	LOADING: "Loading tokens",
 	NAME_LABEL: "Token name",
-	NAME_PLACEHOLDER: "My laptop",
+	NAME_PLACEHOLDER: "Enter token name",
 	ONE_TIME_WARNING:
 		"Copy it now. This value is shown once and cannot be recovered afterwards.",
 	REVOKE: "Revoke",

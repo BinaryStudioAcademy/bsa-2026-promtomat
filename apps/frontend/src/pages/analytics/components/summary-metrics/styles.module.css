@@ -1,18 +1,19 @@
-.metrics {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: var(--space-16);
-	margin: 0;
+.accent {
+	color: var(--text-accent);
 }
 
-@media (width < 900px) {
-	.metrics {
-		grid-template-columns: repeat(2, 1fr);
-	}
+.danger {
+	color: var(--fg-danger);
 }
 
-@media (width < 520px) {
-	.metrics {
-		grid-template-columns: 1fr;
-	}
+.muted {
+	color: var(--text-muted);
+}
+
+.neutral {
+	color: var(--text-strong);
+}
+
+.success {
+	color: var(--fg-success);
 }

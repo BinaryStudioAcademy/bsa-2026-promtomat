@@ -1,3 +1,0 @@
-const WORKSPACE_EMPTY_METRIC = "—";
-
-export { WORKSPACE_EMPTY_METRIC };

@@ -1,6 +1,6 @@
 const MetricTone = {
-	ACCENT: "accent",
 	DANGER: "danger",
+	MUTED: "muted",
 	NEUTRAL: "neutral",
 	SUCCESS: "success",
 } as const;

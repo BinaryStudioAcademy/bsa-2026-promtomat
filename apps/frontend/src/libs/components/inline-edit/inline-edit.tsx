@@ -27,7 +27,8 @@ type Properties<T extends FieldValues> = {
 	isLabelHidden?: boolean;
 	label: string;
 	name: FieldPath<T>;
-	onSave?: () => void;
+	onCancel?: () => void;
+	onSave?: () => Promise<void> | void;
 	placeholder?: string;
 	size?: ValueOf<typeof ControlSize>;
 	variant?: ValueOf<typeof InlineEditVariant>;
@@ -43,6 +44,7 @@ const InlineEdit = <T extends FieldValues>({
 	isLabelHidden = false,
 	label,
 	name,
+	onCancel,
 	onSave,
 	placeholder = "",
 	size = ControlSize.MD,
@@ -75,14 +77,19 @@ const InlineEdit = <T extends FieldValues>({
 	const handleCancelEditing = useCallback((): void => {
 		field.onChange(originalValueReference.current);
 		setIsEditing(false);
+		onCancel?.();
 		setTimeout(() => previewButtonReference.current?.focus(), ZERO_VALUE);
-	}, [field]);
+	}, [field, onCancel]);
 
-	const handleSaveEditing = useCallback((): void => {
-		setIsEditing(false);
+	const handleSaveEditing = useCallback(async (): Promise<void> => {
 		if (field.value !== originalValueReference.current) {
-			onSave?.();
+			try {
+				await onSave?.();
+			} catch {
+				return;
+			}
 		}
+		setIsEditing(false);
 		setTimeout(() => previewButtonReference.current?.focus(), ZERO_VALUE);
 	}, [field, onSave]);
 
@@ -108,7 +115,7 @@ const InlineEdit = <T extends FieldValues>({
 			event.stopPropagation();
 			if (event.key === KeyboardKey.ENTER) {
 				event.preventDefault();
-				handleSaveEditing();
+				void handleSaveEditing();
 			} else if (event.key === KeyboardKey.ESCAPE) {
 				event.preventDefault();
 				handleCancelEditing();
@@ -120,7 +127,7 @@ const InlineEdit = <T extends FieldValues>({
 	const handleBlur = useCallback(
 		(event: React.FocusEvent<HTMLDivElement | HTMLTextAreaElement>) => {
 			if (!event.currentTarget.contains(event.relatedTarget)) {
-				handleSaveEditing();
+				void handleSaveEditing();
 			}
 		},
 		[handleSaveEditing],
