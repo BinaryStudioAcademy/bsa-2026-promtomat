@@ -1,12 +1,14 @@
 import React from "react";
 
-import { formatScore } from "~/libs/helpers/helpers.js";
+import { ScoreValue } from "~/libs/components/score-value/score-value.js";
+import { StatCard } from "~/libs/components/stat-card/stat-card.js";
+import { StatGrid } from "~/libs/components/stat-grid/stat-grid.js";
+import { SCORE_SCALE_CAPTION } from "~/libs/constants/constants.js";
 import { type AnalyticsDashboardResponseDto } from "~/modules/analytics/libs/types/types.js";
 
-import { AnalyticLabel, MetricTone } from "../../libs/enums/enums.js";
+import { AnalyticLabel } from "../../libs/enums/enums.js";
 import { formatScoreChange } from "../../libs/helpers/format-score-change.helper.js";
 import { getScoredCount } from "../../libs/helpers/get-scored-count.helper.js";
-import { MetricCard } from "../metric-card/metric-card.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -21,34 +23,32 @@ const SummaryMetrics: React.FC<Properties> = ({ dashboard }: Properties) => {
 	const hasAverage = summary.averageScore !== null;
 
 	return (
-		<section aria-label={AnalyticLabel.KPI_SECTION}>
-			<dl className={styles["metrics"]}>
-				<MetricCard
-					caption={AnalyticLabel.KPI_SCORED_CAPTION}
-					label={AnalyticLabel.KPI_SCORED_LABEL}
-					tone={MetricTone.ACCENT}
-					value={String(scoredCount)}
-				/>
-				<MetricCard
-					caption={hasAverage ? AnalyticLabel.KPI_AVERAGE_CAPTION : ""}
-					label={AnalyticLabel.KPI_AVERAGE_LABEL}
-					tone={MetricTone.ACCENT}
-					value={formatScore(summary.averageScore)}
-				/>
-				<MetricCard
-					caption={scoreChange.caption}
-					label={AnalyticLabel.KPI_CHANGE_LABEL}
-					tone={scoreChange.tone}
-					value={scoreChange.value}
-				/>
-				<MetricCard
-					caption={AnalyticLabel.KPI_KEYWORDS_CAPTION}
-					label={AnalyticLabel.KPI_KEYWORDS_LABEL}
-					tone={MetricTone.NEUTRAL}
-					value={String(summary.keywordCount)}
-				/>
-			</dl>
-		</section>
+		<StatGrid label={AnalyticLabel.KPI_SECTION}>
+			<StatCard
+				caption={AnalyticLabel.KPI_SCORED_CAPTION}
+				label={AnalyticLabel.KPI_SCORED_LABEL}
+			>
+				<span className={styles["accent"]}>{scoredCount}</span>
+			</StatCard>
+			<StatCard
+				caption={hasAverage ? SCORE_SCALE_CAPTION : undefined}
+				label={AnalyticLabel.KPI_AVERAGE_LABEL}
+			>
+				<ScoreValue score={summary.averageScore} />
+			</StatCard>
+			<StatCard
+				caption={scoreChange.caption}
+				label={AnalyticLabel.KPI_CHANGE_LABEL}
+			>
+				<span className={styles[scoreChange.tone]}>{scoreChange.value}</span>
+			</StatCard>
+			<StatCard
+				caption={AnalyticLabel.KPI_KEYWORDS_CAPTION}
+				label={AnalyticLabel.KPI_KEYWORDS_LABEL}
+			>
+				{summary.keywordCount}
+			</StatCard>
+		</StatGrid>
 	);
 };
 

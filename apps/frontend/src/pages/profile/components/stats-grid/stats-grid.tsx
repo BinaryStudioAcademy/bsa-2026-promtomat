@@ -1,7 +1,11 @@
 import React from "react";
 
-import { StatItem } from "./components/stat-item/stat-item.js";
-import { StatItemVariant } from "./libs/enums/stat-item-variant.enum.js";
+import { ScoreValue } from "~/libs/components/score-value/score-value.js";
+import { StatCard } from "~/libs/components/stat-card/stat-card.js";
+import { StatGrid } from "~/libs/components/stat-grid/stat-grid.js";
+import { SCORE_SCALE_CAPTION } from "~/libs/constants/constants.js";
+
+import { ActivityStatLabel } from "../../libs/enums/enums.js";
 import styles from "./styles.module.css";
 
 type Properties = {
@@ -16,19 +20,24 @@ const StatsGrid: React.FC<Properties> = ({
 	totalPrompts,
 }: Properties) => {
 	return (
-		<div className={styles["stats-grid"]}>
-			<StatItem
-				label="Total prompts"
-				value={totalPrompts}
-				variant={StatItemVariant.ACCENT}
-			/>
-			<StatItem
-				label="Average score"
-				value={averageScore ?? "-"}
-				variant={StatItemVariant.SCORE}
-			/>
-			<StatItem label="Day streak" value={currentStreak} />
-		</div>
+		<StatGrid label={ActivityStatLabel.SECTION}>
+			<StatCard
+				className={styles["card"]}
+				label={ActivityStatLabel.TOTAL_PROMPTS}
+			>
+				<span className={styles["accent"]}>{totalPrompts}</span>
+			</StatCard>
+			<StatCard
+				caption={averageScore === null ? undefined : SCORE_SCALE_CAPTION}
+				className={styles["card"]}
+				label={ActivityStatLabel.AVERAGE_SCORE}
+			>
+				<ScoreValue score={averageScore} />
+			</StatCard>
+			<StatCard className={styles["card"]} label={ActivityStatLabel.DAY_STREAK}>
+				{currentStreak}
+			</StatCard>
+		</StatGrid>
 	);
 };
 

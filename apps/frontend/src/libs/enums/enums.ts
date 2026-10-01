@@ -8,6 +8,7 @@ export { InlineEditVariant } from "./inline-edit-variant.enum.js";
 export { InputType } from "./input-type.enum.js";
 export { KeyboardKey } from "./keyboard-key.enum.js";
 export { Locale } from "./locale.enum.js";
+export { ScoreVariant } from "./score-variant.enum.js";
 export {
 	APIPath,
 	ApiTokenExpiration,

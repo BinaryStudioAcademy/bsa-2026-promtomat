@@ -1,0 +1,3 @@
+const SCORE_SCALE_CAPTION = "/ 10";
+
+export { SCORE_SCALE_CAPTION };

@@ -1,9 +1,8 @@
 import React from "react";
 
-import { getValidClasses } from "~/libs/helpers/helpers.js";
+import { getScoreVariant, getValidClasses } from "~/libs/helpers/helpers.js";
 
 import { getScoreBadgeContent } from "./libs/helpers/get-score-badge-content.helper.js";
-import { getScoreVariant } from "./libs/helpers/get-score-variant.helper.js";
 import styles from "./styles.module.css";
 
 type Properties = {

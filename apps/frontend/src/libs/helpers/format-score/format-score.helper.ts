@@ -1,10 +1,12 @@
-const FRACTION_DIGITS = 1;
-const EMPTY_SCORE = "-";
+import {
+	EMPTY_METRIC_VALUE,
+	SCORE_FRACTION_DIGITS,
+} from "~/libs/constants/constants.js";
 
 const formatScore = (score: null | number | undefined): string => {
 	return score === null || score === undefined
-		? EMPTY_SCORE
-		: score.toFixed(FRACTION_DIGITS);
+		? EMPTY_METRIC_VALUE
+		: score.toFixed(SCORE_FRACTION_DIGITS);
 };
 
 export { formatScore };

@@ -7,8 +7,11 @@ import { Input } from "~/libs/components/input/input.js";
 import { PageContainer } from "~/libs/components/page-container/page-container.js";
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { PromptDetailPanel } from "~/libs/components/prompt-detail-panel/prompt-detail-panel.js";
+import { ScoreValue } from "~/libs/components/score-value/score-value.js";
 import { Select } from "~/libs/components/select/select.js";
-import { ZERO_VALUE } from "~/libs/constants/constants.js";
+import { StatCard } from "~/libs/components/stat-card/stat-card.js";
+import { StatGrid } from "~/libs/components/stat-grid/stat-grid.js";
+import { SCORE_SCALE_CAPTION, ZERO_VALUE } from "~/libs/constants/constants.js";
 import { ButtonVariant, ControlSize, IconName } from "~/libs/enums/enums.js";
 import { getValidClasses } from "~/libs/helpers/helpers.js";
 import { useSyncedFormValue } from "~/libs/hooks/use-synced-form-value/use-synced-form-value.hook.js";
@@ -24,7 +27,6 @@ import { QUALITY_TIER_OPTIONS } from "./libs/constants/constants.js";
 import { PromptHistoryLabel } from "./libs/enums/enums.js";
 import {
 	mapPromptToHistoryItem,
-	resolveAverageScoreLabel,
 	resolveLoadMoreLabel,
 	resolveModeHint,
 	resolveResultCountLabel,
@@ -115,10 +117,8 @@ const PromptHistory: React.FC = () => {
 	const resultCountLabel = resolveResultCountLabel(items.length);
 	const modeHint = resolveModeHint(search);
 	const loadMoreLabel = resolveLoadMoreLabel(isFetching, isError);
-	const averageScoreLabel = resolveAverageScoreLabel(averageScore);
 
 	const isSearchLayoutEmpty = !selectedPrompt && items.length === ZERO_VALUE;
-	const isAverageScoreHidden = averageScore === null;
 	const shouldShowLoadMore = hasNextPage && hasWorkspace && !isLoading;
 
 	let detailPane: React.ReactNode = null;
@@ -155,27 +155,20 @@ const PromptHistory: React.FC = () => {
 					</div>
 				</header>
 
-				<div className={styles["metrics"]}>
-					<div className={styles["metric-card"]}>
-						<span className={styles["metric-label"]}>
-							{PromptHistoryLabel.PROMPTS_LOGGED}
-						</span>
-						<span className={styles["metric-value"]}>{totalPrompts}</span>
-					</div>
-					<div className={styles["metric-card"]}>
-						<span className={styles["metric-label"]}>
-							{PromptHistoryLabel.AVERAGE_SCORE}
-						</span>
-						<span
-							className={getValidClasses(
-								styles["metric-value"],
-								isAverageScoreHidden && styles["list-metric-hidden"],
-							)}
-						>
-							{averageScoreLabel}
-						</span>
-					</div>
-				</div>
+				<StatGrid label={PromptHistoryLabel.METRICS}>
+					<StatCard
+						caption={PromptHistoryLabel.PROMPTS_LOGGED_CAPTION}
+						label={PromptHistoryLabel.PROMPTS_LOGGED}
+					>
+						<span className={styles["accent"]}>{totalPrompts}</span>
+					</StatCard>
+					<StatCard
+						caption={averageScore === null ? undefined : SCORE_SCALE_CAPTION}
+						label={PromptHistoryLabel.AVERAGE_SCORE}
+					>
+						<ScoreValue score={averageScore} />
+					</StatCard>
+				</StatGrid>
 
 				<div className={styles["filters"]}>
 					<div className={styles["search"]}>
