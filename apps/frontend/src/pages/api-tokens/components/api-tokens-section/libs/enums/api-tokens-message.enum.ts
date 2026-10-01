@@ -32,7 +32,6 @@ const ApiTokensMessage = {
 	REVOKED: "Token revoked.",
 	SECTION_DESCRIPTION:
 		"API tokens let a coding agent call Promptomat on your behalf.",
-	SECTION_TITLE: "API tokens",
 	STATUS_ACTIVE: "Active",
 	STATUS_EXPIRED: "Expired",
 	STATUS_EXPIRING: "Expiring",

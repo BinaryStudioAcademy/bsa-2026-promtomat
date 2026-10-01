@@ -134,6 +134,7 @@ const PromptHistory: React.FC = () => {
 			<div className={styles["page-wrapper"]}>
 				<header className={styles["intro"]}>
 					<PageIntro
+						description={PromptHistoryLabel.DESCRIPTION}
 						label={PromptHistoryLabel.EYEBROW}
 						title={PromptHistoryLabel.SUBTITLE}
 					/>

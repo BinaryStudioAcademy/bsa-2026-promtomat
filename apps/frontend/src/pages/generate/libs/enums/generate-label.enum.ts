@@ -13,9 +13,9 @@ const GenerateLabel = {
 	GENERATED_KICKER: "Generated",
 	OPEN_IN_LOG: "Open in log",
 	PAGE_DESCRIPTION:
-		"Describe the task. Promptomat assembles a new prompt out of the highest-scoring stored prompts in the workspace and shows you which ones it drew from.",
-	PAGE_LABEL: "Generate",
-	PAGE_TITLE: "Compose a prompt from what already worked",
+		"Promptomat assembles it from the highest-scoring prompts in this workspace and shows which ones it used.",
+	PAGE_LABEL: "Compose",
+	PAGE_TITLE: "Write the task. We'll build the prompt.",
 	PROVENANCE_FROM: "From",
 	PROVENANCE_IN: "in",
 	RATE_HEADING: "Rate this prompt",

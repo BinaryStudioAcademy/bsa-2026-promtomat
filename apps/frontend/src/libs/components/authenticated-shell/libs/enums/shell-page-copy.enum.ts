@@ -8,11 +8,11 @@ const ShellPageCopy = {
 		title: "API tokens",
 	},
 	GENERATE: {
-		subtitle: "Compose a new prompt from what already worked",
+		subtitle: "A new prompt from your best logs",
 		title: "Generate",
 	},
 	PROFILE: {
-		subtitle: "Account, activity and security",
+		subtitle: "Your name, activity, and password",
 		title: "Profile",
 	},
 	SMART_SEARCH: {
@@ -20,11 +20,11 @@ const ShellPageCopy = {
 		title: "Smart search",
 	},
 	TRAINING: {
-		subtitle: "Log a prompt and score how well it worked",
+		subtitle: "Add a scored prompt to the index",
 		title: "Training",
 	},
 	WORKSPACE_CONFIG: {
-		subtitle: "Name, tech stack and dataset target",
+		subtitle: "Settings for this codebase",
 		title: "Workspace config",
 	},
 	WORKSPACES: {

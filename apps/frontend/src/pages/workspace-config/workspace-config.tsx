@@ -76,7 +76,7 @@ const WorkspaceConfig: React.FC = () => {
 					<Icon className={styles["back-icon"]} iconName={IconName.CHEVRON} />
 					All workspaces
 				</Link>
-				<PageIntro label="Workspace config" title={workspace.name} />
+				<PageIntro label="Settings" title={workspace.name} />
 				<WorkspaceConfigForm isOwner={isOwner} workspace={workspace} />
 				<RepositoryBindingsCard workspaceId={workspace.id} />
 				{user && (

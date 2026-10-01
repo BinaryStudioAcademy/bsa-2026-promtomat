@@ -2,7 +2,6 @@ import { PageContainer } from "~/libs/components/page-container/page-container.j
 import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 
 import { ApiTokensSection } from "./components/api-tokens-section/api-tokens-section.js";
-import { ApiTokensMessage } from "./components/api-tokens-section/libs/enums/enums.js";
 import { ApiTokensPageMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -12,8 +11,9 @@ const ApiTokensPage: React.FC = () => {
 			<PageContainer>
 				<div className={styles["container"]}>
 					<PageIntro
+						description={ApiTokensPageMessage.DESCRIPTION}
 						label={ApiTokensPageMessage.KICKER}
-						title={ApiTokensMessage.SECTION_TITLE}
+						title={ApiTokensPageMessage.TITLE}
 					/>
 					<section className={styles["card"]}>
 						<ApiTokensSection />

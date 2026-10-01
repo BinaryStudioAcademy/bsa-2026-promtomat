@@ -1,6 +1,5 @@
 const AnalyticLabel = {
-	DESCRIPTION:
-		"Every scored prompt re-weights the index. This is what those weights look like right now: which tiers your prompts land in, which keywords carry weight, and how fast the system is getting better.",
+	DESCRIPTION: "Scores in this scope, and how they shift the weights.",
 	DISTRIBUTION_TITLE: "Efficiency distribution",
 	DISTRIBUTION_TOTAL_MANY: "scored prompts in scope",
 	DISTRIBUTION_TOTAL_ONE: "scored prompt in scope",
@@ -40,7 +39,7 @@ const AnalyticLabel = {
 	REFRESH_ERROR: "Couldn't refresh. Showing data for the previous selection.",
 	RETRY: "Retry",
 	SCOPE_FIELD: "Scope",
-	TITLE: "Data intelligence",
+	TITLE: "What the index has learned",
 } as const;
 
 export { AnalyticLabel };

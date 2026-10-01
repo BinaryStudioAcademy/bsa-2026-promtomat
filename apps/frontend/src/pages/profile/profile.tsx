@@ -29,7 +29,11 @@ const Profile: React.FC = () => {
 	return (
 		<PageContainer>
 			<div className={styles["page"]}>
-				<PageIntro label="Account" title="Profile" />
+				<PageIntro
+					description="Update the name on your account, or change the password."
+					label="Account"
+					title="Your account"
+				/>
 				<SettingsForm totalPrompts={summary.totalPrompts} user={user} />
 				<Activity
 					averageScore={summary.averageScore}
