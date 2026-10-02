@@ -14,7 +14,7 @@ const WorkspaceHeader: React.FC<Properties> = ({ onCreate }: Properties) => {
 			<PageIntro
 				className={styles["intro"]}
 				description="Each workspace collects the prompts behind one codebase. Log enough of them and the retrieval index starts answering for you."
-				label="Codebases"
+				label="Workspaces"
 				title="Codebase overview"
 			/>
 			<Button
