@@ -2,8 +2,8 @@ import { WorkspaceListSort } from "~/modules/workspaces/workspaces.js";
 
 const WORKSPACE_LIST_SORT_OPTIONS = [
 	{
-		label: "Recent activity",
-		value: WorkspaceListSort.RECENT_ACTIVITY,
+		label: "Top activity",
+		value: WorkspaceListSort.TOP_ACTIVITY,
 	},
 	{
 		label: "Dataset readiness",

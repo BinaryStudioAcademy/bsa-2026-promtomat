@@ -65,7 +65,7 @@ const Workspaces: React.FC = () => {
 	);
 	const { control: sortControl, reset: resetSort } =
 		useAppForm<SortFormPayload>({
-			defaultValues: { sort: WorkspaceListSort.RECENT_ACTIVITY },
+			defaultValues: { sort: WorkspaceListSort.TOP_ACTIVITY },
 			mode: FormValidationMode.ON_CHANGE,
 		});
 	const sort = useWatch({ control: sortControl, name: "sort" });
@@ -131,7 +131,7 @@ const Workspaces: React.FC = () => {
 	const handleClearFilters = useCallback((): void => {
 		resetSearch();
 		setScope(WorkspaceListScope.ALL);
-		resetSort({ sort: WorkspaceListSort.RECENT_ACTIVITY });
+		resetSort({ sort: WorkspaceListSort.TOP_ACTIVITY });
 	}, [resetSearch, resetSort]);
 
 	return (

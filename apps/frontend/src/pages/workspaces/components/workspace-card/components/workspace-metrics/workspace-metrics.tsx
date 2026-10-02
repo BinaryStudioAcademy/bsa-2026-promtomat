@@ -10,7 +10,7 @@ type Properties = {
 
 const WorkspaceMetrics: React.FC<Properties> = ({ workspace }: Properties) => {
 	const activityTone =
-		workspace.recentActivity > ZERO_VALUE ? "active" : undefined;
+		workspace.topActivity > ZERO_VALUE ? "active" : undefined;
 
 	return (
 		<div className={styles["metrics"]}>
@@ -21,7 +21,7 @@ const WorkspaceMetrics: React.FC<Properties> = ({ workspace }: Properties) => {
 			<WorkspaceMetric
 				label="7-day"
 				tone={activityTone}
-				value={`+${String(workspace.recentActivity)}`}
+				value={`+${String(workspace.topActivity)}`}
 			/>
 			<WorkspaceMetric label="Members" value={workspace.memberCount} />
 		</div>
