@@ -11,7 +11,7 @@ import { type UserDto } from "~/libs/types/types.js";
 import { workspaceAccessHook } from "../workspaces/libs/hooks/workspace-access.hook.js";
 import { type WorkspaceService } from "../workspaces/workspace.service.js";
 import { RepositoryBindingsApiPath } from "./libs/enums/enums.js";
-import { repositoryBindingAccessHook } from "./libs/hooks/repository-binding-access.hook.js";
+import { repositoryBindingOwnerAccessHook } from "./libs/hooks/repository-binding-owner-access.hook.js";
 import {
 	type CreateRepositoryBindingRequestDto,
 	type ListRepositoryBindingsQueryDto,
@@ -117,7 +117,7 @@ class RepositoryBindingController extends BaseController {
 				),
 			method: HTTPMethod.DELETE,
 			path: RepositoryBindingsApiPath.$REPOSITORY_BINDING_ID,
-			preHandler: repositoryBindingAccessHook(
+			preHandler: repositoryBindingOwnerAccessHook(
 				repositoryBindingService,
 				workspaceService,
 			),
@@ -165,7 +165,7 @@ class RepositoryBindingController extends BaseController {
 				),
 			method: HTTPMethod.PATCH,
 			path: RepositoryBindingsApiPath.$REPOSITORY_BINDING_ID,
-			preHandler: repositoryBindingAccessHook(
+			preHandler: repositoryBindingOwnerAccessHook(
 				repositoryBindingService,
 				workspaceService,
 			),
@@ -249,6 +249,8 @@ class RepositoryBindingController extends BaseController {
 	 *         description: Repository binding deleted successfully
 	 *       401:
 	 *         description: Unauthorized
+	 *       403:
+	 *         description: Only the workspace owner can remove a repository binding
 	 *       404:
 	 *         description: Repository binding not found
 	 *       422:
@@ -383,6 +385,8 @@ class RepositoryBindingController extends BaseController {
 	 *               $ref: "#/components/schemas/RepositoryBinding"
 	 *       401:
 	 *         description: Unauthorized
+	 *       403:
+	 *         description: Only the workspace owner can update a repository binding
 	 *       404:
 	 *         description: Repository binding not found
 	 *       409:
