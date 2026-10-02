@@ -5,7 +5,6 @@ import { PageIntro } from "~/libs/components/page-intro/page-intro.js";
 import { AppRoute, IconName } from "~/libs/enums/enums.js";
 
 import { ApiTokensSection } from "./components/api-tokens-section/api-tokens-section.js";
-import { ApiTokensMessage } from "./components/api-tokens-section/libs/enums/enums.js";
 import { ApiTokensPageMessage } from "./libs/enums/enums.js";
 import styles from "./styles.module.css";
 
@@ -23,8 +22,9 @@ const ApiTokensPage: React.FC = () => {
 						Profile
 					</Link>
 					<PageIntro
+						description={ApiTokensPageMessage.DESCRIPTION}
 						label={ApiTokensPageMessage.KICKER}
-						title={ApiTokensMessage.SECTION_TITLE}
+						title={ApiTokensPageMessage.TITLE}
 					/>
 					<section className={styles["card"]}>
 						<ApiTokensSection />
