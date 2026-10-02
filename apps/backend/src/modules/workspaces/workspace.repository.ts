@@ -48,7 +48,7 @@ class WorkspaceRepository {
 
 	private applyListSort(
 		query: QueryBuilder<WorkspaceModel, WorkspaceModel[]>,
-		sort?: ValueOf<typeof WorkspaceListSort>,
+		sort: ValueOf<typeof WorkspaceListSort> = WorkspaceListSort.CREATION_DATE,
 	): void {
 		const workspaceId = `${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.ID}`;
 
@@ -59,6 +59,16 @@ class WorkspaceRepository {
 						SQLAlias.AVERAGE_SCORE,
 					])
 					.orderBy(workspaceId, SortOrder.ASC);
+
+				return;
+			}
+			case WorkspaceListSort.CREATION_DATE: {
+				query
+					.orderBy(
+						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
+						SortOrder.DESC,
+					)
+					.orderBy(workspaceId, SortOrder.DESC);
 
 				return;
 			}
@@ -80,15 +90,6 @@ class WorkspaceRepository {
 					.orderBy(SQLAlias.TOP_ACTIVITY, SortOrder.DESC)
 					.orderBy(workspaceId, SortOrder.ASC);
 
-				return;
-			}
-			default: {
-				query
-					.orderBy(
-						`${DatabaseTableName.WORKSPACES}.${WorkspaceColumnName.CREATED_AT}`,
-						SortOrder.DESC,
-					)
-					.orderBy(workspaceId, SortOrder.ASC);
 				return;
 			}
 		}
