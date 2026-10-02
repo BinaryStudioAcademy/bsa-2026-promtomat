@@ -4,7 +4,7 @@ type WorkspaceListItemDto = WorkspaceDto & {
 	averageScore: null | number;
 	memberCount: number;
 	promptCount: number;
-	recentActivity: number;
+	topActivity: number;
 };
 
 export { type WorkspaceListItemDto };
