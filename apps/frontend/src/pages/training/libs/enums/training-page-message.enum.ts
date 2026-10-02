@@ -1,7 +1,6 @@
 const TrainingPageMessage = {
-	EYEBROW: "Training",
-	SUBTITLE:
-		"Every submission trains the retrieval index. Four fields, fifteen seconds.",
+	EYEBROW: "Log",
+	SUBTITLE: "Four fields. One score. The index gets a new example.",
 	TITLE: "Log this prompt",
 	WORKSPACE_LABEL: "Workspace",
 	WORKSPACE_PLACEHOLDER: "Select a workspace",
