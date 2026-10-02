@@ -57,7 +57,7 @@ import { type WorkspaceService } from "./workspace.service.js";
  *             - averageScore
  *             - memberCount
  *             - promptCount
- *             - recentActivity
+ *             - topActivity
  *           properties:
  *             averageScore:
  *               type: number
@@ -68,7 +68,7 @@ import { type WorkspaceService } from "./workspace.service.js";
  *             promptCount:
  *               type: integer
  *               minimum: 0
- *             recentActivity:
+ *             topActivity:
  *               type: integer
  *               minimum: 0
  */
@@ -244,7 +244,7 @@ class WorkspaceController extends BaseController {
 	 *          name: sort
 	 *          schema:
 	 *            type: string
-	 *            enum: [averageScore, creationDate, readiness, recentActivity]
+	 *            enum: [averageScore, creationDate, readiness, topActivity]
 	 *          description: Orders the list by creation date, recent activity, readiness, or average score
 	 *        - in: query
 	 *          name: workspaceName

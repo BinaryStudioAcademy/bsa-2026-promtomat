@@ -16,7 +16,7 @@ import { ContributorColumnName } from "../contributors/libs/enums/enums.js";
 import { PromptColumnName } from "../prompts/libs/enums/enums.js";
 import {
 	PROMPTS_RELATION,
-	RECENT_ACTIVITY_DAYS,
+	TOP_ACTIVITY_DAYS,
 	WORKSPACE_OWNER_COUNT,
 } from "./libs/constants/constants.js";
 import {
@@ -36,7 +36,7 @@ type WorkspaceWithCountsRow = WorkspaceModel & {
 	averageScore: null | string;
 	contributorCount: string;
 	promptCount: string;
-	recentActivity: string;
+	topActivity: string;
 };
 
 class WorkspaceRepository {
@@ -85,9 +85,9 @@ class WorkspaceRepository {
 
 				return;
 			}
-			case WorkspaceListSort.RECENT_ACTIVITY: {
+			case WorkspaceListSort.TOP_ACTIVITY: {
 				query
-					.orderBy(SQLAlias.RECENT_ACTIVITY, SortOrder.DESC)
+					.orderBy(SQLAlias.TOP_ACTIVITY, SortOrder.DESC)
 					.orderBy(workspaceId, SortOrder.ASC);
 
 				return;
@@ -115,12 +115,7 @@ class WorkspaceRepository {
 			.select(
 				raw(
 					"count(distinct case when ?? >= now() - make_interval(days => ?) then ?? end) as ??",
-					[
-						promptCreatedAt,
-						RECENT_ACTIVITY_DAYS,
-						promptId,
-						SQLAlias.RECENT_ACTIVITY,
-					],
+					[promptCreatedAt, TOP_ACTIVITY_DAYS, promptId, SQLAlias.TOP_ACTIVITY],
 				),
 			)
 			.leftJoin(
@@ -205,7 +200,7 @@ class WorkspaceRepository {
 		const contributorCount = Number(row.contributorCount);
 		const memberCount = contributorCount + WORKSPACE_OWNER_COUNT;
 		const promptCount = Number(row.promptCount);
-		const recentActivity = Number(row.recentActivity);
+		const topActivity = Number(row.topActivity);
 		const averageScore =
 			row.averageScore === null ? null : Number(row.averageScore);
 		const workspaceDto = WorkspaceEntity.initialize(row).toObject();
@@ -215,7 +210,7 @@ class WorkspaceRepository {
 			averageScore,
 			memberCount,
 			promptCount,
-			recentActivity,
+			topActivity,
 		};
 	}
 

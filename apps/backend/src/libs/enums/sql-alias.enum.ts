@@ -9,7 +9,7 @@ const SQLAlias = {
 	MY_SCORE: "myScore",
 	PREVIOUS_SCORE: "previousScore",
 	PROMPT_COUNT: "promptCount",
-	RECENT_ACTIVITY: "recentActivity",
+	TOP_ACTIVITY: "topActivity",
 	WORKSPACE_NAME: "workspaceName",
 } as const;
 
