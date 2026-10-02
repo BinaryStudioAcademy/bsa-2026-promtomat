@@ -244,8 +244,8 @@ class WorkspaceController extends BaseController {
 	 *          name: sort
 	 *          schema:
 	 *            type: string
-	 *            enum: [averageScore, readiness, recentActivity]
-	 *          description: Orders the list by recent activity, readiness, or average score
+	 *            enum: [averageScore, creationDate, readiness, recentActivity]
+	 *          description: Orders the list by creation date, recent activity, readiness, or average score
 	 *        - in: query
 	 *          name: workspaceName
 	 *          schema:

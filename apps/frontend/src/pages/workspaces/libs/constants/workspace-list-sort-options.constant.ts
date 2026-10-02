@@ -2,6 +2,10 @@ import { WorkspaceListSort } from "~/modules/workspaces/workspaces.js";
 
 const WORKSPACE_LIST_SORT_OPTIONS = [
 	{
+		label: "Creation date",
+		value: WorkspaceListSort.CREATION_DATE,
+	},
+	{
 		label: "Recent activity",
 		value: WorkspaceListSort.RECENT_ACTIVITY,
 	},
